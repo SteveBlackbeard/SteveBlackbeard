@@ -162,5 +162,5 @@
   <br />
   <code>NULLA-LABS // SENESCHAL COMPANION & INVICTVS PARTICLE ENGINE ACTIVE</code>
   <br/><br/>
-  <sub>⚡ Powered by <strong>Nulla Labs</strong> • Low-Latency Corporate Architecture</sub>
+  <sub>⚡ Powered by <strong>Nulla Labs</strong> • I+D and Innovations</sub>
 </div>
