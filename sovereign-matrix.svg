@@ -21,7 +21,7 @@
       }
       .cell-desc {
         font-family: 'Fira Code', monospace;
-        font-size: 10.5px;
+        font-size: 12px; font-weight: 700;
         fill: #94A3B8;
       }
     </style>
