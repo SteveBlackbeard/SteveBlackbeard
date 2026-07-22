@@ -42,14 +42,27 @@
 
 ---
 
-### ⚡ INVICTVS GPU Particle Shader Engine // Live Console Window
+### 🧬 Real B-DNA Human Genome Double Helix // TP53 Gene Sequence
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-dna-console-v15-synthesis.gif?v=3" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
+    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-dna-console-v16-helix.gif?v=1" alt="Real B-DNA Double Helix — TP53 Gene — 3D Particle Engine" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Click the animated console above to launch full-screen 60 FPS 120,000 Particle Invictvs 3D Mask & Human DNA Simulation</i></sub>
+    <sub><i>Real B-DNA double helix of human TP53 tumor suppressor gene (17p13.1) — 70 base pairs with Adenine, Thymine, Guanine, Cytosine — Click to launch interactive 3D engine</i></sub>
+  </p>
+</div>
+
+---
+
+### ⚗️ Complete IUPAC Periodic Table (118 Elements) // Gold Atom 360° Orbital View
+
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-periodic-table-au.gif?v=1" alt="Complete 118-Element IUPAC Periodic Table with Gold (Au) Atom 3D Orbital Rotation" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Complete 118-element IUPAC periodic table with Gold (Au, Z=79) electron shell orbital view rotating 360° — [Xe]4f¹⁴5d¹⁰6s¹ — Interactive molecular synthesis platform</i></sub>
   </p>
 </div>
 
