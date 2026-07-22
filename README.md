@@ -34,6 +34,19 @@
 
 ---
 
+### 🛠️ Public Portfolio Console
+
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-public-projects.gif?v=502" alt="SteveBlackbeard Ethernium Public Projects Portfolio Console" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Sovereign systems portfolio dashboard showing Fonts Forge vector toolkit, Seneschal AI runtime layer, and Chronolith cognitive persistence protocol — Click to launch interactive 3D engine</i></sub>
+  </p>
+</div>
+
+---
+
 ### 🤖 Ethernium Autonomous Companion // Seneschal-v5
 
 <div align="center">
@@ -63,19 +76,6 @@
   </a>
   <p align="center">
     <sub><i>Complete 118-element IUPAC periodic table with Gold (Au, Z=79) electron shell orbital view rotating 360° — [Xe]4f¹⁴5d¹⁰6s¹ — Interactive molecular synthesis platform</i></sub>
-  </p>
-</div>
-
----
-
-### 🛠️ Ethernium Registered Paradigms // Public Portfolio Console
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=502" alt="SteveBlackbeard Ethernium Public Projects Portfolio Console" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Sovereign systems portfolio dashboard showing Fonts Forge vector toolkit, Seneschal AI runtime layer, and Chronolith cognitive persistence protocol — Click to launch interactive 3D engine</i></sub>
   </p>
 </div>
 
