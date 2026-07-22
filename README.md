@@ -110,9 +110,7 @@
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-markdown.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-yolov5.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-openmpi.svg" />
-
   <br/><br/>
-
   <!-- Hardware & Embedded -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-raspberrypi.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arduino.svg" />
