@@ -1,7 +1,11 @@
 <!-- ETHERNIUM SOVEREIGN PROFILE README -->
 <div align="center">
   <!-- 3D Obsidian Shader Animated Header Banner -->
+<<<<<<< HEAD
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium-v10.svg?v=16" alt="Ethernium Sovereign Systems Banner" width="100%" />
+=======
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium-v10.svg?v=15" alt="Ethernium Sovereign Systems Banner" width="90%" />
+>>>>>>> e4e9c9d263ff68a1d2ae230b0bed1d2ff0cbde58
 
   <br/><br/>
 
@@ -49,7 +53,7 @@
     <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-dna-console-v11-studio.gif?v=3" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Invictvs 3D Mask & Human DNA Simulation</i></sub>
+    <sub><i>Click the animated console above to launch full-screen 60 FPS 120,000 Particle Invictvs 3D Mask & Human DNA Simulation</i></sub>
   </p>
 </div>
 
