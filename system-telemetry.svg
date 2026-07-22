@@ -14,7 +14,7 @@
       }
       .metric-title {
         font-family: 'Fira Code', monospace;
-        font-size: 10.5px;
+        font-size: 10px;
         fill: #94A3B8;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -22,7 +22,7 @@
       .metric-value {
         font-family: 'Nebula', 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 16px;
+        font-size: 13.5px;
         fill: #00F0FF;
         letter-spacing: 1px;
       }
@@ -56,29 +56,29 @@
     <rect x="30" y="18" width="890" height="34" rx="8" fill="#020408" stroke="#000000" stroke-width="2"/>
     <text x="475" y="41" text-anchor="middle" class="title-text" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">📊 ETHERNIUM SYSTEM TELEMETRY &amp; HARDWARE METRICS</text>
 
-    <!-- 3 Engraved Metric Cards -->
+    <!-- 3 Perfectly Aligned & Centered Metric Cards -->
     <g transform="translate(40, 75)">
       <rect width="270" height="115" rx="10" fill="url(#card-obsidian)" stroke="#000000" stroke-width="2.5"/>
       <rect x="2" y="2" width="266" height="111" rx="8" fill="none" stroke="#00F0FF" stroke-width="1.5"/>
-      <text x="20" y="30" class="metric-title">GPU PARTICLES</text>
-      <text x="20" y="60" class="metric-value">100,000 GPU PARTICLES</text>
-      <text x="20" y="85" class="metric-title" fill="#00FF9D">BUFFERGEOMETRY ACTIVE</text>
+      <text x="135" y="32" text-anchor="middle" class="metric-title">GPU PARTICLES</text>
+      <text x="135" y="62" text-anchor="middle" class="metric-value">120,000 PARTICLES</text>
+      <text x="135" y="87" text-anchor="middle" class="metric-title" fill="#00FF9D">BUFFERGEOMETRY ACTIVE</text>
     </g>
 
     <g transform="translate(340, 75)">
       <rect width="270" height="115" rx="10" fill="url(#card-obsidian)" stroke="#000000" stroke-width="2.5"/>
       <rect x="2" y="2" width="266" height="111" rx="8" fill="none" stroke="#7000FF" stroke-width="1.5"/>
-      <text x="20" y="30" class="metric-title">FRAME RATE BASELINE</text>
-      <text x="20" y="60" class="metric-value">60 FPS STABLE</text>
-      <text x="20" y="85" class="metric-title" fill="#00FF9D">HARDWARE ACCELERATED</text>
+      <text x="135" y="32" text-anchor="middle" class="metric-title">FRAME RATE BASELINE</text>
+      <text x="135" y="62" text-anchor="middle" class="metric-value">60 FPS STABLE</text>
+      <text x="135" y="87" text-anchor="middle" class="metric-title" fill="#00FF9D">HARDWARE ACCELERATED</text>
     </g>
 
     <g transform="translate(640, 75)">
       <rect width="270" height="115" rx="10" fill="url(#card-obsidian)" stroke="#000000" stroke-width="2.5"/>
       <rect x="2" y="2" width="266" height="111" rx="8" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-      <text x="20" y="30" class="metric-title">PHYSICS ENGINE</text>
-      <text x="20" y="60" class="metric-value">NEWTONIAN GRAVITY</text>
-      <text x="20" y="85" class="metric-title" fill="#00FF9D">INVICTVS 3D MASK CYCLE</text>
+      <text x="135" y="32" text-anchor="middle" class="metric-title">PHYSICS ENGINE</text>
+      <text x="135" y="62" text-anchor="middle" class="metric-value">HUMAN B-DNA 3D</text>
+      <text x="135" y="87" text-anchor="middle" class="metric-title" fill="#00FF9D">INVICTVS MASK ENGINE</text>
     </g>
   </g>
 </svg>
