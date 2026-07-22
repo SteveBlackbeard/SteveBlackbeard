@@ -1,10 +1,11 @@
-// Ethernium Sovereign Multidisciplinary 3-6-9 Fibonacci & Visual Genetics GPU Engine v7.0
+// Ethernium Sovereign 3D Mask Morphing & Kinetic Explosion Particle Engine v8.0
 (function() {
   'use strict';
 
   const canvas = document.getElementById('webgl-canvas');
   const fpsVal = document.getElementById('fps-val');
   const particleVal = document.getElementById('particle-val');
+  const cycleVal = document.getElementById('cycle-val');
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -16,204 +17,119 @@
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 52);
 
-  // 90,000 High-Precision GPU Particles (3-6-9 Multiples: 90,000 = 9 * 10,000)
+  // 90,000 GPU Particles
   const PARTICLE_COUNT = 90000;
   particleVal.textContent = PARTICLE_COUNT.toLocaleString();
 
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(PARTICLE_COUNT * 3);
-  const origPositions = new Float32Array(PARTICLE_COUNT * 3);
-  const randoms = new Float32Array(PARTICLE_COUNT * 3);
+  const targetPositions = new Float32Array(PARTICLE_COUNT * 3); // 3D Mask Target Coordinates
+  const velocities = new Float32Array(PARTICLE_COUNT * 3);
   const colors = new Float32Array(PARTICLE_COUNT * 3);
   const scales = new Float32Array(PARTICLE_COUNT);
-  const nodeTypes = new Float32Array(PARTICLE_COUNT); // 3, 6, 9 Nodal Frequency Assignment
 
-  const PHI = (1.0 + Math.sqrt(5.0)) / 2.0; // Golden Ratio 1.61803398875
-  const GOLDEN_ANGLE = Math.PI * (3.0 - Math.sqrt(5.0)); // 137.5077 degrees
+  const PHI = (1.0 + Math.sqrt(5.0)) / 2.0;
+  const GOLDEN_ANGLE = Math.PI * (3.0 - Math.sqrt(5.0));
 
-  // Nucleotide Spectral Palette (Adenine, Thymine, Cytosine, Guanine + Tesla White)
-  const colAdenine = new THREE.Color(0x00F0FF);  // Cyan
-  const colThymine = new THREE.Color(0x7000FF);  // Violet
-  const colCytosine = new THREE.Color(0x00FF9D); // Emerald
-  const colGuanine = new THREE.Color(0xFFD700);  // Gold
-  const colTeslaWhite = new THREE.Color(0xFFFFFF);
+  // Nucleotide & Invictvs Gold/Cyan Palette
+  const colCyan = new THREE.Color(0x00F0FF);   // Invictvs Cyan
+  const colViolet = new THREE.Color(0x7000FF); // Deep Violet
+  const colEmerald = new THREE.Color(0x00FF9D); // Emerald
+  const colGold = new THREE.Color(0xFFD700);   // Invictvs Gold
+  const colWhite = new THREE.Color(0xFFFFFF);
 
-  // Multidisciplinary Initialization: Fibonacci Phyllotaxis + DNA Double Helix + Tesla 3-6-9 Nodes
+  // Generate Invictvs Cybernetic 3D Mask Target Geometry
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
 
-    // Tesla 3-6-9 Nodal Category (0 = Node 3, 1 = Node 6, 2 = Node 9)
-    const nodeCat = i % 3;
-    nodeTypes[i] = nodeCat === 0 ? 3.0 : (nodeCat === 1 ? 6.0 : 9.0);
+    // 3D Mask Surface Coordinates
+    const u = (i / PARTICLE_COUNT) * Math.PI * 2.0 * 25.0; // Multi-wrap surface
+    const v = ((i % 300) / 300.0) * Math.PI - Math.PI / 2.0;
 
-    // Fibonacci Golden Spiral Radii
-    const r = Math.sqrt(i / PARTICLE_COUNT) * 42.0 + 3.0;
+    let y = Math.sin(v) * 22.0;
+    let rad = (Math.cos(v) * 0.7 + 0.3) * 14.0;
+
+    if (y < -4.0) {
+      rad *= (1.0 + (y + 4.0) * 0.035); // Jawline taper
+    }
+
+    let x = Math.cos(u) * rad;
+    let z = Math.sin(u) * rad * 0.65;
+
+    // Eye Socket Cavity Indentation
+    if (y > 1.5 && y < 7.5 && Math.abs(x) > 2.5 && Math.abs(x) < 9.5) {
+      z -= 3.5;
+    }
+
+    targetPositions[i3] = x;
+    targetPositions[i3 + 1] = y;
+    targetPositions[i3 + 2] = z;
+
+    // Initial Random Position Cloud
+    const r = Math.sqrt(i / PARTICLE_COUNT) * 45.0 + 5.0;
     const theta = i * GOLDEN_ANGLE;
-
-    // DNA Double Helix Strand Offset
-    const strand = (i % 2 === 0) ? 1.0 : -1.0;
-    const helixZ = Math.sin(theta * 3.0) * 8.0 * strand + (Math.random() - 0.5) * 4.0;
-
-    // Arched Rotational Vortex Position
     positions[i3] = r * Math.cos(theta);
     positions[i3 + 1] = r * Math.sin(theta);
-    positions[i3 + 2] = helixZ;
+    positions[i3 + 2] = (Math.random() - 0.5) * 30.0;
 
-    origPositions[i3] = positions[i3];
-    origPositions[i3 + 1] = positions[i3 + 1];
-    origPositions[i3 + 2] = positions[i3 + 2];
-
-    randoms[i3] = (Math.random() - 0.5) * 2.0;
-    randoms[i3 + 1] = (Math.random() - 0.5) * 2.0;
-    randoms[i3 + 2] = (Math.random() - 0.5) * 2.0;
-
-    // Color Assignment by Genetic Base Pair & Tesla Frequency
+    // Color Palette
     const pColor = new THREE.Color();
     const rCol = Math.random();
-    if (rCol < 0.35) {
-      pColor.copy(colAdenine);
-    } else if (rCol < 0.65) {
-      pColor.copy(colThymine);
-    } else if (rCol < 0.85) {
-      pColor.copy(colCytosine);
-    } else if (rCol < 0.95) {
-      pColor.copy(colGuanine);
+    if (rCol < 0.40) {
+      pColor.copy(colCyan);
+    } else if (rCol < 0.70) {
+      pColor.copy(colViolet);
+    } else if (rCol < 0.88) {
+      pColor.copy(colEmerald);
+    } else if (rCol < 0.96) {
+      pColor.copy(colGold);
     } else {
-      pColor.copy(colTeslaWhite);
+      pColor.copy(colWhite);
     }
 
     colors[i3] = pColor.r;
     colors[i3 + 1] = pColor.g;
     colors[i3 + 2] = pColor.b;
 
-    scales[i] = 1.0 + Math.random() * 3.2;
+    scales[i] = 1.0 + Math.random() * 3.0;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 3));
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
-  geometry.setAttribute('aNodeType', new THREE.BufferAttribute(nodeTypes, 1));
 
-  // Central 3D Sacred Geometry Monolith (Dual Stellated Octahedron Core)
-  const coreGroup = new THREE.Group();
-
-  const coreGeo1 = new THREE.OctahedronGeometry(5, 1);
-  const coreMat1 = new THREE.MeshBasicMaterial({ color: 0x00F0FF, wireframe: true, transparent: true, opacity: 0.75 });
-  const mesh1 = new THREE.Mesh(coreGeo1, coreMat1);
-
-  const coreGeo2 = new THREE.IcosahedronGeometry(7, 1);
-  const coreMat2 = new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true, transparent: true, opacity: 0.45 });
-  const mesh2 = new THREE.Mesh(coreGeo2, coreMat2);
-
-  coreGroup.add(mesh1);
-  coreGroup.add(mesh2);
-  scene.add(coreGroup);
-
-  // Pure GPU Shader Engine with 3-6-9 Vortex Dynamics & Fibonacci Gravitational Lensing
+  // Custom GPU Shader
   const uniforms = {
     uTime: { value: 0 },
     uMouse: { value: new THREE.Vector3(0, 0, 0) },
-    uImpulse: { value: 0.0 }
+    uExplode: { value: 0.0 }
   };
 
   const vertexShader = `
     uniform float uTime;
     uniform vec3 uMouse;
-    uniform float uImpulse;
-    attribute vec3 aRandom;
+    uniform float uExplode;
     attribute vec3 aColor;
     attribute float aScale;
-    attribute float aNodeType;
 
     varying vec3 vColor;
     varying float vGlow;
-
-    #define PHI 1.61803398875
-
-    // 3D Simplex Noise Function
-    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-    vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-    float snoise(vec3 v) {
-      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-      vec3 i  = floor(v + dot(v, C.yyy));
-      vec3 x0 = v - i + dot(i, C.xxx);
-      vec3 g = step(x0.yzx, x0.xyz);
-      vec3 l = 1.0 - g;
-      vec3 i1 = min(g.xyz, l.zxy);
-      vec3 i2 = max(g.xyz, l.zxy);
-      vec3 x1 = x0 - i1 + C.xxx;
-      vec3 x2 = x0 - i2 + C.yyy;
-      vec3 x3 = x0 - D.yyy;
-      i = mod289(i);
-      vec4 p = permute(permute(permute(
-                 i.z + vec4(0.0, i1.z, i2.z, 1.0))
-               + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-               + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-      float n_ = 0.142857142857;
-      vec3 ns = n_ * D.wyz - D.xzx;
-      vec4 j = p - 49.0 * floor(p * ns.z);
-      vec4 x_ = floor(j * ns.z);
-      vec4 y_ = floor(j - 7.0 * x_);
-      vec4 x = x_ *ns.x + ns.yyyy;
-      vec4 y = y_ *ns.x + ns.yyyy;
-      vec4 h = 1.0 - abs(x) - abs(y);
-      vec4 b0 = vec4(x.xy, y.xy);
-      vec4 b1 = vec4(x.zw, y.zw);
-      vec4 s0 = floor(b0)*2.0 + 1.0;
-      vec4 s1 = floor(b1)*2.0 + 1.0;
-      vec4 sh = -step(h, vec4(0.0));
-      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-      vec3 p0 = vec3(a0.xy, h.x);
-      vec3 p1 = vec3(a0.zw, h.y);
-      vec3 p2 = vec3(a1.xy, h.z);
-      vec3 p3 = vec3(a1.zw, h.w);
-      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-      p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-      m = m * m;
-      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
-    }
 
     void main() {
       vColor = aColor;
       vec3 p = position;
 
-      // Tesla 3-6-9 Frequency Modulated Oscillation
-      float freqMod = aNodeType / 3.0; // 1.0 for Node 3, 2.0 for Node 6, 3.0 for Node 9
-      float teslaWave = sin(uTime * freqMod * 0.7 + length(p) * 0.1) * cos(uTime * 0.5);
-
-      // Arched Spinning Rotational Geodesics (Toroidal Flow)
-      float angle = uTime * 0.4 * freqMod + length(p) * 0.04;
-      mat2 rot = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-      p.xy = rot * p.xy;
-      p.z += teslaWave * 2.5;
-
-      // Fibonacci 3D Simplex Flow
-      vec3 noise = vec3(
-        snoise(p * 0.035 + vec3(uTime * 0.12, 0.0, 0.0)),
-        snoise(p * 0.035 + vec3(0.0, uTime * 0.12, 0.0)),
-        snoise(p * 0.035 + vec3(0.0, 0.0, uTime * 0.12))
-      );
-      p += noise * (3.0 * PHI);
-
-      // Mouse Gravitational Lensing & Kinetic Impulse Shockwave
-      vec3 delta = p - uMouse;
-      float dist = length(delta);
-      if (dist < 26.0) {
-        float force = (26.0 - dist) / 26.0;
-        p += normalize(delta) * force * (12.0 + uImpulse * 15.0);
+      vec3 mouseDelta = p - uMouse;
+      float distToMouse = length(mouseDelta);
+      if (distToMouse < 24.0) {
+        float force = (24.0 - distToMouse) / 24.0;
+        p += normalize(mouseDelta) * force * 10.0;
       }
 
-      vGlow = smoothstep(26.0, 0.0, dist);
+      vGlow = smoothstep(25.0, 0.0, distToMouse);
 
       vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-      gl_PointSize = (aScale + vGlow * 4.0) * (380.0 / -mvPosition.z);
+      gl_PointSize = (aScale + vGlow * 3.5) * (380.0 / -mvPosition.z);
       gl_Position = projectionMatrix * mvPosition;
     }
   `;
@@ -232,9 +148,9 @@
       float halo = smoothstep(0.5, 0.0, dist);
 
       vec3 finalColor = mix(vColor, vec3(1.0, 1.0, 1.0), core * 0.82);
-      finalColor += vec3(1.0, 0.84, 0.0) * pow(halo, 2.0) * 0.35; // Golden Tesla Glow
+      finalColor += vec3(0.0, 0.94, 1.0) * pow(halo, 2.2) * 0.45;
 
-      gl_FragColor = vec4(finalColor, halo * 0.92);
+      gl_FragColor = vec4(finalColor, halo * 0.90);
     }
   `;
 
@@ -264,19 +180,85 @@
     uniforms.uMouse.value.copy(mouse3D);
   });
 
-  window.addEventListener('mousedown', () => {
-    uniforms.uImpulse.value = 1.0;
-  });
-
-  window.addEventListener('mouseup', () => {
-    uniforms.uImpulse.value = 0.0;
-  });
-
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+
+  // State Machine Loop: 12 Second Cycle (Form -> Hold -> Explode -> Reform)
+  const posAttr = geometry.attributes.position;
+  const posArray = posAttr.array;
+
+  let cycleTime = 0;
+  const CYCLE_DURATION = 10.0; // 10s total loop
+
+  function updateMaskPhysics(dt) {
+    cycleTime = (cycleTime + dt) % CYCLE_DURATION;
+
+    // Phase 0 to 4s: Form Mask
+    // Phase 4 to 6.5s: Hold & Rotate Mask
+    // Phase 6.5 to 7.5s: Kinetic Shockwave Explosion
+    // Phase 7.5 to 10s: Gravitational Reform
+
+    let isExploding = false;
+
+    if (cycleTime >= 6.5 && cycleTime < 7.5) {
+      isExploding = true;
+      if (cycleVal) cycleVal.textContent = 'EXPLOSION_KINETIC';
+    } else if (cycleTime >= 4.0 && cycleTime < 6.5) {
+      if (cycleVal) cycleVal.textContent = 'MASK_HOLD_PULSE';
+    } else {
+      if (cycleVal) cycleVal.textContent = 'FORMING_3D_MASK';
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const i3 = i * 3;
+
+      let px = posArray[i3];
+      let py = posArray[i3 + 1];
+      let pz = posArray[i3 + 2];
+
+      let tx = targetPositions[i3];
+      let ty = targetPositions[i3 + 1];
+      let tz = targetPositions[i3 + 2];
+
+      let vx = velocities[i3];
+      let vy = velocities[i3 + 1];
+      let vz = velocities[i3 + 2];
+
+      if (isExploding) {
+        // Explode outward radially
+        const len = Math.sqrt(px * px + py * py + pz * pz) + 0.1;
+        vx += (px / len) * 45.0 * dt;
+        vy += (py / len) * 45.0 * dt;
+        vz += (pz / len) * 45.0 * dt;
+      } else {
+        // Morph interpolation toward 3D Mask Target
+        const dx = tx - px;
+        const dy = ty - py;
+        const dz = tz - pz;
+
+        vx = vx * 0.88 + dx * 3.5 * dt;
+        vy = vy * 0.88 + dy * 3.5 * dt;
+        vz = vz * 0.88 + dz * 3.5 * dt;
+      }
+
+      px += vx * dt * 60.0 * 0.016;
+      py += vy * dt * 60.0 * 0.016;
+      pz += vz * dt * 60.0 * 0.016;
+
+      posArray[i3] = px;
+      posArray[i3 + 1] = py;
+      posArray[i3 + 2] = pz;
+
+      velocities[i3] = vx;
+      velocities[i3 + 1] = vy;
+      velocities[i3 + 2] = vz;
+    }
+
+    posAttr.needsUpdate = true;
+  }
 
   // Render Loop
   let frameCount = 0;
@@ -284,6 +266,8 @@
 
   function animate(now) {
     requestAnimationFrame(animate);
+
+    const dt = Math.min((now - lastTime) * 0.001, 0.05);
 
     frameCount++;
     if (now - lastTime >= 1000) {
@@ -295,18 +279,10 @@
     const t = now * 0.001;
     uniforms.uTime.value = t;
 
-    if (uniforms.uImpulse.value > 0.01) {
-      uniforms.uImpulse.value *= 0.90;
-    }
+    updateMaskPhysics(dt);
 
-    // 3D Sacred Geometry Rotation
-    mesh1.rotation.x = t * 0.5;
-    mesh1.rotation.y = t * 0.7;
-
-    mesh2.rotation.x = -t * 0.3;
-    mesh2.rotation.z = t * 0.4;
-
-    particleSystem.rotation.z = t * 0.05;
+    // Rotate 3D Mask System
+    particleSystem.rotation.y = t * 0.35;
 
     renderer.render(scene, camera);
   }
