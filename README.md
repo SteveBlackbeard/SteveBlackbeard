@@ -1,6 +1,6 @@
 <!-- ETHERNIUM SOVEREIGN PROFILE README -->
 <div align="center">
-  <!-- 3D Obsidian Shader Animated Header Banner -->
+  <!-- 3D Obsidian Shader Animated Header Banner with Official Ethernium Roots Logo -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
 
   <br/><br/>
@@ -28,6 +28,12 @@
 
 ### 👁️ Executive Briefing // Corporate Manifesto
 
+<div align="center">
+  <br />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-logo-brand.png" alt="Ethernium Official Runic Typography Logo" width="60%" />
+  <br /><br />
+</div>
+
 > *“Ethernium fue concebido a partir de múltiples rupturas de paradigmas conceptuales, y está listo para romper los siguientes.”*
 >
 > *“Engineering high-efficiency, resilient, and autonomous computing paradigms by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
@@ -49,7 +55,7 @@
     <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-console.gif" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Newtonian GPU Shader Simulation</i></sub>
+    <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Invictvs 3D Mask &amp; Human DNA Simulation</i></sub>
   </p>
 </div>
 
@@ -111,10 +117,12 @@
 
 ---
 
-### 👁️ Ethernium Corporate Vision
+### 👁️ Ethernium Corporate Vision & Monogram Seal
 
 <div align="center">
   <br />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-seal-brand.png" alt="Ethernium Official Monogram Seal" width="35%" />
+  <br /><br />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Sovereign Vision Hologram" width="100%" />
 </div>
 
@@ -124,5 +132,5 @@
   <br />
   <code>ETH-CORP // SENESCHAL COMPANION & INVICTVS PARTICLE ENGINE ACTIVE</code>
   <br/><br/>
-  <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Low-Latency Corporate Architecture</sub>
+  <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Ω Protocol Architecture</sub>
 </div>
