@@ -141,12 +141,18 @@
   moleculeGroup.add(selectRing);
 
   function getMaterial(colorHex) {
-    return new THREE.MeshStandardMaterial({ color: colorHex, roughness:0.25, metalness:0.7 });
+    return new THREE.MeshPhysicalMaterial({
+      color: colorHex,
+      roughness: 0.1,
+      metalness: 0.1,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.04
+    });
   }
 
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
-    // atomList: [{z, pos: Vector3}]
+    // atomList: [{z, pos: Vector3, col: hex, scale: float}]
     // Fade out existing atoms that aren't needed
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
     activeBonds.forEach(b => { b.mesh.scale.set(0.01,0.01,0.01); b.removing = true; });
@@ -161,7 +167,8 @@
       // Spawn new atoms
       atomList.forEach(item => {
         const elData = EL[item.z] || EL[1];
-        const mat = getMaterial(elData.col);
+        const colorHex = item.col !== undefined ? item.col : elData.col;
+        const mat = getMaterial(colorHex);
         const mesh = new THREE.Mesh(sphereGeo, mat);
         mesh.position.set(
           (Math.random()-0.5) * 60,
@@ -171,10 +178,12 @@
         mesh.scale.setScalar(0.01);
         moleculeGroup.add(mesh);
 
+        const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
+
         activeAtoms.push({
           mesh,
           targetPos: item.pos.clone(),
-          targetScale: 1.2 + (elData.r || 1.0) * 0.4,
+          targetScale: scale,
           currentScale: 0.01,
           elData,
           z: item.z,
@@ -198,41 +207,68 @@
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // BUILD DEFAULT B-DNA EXAMPLE
+  // BUILD DEFAULT B-DNA EXAMPLE (Matches high-fidelity glossy reference image)
   // ═══════════════════════════════════════════════════════════════
   function buildDNA() {
     const atoms = [];
-    const BP = 70;
-    const HR = 16.0, MG = 0.38 * Math.PI, T = 5.5;
+    const BP = 130; // High density
+    const HR = 15.0; // Helix Radius
+    const MG = 0.38 * Math.PI; // Major Groove
+    const T = 4.2; // Turns
+
+    const BACKBONE1_COLORS = [0xFFD700, 0x8A2BE2, 0xFF5500, 0xFF0055, 0x00FF9D, 0x00D4FF];
+    const BACKBONE2_COLORS = [0x00D4FF, 0x00FF9D, 0xFF5500, 0x8A2BE2, 0xFFD700, 0xFF0055];
+    const RUNG_COLOR = 0x1E2B3E; // Dark navy/slate for rungs
 
     for (let i = 0; i < BP; i++) {
       const p = i / BP;
-      const x = (p - 0.5) * 110;
+      const x = (p - 0.5) * 115;
       const a1 = p * T * Math.PI * 2;
       const a2 = a1 + Math.PI + MG;
 
       const y1 = Math.sin(a1) * HR, z1 = Math.cos(a1) * HR;
       const y2 = Math.sin(a2) * HR, z2 = Math.cos(a2) * HR;
 
-      // Phosphorus backbone
-      atoms.push({ z:15, pos: new THREE.Vector3(x, y1, z1) });
-      atoms.push({ z:15, pos: new THREE.Vector3(x, y2, z2) });
-      // Oxygen
-      atoms.push({ z:8, pos: new THREE.Vector3(x+0.8, y1+0.8, z1) });
-      atoms.push({ z:8, pos: new THREE.Vector3(x+0.8, y2+0.8, z2) });
-      // Base pair atoms (N, C alternating)
-      for (let r = 0; r < 5; r++) {
-        const rp = (r+1)/6;
-        const ry = THREE.MathUtils.lerp(y1,y2,rp);
-        const rz = THREE.MathUtils.lerp(z1,z2,rp);
-        atoms.push({ z: (r%2===0)?7:6, pos: new THREE.Vector3(x, ry, rz) });
+      // Backbone 1 sphere (thick, glossy, colorful)
+      atoms.push({
+        z: 15,
+        pos: new THREE.Vector3(x, y1, z1),
+        col: BACKBONE1_COLORS[i % BACKBONE1_COLORS.length],
+        scale: 2.3
+      });
+
+      // Backbone 2 sphere
+      atoms.push({
+        z: 15,
+        pos: new THREE.Vector3(x, y2, z2),
+        col: BACKBONE2_COLORS[i % BACKBONE2_COLORS.length],
+        scale: 2.3
+      });
+
+      // Base pair rungs (every 2 steps to avoid overlapping too much)
+      if (i % 2 === 0) {
+        for (let r = 1; r <= 6; r++) {
+          const rp = r / 7;
+          const ry = THREE.MathUtils.lerp(y1, y2, rp);
+          const rz = THREE.MathUtils.lerp(z1, z2, rp);
+          atoms.push({
+            z: 6,
+            pos: new THREE.Vector3(x, ry, rz),
+            col: RUNG_COLOR,
+            scale: 1.1
+          });
+        }
       }
     }
 
     spawnAtoms(atoms);
-    updateTelemetry('B-DNA Double Helix (Human Genome)', 'P₇₀ O₁₄₀ N₁₇₅ C₁₇₅',
-      'Genetic Macromolecule (Nucleic Acid)', 'Phosphodiester + Hydrogen Bonds',
-      'Biological Supercoiled Structure');
+    updateTelemetry(
+      'B-DNA Double Helix (TP53 Gene Locus)',
+      'Highly Dense Polypeptide & Nucleic Acid Sequence',
+      'Genomic Macromolecule',
+      'Hydrogen Bonds (Nucleobase Rungs)',
+      'Full 120,000 Particle Invictvs 3D Simulation'
+    );
   }
 
   // ═══════════════════════════════════════════════════════════════
