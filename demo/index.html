@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ethernium AAA Invictvs Particle Engine // 120,000 Particles</title>
-  <meta name="description" content="Ethernium Sovereign AAA Invictvs Newtonian Real-Gravity Physics Particle Engine running at 60 FPS baseline.">
+  <title>Ethernium Sovereign AAA Invictvs 3D Volumetric Particle Engine</title>
+  <meta name="description" content="Ethernium Sovereign AAA Invictvs Volumetric 3D Simplex Noise Shader Engine running at 60 FPS baseline.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -148,19 +148,17 @@
   <canvas id="webgl-canvas"></canvas>
 
   <div class="hud-layer">
-    <!-- Top HUD Header -->
     <div class="glass-card hud-header">
       <div>
-        <div class="hud-title">ETH-CORP // INVICTVS QUANTUM PARTICLE SHADER ENGINE</div>
-        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">NEWTONIAN GRAVITY &bull; QUANTUM MONOLITH CORE &bull; 120,000 PARTICLES</div>
+        <div class="hud-title">ETH-CORP // INVICTVS VOLUMETRIC 3D PARTICLE ENGINE</div>
+        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">3D SIMPLEX TURBULENCE &bull; QUANTUM MONOLITH CORE &bull; 80,000 PARTICLES</div>
       </div>
       <div class="status-badge">
         <div class="pulse-dot"></div>
-        INVICTVS_AAA_ONLINE
+        INVICTVS_3D_ONLINE
       </div>
     </div>
 
-    <!-- Bottom HUD Telemetry -->
     <div class="hud-footer">
       <div class="glass-card telemetry-grid">
         <div class="metric-box">
@@ -168,23 +166,22 @@
           <div class="metric-val" id="fps-val">60 FPS</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">GPU Particles</div>
-          <div class="metric-val" id="particle-val">120,000</div>
+          <div class="metric-label">3D Particles</div>
+          <div class="metric-val" id="particle-val">80,000</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Quantum Core</div>
-          <div class="metric-val" style="color:#00FF9D;">MONOLITH_ACTIVE</div>
+          <div class="metric-label">Simplex Noise</div>
+          <div class="metric-val" style="color:#00FF9D;">GPU_SHADERS</div>
         </div>
       </div>
 
       <div class="glass-card controls-hint">
-        <div>[LEFT CLICK: ATTRACT SINK | RIGHT CLICK: ANTIGRAVITY | SPACE: NOVA | G: REVERSE | R: RESET]</div>
+        <div>[MOVE MOUSE: GRAVITATIONAL FIELD | CLICK: KINETIC SHOCKWAVE]</div>
         <a href="https://github.com/SteveBlackbeard" class="btn-return">← RETURN TO GITHUB PROFILE</a>
       </div>
     </div>
   </div>
 
-  <!-- Local-First Three.js -->
   <script src="vendor/three.min.js"></script>
   <script src="app.js"></script>
 </body>
