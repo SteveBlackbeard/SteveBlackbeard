@@ -80,9 +80,18 @@
 
 ---
 
+### 👁️ Ethernium Sovereign Vision // Archetypal Presence
+
 <div align="center">
   <br />
-  <code>ETH-SENESCHAL-CORE v5.0.0 // OBSIDIAN GLASS SHADER PROTOCOL ONLINE</code>
+  <img src="ethernium-hologram.png" alt="Ethernium Sovereign Vision Hologram" width="100%" />
+</div>
+
+---
+
+<div align="center">
+  <br />
+  <code>ETH-SENESCHAL-CORE v5.1.0 // HOLOGRAM OPTICS ENGAGED</code>
   <br/><br/>
   <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Synergistic Archetypal Matrix</sub>
 </div>
