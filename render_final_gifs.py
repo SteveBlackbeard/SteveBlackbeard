@@ -108,11 +108,11 @@ def convert_to_gif_frame(rgba_img):
 def generate_dna_schematic():
     print("Generating Schematic B-DNA Helix GIF...")
     num_frames = 48
-    cx, cy = 580, 160  # Shifted right to fit the left telemetry HUD card
-    amp = 62.0
-    turns = 4.5
-    helix_len = 650
-    num_bp = 60
+    cx, cy = 590, 160  # Center position of helix shifted to the right to fit the HUD
+    amp = 56.0
+    turns = 4.2
+    helix_len = 640
+    num_bp = 64
     frame_radius = 16
     frames = []
 
@@ -123,7 +123,7 @@ def generate_dna_schematic():
 
     for frame_idx in range(num_frames):
         t = frame_idx / num_frames
-        phase = t * math.pi * 2.0
+        phase = t * math.pi * 2.0  # full rotation per loop
 
         # Transparent background for corner rounding
         img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
@@ -138,10 +138,11 @@ def generate_dna_schematic():
         draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46, 255))
         draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63, 255))
 
-        title_str = 'NULLA-LABS // HIGH-DENSITY B-DNA SCHEMATIC ENGINE'
+        title_str = 'NULLA-LABS // REAL B-DNA DOUBLE HELIX ENGINE'
         draw.text((81, 23), title_str, fill=(0, 240, 255, 255))
 
-        # Render B-DNA double helix structure
+        # Render B-DNA double helix structure (EXACT replica of v14 schematic math and style!)
+        # Draw base pair bridges and backbones
         for bp in range(num_bp):
             p = bp / num_bp
             x = (p - 0.5) * helix_len + cx
@@ -158,41 +159,68 @@ def generate_dna_schematic():
             base_col = BASE_COLORS.get(base_char, (255, 221, 0))
             comp_col = BASE_COLORS.get(comp_char, (0, 212, 255))
 
-            # Draw H-bond bridge lines with small spheres
+            # Base pair bridge spheres (6 per pair for density)
             for r in range(7):
                 rp = (r + 1) / 8
                 ry = y1 + (y2 - y1) * rp
                 rd = d1 + (d2 - d1) * rp
 
                 if rp < 0.5:
-                    col = tuple(max(0, min(255, int(base_col[j] * (0.6 + rd * 0.4)))) for j in range(3))
+                    col = tuple(max(0, min(255, int(base_col[j] * (0.5 + rd * 0.3)))) for j in range(3))
                 else:
-                    col = tuple(max(0, min(255, int(comp_col[j] * (0.6 + rd * 0.4)))) for j in range(3))
+                    col = tuple(max(0, min(255, int(comp_col[j] * (0.5 + rd * 0.3)))) for j in range(3))
 
-                dot_r = max(2, int(2.8 + rd * 1.8))
+                dot_r = max(1, int(2.8 + rd * 1.8))
                 if 14 < x < width-15 and 50 < ry < height-14:
                     draw.ellipse([x - dot_r, ry - dot_r, x + dot_r, ry + dot_r], fill=col + (255,))
 
-            # Draw main backbone spheres
+            # Backbone spheres (darker steel blue, larger)
             br1 = max(3, int(4.5 + d1 * 2.8))
             br2 = max(3, int(4.5 + d2 * 2.8))
 
-            # Backbone 1
-            bb1_bright = max(0, min(255, int(150 + d1 * 80)))
-            bb1_col = (bb1_bright, max(0, int(bb1_bright * 0.45)), 0)
+            # Backbone 1: steel blue with depth shading
+            bb1_bright = max(0, min(255, int(100 + d1 * 80)))
+            bb1_col = (max(0, int(30 + d1 * 20)), max(0, int(50 + d1 * 40)), bb1_bright)
 
-            # Backbone 2
-            bb2_bright = max(0, min(255, int(140 + d2 * 70)))
-            bb2_col = (max(0, int(bb2_bright * 0.3)), max(0, int(bb2_bright * 0.1)), bb2_bright)
+            # Backbone 2: darker steel
+            bb2_bright = max(0, min(255, int(90 + d2 * 70)))
+            bb2_col = (max(0, int(25 + d2 * 15)), max(0, int(45 + d2 * 35)), bb2_bright)
 
             if 14 < x < width-15:
                 if 50 < y1 < height-14:
-                    draw.ellipse([x - br1, y1 - br1, x + br1, y1 + br1], fill=bb1_col + (255,), outline=(255,255,255,255), width=1)
+                    draw.ellipse([x - br1, y1 - br1, x + br1, y1 + br1], fill=bb1_col + (255,))
                 if 50 < y2 < height-14:
-                    draw.ellipse([x - br2, y2 - br2, x + br2, y2 + br2], fill=bb2_col + (255,), outline=(255,255,255,255), width=1)
+                    draw.ellipse([x - br2, y2 - br2, x + br2, y2 + br2], fill=bb2_col + (255,))
 
-        # Draw target crosshair
-        tx, ty = 600, 130
+            # Extra phosphate group spheres between backbone positions
+            if bp < num_bp - 1:
+                nx = x + helix_len / num_bp * 0.5
+                na1 = (bp + 0.5) / num_bp * turns * math.pi * 2.0 + phase
+                na2 = na1 + math.pi + 0.38 * math.pi
+                ny1 = cy + math.sin(na1) * amp
+                ny2 = cy + math.sin(na2) * amp
+                nd1 = math.cos(na1)
+                nd2 = math.cos(na2)
+
+                pr1 = max(2, int(3 + nd1 * 1.5))
+                pr2 = max(2, int(3 + nd2 * 1.5))
+                pc1 = (max(0, int(60 + nd1 * 30)), max(0, int(40 + nd1 * 20)), max(0, int(80 + nd1 * 50)))
+                pc2 = (max(0, int(55 + nd2 * 25)), max(0, int(35 + nd2 * 18)), max(0, int(75 + nd2 * 45)))
+                
+                if 14 < nx < width-15:
+                    if 50 < ny1 < height-14:
+                        draw.ellipse([nx - pr1, ny1 - pr1, nx + pr1, ny1 + pr1], fill=pc1 + (255,))
+                    if 50 < ny2 < height-14:
+                        draw.ellipse([nx - pr2, ny2 - pr2, nx + pr2, ny2 + pr2], fill=pc2 + (255,))
+
+        # Draw target crosshair tracking a specific particle dynamically
+        # Let's track backbone 1 at progress = 0.55
+        progress_track = 0.55
+        x_track = (progress_track - 0.5) * helix_len + cx
+        angle_track = progress_track * turns * math.pi * 2.0 + phase
+        y_track = cy + math.sin(angle_track) * amp
+
+        tx, ty = int(x_track), int(y_track)
         draw.ellipse([tx-12, ty-12, tx+12, ty+12], outline=(255, 0, 85, 255), width=2)
         draw.line([(tx-18, ty), (tx+18, ty)], fill=(255, 0, 85, 255), width=2)
         draw.line([(tx, ty-18), (tx, ty+18)], fill=(255, 0, 85, 255), width=2)
