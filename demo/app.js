@@ -1,4 +1,4 @@
-// Ethernium Sovereign 3D Mask Morphing & Kinetic Explosion Particle Engine v8.0
+// Ethernium Sovereign Multidisciplinary Particle Engine v9.0 // DNA & 3D Mask
 (function() {
   'use strict';
 
@@ -23,69 +23,67 @@
 
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(PARTICLE_COUNT * 3);
-  const targetPositions = new Float32Array(PARTICLE_COUNT * 3); // 3D Mask Target Coordinates
+  const targetMask = new Float32Array(PARTICLE_COUNT * 3);
+  const targetDNA = new Float32Array(PARTICLE_COUNT * 3);
   const velocities = new Float32Array(PARTICLE_COUNT * 3);
   const colors = new Float32Array(PARTICLE_COUNT * 3);
   const scales = new Float32Array(PARTICLE_COUNT);
 
   const PHI = (1.0 + Math.sqrt(5.0)) / 2.0;
-  const GOLDEN_ANGLE = Math.PI * (3.0 - Math.sqrt(5.0));
 
-  // Nucleotide & Invictvs Gold/Cyan Palette
-  const colCyan = new THREE.Color(0x00F0FF);   // Invictvs Cyan
-  const colViolet = new THREE.Color(0x7000FF); // Deep Violet
-  const colEmerald = new THREE.Color(0x00FF9D); // Emerald
-  const colGold = new THREE.Color(0xFFD700);   // Invictvs Gold
+  // Nucleotide Spectral Palette
+  const colAdenine = new THREE.Color(0x00F0FF);  // Cyan
+  const colThymine = new THREE.Color(0x7000FF);  // Violet
+  const colCytosine = new THREE.Color(0x00FF9D); // Emerald
+  const colGuanine = new THREE.Color(0xFFD700);  // Gold
   const colWhite = new THREE.Color(0xFFFFFF);
 
-  // Generate Invictvs Cybernetic 3D Mask Target Geometry
+  // Initialize Both 3D Mask Target and Horizontal Human DNA Double Helix Target
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
 
-    // 3D Mask Surface Coordinates
-    const u = (i / PARTICLE_COUNT) * Math.PI * 2.0 * 25.0; // Multi-wrap surface
+    // 1. 3D Mask Target Coordinates
+    const u = (i / PARTICLE_COUNT) * Math.PI * 2.0 * 25.0;
     const v = ((i % 300) / 300.0) * Math.PI - Math.PI / 2.0;
 
     let y = Math.sin(v) * 22.0;
     let rad = (Math.cos(v) * 0.7 + 0.3) * 14.0;
-
-    if (y < -4.0) {
-      rad *= (1.0 + (y + 4.0) * 0.035); // Jawline taper
-    }
+    if (y < -4.0) rad *= (1.0 + (y + 4.0) * 0.035);
 
     let x = Math.cos(u) * rad;
     let z = Math.sin(u) * rad * 0.65;
+    if (y > 1.5 && y < 7.5 && Math.abs(x) > 2.5 && Math.abs(x) < 9.5) z -= 3.5;
 
-    // Eye Socket Cavity Indentation
-    if (y > 1.5 && y < 7.5 && Math.abs(x) > 2.5 && Math.abs(x) < 9.5) {
-      z -= 3.5;
-    }
+    targetMask[i3] = x;
+    targetMask[i3 + 1] = y;
+    targetMask[i3 + 2] = z;
 
-    targetPositions[i3] = x;
-    targetPositions[i3 + 1] = y;
-    targetPositions[i3 + 2] = z;
+    // 2. Horizontal Human DNA Double Helix Coordinates
+    const dnaProgress = (i / PARTICLE_COUNT);
+    const dnaX = (dnaProgress - 0.5) * 85.0; // Horizontal span X: -42.5 to +42.5
+    const dnaAngle = dnaProgress * Math.PI * 18.0;
 
-    // Initial Random Position Cloud
-    const r = Math.sqrt(i / PARTICLE_COUNT) * 45.0 + 5.0;
-    const theta = i * GOLDEN_ANGLE;
-    positions[i3] = r * Math.cos(theta);
-    positions[i3 + 1] = r * Math.sin(theta);
-    positions[i3 + 2] = (Math.random() - 0.5) * 30.0;
+    const strandSign = (i % 2 === 0) ? 1.0 : -1.0;
+    const dnaY = Math.sin(dnaAngle) * 12.0 * strandSign + (Math.random() - 0.5) * 2.0;
+    const dnaZ = Math.cos(dnaAngle) * 12.0 * strandSign + (Math.random() - 0.5) * 2.0;
+
+    targetDNA[i3] = dnaX;
+    targetDNA[i3 + 1] = dnaY;
+    targetDNA[i3 + 2] = dnaZ;
+
+    // Initial Positions set to DNA Strand
+    positions[i3] = dnaX;
+    positions[i3 + 1] = dnaY;
+    positions[i3 + 2] = dnaZ;
 
     // Color Palette
     const pColor = new THREE.Color();
     const rCol = Math.random();
-    if (rCol < 0.40) {
-      pColor.copy(colCyan);
-    } else if (rCol < 0.70) {
-      pColor.copy(colViolet);
-    } else if (rCol < 0.88) {
-      pColor.copy(colEmerald);
-    } else if (rCol < 0.96) {
-      pColor.copy(colGold);
-    } else {
-      pColor.copy(colWhite);
-    }
+    if (rCol < 0.35) pColor.copy(colAdenine);
+    else if (rCol < 0.65) pColor.copy(colThymine);
+    else if (rCol < 0.85) pColor.copy(colCytosine);
+    else if (rCol < 0.95) pColor.copy(colGuanine);
+    else pColor.copy(colWhite);
 
     colors[i3] = pColor.r;
     colors[i3 + 1] = pColor.g;
@@ -98,17 +96,15 @@
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
 
-  // Custom GPU Shader
+  // Custom Shader
   const uniforms = {
     uTime: { value: 0 },
-    uMouse: { value: new THREE.Vector3(0, 0, 0) },
-    uExplode: { value: 0.0 }
+    uMouse: { value: new THREE.Vector3(0, 0, 0) }
   };
 
   const vertexShader = `
     uniform float uTime;
     uniform vec3 uMouse;
-    uniform float uExplode;
     attribute vec3 aColor;
     attribute float aScale;
 
@@ -186,30 +182,36 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // State Machine Loop: 12 Second Cycle (Form -> Hold -> Explode -> Reform)
+  // Cycle Physics: 14s Cycle (Horizontal Human DNA Double Helix -> Morph to 3D Mask -> Explode -> Reform)
   const posAttr = geometry.attributes.position;
   const posArray = posAttr.array;
 
   let cycleTime = 0;
-  const CYCLE_DURATION = 10.0; // 10s total loop
+  const CYCLE_DURATION = 14.0;
 
-  function updateMaskPhysics(dt) {
+  function updatePhysicsCycle(dt) {
     cycleTime = (cycleTime + dt) % CYCLE_DURATION;
 
-    // Phase 0 to 4s: Form Mask
-    // Phase 4 to 6.5s: Hold & Rotate Mask
-    // Phase 6.5 to 7.5s: Kinetic Shockwave Explosion
-    // Phase 7.5 to 10s: Gravitational Reform
+    // 0s to 5s: Horizontal Human DNA Double Helix
+    // 5s to 9s: Morph to Invictvs 3D Mask
+    // 9s to 10.5s: Kinetic Explosion
+    // 10.5s to 14s: Reform to Human DNA
 
+    let targetActive = targetDNA;
     let isExploding = false;
 
-    if (cycleTime >= 6.5 && cycleTime < 7.5) {
+    if (cycleTime < 5.0) {
+      targetActive = targetDNA;
+      if (cycleVal) cycleVal.textContent = 'HUMAN_DNA_DOUBLE_HELIX';
+    } else if (cycleTime >= 5.0 && cycleTime < 9.0) {
+      targetActive = targetMask;
+      if (cycleVal) cycleVal.textContent = 'MORPHING_3D_MASK';
+    } else if (cycleTime >= 9.0 && cycleTime < 10.5) {
       isExploding = true;
-      if (cycleVal) cycleVal.textContent = 'EXPLOSION_KINETIC';
-    } else if (cycleTime >= 4.0 && cycleTime < 6.5) {
-      if (cycleVal) cycleVal.textContent = 'MASK_HOLD_PULSE';
+      if (cycleVal) cycleVal.textContent = 'KINETIC_SHOCKWAVE';
     } else {
-      if (cycleVal) cycleVal.textContent = 'FORMING_3D_MASK';
+      targetActive = targetDNA;
+      if (cycleVal) cycleVal.textContent = 'RE-ASSEMBLING_DNA';
     }
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -219,22 +221,20 @@
       let py = posArray[i3 + 1];
       let pz = posArray[i3 + 2];
 
-      let tx = targetPositions[i3];
-      let ty = targetPositions[i3 + 1];
-      let tz = targetPositions[i3 + 2];
+      let tx = targetActive[i3];
+      let ty = targetActive[i3 + 1];
+      let tz = targetActive[i3 + 2];
 
       let vx = velocities[i3];
       let vy = velocities[i3 + 1];
       let vz = velocities[i3 + 2];
 
       if (isExploding) {
-        // Explode outward radially
         const len = Math.sqrt(px * px + py * py + pz * pz) + 0.1;
         vx += (px / len) * 45.0 * dt;
         vy += (py / len) * 45.0 * dt;
         vz += (pz / len) * 45.0 * dt;
       } else {
-        // Morph interpolation toward 3D Mask Target
         const dx = tx - px;
         const dy = ty - py;
         const dz = tz - pz;
@@ -279,10 +279,9 @@
     const t = now * 0.001;
     uniforms.uTime.value = t;
 
-    updateMaskPhysics(dt);
+    updatePhysicsCycle(dt);
 
-    // Rotate 3D Mask System
-    particleSystem.rotation.y = t * 0.35;
+    particleSystem.rotation.x = Math.sin(t * 0.2) * 0.1;
 
     renderer.render(scene, camera);
   }
