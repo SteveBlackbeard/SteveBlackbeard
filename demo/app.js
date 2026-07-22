@@ -132,6 +132,16 @@
   // Active Atom Objects
   let activeAtoms = [];    // { mesh, targetPos, targetScale, currentScale, elData }
   let activeBonds = [];    // { mesh, startAtom, endAtom }
+  let isDnaMode = false;
+  let fusionState = 'idle';
+  let fusionTimer = 0;
+  let camShakeTimer = 0;
+  let fusionReactantA = 0;
+  let fusionReactantB = 0;
+  let fusionTargetReaction = null;
+  let explosionParticles = null;
+  let explosionVelocities = [];
+  let explosionTimer = 0;
 
   // Selection Ring
   const selectRingGeo = new THREE.TorusGeometry(2.8, 0.3, 16, 32);
@@ -191,6 +201,24 @@
         });
       });
 
+      if (!isDnaMode) {
+        const newBonds = [];
+        for (let i = 0; i < activeAtoms.length; i++) {
+          for (let j = i + 1; j < activeAtoms.length; j++) {
+            const start = activeAtoms[i].targetPos;
+            const end = activeAtoms[j].targetPos;
+            const dist = start.distanceTo(end);
+            const r1 = activeAtoms[i].elData.r || 1.0;
+            const r2 = activeAtoms[j].elData.r || 1.0;
+            const maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
+            if (dist > 0.1 && dist < maxBondDist) {
+              newBonds.push({ a: i, b: j });
+            }
+          }
+        }
+        spawnBonds(newBonds);
+      }
+
       if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
     }, 300);
   }
@@ -210,6 +238,7 @@
   // BUILD DEFAULT B-DNA EXAMPLE (Matches high-fidelity glossy reference image)
   // ═══════════════════════════════════════════════════════════════
   function buildDNA() {
+    isDnaMode = true;
     const atoms = [];
     const BP = 130; // High density
     const HR = 15.0; // Helix Radius
@@ -272,35 +301,127 @@
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // FORM SINGLE ELEMENT (Electron Shell Orbitals)
+  // FORM SINGLE ELEMENT (Real Crystal Lattices & Molecular States)
   // ═══════════════════════════════════════════════════════════════
   function formElement(z) {
+    isDnaMode = false;
     const el = EL[z];
     const atoms = [];
+    const symbol = el.s;
 
-    // Central nucleus
-    atoms.push({ z, pos: new THREE.Vector3(0, 0, 0) });
-
-    // Electron shell cloud (Z electrons orbiting)
-    const electrons = Math.min(z, 80);
-    for (let e = 0; e < electrons; e++) {
-      const shell = Math.floor(e / 8);
-      const shellR = 5.0 + shell * 4.5;
-      const angle = (e / Math.max(1, Math.min(8, electrons - shell*8))) * Math.PI * 2 + shell * 0.5;
-      atoms.push({ z:1, pos: new THREE.Vector3(
-        Math.cos(angle) * shellR,
-        Math.sin(angle) * shellR,
-        (e % 2 === 0 ? 1 : -1) * (shell + 1) * 1.5
-      )});
+    if (symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn') {
+      // 1. MONATOMIC NOBLE GAS
+      atoms.push({ z, pos: new THREE.Vector3(0, 0, 0), scale: 2.2 });
+      
+      // Add orbiting electron shell cloud rings
+      const electrons = Math.min(z, 20);
+      for (let e = 0; e < electrons; e++) {
+        const shell = Math.floor(e / 8);
+        const shellR = 6.0 + shell * 5.0;
+        const angle = (e / Math.max(1, Math.min(8, electrons - shell*8))) * Math.PI * 2;
+        atoms.push({ z: 1, pos: new THREE.Vector3(
+          Math.cos(angle) * shellR,
+          Math.sin(angle) * shellR,
+          (e % 2 === 0 ? 1 : -1) * (shell + 1) * 2.0
+        ), scale: 0.6 });
+      }
     }
-
+    else if (symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl' || symbol === 'Br' || symbol === 'I') {
+      // 2. DIATOMIC GAS/LIQUID MOLECULES
+      const offsets = [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(-14, 10, -10),
+        new THREE.Vector3(14, -10, 10)
+      ];
+      offsets.forEach((offset, idx) => {
+        const theta = idx * 1.5;
+        const dir = new THREE.Vector3(Math.cos(theta), Math.sin(theta), Math.cos(theta*2)).normalize().multiplyScalar(3.2);
+        atoms.push({ z, pos: offset.clone().sub(dir), scale: 1.6 });
+        atoms.push({ z, pos: offset.clone().add(dir), scale: 1.6 });
+      });
+    }
+    else if (symbol === 'P') {
+      // 3. WHITE PHOSPHORUS (P4 Tetrahedron)
+      const d = 4.5;
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => atoms.push({ z, pos: v, scale: 1.7 }));
+    }
+    else if (symbol === 'S') {
+      // 4. OCTASULFUR (S8 Crown Ring)
+      const r = 7.0;
+      const h = 2.0;
+      for (let i = 0; i < 8; i++) {
+        const theta = (i / 8) * Math.PI * 2;
+        const z_coord = (i % 2 === 0) ? h : -h;
+        atoms.push({
+          z,
+          pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), z_coord),
+          scale: 1.6
+        });
+      }
+    }
+    else if (symbol === 'C' || symbol === 'Si' || symbol === 'Ge' || symbol === 'Sn') {
+      // 5. COVALENT DIAMOND LATTICE (5 atoms, tetrahedral coordination)
+      const d = 6.0;
+      atoms.push({ z, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => atoms.push({ z, pos: v, scale: 1.7 }));
+    }
+    else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(symbol)) {
+      // 6. BODY-CENTERED CUBIC LATTICE (BCC)
+      const d = 7.0;
+      atoms.push({ z, pos: new THREE.Vector3(0, 0, 0), scale: 1.9 });
+      for (let dx of [-d, d]) {
+        for (let dy of [-d, d]) {
+          for (let dz of [-d, d]) {
+            atoms.push({ z, pos: new THREE.Vector3(dx, dy, dz), scale: 1.5 });
+          }
+        }
+      }
+    }
+    else {
+      // 7. FACE-CENTERED CUBIC LATTICE (FCC) - Default for metals
+      const d = 7.5;
+      for (let dx of [-d, d]) {
+        for (let dy of [-d, d]) {
+          for (let dz of [-d, d]) {
+            atoms.push({ z, pos: new THREE.Vector3(dx, dy, dz), scale: 1.5 });
+          }
+        }
+      }
+      atoms.push({ z, pos: new THREE.Vector3(d, 0, 0), scale: 1.6 });
+      atoms.push({ z, pos: new THREE.Vector3(-d, 0, 0), scale: 1.6 });
+      atoms.push({ z, pos: new THREE.Vector3(0, d, 0), scale: 1.6 });
+      atoms.push({ z, pos: new THREE.Vector3(0, -d, 0), scale: 1.6 });
+      atoms.push({ z, pos: new THREE.Vector3(0, 0, d), scale: 1.6 });
+      atoms.push({ z, pos: new THREE.Vector3(0, 0, -d), scale: 1.6 });
+    }
+    
     spawnAtoms(atoms);
     updateTelemetry(
       `${el.n} (${el.s}) — Z = ${z}`,
       `Atomic Mass: ${el.m} u`,
       `Category: ${el.cat}`,
       `Electron Config: ${el.sh}`,
-      `Isolated Atom (Electron Shell View)`
+      `Real Structure: ` + (
+        symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' ? 'Monatomic Gas (Orbital Cloud)' :
+        symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl' ? 'Diatomic Gas Clusters' :
+        symbol === 'P' ? 'P₄ Molecular Tetrahedron' :
+        symbol === 'S' ? 'S₈ Crown Ring' :
+        symbol === 'C' || symbol === 'Si' || symbol === 'Ge' ? 'Covalent Diamond Lattice Unit Cell' :
+        ['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(symbol) ? 'Body-Centered Cubic Lattice (BCC)' :
+        'Face-Centered Cubic Lattice (FCC)'
+      )
     );
 
     if (ptModal) ptModal.style.display = 'none';
@@ -310,43 +431,82 @@
   // FORM COMPOUND FROM REACTION
   // ═══════════════════════════════════════════════════════════════
   function formCompound(reaction) {
+    isDnaMode = false;
     const atoms = [];
-    let totalAtoms = 0;
+    const name = reaction.name;
 
-    reaction.atoms.forEach(group => { totalAtoms += group.c; });
-
-    let idx = 0;
-    reaction.atoms.forEach(group => {
-      const el = EL[group.z];
-      for (let a = 0; a < group.c; a++) {
-        // Arrange in molecular geometry
-        let pos;
-        if (totalAtoms <= 2) {
-          pos = new THREE.Vector3((a === 0 ? -4 : 4), 0, 0);
-        } else if (totalAtoms === 3) {
-          // Bent or linear
-          const angle = (idx / totalAtoms) * Math.PI * 1.5 - Math.PI * 0.3;
-          pos = new THREE.Vector3(Math.cos(angle) * 6, Math.sin(angle) * 6, 0);
-        } else if (totalAtoms <= 5) {
-          // Tetrahedral-ish
-          const phi = Math.acos(-1 + (2 * idx) / totalAtoms);
-          const theta = Math.sqrt(totalAtoms * Math.PI) * phi;
-          pos = new THREE.Vector3(
-            Math.sin(phi) * Math.cos(theta) * 8,
-            Math.sin(phi) * Math.sin(theta) * 8,
-            Math.cos(phi) * 8
-          );
-        } else {
-          // Larger structures: crystal lattice
-          const gridSize = Math.ceil(Math.cbrt(totalAtoms));
-          const ix = idx % gridSize, iy = Math.floor(idx / gridSize) % gridSize, iz = Math.floor(idx / (gridSize*gridSize));
-          pos = new THREE.Vector3((ix - gridSize/2) * 5, (iy - gridSize/2) * 5, (iz - gridSize/2) * 5);
-        }
-
-        atoms.push({ z: group.z, pos });
-        idx++;
+    if (name === 'Water' || name === 'Hydrogen Sulfide' || name === 'Sulfur Dioxide') {
+      const centralZ = reaction.atoms[0].z; 
+      const outerZ = reaction.atoms[1].z;   
+      atoms.push({ z: centralZ, pos: new THREE.Vector3(0, 2.0, 0), scale: 1.8 });
+      atoms.push({ z: outerZ, pos: new THREE.Vector3(-4.8, -1.8, 0), scale: 1.4 });
+      atoms.push({ z: outerZ, pos: new THREE.Vector3(4.8, -1.8, 0), scale: 1.4 });
+    }
+    else if (name === 'Carbon Dioxide' || name === 'Nitric Oxide' || name === 'Hydrochloric Acid' || name === 'Hydrogen Fluoride' || name === 'Hydrogen Bromide') {
+      if (reaction.atoms.length === 2 && reaction.atoms[0].c === 1 && reaction.atoms[1].c === 1) {
+        atoms.push({ z: reaction.atoms[0].z, pos: new THREE.Vector3(-3.5, 0, 0), scale: 1.7 });
+        atoms.push({ z: reaction.atoms[1].z, pos: new THREE.Vector3(3.5, 0, 0), scale: 1.7 });
+      } else {
+        const centralZ = reaction.atoms[0].z; 
+        const outerZ = reaction.atoms[1].z;   
+        atoms.push({ z: centralZ, pos: new THREE.Vector3(0, 0, 0), scale: 1.7 });
+        atoms.push({ z: outerZ, pos: new THREE.Vector3(-6.0, 0, 0), scale: 1.6 });
+        atoms.push({ z: outerZ, pos: new THREE.Vector3(6.0, 0, 0), scale: 1.6 });
       }
-    });
+    }
+    else if (name === 'Ammonia') {
+      const centralZ = reaction.atoms[0].z; 
+      const outerZ = reaction.atoms[1].z;   
+      atoms.push({ z: centralZ, pos: new THREE.Vector3(0, 1.5, 0), scale: 1.7 });
+      atoms.push({ z: outerZ, pos: new THREE.Vector3(0, -1.5, 5.0), scale: 1.3 });
+      atoms.push({ z: outerZ, pos: new THREE.Vector3(-4.3, -1.5, -2.5), scale: 1.3 });
+      atoms.push({ z: outerZ, pos: new THREE.Vector3(4.3, -1.5, -2.5), scale: 1.3 });
+    }
+    else if (name === 'Methane' || name === 'Carbon Tetrachloride') {
+      const centralZ = reaction.atoms[0].z; 
+      const outerZ = reaction.atoms[1].z;   
+      atoms.push({ z: centralZ, pos: new THREE.Vector3(0, 0, 0), scale: 1.7 });
+      const d = 4.8;
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => atoms.push({ z: outerZ, pos: v, scale: 1.3 }));
+    }
+    else if (name === 'Sodium Chloride' || name === 'Potassium Chloride' || name === 'Sodium Fluoride') {
+      const zA = reaction.atoms[0].z;
+      const zB = reaction.atoms[1].z;
+      const d = 6.0;
+      for (let ix = -1; ix <= 1; ix++) {
+        for (let iy = -1; iy <= 1; iy++) {
+          for (let iz = -1; iz <= 1; iz++) {
+            const isA = (ix + iy + iz) % 2 === 0;
+            atoms.push({
+              z: isA ? zA : zB,
+              pos: new THREE.Vector3(ix * d, iy * d, iz * d),
+              scale: isA ? 1.8 : 1.5
+            });
+          }
+        }
+      }
+    }
+    else {
+      let totalAtoms = 0;
+      reaction.atoms.forEach(group => { totalAtoms += group.c; });
+      let idx = 0;
+      reaction.atoms.forEach(group => {
+        for (let a = 0; a < group.c; a++) {
+          const gridSize = Math.ceil(Math.cbrt(totalAtoms * 3));
+          const ix = idx % gridSize, iy = Math.floor(idx / gridSize) % gridSize, iz = Math.floor(idx / (gridSize*gridSize));
+          const d = 5.0;
+          const pos = new THREE.Vector3((ix - gridSize/2) * d, (iy - gridSize/2) * d, (iz - gridSize/2) * d);
+          atoms.push({ z: group.z, pos, scale: 1.6 });
+          idx++;
+        }
+      });
+    }
 
     spawnAtoms(atoms);
     updateTelemetry(
@@ -358,6 +518,209 @@
     );
 
     if (ptModal) ptModal.style.display = 'none';
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // COLLISION FUSION ENGINE & EXPLOSION SHADERS
+  // ═══════════════════════════════════════════════════════════════
+  function getElementAtoms(z, offset) {
+    const el = EL[z];
+    const atoms = [];
+    const symbol = el.s;
+
+    if (symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn') {
+      atoms.push({ z, pos: offset.clone(), scale: 2.2 });
+    }
+    else if (symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl' || symbol === 'Br' || symbol === 'I') {
+      const theta = Math.random() * Math.PI;
+      const dir = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0.5).normalize().multiplyScalar(3.2);
+      atoms.push({ z, pos: offset.clone().sub(dir), scale: 1.6 });
+      atoms.push({ z, pos: offset.clone().add(dir), scale: 1.6 });
+    }
+    else if (symbol === 'P') {
+      const d = 4.0;
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => atoms.push({ z, pos: offset.clone().add(v), scale: 1.7 }));
+    }
+    else if (symbol === 'S') {
+      const r = 6.0;
+      const h = 1.8;
+      for (let i = 0; i < 8; i++) {
+        const theta = (i / 8) * Math.PI * 2;
+        const z_coord = (i % 2 === 0) ? h : -h;
+        atoms.push({
+          z,
+          pos: offset.clone().add(new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), z_coord)),
+          scale: 1.6
+        });
+      }
+    }
+    else if (symbol === 'C' || symbol === 'Si' || symbol === 'Ge' || symbol === 'Sn') {
+      const d = 5.0;
+      atoms.push({ z, pos: offset.clone(), scale: 1.8 });
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => atoms.push({ z, pos: offset.clone().add(v), scale: 1.7 }));
+    }
+    else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(symbol)) {
+      const d = 6.0;
+      atoms.push({ z, pos: offset.clone(), scale: 1.9 });
+      for (let dx of [-d, d]) {
+        for (let dy of [-d, d]) {
+          for (let dz of [-d, d]) {
+            atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(dx, dy, dz)), scale: 1.5 });
+          }
+        }
+      }
+    }
+    else {
+      const d = 6.5;
+      for (let dx of [-d, d]) {
+        for (let dy of [-d, d]) {
+          for (let dz of [-d, d]) {
+            atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(dx, dy, dz)), scale: 1.5 });
+          }
+        }
+      }
+      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(d, 0, 0)), scale: 1.6 });
+      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(-d, 0, 0)), scale: 1.6 });
+      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, d, 0)), scale: 1.6 });
+      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, -d, 0)), scale: 1.6 });
+      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, d)), scale: 1.6 });
+      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, -d)), scale: 1.6 });
+    }
+    return atoms;
+  }
+
+  function createExplosion(pos, color1, color2) {
+    const particleCount = 200;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    explosionVelocities = [];
+
+    const c1 = new THREE.Color(color1);
+    const c2 = new THREE.Color(color2);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = pos.x;
+      positions[i * 3 + 1] = pos.y;
+      positions[i * 3 + 2] = pos.z;
+
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const speed = 0.5 + Math.random() * 1.5;
+      
+      explosionVelocities.push(new THREE.Vector3(
+        Math.sin(phi) * Math.cos(theta) * speed,
+        Math.sin(phi) * Math.sin(theta) * speed,
+        Math.cos(phi) * speed
+      ));
+
+      const mixedColor = c1.clone().lerp(c2, Math.random());
+      colors[i * 3] = mixedColor.r;
+      colors[i * 3 + 1] = mixedColor.g;
+      colors[i * 3 + 2] = mixedColor.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 1.2,
+      vertexColors: true,
+      transparent: true,
+      opacity: 1.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    explosionParticles = new THREE.Points(geometry, material);
+    scene.add(explosionParticles);
+    explosionTimer = 35;
+  }
+
+  function triggerFusionCollision(zA, zB, reaction) {
+    isDnaMode = false;
+    
+    activeAtoms.forEach(a => moleculeGroup.remove(a.mesh));
+    activeAtoms = [];
+    activeBonds.forEach(b => moleculeGroup.remove(b.mesh));
+    activeBonds = [];
+
+    const posA = new THREE.Vector3(-25, 0, 0);
+    const posB = new THREE.Vector3(25, 0, 0);
+    const atomsA = getElementAtoms(zA, posA);
+    const atomsB = getElementAtoms(zB, posB);
+
+    const combinedList = [...atomsA, ...atomsB];
+    
+    combinedList.forEach((item, idx) => {
+      const elData = EL[item.z] || EL[1];
+      const mat = getMaterial(elData.col);
+      const mesh = new THREE.Mesh(sphereGeo, mat);
+      mesh.position.copy(item.pos).add(new THREE.Vector3(
+        (Math.random()-0.5)*4,
+        (Math.random()-0.5)*4,
+        (Math.random()-0.5)*4
+      ));
+      mesh.scale.setScalar(0.01);
+      moleculeGroup.add(mesh);
+
+      const scale = 1.2 + (elData.r || 1.0) * 0.4;
+      activeAtoms.push({
+        mesh,
+        targetPos: item.pos.clone(),
+        targetScale: scale,
+        currentScale: 0.01,
+        elData,
+        z: item.z,
+        removing: false
+      });
+    });
+
+    const newBonds = [];
+    for (let i = 0; i < activeAtoms.length; i++) {
+      for (let j = i + 1; j < activeAtoms.length; j++) {
+        const start = activeAtoms[i].targetPos;
+        const end = activeAtoms[j].targetPos;
+        const dist = start.distanceTo(end);
+        
+        const r1 = activeAtoms[i].elData.r || 1.0;
+        const r2 = activeAtoms[j].elData.r || 1.0;
+        const maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
+        
+        if (dist > 0.1 && dist < maxBondDist) {
+          newBonds.push({ a: i, b: j });
+        }
+      }
+    }
+    spawnBonds(newBonds);
+
+    if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
+
+    fusionState = 'charging';
+    fusionTimer = 55;
+    fusionReactantA = zA;
+    fusionReactantB = zB;
+    fusionTargetReaction = reaction;
+
+    updateTelemetry(
+      `Fusing: ${EL[zA].s} + ${EL[zB].s}`,
+      `Accelerating lattices for collision...`,
+      'Reaction State: ACTIVE INJECTION',
+      'Bonding: Preparing atomic collision',
+      'Engaging GPU Particle Fusion Shockwave'
+    );
   }
 
   function updateTelemetry(name, formula, cls, bonds, epi) {
@@ -404,26 +767,12 @@
   if (btnFuse) {
     btnFuse.addEventListener('click', () => {
       if (!selectedSlotA || !selectedSlotB) return;
-
       const symA = EL[selectedSlotA.z].s;
       const symB = EL[selectedSlotB.z].s;
-
-      // Look up reaction in both orders
       const key1 = symA + '+' + symB;
       const key2 = symB + '+' + symA;
       const reaction = REACTIONS[key1] || REACTIONS[key2];
-
-      if (reaction) {
-        formCompound(reaction);
-      } else {
-        updateTelemetry(
-          `No Known Reaction: ${symA} + ${symB}`,
-          `${symA} (Z=${selectedSlotA.z}) + ${symB} (Z=${selectedSlotB.z})`,
-          'No standard chemical compound in database',
-          'No known stable bonding arrangement',
-          'Try different element combinations!'
-        );
-      }
+      triggerFusionCollision(selectedSlotA.z, selectedSlotB.z, reaction);
     });
   }
 
@@ -583,6 +932,71 @@
         b.mesh.position.copy(start.clone().add(end).multiplyScalar(0.5));
         b.mesh.scale.set(0.3, dist, 0.3);
         b.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), end.clone().sub(start).normalize());
+      }
+    }
+
+    // Camera shake effect
+    if (camShakeTimer > 0) {
+      camera.position.x = (Math.random() - 0.5) * (camShakeTimer * 0.15);
+      camera.position.y = (Math.random() - 0.5) * (camShakeTimer * 0.15);
+      camShakeTimer--;
+      if (camShakeTimer === 0) {
+        camera.position.set(0, 0, 75);
+      }
+    }
+
+    // Fusion state machine
+    if (fusionState === 'charging') {
+      fusionTimer--;
+      if (fusionTimer === 0) {
+        fusionState = 'colliding';
+        fusionTimer = 22;
+        activeAtoms.forEach(a => {
+          a.targetPos.set(0, 0, 0);
+        });
+      }
+    } else if (fusionState === 'colliding') {
+      fusionTimer--;
+      if (fusionTimer === 0) {
+        fusionState = 'idle';
+        createExplosion(new THREE.Vector3(0,0,0), EL[fusionReactantA].col, EL[fusionReactantB].col);
+        camShakeTimer = 22;
+        
+        if (fusionTargetReaction) {
+          formCompound(fusionTargetReaction);
+        } else {
+          activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
+          activeBonds.forEach(b => { b.mesh.scale.set(0.01,0.01,0.01); b.removing = true; });
+          updateTelemetry(
+            `No Stable Reaction: ${EL[fusionReactantA].s} + ${EL[fusionReactantB].s}`,
+            `${EL[fusionReactantA].s} + ${EL[fusionReactantB].s} collided at high kinetic energy`,
+            'Fusion State: DECAY / DISSOCIATED',
+            'No standard stable bond arrangement formed',
+            'Try elements with stable reaction paths in the periodic table!'
+          );
+        }
+      }
+    }
+
+    // Animate explosion particles
+    if (explosionParticles && explosionTimer > 0) {
+      const positions = explosionParticles.geometry.attributes.position.array;
+      for (let i = 0; i < explosionVelocities.length; i++) {
+        const vel = explosionVelocities[i];
+        positions[i * 3] += vel.x;
+        positions[i * 3 + 1] += vel.y;
+        positions[i * 3 + 2] += vel.z;
+        vel.multiplyScalar(0.95);
+      }
+      explosionParticles.geometry.attributes.position.needsUpdate = true;
+      explosionParticles.material.opacity = explosionTimer / 35;
+      explosionTimer--;
+      
+      if (explosionTimer === 0) {
+        scene.remove(explosionParticles);
+        explosionParticles.geometry.dispose();
+        explosionParticles.material.dispose();
+        explosionParticles = null;
       }
     }
 
