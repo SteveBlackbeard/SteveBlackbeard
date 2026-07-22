@@ -1,4 +1,5 @@
-// ETHERNIUM / NULLA-LABS PERFECT INTACT B-DNA ENGINE v28.0
+// NULLA-LABS HIGH-DENSITY MICRO-PARTICLE POINT CLOUD B-DNA ENGINE v30.0
+// 150,000 Micro-Particles Sub-Pixel Volumetric Rendering
 (function() {
   'use strict';
 
@@ -6,7 +7,6 @@
   const fpsVal = document.getElementById('fps-val');
   const particleVal = document.getElementById('particle-val');
 
-  // HUD Elements
   const hudPanel = document.getElementById('molecular-hud');
   const hudName = document.getElementById('hud-name');
   const hudFormula = document.getElementById('hud-formula');
@@ -30,7 +30,7 @@
   const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 65);
 
-  const PARTICLE_COUNT = 120000;
+  const PARTICLE_COUNT = 150000;
   if (particleVal) particleVal.textContent = PARTICLE_COUNT.toLocaleString();
 
   const geometry = new THREE.BufferGeometry();
@@ -41,8 +41,8 @@
   const scales = new Float32Array(PARTICLE_COUNT);
 
   const MAJOR_GROOVE_OFFSET = 0.38 * Math.PI;
-  const HELIX_RADIUS = 18.0;
-  const TURNS = 6.0;
+  const HELIX_RADIUS = 16.5;
+  const TURNS = 6.5;
 
   const colAdenine = new THREE.Color(0x00F0FF);   // Cyan (A)
   const colThymine = new THREE.Color(0x8A2BE2);   // Electric Violet (T)
@@ -62,15 +62,33 @@
     const angle1 = progress * TURNS * Math.PI * 2.0;
     const angle2 = angle1 + Math.PI + MAJOR_GROOVE_OFFSET;
 
-    const isBackbone = (i % 5 < 3);
+    const isBackbone = (i % 10 < 7);
     const isStrand1 = (i % 2 === 0);
 
-    // Intact Perfect B-DNA Position
     let targetX = x;
-    let targetY = Math.sin(isStrand1 ? angle1 : angle2) * HELIX_RADIUS;
-    let targetZ = Math.cos(isStrand1 ? angle1 : angle2) * HELIX_RADIUS;
+    let targetY, targetZ;
 
-    // Unzipped Position (Only triggered on click selection)
+    if (isBackbone) {
+      const angle = isStrand1 ? angle1 : angle2;
+      const radNoise = (Math.random() - 0.5) * 0.9;
+      const angNoise = (Math.random() - 0.5) * 0.05;
+
+      targetX = x + (Math.random() - 0.5) * 0.4;
+      targetY = Math.sin(angle + angNoise) * (HELIX_RADIUS + radNoise);
+      targetZ = Math.cos(angle + angNoise) * (HELIX_RADIUS + radNoise);
+    } else {
+      const rungProgress = Math.random();
+      const y1 = Math.sin(angle1) * HELIX_RADIUS;
+      const z1 = Math.cos(angle1) * HELIX_RADIUS;
+
+      const y2 = Math.sin(angle2) * HELIX_RADIUS;
+      const z2 = Math.cos(angle2) * HELIX_RADIUS;
+
+      targetX = x + (Math.random() - 0.5) * 0.5;
+      targetY = THREE.MathUtils.lerp(y1, y2, rungProgress) + (Math.random() - 0.5) * 0.6;
+      targetZ = THREE.MathUtils.lerp(z1, z2, rungProgress) + (Math.random() - 0.5) * 0.6;
+    }
+
     const sep = isStrand1 ? 26.0 : -26.0;
     let unzippedX = targetX;
     let unzippedY = targetY + sep;
@@ -81,17 +99,6 @@
     if (isBackbone) {
       particleColor.copy(isStrand1 ? colBackbone1 : colBackbone2);
     } else {
-      const rungProgress = Math.random();
-      const y1 = Math.sin(angle1) * HELIX_RADIUS;
-      const z1 = Math.cos(angle1) * HELIX_RADIUS;
-
-      const y2 = Math.sin(angle2) * HELIX_RADIUS;
-      const z2 = Math.cos(angle2) * HELIX_RADIUS;
-
-      targetX = x + (Math.random() - 0.5) * 0.3;
-      targetY = THREE.MathUtils.lerp(y1, y2, rungProgress) + (Math.random() - 0.5) * 0.3;
-      targetZ = THREE.MathUtils.lerp(z1, z2, rungProgress) + (Math.random() - 0.5) * 0.3;
-
       const basePairType = Math.floor(progress * 150) % 4;
       if (basePairType === 0) {
         particleColor.copy(colAdenine);
@@ -124,14 +131,15 @@
     colors[i3 + 1] = particleColor.g;
     colors[i3 + 2] = particleColor.b;
 
-    scales[i] = 1.3 + Math.random() * 2.2;
+    // Sub-pixel Micro-particle scales
+    scales[i] = 0.6 + Math.random() * 0.8;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
 
-  // Multi-Spectral Crisp Shader (With Cursor Repulsion)
+  // Micro-Particle Sub-Pixel Shader
   const uniforms = {
     uTime: { value: 0 },
     uMouse: { value: new THREE.Vector3(0, 0, 0) },
@@ -151,18 +159,17 @@
       vColor = aColor;
       vec3 p = position;
 
-      // Real 3D Cursor Gravitational Deflection & Reaction
       vec3 mouseDelta = p - uMouse;
       float distToMouse = length(mouseDelta);
-      if (distToMouse < 22.0) {
-        float force = (22.0 - distToMouse) / 22.0;
-        p += normalize(mouseDelta) * force * 12.0;
+      if (distToMouse < 20.0) {
+        float force = (20.0 - distToMouse) / 20.0;
+        p += normalize(mouseDelta) * force * 10.0;
       }
 
-      vGlow = smoothstep(22.0, 0.0, distToMouse);
+      vGlow = smoothstep(20.0, 0.0, distToMouse);
 
       vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-      gl_PointSize = (aScale + vGlow * 3.5) * (440.0 / -mvPosition.z);
+      gl_PointSize = (aScale + vGlow * 1.8) * (260.0 / -mvPosition.z);
       gl_Position = projectionMatrix * mvPosition;
     }
   `;
@@ -177,12 +184,12 @@
       float dist = length(coord);
       if (dist > 0.5) discard;
 
-      float edge = smoothstep(0.48, 0.38, dist);
-      float core = smoothstep(0.18, 0.0, dist);
+      float edge = smoothstep(0.48, 0.25, dist);
+      float core = smoothstep(0.15, 0.0, dist);
 
-      vec3 glowColor = vColor * 1.45;
+      vec3 glowColor = vColor * 1.3;
       vec3 finalColor = mix(vColor, glowColor, core);
-      finalColor += vColor * vGlow * 0.5;
+      finalColor += vColor * vGlow * 0.4;
 
       gl_FragColor = vec4(finalColor, edge * 0.95);
     }
@@ -200,7 +207,7 @@
   const particleSystem = new THREE.Points(geometry, material);
   scene.add(particleSystem);
 
-  // Mouse Raycasting & Drag Physics
+  // Mouse Raycasting & Orbit Physics
   const raycaster = new THREE.Raycaster();
   const mouseScreen = new THREE.Vector2();
   const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -243,7 +250,6 @@
 
   window.addEventListener('mouseup', () => { isDragging = false; });
 
-  // Direct 3D Click Raycasting for Component Inspection
   window.addEventListener('click', (e) => {
     if (e.target !== canvas) return;
 
@@ -334,7 +340,6 @@
 
     posAttr.needsUpdate = true;
 
-    // Orbit Rotations
     currentRotationX += (targetRotationX - currentRotationX) * 0.08;
     currentRotationY += (targetRotationY - currentRotationY) * 0.08;
 
