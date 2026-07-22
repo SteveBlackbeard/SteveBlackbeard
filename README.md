@@ -2,18 +2,25 @@
 <div align="center">
   <!-- 3D Obsidian Shader Animated Header Banner -->
 
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium-v10.svg?v=15" alt="Ethernium Sovereign Systems Banner" width="90%" />
+  <img src="header-ethernium-v10.svg?v=99" alt="Ethernium Sovereign Systems Banner" width="90%" />
+
   <br/><br/>
   <p align="center">
+    <code>[SOVEREIGN SYSTEMS ARCHITECT]</code> &nbsp;•&nbsp; 
+    <code>[CONCEPTUAL PARADIGM SHIFTS]</code> &nbsp;•&nbsp; 
+    <code>[HIGH-FIDELITY GPU GRAPHICS]</code>
+  </p>
+
+  <p align="center">
     <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg?v=3" alt="Launch Live 120K GPU Telemetry HUD" width="480" />
+      <img src="badge-launch.svg?v=99" alt="Launch Live 120K GPU Telemetry HUD" width="480" />
     </a>
   </p>
 
   <p align="center">
-    <a href="#-executive-briefing--corporate-manifesto"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-clearance.svg?v=3" alt="Clearance Level 05" width="230" /></a>
-    <a href="#-ethernium-corporate-systemic-architecture"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-paradigm.svg?v=3" alt="Paradigm Disruptive" width="230" /></a>
-    <a href="#-system-telemetry"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-telemetry.svg?v=3" alt="GPU Telemetry 60 FPS" width="230" /></a>
+    <a href="#-executive-briefing--corporate-manifesto"><img src="badge-clearance.svg?v=99" alt="Clearance Level 05" width="230" /></a>
+    <a href="#-ethernium-corporate-systemic-architecture"><img src="badge-paradigm.svg?v=99" alt="Paradigm Disruptive" width="230" /></a>
+    <a href="#-system-telemetry"><img src="badge-telemetry.svg?v=99" alt="GPU Telemetry 60 FPS" width="230" /></a>
   </p>
 
   ---
@@ -21,7 +28,7 @@
 
 ### 👁️ Executive Briefing // Corporate Manifesto
 
-> *“Ethernium was conceived from multiple conceptual paradigm shifts, and is ready to break the next ones.”*
+> *“Ethernium fue concebido a partir de múltiples rupturas de paradigmas conceptuales, y está listo para romper los siguientes.”*
 >
 > *“Engineering high-efficiency, resilient, and autonomous computing paradigms by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
 
@@ -30,7 +37,7 @@
 ### 🤖 Ethernium Autonomous Companion // Seneschal-v5
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-sentinel.svg?v=3" alt="Ethernium Autonomous Companion HUD" width="100%" />
+  <img src="ethernium-sentinel.svg?v=99" alt="Ethernium Autonomous Companion HUD" width="100%" />
 </div>
 
 ---
@@ -39,7 +46,7 @@
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-dna-console-v14-118-elements.gif?v=3" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
+    <img src="particle-dna-console-v16-helix.gif?v=99" alt="Real B-DNA Double Helix — TP53 Gene — 3D Particle Engine" width="100%" />
   </a>
   <p align="center">
     <sub><i>Real B-DNA double helix of human TP53 tumor suppressor gene (17p13.1) — 70 base pairs with Adenine, Thymine, Guanine, Cytosine — Click to launch interactive 3D engine</i></sub>
@@ -52,7 +59,7 @@
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-periodic-table-au.gif?v=1" alt="Complete 118-Element IUPAC Periodic Table with Gold (Au) Atom 3D Orbital Rotation" width="100%" />
+    <img src="particle-periodic-table-au.gif?v=99" alt="Complete 118-Element IUPAC Periodic Table with Gold (Au) Atom 3D Orbital Rotation" width="100%" />
   </a>
   <p align="center">
     <sub><i>Complete 118-element IUPAC periodic table with Gold (Au, Z=79) electron shell orbital view rotating 360° — [Xe]4f¹⁴5d¹⁰6s¹ — Interactive molecular synthesis platform</i></sub>
@@ -64,7 +71,7 @@
 ### 🏛️ Ethernium Corporate Systemic Architecture
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/seneschal-chronolith.svg?v=3" alt="Ethernium Corporate Systemic Architecture" width="100%" />
+  <img src="seneschal-chronolith.svg?v=99" alt="Ethernium Corporate Systemic Architecture" width="100%" />
 </div>
 
 ---
