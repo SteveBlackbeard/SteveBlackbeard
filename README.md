@@ -111,20 +111,21 @@
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-yolov5.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-openmpi.svg" />
   <br/><br/>
+  ---
   <!-- Hardware & Embedded -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-raspberrypi.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arduino.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-esp32.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-stm32.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rk3568.svg" />
-
+---
   <br/><br/>
   <!-- Git & Ops -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-git.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitlab.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-github.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitea.svg" />
-
+---
   <br/><br/>
   <!-- Tools & IDEs -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vscode.svg" />
@@ -133,7 +134,7 @@
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vim.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-docker.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-bash.svg" />
-
+---
   <br/><br/>
   <!-- OS & Platforms -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arch.svg" />
