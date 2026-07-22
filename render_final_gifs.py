@@ -47,6 +47,42 @@ ACTN = [('Ac',89),('Th',90),('Pa',91),('U',92),('Np',93),('Pu',94),('Am',95),('C
 AU_SHELLS = [2, 8, 18, 32, 18, 1]
 AU_SHELL_COLORS = [(255,50,50), (255,160,0), (255,255,0), (0,255,120), (0,180,255), (200,100,255)]
 
+def draw_gradient_border(draw, img, width, height, radius):
+    # Draw outer black outline
+    draw.rounded_rectangle([(0, 0), (width-1, height-1)], radius=radius, fill=(2, 3, 6, 255), outline=(0, 0, 0, 255), width=4)
+    # Fill inner with dark obsidian
+    draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=radius-2, fill=(5, 9, 18, 255), outline=(0, 0, 0, 255), width=3)
+    
+    # Generate the gradient border image
+    gradient_img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    draw_grad = ImageDraw.Draw(gradient_img)
+    for x in range(width):
+        frac = x / width
+        if frac < 0.5:
+            sf = frac / 0.5
+            r = int(0 + (255 - 0) * sf)
+            g = int(240 + (255 - 240) * sf)
+            b = int(255 + (255 - 255) * sf)
+        else:
+            sf = (frac - 0.5) / 0.5
+            r = int(255 + (112 - 255) * sf)
+            g = int(255 + (0 - 255) * sf)
+            b = int(255 + (255 - 255) * sf)
+        draw_grad.line([(x, 0), (x, height)], fill=(r, g, b, 255), width=1)
+        
+    # Create mask for the gradient border at (8, 8)
+    mask = Image.new('L', (width, height), 0)
+    draw_mask = ImageDraw.Draw(mask)
+    draw_mask.rounded_rectangle([(8, 8), (width-9, height-9)], radius=radius-4, fill=255, outline=0, width=2)
+    
+    img.paste(gradient_img, (0, 0), mask=mask)
+    
+    # Draw inner white border with opacity
+    inner_white = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    draw_white = ImageDraw.Draw(inner_white)
+    draw_white.rounded_rectangle([(11, 11), (width-12, height-12)], radius=radius-6, outline=(255, 255, 255, 120), width=1)
+    img.paste(inner_white, (0, 0), mask=inner_white)
+
 # ═══════════════════════════════════════════════════════════════
 # GENERATE CLEAN POINT CLOUD DNA GIF (v16-helix)
 # ═══════════════════════════════════════════════════════════════
@@ -58,20 +94,18 @@ def generate_dna_point_cloud():
     amplitude = 64.0
     MAJOR_GROOVE = 0.38 * math.pi
     TURNS = 6.5
+    frame_radius = 16
     frames = []
 
     random.seed(369)
     for frame_idx in range(num_frames):
         t = (frame_idx / num_frames) * math.pi * 2.0
-        img = Image.new('RGBA', (width, height), (2, 3, 6, 255))
+        # Start with transparent canvas
+        img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
-        # Console Frame Bevel
-        frame_radius = 16
-        draw.rounded_rectangle([(0, 0), (width-1, height-1)], radius=frame_radius, fill=(2, 3, 6, 255), outline=(0, 0, 0, 255), width=4)
-        draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=frame_radius-2, fill=(5, 9, 18, 255), outline=(0, 0, 0, 255), width=3)
-        draw.rounded_rectangle([(8, 8), (width-9, height-9)], radius=frame_radius-4, outline=(255, 255, 255, 220), width=2)
-        draw.rounded_rectangle([(11, 11), (width-12, height-12)], radius=frame_radius-6, outline=(0, 240, 255, 180), width=1)
+        # Draw outer obsidian container with gradient border and rounded corners
+        draw_gradient_border(draw, img, width, height, frame_radius)
 
         # Header Bar
         draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8, 255), outline=(0, 0, 0, 255), width=2)
@@ -120,7 +154,10 @@ def generate_dna_point_cloud():
             alpha = int(180 + pz * 0.9)
             alpha = max(60, min(255, alpha))
             sz = 1 if abs(pz) < 30 else 2
-            draw.ellipse([(px-sz, py-sz), (px+sz, py+sz)], fill=col + (alpha,))
+            
+            # Clip drawing to inside content box
+            if 14 < px < width-15 and 50 < py < height-14:
+                draw.ellipse([(px-sz, py-sz), (px+sz, py+sz)], fill=col + (alpha,))
 
         # Scanlines
         scan_layer = Image.new('RGBA', (width, height), (0, 0, 0, 0))
@@ -129,10 +166,11 @@ def generate_dna_point_cloud():
             draw_scan.line([(14, sy), (width-15, sy)], fill=(0, 240, 255, 15), width=1)
 
         final_frame = Image.alpha_composite(img, scan_layer)
-        frames.append(final_frame.convert('P', palette=Image.Palette.ADAPTIVE))
+        # Convert to P mode keeping transparency
+        frames.append(final_frame.convert('RGBA'))
 
     out_gif = os.path.join(target_dir, 'particle-dna-console-v16-helix.gif')
-    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=45, loop=0)
+    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=45, loop=0, disposal=2)
     print("SUCCESS: particle-dna-console-v16-helix.gif generated!")
 
 # ═══════════════════════════════════════════════════════════════
@@ -141,6 +179,7 @@ def generate_dna_point_cloud():
 def generate_pt_console():
     print("Generating Coherent Periodic Table Console GIF...")
     num_frames = 60
+    frame_radius = 16
     frames = []
 
     random.seed(777)
@@ -148,15 +187,11 @@ def generate_pt_console():
         t = frame_idx / num_frames
         rot_angle = t * math.pi * 2
 
-        img = Image.new('RGBA', (width, height), (2, 3, 6, 255))
+        img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
-        # Console Frame Bevel (matching DNA terminal)
-        frame_radius = 16
-        draw.rounded_rectangle([(0, 0), (width-1, height-1)], radius=frame_radius, fill=(2, 3, 6, 255), outline=(0, 0, 0, 255), width=4)
-        draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=frame_radius-2, fill=(5, 9, 18, 255), outline=(0, 0, 0, 255), width=3)
-        draw.rounded_rectangle([(8, 8), (width-9, height-9)], radius=frame_radius-4, outline=(255, 255, 255, 220), width=2)
-        draw.rounded_rectangle([(11, 11), (width-12, height-12)], radius=frame_radius-6, outline=(0, 240, 255, 180), width=1)
+        # Draw outer obsidian container with gradient border and rounded corners
+        draw_gradient_border(draw, img, width, height, frame_radius)
 
         # Header Bar
         draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8, 255), outline=(0, 0, 0, 255), width=2)
@@ -164,7 +199,7 @@ def generate_pt_console():
         draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46, 255))
         draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63, 255))
 
-        title_str = 'NULLA-LABS // COMPLETE IUPAC PERIODIC TABLE & 3D ATOMIC SPECTROMETRY'
+        title_str = 'NULLA-LABS // COMPLETE 118-ELEMENT IUPAC 3D PERIODIC TABLE PLATFORM'
         draw.text((81, 23), title_str, fill=(0, 0, 0, 255))
         draw.text((80, 22), title_str, fill=(0, 240, 255, 255))
 
@@ -212,21 +247,21 @@ def generate_pt_console():
             draw.rectangle([ax, ac_y, ax + cell_w, ac_y + cell_h], fill=(30,15,8,255), outline=(100,50,25,255))
             draw.text((ax + 4, ac_y + 5), sym, fill=(255,100,50))
 
-        # ═══ GOLD ATOM (Au, Z=79) — RIGHT SIDE, 360° SPIN ═══
-        atom_cx, atom_cy = 810, 150
-        atom_radius_max = 70
+        # ═══ GOLD ATOM (Au, Z=79) — RIGHT SIDE, 360° SPIN (LARGER ATOM) ═══
+        atom_cx, atom_cy = 820, 150
+        atom_radius_max = 82
 
         # Nucleus
-        nuc_r = 10
+        nuc_r = 13
         nuc_3d = math.cos(rot_angle * 0.3) * 0.15 + 0.85
         nuc_bright = int(220 * nuc_3d)
         draw.ellipse([atom_cx-nuc_r, atom_cy-nuc_r, atom_cx+nuc_r, atom_cy+nuc_r],
                      fill=(nuc_bright, int(nuc_bright*0.8), 0, 255))
-        draw.text((atom_cx - 5, atom_cy - 5), 'Au', fill=(40, 30, 0, 255))
+        draw.text((atom_cx - 6, atom_cy - 5), 'Au', fill=(40, 30, 0, 255))
 
-        # Shell Orbits
+        # Shell Orbits (larger spacing)
         for shell_idx, (n_electrons, shell_col) in enumerate(zip(AU_SHELLS, AU_SHELL_COLORS)):
-            shell_r = 18 + shell_idx * 10
+            shell_r = 22 + shell_idx * 12
             tilt = (shell_idx * 0.4) + 0.2
 
             for e in range(n_electrons):
@@ -244,14 +279,14 @@ def generate_pt_console():
                 sy = atom_cy + ey_3d * proj_scale
 
                 depth = (ez_rot + shell_r) / (2 * shell_r)
-                e_r = max(1, int(1.2 + depth * 1.4))
+                e_r = max(1, int(1.2 + depth * 1.5))
                 bright = 0.4 + depth * 0.6
                 col = tuple(max(0, min(255, int(c * bright))) for c in shell_col)
                 draw.ellipse([sx-e_r, sy-e_r, sx+e_r, sy+e_r], fill=col + (255,))
 
         # Text descriptor
-        draw.text((760, 255), 'GOLD (Au) Z=79', fill=(255, 205, 50, 255))
-        draw.text((750, 270), '[Xe] 4f14 5d10 6s1', fill=(150, 120, 50, 255))
+        draw.text((755, 250), 'GOLD (Au) Z=79', fill=(255, 205, 50, 255))
+        draw.text((745, 265), '[Xe] 4f14 5d10 6s1', fill=(150, 120, 50, 255))
 
         # Scanlines
         scan_layer = Image.new('RGBA', (width, height), (0, 0, 0, 0))
@@ -260,10 +295,10 @@ def generate_pt_console():
             draw_scan.line([(14, sy), (width-15, sy)], fill=(0, 240, 255, 15), width=1)
 
         final_frame = Image.alpha_composite(img, scan_layer)
-        frames.append(final_frame.convert('P', palette=Image.Palette.ADAPTIVE))
+        frames.append(final_frame.convert('RGBA'))
 
     out_gif = os.path.join(target_dir, 'particle-periodic-table-au.gif')
-    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=67, loop=0)
+    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=67, loop=0, disposal=2)
     print("SUCCESS: particle-periodic-table-au.gif generated!")
 
 if __name__ == '__main__':
