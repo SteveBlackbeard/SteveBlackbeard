@@ -28,7 +28,7 @@
 
 ### 👁️ Executive Briefing // Corporate Manifesto
 
-> *“Ethernium fue concebido a partir de múltiples rupturas de paradigmas conceptuales, y está listo para romper los siguientes.”*
+> *“Ethernium was conceived from multiple conceptual paradigm shifts, and is ready to break the next ones.”*
 >
 > *“Engineering high-efficiency, resilient, and autonomous computing paradigms by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
 
