@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ethernium AAA Invictvs Particle Engine // 60 FPS GPU Optics</title>
-  <meta name="description" content="Ethernium Sovereign AAA Invictvs GPU Particle Shader Telemetry Engine running at 60 FPS baseline.">
+  <title>Ethernium AAA Invictvs Real-Gravity Physics Engine // 100,000 Particles</title>
+  <meta name="description" content="Ethernium Sovereign AAA Invictvs Newtonian Real-Gravity Physics Particle Engine running at 60 FPS baseline.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -31,7 +31,6 @@
       height: 100%;
       z-index: 1;
     }
-    /* Cyberpunk Glassmorphic Overlay HUD */
     .hud-layer {
       position: absolute;
       top: 0;
@@ -46,11 +45,11 @@
       padding: 24px;
     }
     .glass-card {
-      background: rgba(6, 10, 20, 0.78);
+      background: rgba(6, 10, 20, 0.82);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(0, 240, 255, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 14px rgba(0, 240, 255, 0.12);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.85), inset 0 0 14px rgba(0, 240, 255, 0.15);
       border-radius: 12px;
       padding: 16px 24px;
       pointer-events: auto;
@@ -121,7 +120,7 @@
       font-weight: 700;
     }
     .controls-hint {
-      font-size: 11px;
+      font-size: 10.5px;
       color: #94A3B8;
       text-align: right;
     }
@@ -152,12 +151,12 @@
     <!-- Top HUD Header -->
     <div class="glass-card hud-header">
       <div>
-        <div class="hud-title">ETH-CORP // INVICTVS PARTICLE SHADER ENGINE</div>
-        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">3D SIMPLEX NOISE &bull; GRAVITATIONAL ATTRACTOR &bull; 60 FPS BASELINE</div>
+        <div class="hud-title">ETH-CORP // INVICTVS REAL-GRAVITY PHYSICS ENGINE</div>
+        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">NEWTONIAN ORBITAL GRAVITY &bull; 100,000 GPU PARTICLES &bull; 60 FPS ENGINE</div>
       </div>
       <div class="status-badge">
         <div class="pulse-dot"></div>
-        INVICTVS_ENGINE_ONLINE
+        INVICTVS_PHYSICS_ONLINE
       </div>
     </div>
 
@@ -170,16 +169,16 @@
         </div>
         <div class="metric-box">
           <div class="metric-label">GPU Particles</div>
-          <div class="metric-val" id="particle-val">60,000</div>
+          <div class="metric-val" id="particle-val">100,000</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Shader Kinetics</div>
-          <div class="metric-val" style="color:#00FF9D;">CURL_SIMULATED</div>
+          <div class="metric-label">Physics Solver</div>
+          <div class="metric-val" style="color:#00FF9D;">NEWTONIAN_G</div>
         </div>
       </div>
 
       <div class="glass-card controls-hint">
-        <div>[MOUSE: CURVATURE ATTRACTOR | CLICK: KINETIC IMPULSE]</div>
+        <div>[LEFT CLICK: ATTRACT SINK | RIGHT CLICK: ANTIGRAVITY | SPACE: NOVA | G: REVERSE | R: RESET]</div>
         <a href="https://github.com/SteveBlackbeard" class="btn-return">← RETURN TO GITHUB PROFILE</a>
       </div>
     </div>
