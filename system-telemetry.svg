@@ -7,9 +7,10 @@
         font-family: 'Nebula', 'Orbitron', monospace;
         font-weight: 900;
         font-size: 15px;
-        fill: #FFFFFF;
+        fill: #FFFFFF !important;
         stroke: #000000;
         stroke-width: 1.5px;
+        paint-order: stroke fill;
         letter-spacing: 2.5px;
       }
 
@@ -17,7 +18,10 @@
         font-family: 'Nebula', 'Orbitron', monospace;
         font-weight: 800;
         font-size: 12px;
-        fill: #00F0FF;
+        fill: #FFFFFF !important;
+        stroke: #000000;
+        stroke-width: 1.5px;
+        paint-order: stroke fill;
         letter-spacing: 1.5px;
       }
       
@@ -61,14 +65,14 @@
 
   <!-- Top Title Banner Header -->
   <rect x="25" y="16" width="900" height="34" rx="6" fill="#060A14" stroke="#334155" stroke-width="1.5"/>
-  <text x="475" y="38" text-anchor="middle" class="main-title">SYSTEM TELEMETRY // FULL SPECTRUM METRICS &amp; ARSENAL</text>
+  <text x="475" y="38" text-anchor="middle" class="main-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">SYSTEM TELEMETRY // FULL SPECTRUM METRICS &amp; ARSENAL</text>
 
   <!-- LEFT CARD: METRICS -->
   <g transform="translate(25, 62)">
     <rect width="435" height="142" rx="8" fill="#050914" stroke="#00F0FF" stroke-width="1.5" />
     <path d="M 0 0 L 435 0 L 300 142 L 0 142 Z" fill="url(#glass-sheen)" opacity="0.5"/>
     
-    <text x="20" y="26" class="card-title">SYSTEM INTEGRITY &amp; PERFORMANCE</text>
+    <text x="20" y="26" class="card-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">SYSTEM INTEGRITY &amp; PERFORMANCE</text>
     <line x1="20" y1="36" x2="415" y2="36" stroke="#1E293B" stroke-width="1"/>
 
     <text x="20" y="60" class="label-text">System Status:</text>
@@ -89,7 +93,7 @@
     <rect width="435" height="142" rx="8" fill="#050914" stroke="#7000FF" stroke-width="1.5" />
     <path d="M 0 0 L 435 0 L 300 142 L 0 142 Z" fill="url(#glass-sheen)" opacity="0.5"/>
 
-    <text x="20" y="26" class="card-title" fill="#7000FF">LANGUAGE &amp; KINETICS SPECTRUM</text>
+    <text x="20" y="26" class="card-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">LANGUAGE &amp; KINETICS SPECTRUM</text>
     <line x1="20" y1="36" x2="415" y2="36" stroke="#1E293B" stroke-width="1"/>
 
     <!-- TS -->
