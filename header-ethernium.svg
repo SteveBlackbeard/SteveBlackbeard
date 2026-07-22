@@ -56,10 +56,15 @@
       }
 
       @keyframes moveSheen {
-        0% { transform: translateX(-300px); }
-        100% { transform: translateX(300px); }
+        0% { transform: translateX(-350px); }
+        100% { transform: translateX(350px); }
       }
     </style>
+
+    <!-- Clip Path for Perfect Curved Corner Masking -->
+    <clipPath id="header-corner-clip">
+      <rect width="950" height="220" rx="16" />
+    </clipPath>
 
     <!-- 3D Obsidian Crystal Shader Gradients -->
     <linearGradient id="obsidian-3d-base" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -78,45 +83,48 @@
 
     <linearGradient id="moving-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
-      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.18" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.22" />
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
     </linearGradient>
   </defs>
 
-  <!-- Outer 3D Rounded Obsidian Frame -->
-  <rect width="950" height="220" rx="16" fill="url(#obsidian-3d-base)" stroke="#1E293B" stroke-width="2"/>
+  <!-- Group Clipped to Curved Corners -->
+  <g clip-path="url(#header-corner-clip)">
+    <!-- Base 3D Obsidian Frame -->
+    <rect width="950" height="220" rx="16" fill="url(#obsidian-3d-base)" stroke="#1E293B" stroke-width="2"/>
 
-  <!-- Moving 3D Light Sheen Shader Layer -->
-  <g class="sheen-anim">
-    <polygon points="100,0 350,0 150,220 -100,220" fill="url(#moving-sheen)" />
+    <!-- Moving Light Sheen (Clipped to Rounded Corners) -->
+    <g class="sheen-anim">
+      <polygon points="100,0 350,0 150,220 -100,220" fill="url(#moving-sheen)" />
+    </g>
+
+    <!-- 3D Bevel White Glow Border -->
+    <rect x="5" y="5" width="940" height="210" rx="14" fill="none" stroke="url(#glass-bevel-glow)" stroke-width="1.5" />
+    <rect x="8" y="8" width="934" height="204" rx="12" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4" />
+
+    <!-- Corner Accents -->
+    <path d="M 18 18 L 75 18 M 18 18 L 18 75" class="glow-border" stroke-width="3.5" fill="none" />
+    <path d="M 932 18 L 875 18 M 932 18 L 932 75" class="glow-border" stroke-width="3.5" fill="none" />
+    <path d="M 18 202 L 75 202 M 18 202 L 18 145" class="glow-border" stroke-width="3.5" fill="none" />
+    <path d="M 932 202 L 875 202 M 932 202 L 932 145" class="glow-border" stroke-width="3.5" fill="none" />
+
+    <!-- Top Monolith Status Header Bar -->
+    <rect x="40" y="24" width="870" height="30" rx="8" fill="#050812" stroke="#1E293B" stroke-width="1.5"/>
+    <circle cx="60" cy="39" r="4.5" class="pulse-dot" />
+    <text x="76" y="43" class="badge-text">ETH-CORP // 3D OBSIDIAN SHADER MONOLITH :: CLEARANCE 05</text>
+    <text x="790" y="43" class="badge-text" fill="#00FF9D">[3D_SHADER_ACTIVE]</text>
+
+    <!-- Main Title -->
+    <g transform="translate(475, 120)">
+      <text text-anchor="middle" class="title-text" fill="#FFFFFF" stroke="#000000" stroke-width="3" paint-order="stroke fill">ETHERNIUM SOVEREIGN SYSTEMS</text>
+    </g>
+
+    <!-- Subtitle Text -->
+    <g transform="translate(475, 160)">
+      <text text-anchor="middle" class="subtitle-text">AUTONOMOUS ARCHITECTURES • GPU ENGINE • CONTROL SYSTEMS</text>
+    </g>
+
+    <!-- Bottom Accent Line -->
+    <line x1="140" y1="182" x2="810" y2="182" stroke="url(#glass-bevel-glow)" stroke-width="2.5" />
   </g>
-
-  <!-- 3D Bevel White Glow Border (Rounded Corners) -->
-  <rect x="5" y="5" width="940" height="210" rx="14" fill="none" stroke="url(#glass-bevel-glow)" stroke-width="1.5" />
-  <rect x="8" y="8" width="934" height="204" rx="12" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4" />
-
-  <!-- Corner Accents -->
-  <path d="M 18 18 L 75 18 M 18 18 L 18 75" class="glow-border" stroke-width="3.5" fill="none" />
-  <path d="M 932 18 L 875 18 M 932 18 L 932 75" class="glow-border" stroke-width="3.5" fill="none" />
-  <path d="M 18 202 L 75 202 M 18 202 L 18 145" class="glow-border" stroke-width="3.5" fill="none" />
-  <path d="M 932 202 L 875 202 M 932 202 L 932 145" class="glow-border" stroke-width="3.5" fill="none" />
-
-  <!-- Top Monolith Status Header Bar (Rounded Corners) -->
-  <rect x="40" y="24" width="870" height="30" rx="8" fill="#050812" stroke="#1E293B" stroke-width="1.5"/>
-  <circle cx="60" cy="39" r="4.5" class="pulse-dot" />
-  <text x="76" y="43" class="badge-text">ETH-CORP // 3D OBSIDIAN SHADER MONOLITH :: CLEARANCE 05</text>
-  <text x="790" y="43" class="badge-text" fill="#00FF9D">[3D_SHADER_ACTIVE]</text>
-
-  <!-- Main Title: White Nebula Font with Black Stroke & Glowing Aura -->
-  <g transform="translate(475, 120)">
-    <text text-anchor="middle" class="title-text" fill="#FFFFFF" stroke="#000000" stroke-width="3" paint-order="stroke fill">ETHERNIUM SOVEREIGN SYSTEMS</text>
-  </g>
-
-  <!-- Subtitle Text -->
-  <g transform="translate(475, 160)">
-    <text text-anchor="middle" class="subtitle-text">AUTONOMOUS ARCHITECTURES • GPU ENGINE • CONTROL SYSTEMS</text>
-  </g>
-
-  <!-- Bottom Accent Line -->
-  <line x1="140" y1="182" x2="810" y2="182" stroke="url(#glass-bevel-glow)" stroke-width="2.5" />
 </svg>

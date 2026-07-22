@@ -20,10 +20,14 @@
       }
 
       @keyframes moveSheen {
-        0% { transform: translateX(-100px); }
-        100% { transform: translateX(120px); }
+        0% { transform: translateX(-120px); }
+        100% { transform: translateX(140px); }
       }
     </style>
+
+    <clipPath id="paradigm-corner-clip">
+      <rect width="260" height="44" rx="10" />
+    </clipPath>
 
     <linearGradient id="btn-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#142138" />
@@ -40,19 +44,21 @@
 
     <linearGradient id="moving-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
-      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.3" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.35" />
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
     </linearGradient>
   </defs>
 
-  <rect width="260" height="44" rx="10" fill="url(#btn-obsidian)" stroke="#1E293B" stroke-width="1.5"/>
+  <g clip-path="url(#paradigm-corner-clip)">
+    <rect width="260" height="44" rx="10" fill="url(#btn-obsidian)" stroke="#1E293B" stroke-width="1.5"/>
 
-  <g class="sheen-move">
-    <polygon points="30,0 110,0 50,44 -30,44" fill="url(#moving-sheen)" />
+    <g class="sheen-move">
+      <polygon points="30,0 110,0 50,44 -30,44" fill="url(#moving-sheen)" />
+    </g>
+
+    <rect x="3" y="3" width="254" height="38" rx="8" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
+    <rect x="5" y="5" width="250" height="34" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.5" />
+
+    <text x="130" y="27" text-anchor="middle" class="badge-text" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">⚡ PARADIGM: DISRUPTIVE</text>
   </g>
-
-  <rect x="3" y="3" width="254" height="38" rx="8" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
-  <rect x="5" y="5" width="250" height="34" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.5" />
-
-  <text x="130" y="27" text-anchor="middle" class="badge-text" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">⚡ PARADIGM: DISRUPTIVE</text>
 </svg>
