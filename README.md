@@ -5,11 +5,6 @@
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium-v10.svg?v=15" alt="Ethernium Sovereign Systems Banner" width="90%" />
 
   <br/><br/>
-  <p align="center">
-    <code>[SOVEREIGN SYSTEMS ARCHITECT]</code> &nbsp;•&nbsp; 
-    <code>[CONCEPTUAL PARADIGM SHIFTS]</code> &nbsp;•&nbsp; 
-    <code>[HIGH-FIDELITY GPU GRAPHICS]</code>
-  </p>
 
   <p align="center">
     <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
