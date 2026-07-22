@@ -1,4 +1,4 @@
-// Ethernium Sovereign Scientific B-DNA Double Helix GPU Particle Engine v11.0
+// ETHERNIUM / NULLA-LABS AAA 3D INTERACTIVE B-DNA SHADER ENGINE v15.0
 (function() {
   'use strict';
 
@@ -7,80 +7,81 @@
   const particleVal = document.getElementById('particle-val');
   const cycleVal = document.getElementById('cycle-val');
 
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true,
+    alpha: false,
+    powerPreference: "high-performance"
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x020306, 0.0075);
+  scene.fog = new THREE.FogExp2(0x020306, 0.005);
 
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0, 52);
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 0, 65);
 
-  // 100,000 High-Precision GPU Particles
-  const PARTICLE_COUNT = 100000;
-  particleVal.textContent = PARTICLE_COUNT.toLocaleString();
+  // 120,000 High-Precision GPU Particles
+  const PARTICLE_COUNT = 120000;
+  if (particleVal) particleVal.textContent = PARTICLE_COUNT.toLocaleString();
 
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(PARTICLE_COUNT * 3);
   const targetDNA = new Float32Array(PARTICLE_COUNT * 3);
-  const velocities = new Float32Array(PARTICLE_COUNT * 3);
   const colors = new Float32Array(PARTICLE_COUNT * 3);
   const scales = new Float32Array(PARTICLE_COUNT);
 
-  // B-DNA Anatomical Parameters
-  const MAJOR_GROOVE_OFFSET = 0.38 * Math.PI; // 140 degree minor groove angle
-  const TURNS = 6.0; // 6 full 360-degree helical turns across horizontal span
+  // Anatomically Precise B-DNA Parameters
+  const MAJOR_GROOVE_OFFSET = 0.38 * Math.PI; // 140 degree minor groove
+  const HELIX_RADIUS = 18.0; // Wider, AAA majestic strand width
+  const TURNS = 6.0;
 
-  // Nucleotide Spectral Palette
+  // Nucleotide AAA High-Contrast Palette
   const colAdenine = new THREE.Color(0x00F0FF);  // Cyan (A)
-  const colThymine = new THREE.Color(0x7000FF);  // Violet (T)
-  const colCytosine = new THREE.Color(0x00FF9D); // Emerald (C)
-  const colGuanine = new THREE.Color(0xFFD700);  // Gold (G)
-  const colPhosphate = new THREE.Color(0xFFFFFF); // White Backbone
+  const colThymine = new THREE.Color(0x8A2BE2);  // Electric Violet (T)
+  const colCytosine = new THREE.Color(0x00FF9D); // Emerald Green (C)
+  const colGuanine = new THREE.Color(0xFFD700);  // Bright Gold (G)
+  const colPhosphate = new THREE.Color(0xFFFFFF); // Crisp White
 
-  // Build Scientifically Accurate Horizontal Human B-DNA Double Helix Target
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
 
     const progress = i / PARTICLE_COUNT;
-    const x = (progress - 0.5) * 88.0; // Spans horizontally from X = -44 to +44
+    const x = (progress - 0.5) * 110.0; // Spans X = -55 to +55
 
     const angle1 = progress * TURNS * Math.PI * 2.0;
     const angle2 = angle1 + Math.PI + MAJOR_GROOVE_OFFSET;
 
-    const helixRadius = 13.0;
-
     let targetX, targetY, targetZ;
     let particleColor = new THREE.Color();
 
-    const isBackbone = (i % 5 < 3); // 60% backbone, 40% hydrogen rungs & nucleotide cloud
+    const isBackbone = (i % 5 < 3);
 
     if (isBackbone) {
-      // Phosphate-Sugar Backbone Strands
+      // Crisp Phosphate-Sugar Backbone Strands
       const isStrand1 = (i % 2 === 0);
       const angle = isStrand1 ? angle1 : angle2;
 
-      targetX = x + (Math.random() - 0.5) * 0.8;
-      targetY = Math.sin(angle) * helixRadius + (Math.random() - 0.5) * 0.8;
-      targetZ = Math.cos(angle) * helixRadius + (Math.random() - 0.5) * 0.8;
+      targetX = x + (Math.random() - 0.5) * 0.4;
+      targetY = Math.sin(angle) * HELIX_RADIUS + (Math.random() - 0.5) * 0.4;
+      targetZ = Math.cos(angle) * HELIX_RADIUS + (Math.random() - 0.5) * 0.4;
 
       particleColor.copy(colPhosphate);
     } else {
-      // Hydrogen-Bonded Base Pair Rungs (A-T & C-G)
-      const rungProgress = Math.random(); // Interpolate between Strand 1 and Strand 2
-      const y1 = Math.sin(angle1) * helixRadius;
-      const z1 = Math.cos(angle1) * helixRadius;
+      // Hydrogen-Bonded Base Pair Rung Bridges
+      const rungProgress = Math.random();
+      const y1 = Math.sin(angle1) * HELIX_RADIUS;
+      const z1 = Math.cos(angle1) * HELIX_RADIUS;
 
-      const y2 = Math.sin(angle2) * helixRadius;
-      const z2 = Math.cos(angle2) * helixRadius;
+      const y2 = Math.sin(angle2) * HELIX_RADIUS;
+      const z2 = Math.cos(angle2) * HELIX_RADIUS;
 
-      targetX = x + (Math.random() - 0.5) * 0.5;
-      targetY = THREE.MathUtils.lerp(y1, y2, rungProgress) + (Math.random() - 0.5) * 0.6;
-      targetZ = THREE.MathUtils.lerp(z1, z2, rungProgress) + (Math.random() - 0.5) * 0.6;
+      targetX = x + (Math.random() - 0.5) * 0.3;
+      targetY = THREE.MathUtils.lerp(y1, y2, rungProgress) + (Math.random() - 0.5) * 0.3;
+      targetZ = THREE.MathUtils.lerp(z1, z2, rungProgress) + (Math.random() - 0.5) * 0.3;
 
-      // Base Pair Color Assignment (A-T or C-G)
-      const basePairType = Math.floor(progress * 120) % 4;
+      const basePairType = Math.floor(progress * 150) % 4;
       if (basePairType === 0) particleColor.copy(colAdenine);
       else if (basePairType === 1) particleColor.copy(colThymine);
       else if (basePairType === 2) particleColor.copy(colCytosine);
@@ -91,7 +92,6 @@
     targetDNA[i3 + 1] = targetY;
     targetDNA[i3 + 2] = targetZ;
 
-    // Initial Positions
     positions[i3] = targetX;
     positions[i3 + 1] = targetY;
     positions[i3 + 2] = targetZ;
@@ -100,14 +100,14 @@
     colors[i3 + 1] = particleColor.g;
     colors[i3 + 2] = particleColor.b;
 
-    scales[i] = 1.0 + Math.random() * 3.2;
+    scales[i] = 1.2 + Math.random() * 2.5;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
 
-  // Custom GPU Shader
+  // AAA Crisp Shader (Zero Blur, Sharp Point Definition)
   const uniforms = {
     uTime: { value: 0 },
     uMouse: { value: new THREE.Vector3(0, 0, 0) }
@@ -120,7 +120,6 @@
     attribute float aScale;
 
     varying vec3 vColor;
-    varying float vGlow;
 
     void main() {
       vColor = aColor;
@@ -128,15 +127,13 @@
 
       vec3 mouseDelta = p - uMouse;
       float distToMouse = length(mouseDelta);
-      if (distToMouse < 24.0) {
-        float force = (24.0 - distToMouse) / 24.0;
-        p += normalize(mouseDelta) * force * 10.0;
+      if (distToMouse < 20.0) {
+        float force = (20.0 - distToMouse) / 20.0;
+        p += normalize(mouseDelta) * force * 8.0;
       }
 
-      vGlow = smoothstep(25.0, 0.0, distToMouse);
-
       vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-      gl_PointSize = (aScale + vGlow * 3.5) * (380.0 / -mvPosition.z);
+      gl_PointSize = aScale * (420.0 / -mvPosition.z);
       gl_Position = projectionMatrix * mvPosition;
     }
   `;
@@ -144,20 +141,19 @@
   const fragmentShader = `
     uniform float uTime;
     varying vec3 vColor;
-    varying float vGlow;
 
     void main() {
       vec2 coord = gl_PointCoord - vec2(0.5);
       float dist = length(coord);
       if (dist > 0.5) discard;
 
-      float core = smoothstep(0.18, 0.0, dist);
-      float halo = smoothstep(0.5, 0.0, dist);
+      // AAA Sharp Edge Definition (Crisp Non-Blurry Circles)
+      float edge = smoothstep(0.48, 0.42, dist);
+      float core = smoothstep(0.20, 0.0, dist);
 
-      vec3 finalColor = mix(vColor, vec3(1.0, 1.0, 1.0), core * 0.82);
-      finalColor += vec3(0.0, 0.94, 1.0) * pow(halo, 2.2) * 0.45;
+      vec3 finalColor = mix(vColor, vec3(1.0, 1.0, 1.0), core * 0.75);
 
-      gl_FragColor = vec4(finalColor, halo * 0.90);
+      gl_FragColor = vec4(finalColor, edge * 0.95);
     }
   `;
 
@@ -166,25 +162,43 @@
     fragmentShader: fragmentShader,
     uniforms: uniforms,
     transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending
+    depthWrite: true,
+    blending: THREE.NormalBlending
   });
 
   const particleSystem = new THREE.Points(geometry, material);
   scene.add(particleSystem);
 
-  // Mouse Interaction
-  const raycaster = new THREE.Raycaster();
-  const mouseScreen = new THREE.Vector2();
-  const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-  const mouse3D = new THREE.Vector3();
+  // Full 3D Mouse Drag Orbiting Controls
+  let isDragging = false;
+  let previousMousePosition = { x: 0, y: 0 };
+  let targetRotationX = 0;
+  let targetRotationY = 0;
+  let currentRotationX = 0;
+  let currentRotationY = 0;
+
+  window.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
 
   window.addEventListener('mousemove', (e) => {
-    mouseScreen.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouseScreen.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouseScreen, camera);
-    raycaster.ray.intersectPlane(plane, mouse3D);
-    uniforms.uMouse.value.copy(mouse3D);
+    if (isDragging) {
+      const deltaX = e.clientX - previousMousePosition.x;
+      const deltaY = e.clientY - previousMousePosition.y;
+
+      targetRotationY += deltaX * 0.006;
+      targetRotationX += deltaY * 0.006;
+
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    }
+  });
+
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  window.addEventListener('wheel', (e) => {
+    camera.position.z += e.deltaY * 0.04;
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, 25, 130);
   });
 
   window.addEventListener('resize', () => {
@@ -193,38 +207,10 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // Cycle Physics Loop: Continuous 360 Horizontal B-DNA Helical Rotation
+  // Render Animation Loop
   const posAttr = geometry.attributes.position;
   const posArray = posAttr.array;
 
-  function updateDNAPhysics(dt, t) {
-    if (cycleVal) cycleVal.textContent = 'HUMAN_B_DNA_DOUBLE_HELIX';
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const i3 = i * 3;
-
-      let tx = targetDNA[i3];
-      let ty = targetDNA[i3 + 1];
-      let tz = targetDNA[i3 + 2];
-
-      // Dynamic Helical Rotation along X-axis
-      const rotAngle = t * 0.8;
-      const cosA = Math.cos(rotAngle);
-      const sinA = Math.sin(rotAngle);
-
-      const rx = tx;
-      const ry = ty * cosA - tz * sinA;
-      const rz = ty * sinA + tz * cosA;
-
-      posArray[i3] = rx;
-      posArray[i3 + 1] = ry;
-      posArray[i3 + 2] = rz;
-    }
-
-    posAttr.needsUpdate = true;
-  }
-
-  // Render Loop
   let frameCount = 0;
   let lastTime = performance.now();
 
@@ -235,7 +221,7 @@
 
     frameCount++;
     if (now - lastTime >= 1000) {
-      fpsVal.textContent = frameCount + ' FPS';
+      if (fpsVal) fpsVal.textContent = frameCount + ' FPS';
       frameCount = 0;
       lastTime = now;
     }
@@ -243,7 +229,12 @@
     const t = now * 0.001;
     uniforms.uTime.value = t;
 
-    updateDNAPhysics(dt, t);
+    // Smooth Orbit Inertia
+    currentRotationX += (targetRotationX - currentRotationX) * 0.08;
+    currentRotationY += (targetRotationY - currentRotationY) * 0.08;
+
+    particleSystem.rotation.x = currentRotationX;
+    particleSystem.rotation.y = currentRotationY + t * 0.4;
 
     renderer.render(scene, camera);
   }
