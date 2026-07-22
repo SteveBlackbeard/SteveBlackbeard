@@ -1,138 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 280" width="100%" height="280">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 300" width="100%" height="300">
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&amp;family=Fira+Code:wght@500;700&amp;display=swap');
-      
-      .panel-bg { fill: url(#obsidian-panel); stroke: #1E293B; stroke-width: 1.5; }
-      .panel-header { fill: url(#obsidian-header); stroke: #334155; stroke-width: 1.5; }
-      
-      .col-title {
+      .title-text {
         font-family: 'Nebula', 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 13.5px;
+        font-size: 15px;
         fill: #FFFFFF !important;
         stroke: #000000;
         stroke-width: 1.5px;
         paint-order: stroke fill;
-        letter-spacing: 1.5px;
+        letter-spacing: 2px;
       }
-      
-      .sub-badge-bg {
-        fill: #040A14;
-        stroke: #00F0FF;
-        stroke-width: 1;
+      .cell-title {
+        font-family: 'Nebula', 'Orbitron', monospace;
+        font-weight: 800;
+        font-size: 12px;
+        fill: #00F0FF;
+        letter-spacing: 1px;
       }
-
-      .col-tag {
+      .cell-desc {
         font-family: 'Fira Code', monospace;
-        font-weight: 700;
         font-size: 10.5px;
-        fill: #FFFFFF !important;
-        stroke: #000000;
-        stroke-width: 1px;
-        paint-order: stroke fill;
-        letter-spacing: 1.5px;
-      }
-
-      .bullet-text {
-        font-family: 'Fira Code', monospace;
-        font-size: 11.5px;
-        fill: #E2E8F0;
-        letter-spacing: 0.5px;
-      }
-      
-      .status-pulse {
-        animation: pulse 1.8s infinite;
-      }
-
-      @keyframes pulse {
-        0% { fill: #00F0FF; opacity: 1; filter: drop-shadow(0 0 5px #00F0FF); }
-        50% { fill: #7000FF; opacity: 0.3; }
-        100% { fill: #00F0FF; opacity: 1; filter: drop-shadow(0 0 5px #00F0FF); }
+        fill: #94A3B8;
       }
     </style>
-
-    <linearGradient id="obsidian-panel" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#070B14" />
-      <stop offset="50%" stop-color="#04070F" />
-      <stop offset="100%" stop-color="#020408" />
+    <clipPath id="matrix-corner-clip">
+      <rect width="950" height="300" rx="16" />
+    </clipPath>
+    <linearGradient id="engraved-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020306" />
+      <stop offset="30%" stop-color="#070B14" />
+      <stop offset="70%" stop-color="#0A0F1E" />
+      <stop offset="100%" stop-color="#010204" />
     </linearGradient>
-
-    <linearGradient id="obsidian-header" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#1E293B" />
-      <stop offset="30%" stop-color="#0F172A" />
-      <stop offset="100%" stop-color="#080D1A" />
+    <linearGradient id="bevel-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#7000FF" />
     </linearGradient>
-
-    <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.12" />
-      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.03" />
-      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    <linearGradient id="cell-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080D1A" />
+      <stop offset="50%" stop-color="#03050A" />
+      <stop offset="100%" stop-color="#0E1726" />
     </linearGradient>
   </defs>
+  <g clip-path="url(#matrix-corner-clip)">
+    <rect width="950" height="300" rx="16" fill="url(#engraved-base)" stroke="#000000" stroke-width="4"/>
+    <rect x="3" y="3" width="944" height="294" rx="14" fill="none" stroke="#000000" stroke-width="3" opacity="0.9"/>
+    <rect x="5" y="5" width="940" height="290" rx="13" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
+    <rect x="7" y="7" width="936" height="286" rx="12" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.3" />
 
-  <rect width="950" height="280" rx="12" fill="#020306" stroke="#0F172A" stroke-width="2"/>
+    <rect x="30" y="18" width="890" height="34" rx="8" fill="#020408" stroke="#000000" stroke-width="2"/>
+    <text x="475" y="41" text-anchor="middle" class="title-text" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">⚡ ETHERNIUM SOVEREIGN COMPUTE MATRIX</text>
 
-  <!-- COLUMN 1 -->
-  <g transform="translate(25, 20)">
-    <rect width="280" height="240" rx="8" class="panel-bg" />
-    <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
+    <!-- 4 Engraved Inset Grid Cards -->
+    <g transform="translate(40, 70)">
+      <rect width="415" height="95" rx="10" fill="url(#cell-obsidian)" stroke="#000000" stroke-width="2.5"/>
+      <rect x="2" y="2" width="411" height="91" rx="8" fill="none" stroke="#00F0FF" stroke-width="1.5"/>
+      <text x="20" y="30" class="cell-title">CORE_KERNEL // LOCAL SOVEREIGNTY</text>
+      <text x="20" y="55" class="cell-desc">Zero external lock-in. Deterministic sandbox execution.</text>
+      <text x="20" y="75" class="cell-desc">Bare-metal hardware optimization @ maximum throughput.</text>
+    </g>
 
-    <rect width="280" height="42" rx="8" class="panel-header" />
-    <circle cx="20" cy="21" r="4.5" class="status-pulse" />
-    <text x="34" y="26" class="col-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">01. SYSTEMIC CORE</text>
-    
-    <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
-    <text x="140" y="63" text-anchor="middle" class="col-tag" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[SOVEREIGN_NODE]</text>
-    
-    <text x="20" y="98" class="bullet-text">▪ Zero external dependencies.</text>
-    <text x="20" y="126" class="bullet-text">▪ Deterministic execution runtime.</text>
-    <text x="20" y="154" class="bullet-text">▪ Bare-metal compute allocation.</text>
-    <text x="20" y="182" class="bullet-text">▪ Isolated sandbox execution.</text>
-    <text x="20" y="210" class="bullet-text">▪ Sovereign data autonomy.</text>
+    <g transform="translate(495, 70)">
+      <rect width="415" height="95" rx="10" fill="url(#cell-obsidian)" stroke="#000000" stroke-width="2.5"/>
+      <rect x="2" y="2" width="411" height="91" rx="8" fill="none" stroke="#7000FF" stroke-width="1.5"/>
+      <text x="20" y="30" class="cell-title">GPU_KINETICS // 100K SHADER ENGINE</text>
+      <text x="20" y="55" class="cell-desc">BufferGeometry allocation via native Float32Array.</text>
+      <text x="20" y="75" class="cell-desc">GLSL Simplex Noise 3D &amp; Newtonian gravity physics.</text>
+    </g>
 
-    <line x1="20" y1="222" x2="260" y2="222" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
-  </g>
+    <g transform="translate(40, 180)">
+      <rect width="415" height="95" rx="10" fill="url(#cell-obsidian)" stroke="#000000" stroke-width="2.5"/>
+      <rect x="2" y="2" width="411" height="91" rx="8" fill="none" stroke="#00FF9D" stroke-width="1.5"/>
+      <text x="20" y="30" class="cell-title">CONTROL_LOOPS // AGENTIC DIRECTIVES</text>
+      <text x="20" y="55" class="cell-desc">Multidisciplinary synthesis: control theory &amp; discrete math.</text>
+      <text x="20" y="75" class="cell-desc">Self-verifying automated regression testbeds.</text>
+    </g>
 
-  <!-- COLUMN 2 -->
-  <g transform="translate(335, 20)">
-    <rect width="280" height="240" rx="8" class="panel-bg" />
-    <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
-
-    <rect width="280" height="42" rx="8" class="panel-header" />
-    <circle cx="20" cy="21" r="4.5" class="status-pulse" />
-    <text x="34" y="26" class="col-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">02. GPU KINETICS</text>
-
-    <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
-    <text x="140" y="63" text-anchor="middle" class="col-tag" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[60FPS_SHADERS]</text>
-    
-    <text x="20" y="98" class="bullet-text">▪ Custom GLSL vertex shaders.</text>
-    <text x="20" y="126" class="bullet-text">▪ Float32Array buffer geometry.</text>
-    <text x="20" y="154" class="bullet-text">▪ WebGL/WebGPU physics engine.</text>
-    <text x="20" y="182" class="bullet-text">▪ Real-time interactive HUDs.</text>
-    <text x="20" y="210" class="bullet-text">▪ Obsidian glassmorphic UI.</text>
-
-    <line x1="20" y1="222" x2="260" y2="222" stroke="#7000FF" stroke-width="1.5" opacity="0.6"/>
-  </g>
-
-  <!-- COLUMN 3 -->
-  <g transform="translate(645, 20)">
-    <rect width="280" height="240" rx="8" class="panel-bg" />
-    <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
-
-    <rect width="280" height="42" rx="8" class="panel-header" />
-    <circle cx="20" cy="21" r="4.5" class="status-pulse" />
-    <text x="34" y="26" class="col-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">03. CONTROL SYSTEMS</text>
-
-    <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
-    <text x="140" y="63" text-anchor="middle" class="col-tag" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[OPTIMAL_LOOPS]</text>
-    
-    <text x="20" y="98" class="bullet-text">▪ Multidisciplinary control loops.</text>
-    <text x="20" y="126" class="bullet-text">▪ Discrete math optimization.</text>
-    <text x="20" y="154" class="bullet-text">▪ Autonomous agentic logic.</text>
-    <text x="20" y="182" class="bullet-text">▪ Pre-tested regression suites.</text>
-    <text x="20" y="210" class="bullet-text">▪ Defense-grade system integrity.</text>
-
-    <line x1="20" y1="222" x2="260" y2="222" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
+    <g transform="translate(495, 180)">
+      <rect width="415" height="95" rx="10" fill="url(#cell-obsidian)" stroke="#000000" stroke-width="2.5"/>
+      <rect x="2" y="2" width="411" height="91" rx="8" fill="none" stroke="#FFD700" stroke-width="1.5"/>
+      <text x="20" y="30" class="cell-title">OBSIDIAN_UI // GLASSMORPHIC SHADERS</text>
+      <text x="20" y="55" class="cell-desc">Engraved inset 3D bevels with white glowing Nebula font.</text>
+      <text x="20" y="75" class="cell-desc">Zero placeholders. High-fidelity corporate aesthetics.</text>
+    </g>
   </g>
 </svg>
