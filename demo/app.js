@@ -1,4 +1,4 @@
-// Ethernium Sovereign Invictvs 3D Cybernetic Mask GPU Engine v10.0
+// Ethernium Sovereign Scientific B-DNA Double Helix GPU Particle Engine v11.0
 (function() {
   'use strict';
 
@@ -23,90 +23,91 @@
 
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(PARTICLE_COUNT * 3);
-  const targetMask = new Float32Array(PARTICLE_COUNT * 3);
+  const targetDNA = new Float32Array(PARTICLE_COUNT * 3);
   const velocities = new Float32Array(PARTICLE_COUNT * 3);
   const colors = new Float32Array(PARTICLE_COUNT * 3);
   const scales = new Float32Array(PARTICLE_COUNT);
 
-  const PHI = (1.0 + Math.sqrt(5.0)) / 2.0;
+  // B-DNA Anatomical Parameters
+  const MAJOR_GROOVE_OFFSET = 0.38 * Math.PI; // 140 degree minor groove angle
+  const TURNS = 6.0; // 6 full 360-degree helical turns across horizontal span
 
-  // Invictvs Palette
-  const colCyan = new THREE.Color(0x00F0FF);   // Invictvs Cyan
-  const colViolet = new THREE.Color(0x7000FF); // Deep Violet
-  const colEmerald = new THREE.Color(0x00FF9D); // Emerald
-  const colGold = new THREE.Color(0xFFD700);   // Invictvs Gold
-  const colWhite = new THREE.Color(0xFFFFFF);
+  // Nucleotide Spectral Palette
+  const colAdenine = new THREE.Color(0x00F0FF);  // Cyan (A)
+  const colThymine = new THREE.Color(0x7000FF);  // Violet (T)
+  const colCytosine = new THREE.Color(0x00FF9D); // Emerald (C)
+  const colGuanine = new THREE.Color(0xFFD700);  // Gold (G)
+  const colPhosphate = new THREE.Color(0xFFFFFF); // White Backbone
 
-  // Generate High-Precision Invictvs Cybernetic 3D Mask Geometry
+  // Build Scientifically Accurate Horizontal Human B-DNA Double Helix Target
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
 
-    // Parametric Face Mesh Distribution
-    const u = Math.random() * Math.PI * 2.0;
-    const v = Math.random(); // 0 to 1
+    const progress = i / PARTICLE_COUNT;
+    const x = (progress - 0.5) * 88.0; // Spans horizontally from X = -44 to +44
 
-    const y = -24.0 + v * 48.0; // Y height from chin to forehead
+    const angle1 = progress * TURNS * Math.PI * 2.0;
+    const angle2 = angle1 + Math.PI + MAJOR_GROOVE_OFFSET;
 
-    // Sculpted Face Radius Profile
-    let rad = 17.0;
-    if (y > 14.0) {
-      rad = 16.0 * (1.0 - (y - 14.0) * 0.04); // Forehead Crown
-    } else if (y > 0.0) {
-      rad = 18.5 - Math.pow(Math.abs(y - 7.0) * 0.1, 2.0) * 3.5; // Cheekbone width
-    } else if (y > -10.0) {
-      rad = 16.5 * (1.0 - (Math.abs(y) * 0.03));
+    const helixRadius = 13.0;
+
+    let targetX, targetY, targetZ;
+    let particleColor = new THREE.Color();
+
+    const isBackbone = (i % 5 < 3); // 60% backbone, 40% hydrogen rungs & nucleotide cloud
+
+    if (isBackbone) {
+      // Phosphate-Sugar Backbone Strands
+      const isStrand1 = (i % 2 === 0);
+      const angle = isStrand1 ? angle1 : angle2;
+
+      targetX = x + (Math.random() - 0.5) * 0.8;
+      targetY = Math.sin(angle) * helixRadius + (Math.random() - 0.5) * 0.8;
+      targetZ = Math.cos(angle) * helixRadius + (Math.random() - 0.5) * 0.8;
+
+      particleColor.copy(colPhosphate);
     } else {
-      rad = 14.0 * (1.0 - (Math.abs(y + 10.0) * 0.055)); // Sharp V-Jawline
+      // Hydrogen-Bonded Base Pair Rungs (A-T & C-G)
+      const rungProgress = Math.random(); // Interpolate between Strand 1 and Strand 2
+      const y1 = Math.sin(angle1) * helixRadius;
+      const z1 = Math.cos(angle1) * helixRadius;
+
+      const y2 = Math.sin(angle2) * helixRadius;
+      const z2 = Math.cos(angle2) * helixRadius;
+
+      targetX = x + (Math.random() - 0.5) * 0.5;
+      targetY = THREE.MathUtils.lerp(y1, y2, rungProgress) + (Math.random() - 0.5) * 0.6;
+      targetZ = THREE.MathUtils.lerp(z1, z2, rungProgress) + (Math.random() - 0.5) * 0.6;
+
+      // Base Pair Color Assignment (A-T or C-G)
+      const basePairType = Math.floor(progress * 120) % 4;
+      if (basePairType === 0) particleColor.copy(colAdenine);
+      else if (basePairType === 1) particleColor.copy(colThymine);
+      else if (basePairType === 2) particleColor.copy(colCytosine);
+      else particleColor.copy(colGuanine);
     }
 
-    let x = Math.cos(u) * rad;
-    let z = Math.sin(u) * rad * 0.55;
+    targetDNA[i3] = targetX;
+    targetDNA[i3 + 1] = targetY;
+    targetDNA[i3 + 2] = targetZ;
 
-    // Eye Socket Cavity Indentation (Deep Eye Sockets)
-    if (3.0 < y && y < 11.0 && Math.abs(x) > 2.5 && Math.abs(x) < 11.5 && z > 0) {
-      z -= 6.5;
-    }
+    // Initial Positions
+    positions[i3] = targetX;
+    positions[i3 + 1] = targetY;
+    positions[i3 + 2] = targetZ;
 
-    // Protruding Nasal Bridge
-    if (0.0 < y && y < 13.0 && Math.abs(x) < 3.2 && z > 0) {
-      z += 4.5;
-    }
+    colors[i3] = particleColor.r;
+    colors[i3 + 1] = particleColor.g;
+    colors[i3 + 2] = particleColor.b;
 
-    targetMask[i3] = x;
-    targetMask[i3 + 1] = y;
-    targetMask[i3 + 2] = z;
-
-    // Initial Random Cloud
-    const rStart = Math.sqrt(Math.random()) * 45.0 + 5.0;
-    const thetaStart = Math.random() * Math.PI * 2.0;
-    positions[i3] = rStart * Math.cos(thetaStart);
-    positions[i3 + 1] = rStart * Math.sin(thetaStart);
-    positions[i3 + 2] = (Math.random() - 0.5) * 30.0;
-
-    // Color Palette Assignment (Eye Pupils get Glowing Gold/White)
-    const pColor = new THREE.Color();
-    if (3.0 < y && y < 11.0 && Math.abs(x) > 3.5 && Math.abs(x) < 8.5 && z < 0) {
-      pColor.copy(colGold); // Eye Pupil Gold Glow
-    } else {
-      const rCol = Math.random();
-      if (rCol < 0.45) pColor.copy(colCyan);
-      else if (rCol < 0.75) pColor.copy(colViolet);
-      else if (rCol < 0.90) pColor.copy(colEmerald);
-      else pColor.copy(colWhite);
-    }
-
-    colors[i3] = pColor.r;
-    colors[i3 + 1] = pColor.g;
-    colors[i3 + 2] = pColor.b;
-
-    scales[i] = 1.0 + Math.random() * 3.0;
+    scales[i] = 1.0 + Math.random() * 3.2;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
 
-  // Custom Shader
+  // Custom GPU Shader
   const uniforms = {
     uTime: { value: 0 },
     uMouse: { value: new THREE.Vector3(0, 0, 0) }
@@ -192,68 +193,32 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // Cycle Physics Loop: 10s Cycle (Form Invictvs 3D Mask -> Hold & Pulse -> Kinetic Explosion -> Re-assemble)
+  // Cycle Physics Loop: Continuous 360 Horizontal B-DNA Helical Rotation
   const posAttr = geometry.attributes.position;
   const posArray = posAttr.array;
 
-  let cycleTime = 0;
-  const CYCLE_DURATION = 10.0;
-
-  function updatePhysicsCycle(dt) {
-    cycleTime = (cycleTime + dt) % CYCLE_DURATION;
-
-    let isExploding = false;
-
-    if (cycleTime >= 6.5 && cycleTime < 7.8) {
-      isExploding = true;
-      if (cycleVal) cycleVal.textContent = 'KINETIC_SHOCKWAVE';
-    } else if (cycleTime >= 4.0 && cycleTime < 6.5) {
-      if (cycleVal) cycleVal.textContent = 'INVICTVS_MASK_HOLD';
-    } else {
-      if (cycleVal) cycleVal.textContent = 'FORMING_INVICTVS_MASK';
-    }
+  function updateDNAPhysics(dt, t) {
+    if (cycleVal) cycleVal.textContent = 'HUMAN_B_DNA_DOUBLE_HELIX';
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
 
-      let px = posArray[i3];
-      let py = posArray[i3 + 1];
-      let pz = posArray[i3 + 2];
+      let tx = targetDNA[i3];
+      let ty = targetDNA[i3 + 1];
+      let tz = targetDNA[i3 + 2];
 
-      let tx = targetMask[i3];
-      let ty = targetMask[i3 + 1];
-      let tz = targetMask[i3 + 2];
+      // Dynamic Helical Rotation along X-axis
+      const rotAngle = t * 0.8;
+      const cosA = Math.cos(rotAngle);
+      const sinA = Math.sin(rotAngle);
 
-      let vx = velocities[i3];
-      let vy = velocities[i3 + 1];
-      let vz = velocities[i3 + 2];
+      const rx = tx;
+      const ry = ty * cosA - tz * sinA;
+      const rz = ty * sinA + tz * cosA;
 
-      if (isExploding) {
-        const len = Math.sqrt(px * px + py * py + pz * pz) + 0.1;
-        vx += (px / len) * 48.0 * dt;
-        vy += (py / len) * 48.0 * dt;
-        vz += (pz / len) * 48.0 * dt;
-      } else {
-        const dx = tx - px;
-        const dy = ty - py;
-        const dz = tz - pz;
-
-        vx = vx * 0.88 + dx * 3.8 * dt;
-        vy = vy * 0.88 + dy * 3.8 * dt;
-        vz = vz * 0.88 + dz * 3.8 * dt;
-      }
-
-      px += vx * dt * 60.0 * 0.016;
-      py += vy * dt * 60.0 * 0.016;
-      pz += vz * dt * 60.0 * 0.016;
-
-      posArray[i3] = px;
-      posArray[i3 + 1] = py;
-      posArray[i3 + 2] = pz;
-
-      velocities[i3] = vx;
-      velocities[i3 + 1] = vy;
-      velocities[i3 + 2] = vz;
+      posArray[i3] = rx;
+      posArray[i3 + 1] = ry;
+      posArray[i3 + 2] = rz;
     }
 
     posAttr.needsUpdate = true;
@@ -278,9 +243,7 @@
     const t = now * 0.001;
     uniforms.uTime.value = t;
 
-    updatePhysicsCycle(dt);
-
-    particleSystem.rotation.y = t * 0.35;
+    updateDNAPhysics(dt, t);
 
     renderer.render(scene, camera);
   }
