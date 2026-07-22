@@ -142,14 +142,6 @@
 
 ---
 
-### 📊 System Telemetry
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/system-telemetry.svg?v=8" alt="Ethernium System Telemetry Card" width="100%" />
-</div>
-
----
-
 ### 👁️ Ethernium Corporate Vision
 
 <div align="center">
