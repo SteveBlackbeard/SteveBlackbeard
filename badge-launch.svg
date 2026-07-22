@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 50" width="480" height="50">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&amp;family=Fira+Code:wght@700&amp;display=swap');
+
+      .btn-text {
+        font-family: 'Nebula', 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 13.5px;
+        fill: #FFFFFF !important;
+        stroke: #000000;
+        stroke-width: 2px;
+        paint-order: stroke fill;
+        letter-spacing: 2px;
+        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.9));
+      }
+
+      .sheen-move {
+        animation: moveSheen 3.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes moveSheen {
+        0% { transform: translateX(-150px); }
+        100% { transform: translateX(200px); }
+      }
+    </style>
+
+    <linearGradient id="btn-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142138" />
+      <stop offset="30%" stop-color="#080D1A" />
+      <stop offset="70%" stop-color="#03050A" />
+      <stop offset="100%" stop-color="#091020" />
+    </linearGradient>
+
+    <linearGradient id="bevel-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#7000FF" />
+    </linearGradient>
+
+    <linearGradient id="moving-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Button Obsidian Frame with Rounded Corners -->
+  <rect width="480" height="50" rx="10" fill="url(#btn-obsidian)" stroke="#1E293B" stroke-width="2"/>
+
+  <!-- Moving 3D Light Sheen -->
+  <g class="sheen-move">
+    <polygon points="50,0 160,0 80,50 -30,50" fill="url(#moving-sheen)" />
+  </g>
+
+  <!-- White Glow Bevel Border (Rounded Corners) -->
+  <rect x="3" y="3" width="474" height="44" rx="8" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
+  <rect x="5" y="5" width="470" height="40" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" />
+
+  <!-- Button Text -->
+  <text x="240" y="31" text-anchor="middle" class="btn-text" fill="#FFFFFF" stroke="#000000" stroke-width="2" paint-order="stroke fill">🚀 LAUNCH LIVE 100K GPU TELEMETRY HUD</text>
+</svg>

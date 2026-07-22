@@ -1,5 +1,5 @@
 <div align="center">
-  <!-- Dark Corporate Cyberpunk SVG Header Banner -->
+  <!-- 3D Obsidian Shader Animated Header Banner -->
   <img src="header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
 
   <br/><br/>
@@ -11,7 +11,9 @@
   </p>
 
   <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank"><img src="https://img.shields.io/badge/🚀_LAUNCH_LIVE-GPU_TELEMETRY_HUD-00F0FF?style=for-the-badge&logo=opengl&logoColor=white" alt="Launch Live GPU Telemetry HUD" /></a>
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+      <img src="badge-launch.svg" alt="Launch Live 100K GPU Telemetry HUD" width="480" />
+    </a>
   </p>
 
   <p align="center">
@@ -46,7 +48,7 @@
     <img src="particle-console.gif" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Click the animated console above to launch full-screen 60 FPS WebGL GPU Shader Simulation</i></sub>
+    <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Newtonian GPU Shader Simulation</i></sub>
   </p>
 </div>
 
