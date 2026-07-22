@@ -122,7 +122,7 @@
       <rect x="2" y="2" width="276" height="76" rx="10" fill="none" stroke="#00FF9D" stroke-width="1.5"/>
       <rect x="4" y="4" width="272" height="72" rx="9" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.3"/>
       <text x="140" y="34" text-anchor="middle" class="node-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">⚡ INVICTVS GPU ENGINE</text>
-      <text x="140" y="58" text-anchor="middle" class="node-subtitle">100,000 Particle Physics Shaders</text>
+      <text x="140" y="58" text-anchor="middle" class="node-subtitle">120,000 Particle Physics Shaders</text>
     </g>
 
     <!-- NODE 4: SOVEREIGN MATRIX (Engraved Inset) -->

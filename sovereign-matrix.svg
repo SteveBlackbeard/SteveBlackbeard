@@ -66,7 +66,7 @@
     <g transform="translate(495, 70)">
       <rect width="415" height="95" rx="10" fill="url(#cell-obsidian)" stroke="#000000" stroke-width="2.5"/>
       <rect x="2" y="2" width="411" height="91" rx="8" fill="none" stroke="#7000FF" stroke-width="1.5"/>
-      <text x="20" y="30" class="cell-title">GPU_KINETICS // 100K SHADER ENGINE</text>
+      <text x="20" y="30" class="cell-title">GPU_KINETICS // 120K SHADER ENGINE</text>
       <text x="20" y="55" class="cell-desc">BufferGeometry allocation via native Float32Array.</text>
       <text x="20" y="75" class="cell-desc">GLSL Simplex Noise 3D &amp; Newtonian gravity physics.</text>
     </g>

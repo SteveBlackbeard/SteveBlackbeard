@@ -13,7 +13,7 @@
 
   <p align="center">
     <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg?v=3" alt="Launch Live 100K GPU Telemetry HUD" width="480" />
+      <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg?v=3" alt="Launch Live 120K GPU Telemetry HUD" width="480" />
     </a>
   </p>
 
