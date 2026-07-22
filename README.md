@@ -1,7 +1,7 @@
-<!-- ETHERNIUM SOVEREIGN PROFILE README v5.5 -->
+<!-- ETHERNIUM SOVEREIGN PROFILE README -->
 <div align="center">
   <!-- 3D Obsidian Shader Animated Header Banner -->
-  <img src="header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
 
   <br/><br/>
 
@@ -13,14 +13,14 @@
 
   <p align="center">
     <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="badge-launch.svg" alt="Launch Live 100K GPU Telemetry HUD" width="480" />
+      <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg" alt="Launch Live 100K GPU Telemetry HUD" width="480" />
     </a>
   </p>
 
   <p align="center">
-    <a href="#-executive-briefing--corporate-manifesto"><img src="badge-clearance.svg" alt="Clearance Level 05" width="230" /></a>
-    <a href="#-ethernium-corporate-systemic-architecture"><img src="badge-paradigm.svg" alt="Paradigm Disruptive" width="230" /></a>
-    <a href="#-system-telemetry"><img src="badge-telemetry.svg" alt="GPU Telemetry 60 FPS" width="230" /></a>
+    <a href="#-executive-briefing--corporate-manifesto"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-clearance.svg" alt="Clearance Level 05" width="230" /></a>
+    <a href="#-ethernium-corporate-systemic-architecture"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-paradigm.svg" alt="Paradigm Disruptive" width="230" /></a>
+    <a href="#-system-telemetry"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-telemetry.svg" alt="GPU Telemetry 60 FPS" width="230" /></a>
   </p>
 
   ---
@@ -37,7 +37,7 @@
 ### 🤖 Ethernium Autonomous Companion // Seneschal-v5
 
 <div align="center">
-  <img src="ethernium-sentinel.svg" alt="Ethernium Autonomous Companion HUD" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-sentinel.svg" alt="Ethernium Autonomous Companion HUD" width="100%" />
 </div>
 
 ---
@@ -46,7 +46,7 @@
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-console.gif" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
+    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-console.gif" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
   </a>
   <p align="center">
     <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Newtonian GPU Shader Simulation</i></sub>
@@ -58,7 +58,7 @@
 ### 🏛️ Ethernium Corporate Systemic Architecture
 
 <div align="center">
-  <img src="seneschal-chronolith.svg" alt="Ethernium Corporate Systemic Architecture" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/seneschal-chronolith.svg" alt="Ethernium Corporate Systemic Architecture" width="100%" />
 </div>
 
 ---
@@ -66,7 +66,7 @@
 ### ⚡ Sovereign Compute Matrix
 
 <div align="center">
-  <img src="sovereign-matrix.svg" alt="Sovereign Compute Matrix" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg" alt="Sovereign Compute Matrix" width="100%" />
 </div>
 
 ---
@@ -106,7 +106,7 @@
 ### 📊 System Telemetry
 
 <div align="center">
-  <img src="system-telemetry.svg" alt="Ethernium System Telemetry Card" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/system-telemetry.svg" alt="Ethernium System Telemetry Card" width="100%" />
 </div>
 
 ---
@@ -115,7 +115,7 @@
 
 <div align="center">
   <br />
-  <img src="ethernium-hologram.png" alt="Ethernium Sovereign Vision Hologram" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Sovereign Vision Hologram" width="100%" />
 </div>
 
 ---
