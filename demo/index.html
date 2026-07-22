@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NULLA-LABS // STUDIO-GRADE AAA 3D MOLECULAR DNA ENGINE</title>
-  <meta name="description" content="NULLA-LABS Studio-Grade AAA 3D CPK Atomic Molecular DNA Engine with Physical Meshes & Chemical Bond Sticks.">
+  <title>NULLA-LABS // 3D PERIODIC TABLE & CHEMICAL SYNTHESIS ENGINE</title>
+  <meta name="description" content="NULLA-LABS Interactive 3D Periodic Table, Live Molecular Fusion, and CPK Atomic Chemistry Engine.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -93,9 +93,77 @@
       50% { opacity: 0.3; transform: scale(0.8); }
       100% { opacity: 1; transform: scale(1); }
     }
+
+    /* Bottom-Right Corner Periodic Table HUD */
+    #periodic-table-hud {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 380px;
+      z-index: 3;
+      pointer-events: auto;
+    }
+    .pt-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .pt-cell {
+      background: #040A14;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 6px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pt-cell:hover {
+      background: #00F0FF;
+      color: #020306;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.8);
+      transform: translateY(-2px);
+    }
+    .pt-cell-symbol {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .pt-cell-num {
+      font-size: 9px;
+      opacity: 0.7;
+    }
+
+    /* Molecular Fusion Controls */
+    .fusion-bar {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: center;
+    }
+    .btn-fuse {
+      flex: 1;
+      padding: 8px;
+      background: linear-gradient(90deg, #FF0055, #7000FF, #00FF9D);
+      border: none;
+      color: #FFF;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.5);
+      transition: all 0.2s ease;
+    }
+    .btn-fuse:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.9);
+      transform: translateY(-2px);
+    }
+
     .hud-footer {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: flex-end;
     }
     .telemetry-grid {
@@ -119,11 +187,6 @@
       color: #00F0FF;
       font-weight: 700;
     }
-    .controls-hint {
-      font-size: 10.5px;
-      color: #94A3B8;
-      text-align: right;
-    }
     .btn-action {
       display: inline-block;
       margin-top: 8px;
@@ -140,17 +203,13 @@
       transition: all 0.2s ease;
       box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
     }
-    .btn-action:hover {
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.8);
-      transform: translateY(-2px);
-    }
 
     #molecular-hud {
       position: absolute;
       top: 90px;
-      right: 24px;
-      width: 330px;
-      display: none;
+      left: 24px;
+      width: 340px;
+      display: block;
       z-index: 3;
       pointer-events: auto;
     }
@@ -177,41 +236,97 @@
   <div class="hud-layer">
     <div class="glass-card hud-header">
       <div>
-        <div class="hud-title">NULLA-LABS // STUDIO-GRADE AAA 3D CPK MOLECULAR ENGINE</div>
-        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">PHYSICAL ATOMIC SPHERES &bull; CHEMICAL BOND STICKS &bull; STUDIO LIGHTING</div>
+        <div class="hud-title">NULLA-LABS // 3D PERIODIC TABLE &amp; MOLECULAR FUSION ENGINE</div>
+        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">REAL-TIME CHEMICAL SYNTHESIS &bull; LEVITATING FLUID TRANSITIONS &bull; CPK ATOMICS</div>
       </div>
       <div class="status-badge">
         <div class="pulse-dot"></div>
-        STUDIO_AAA_ACTIVE
+        CHEMICAL_SYNTHESIS_ONLINE
       </div>
     </div>
 
-    <!-- MOLECULAR BREAKDOWN HUD SIDE PANEL -->
+    <!-- MOLECULAR COMPOSITION TELEMETRY WINDOW (Top-Left) -->
     <div id="molecular-hud" class="glass-card">
       <div style="font-family:'Orbitron'; font-size:13px; font-weight:900; color:#00F0FF; margin-bottom:12px; border-bottom:1px solid rgba(0,240,255,0.3); padding-bottom:6px;">
-        🔬 3D ATOMIC MOLECULAR TELEMETRY
+        🧪 MOLECULAR COMPOSITION &amp; TELEMETRY
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Selected Atom / Base Pair</div>
-        <div class="hud-row-val" id="hud-name" style="color:#FFF;">Adenine (A)</div>
+        <div class="hud-row-label">Current Assembly</div>
+        <div class="hud-row-val" id="hud-name" style="color:#FFF;">B-DNA Double Helix (Example)</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Chemical Formula</div>
-        <div class="hud-row-val" id="hud-formula">C5 H5 N5</div>
+        <div class="hud-row-label">Chemical Formula / Ratio</div>
+        <div class="hud-row-val" id="hud-formula">P70 O140 N350 C350</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Classification</div>
-        <div class="hud-row-val" id="hud-class">Purine (Double Ring)</div>
+        <div class="hud-row-label">Atomic Breakdown</div>
+        <div class="hud-row-val" id="hud-class">Phosphorus, Oxygen, Nitrogen, Carbon</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Hydrogen Bonds</div>
-        <div class="hud-row-val" id="hud-bonds">2 Hydrogen Bonds</div>
+        <div class="hud-row-label">Chemical Bonding Structure</div>
+        <div class="hud-row-val" id="hud-bonds">Phosphodiester &amp; Hydrogen Bonds</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Epigenetic Locus</div>
-        <div class="hud-row-val" id="hud-epi" style="color:#FFD700;">CpG Island Active</div>
+        <div class="hud-row-label">State / Synthesis Mode</div>
+        <div class="hud-row-val" id="hud-epi" style="color:#FFD700;">Levitating Fluid Equilibrium</div>
       </div>
-      <button class="btn-action" id="btn-reassemble" style="width:100%; margin-top:8px;">[RESET MOLECULAR FOCUS]</button>
+      <button class="btn-action" id="btn-reassemble" style="width:100%; margin-top:8px;">[RESET TO B-DNA EXAMPLE]</button>
+    </div>
+
+    <!-- INTERACTIVE 3D PERIODIC TABLE MATRIX (Bottom-Right) -->
+    <div id="periodic-table-hud" class="glass-card">
+      <div style="font-family:'Orbitron'; font-size:12px; font-weight:900; color:#00F0FF; display:flex; justify-content:space-between; align-items:center;">
+        <span>⚛️ PERIODIC TABLE &amp; SYNTHESIS</span>
+        <span style="font-size:9px; color:#94A3B8;">CLICK TO FORM 3D MOLECULE</span>
+      </div>
+
+      <div class="pt-grid">
+        <div class="pt-cell" data-symbol="H" style="border-color:#FFFFFF; color:#FFFFFF;">
+          <div class="pt-cell-num">1</div>
+          <div class="pt-cell-symbol">H</div>
+        </div>
+        <div class="pt-cell" data-symbol="C" style="border-color:#8A2BE2; color:#8A2BE2;">
+          <div class="pt-cell-num">6</div>
+          <div class="pt-cell-symbol">C</div>
+        </div>
+        <div class="pt-cell" data-symbol="N" style="border-color:#00F0FF; color:#00F0FF;">
+          <div class="pt-cell-num">7</div>
+          <div class="pt-cell-symbol">N</div>
+        </div>
+        <div class="pt-cell" data-symbol="O" style="border-color:#FF0055; color:#FF0055;">
+          <div class="pt-cell-num">8</div>
+          <div class="pt-cell-symbol">O</div>
+        </div>
+        <div class="pt-cell" data-symbol="P" style="border-color:#FF8800; color:#FF8800;">
+          <div class="pt-cell-num">15</div>
+          <div class="pt-cell-symbol">P</div>
+        </div>
+        <div class="pt-cell" data-symbol="Na" style="border-color:#FFD700; color:#FFD700;">
+          <div class="pt-cell-num">11</div>
+          <div class="pt-cell-symbol">Na</div>
+        </div>
+        <div class="pt-cell" data-symbol="Cl" style="border-color:#00FF9D; color:#00FF9D;">
+          <div class="pt-cell-num">17</div>
+          <div class="pt-cell-symbol">Cl</div>
+        </div>
+        <div class="pt-cell" data-symbol="H2O" style="border-color:#00D4FF; color:#00D4FF;">
+          <div class="pt-cell-num">H2O</div>
+          <div class="pt-cell-symbol">Water</div>
+        </div>
+        <div class="pt-cell" data-symbol="CO2" style="border-color:#FF7700; color:#FF7700;">
+          <div class="pt-cell-num">CO2</div>
+          <div class="pt-cell-symbol">Gas</div>
+        </div>
+        <div class="pt-cell" data-symbol="DNA" style="border-color:#00FF9D; color:#00FF9D;">
+          <div class="pt-cell-num">DNA</div>
+          <div class="pt-cell-symbol">Helix</div>
+        </div>
+      </div>
+
+      <div class="fusion-bar">
+        <button class="btn-fuse" id="btn-fuse-h2o">[FUSE 2H + O → H2O WATER]</button>
+        <button class="btn-fuse" id="btn-fuse-nacl" style="background:linear-gradient(90deg,#FFD700,#00FF9D);">[FUSE Na + Cl → NaCl SALT]</button>
+      </div>
     </div>
 
     <div class="hud-footer">
@@ -224,11 +339,6 @@
           <div class="metric-label">Atomic Geometry</div>
           <div class="metric-val" id="particle-val">CPK ATOMS</div>
         </div>
-      </div>
-
-      <div class="glass-card controls-hint">
-        <div>[CLICK ANY ATOM IN 3D SPACE TO INSPECT FORMULA | HOVER: ATOMIC HIGHLIGHT | DRAG: 3D ORBIT]</div>
-        <a href="https://github.com/SteveBlackbeard" class="btn-action">← RETURN TO GITHUB PROFILE</a>
       </div>
     </div>
   </div>

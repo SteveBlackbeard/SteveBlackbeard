@@ -1,5 +1,5 @@
-// NULLA-LABS MASTERWORK AAA 3D CPK MOLECULAR ENGINE v40.0
-// Freeze Exact Structure & Fix 100% Locked 3D Selection Ring
+// NULLA-LABS 3D PERIODIC TABLE & CHEMICAL SYNTHESIS ENGINE v45.0
+// Real-Time Chemical Synthesis, Levitating Fluid Morphing & 100% Locked Selection
 (function() {
   'use strict';
 
@@ -32,7 +32,7 @@
   const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 75);
 
-  // 3-Point Studio VFX Lighting
+  // 3-Point Studio Lighting
   const dirLight1 = new THREE.DirectionalLight(0x00F0FF, 2.0);
   dirLight1.position.set(50, 60, 50);
   scene.add(dirLight1);
@@ -47,17 +47,19 @@
   const pointLight = new THREE.PointLight(0x00FF9D, 2.5, 90);
   scene.add(pointLight);
 
-  // High-Precision CPK Physical Materials (Preserved Color Scheme)
-  const matPhosphorus = new THREE.MeshStandardMaterial({ color: 0xFF8800, roughness: 0.25, metalness: 0.7 });
-  const matOxygen     = new THREE.MeshStandardMaterial({ color: 0xFF0055, roughness: 0.3, metalness: 0.5 });
-  const matNitrogen   = new THREE.MeshStandardMaterial({ color: 0x00F0FF, roughness: 0.2, metalness: 0.8 });
+  // CPK Physical Materials
+  const matHydrogen   = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.1, metalness: 0.9 });
   const matCarbon     = new THREE.MeshStandardMaterial({ color: 0x8A2BE2, roughness: 0.25, metalness: 0.65 });
+  const matNitrogen   = new THREE.MeshStandardMaterial({ color: 0x00F0FF, roughness: 0.2, metalness: 0.8 });
+  const matOxygen     = new THREE.MeshStandardMaterial({ color: 0xFF0055, roughness: 0.3, metalness: 0.5 });
+  const matPhosphorus = new THREE.MeshStandardMaterial({ color: 0xFF8800, roughness: 0.25, metalness: 0.7 });
+  const matSodium     = new THREE.MeshStandardMaterial({ color: 0xFFD700, roughness: 0.2, metalness: 0.9 });
+  const matChlorine   = new THREE.MeshStandardMaterial({ color: 0x00FF9D, roughness: 0.2, metalness: 0.8 });
   const matBond       = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.1, metalness: 0.9, opacity: 0.9, transparent: true });
 
   const sphereGeo = new THREE.SphereGeometry(1.0, 32, 32);
   const cylinderGeo = new THREE.CylinderGeometry(0.25, 0.25, 1.0, 16);
 
-  // Frozen Core 3D Group
   const dnaGroup = new THREE.Group();
   scene.add(dnaGroup);
 
@@ -68,6 +70,8 @@
 
   const atomMeshes = [];
   const componentData = [];
+  const defaultPositions = [];
+  const targetPositions = [];
 
   for (let i = 0; i < BASE_PAIRS; i++) {
     const progress = i / BASE_PAIRS;
@@ -82,32 +86,36 @@
     const y2 = Math.sin(angle2) * HELIX_RADIUS;
     const z2 = Math.cos(angle2) * HELIX_RADIUS;
 
-    // 1. Phosphate Backbone Atoms (P, O)
+    // Phosphate Backbone Atoms (P, O)
     const meshP1 = new THREE.Mesh(sphereGeo, matPhosphorus);
     meshP1.position.set(x, y1, z1);
     meshP1.scale.setScalar(1.4);
     dnaGroup.add(meshP1);
     atomMeshes.push(meshP1);
+    defaultPositions.push(new THREE.Vector3(x, y1, z1));
 
     const meshP2 = new THREE.Mesh(sphereGeo, matPhosphorus);
     meshP2.position.set(x, y2, z2);
     meshP2.scale.setScalar(1.4);
     dnaGroup.add(meshP2);
     atomMeshes.push(meshP2);
+    defaultPositions.push(new THREE.Vector3(x, y2, z2));
 
     const meshO1 = new THREE.Mesh(sphereGeo, matOxygen);
     meshO1.position.set(x + 0.8, y1 + 0.8, z1);
     meshO1.scale.setScalar(1.0);
     dnaGroup.add(meshO1);
     atomMeshes.push(meshO1);
+    defaultPositions.push(new THREE.Vector3(x + 0.8, y1 + 0.8, z1));
 
     const meshO2 = new THREE.Mesh(sphereGeo, matOxygen);
     meshO2.position.set(x + 0.8, y2 + 0.8, z2);
     meshO2.scale.setScalar(1.0);
     dnaGroup.add(meshO2);
     atomMeshes.push(meshO2);
+    defaultPositions.push(new THREE.Vector3(x + 0.8, y2 + 0.8, z2));
 
-    // 2. Base Pair Cross-Bonds & Nitrogenous Atoms (N, C)
+    // Base Pair Cross-Bonds & Nitrogenous Atoms (N, C)
     const basePairType = i % 4;
     let baseData;
     if (basePairType === 0) baseData = { name: "Adenine (A) - Thymine (T)", formula: "C5 H5 N5 / C5 H6 N2 O2", type: "Purine-Pyrimidine Base Pair", bonds: "2 Hydrogen Bonds", epi: "Non-Methylated Locus" };
@@ -128,11 +136,12 @@
       meshAtom.scale.setScalar(1.1);
       dnaGroup.add(meshAtom);
       atomMeshes.push(meshAtom);
+      defaultPositions.push(new THREE.Vector3(rx, ry, rz));
 
       componentData[atomMeshes.length - 1] = baseData;
     }
 
-    // 3. Chemical Bond Stick Mesh
+    // Chemical Bond Stick Mesh
     const bondMesh = new THREE.Mesh(cylinderGeo, matBond);
     const start = new THREE.Vector3(x, y1, z1);
     const end = new THREE.Vector3(x, y2, z2);
@@ -144,16 +153,115 @@
     dnaGroup.add(bondMesh);
   }
 
+  for (let i = 0; i < atomMeshes.length; i++) {
+    targetPositions.push(defaultPositions[i].clone());
+  }
+
   if (particleVal) particleVal.textContent = atomMeshes.length.toLocaleString() + " CPK ATOMS";
 
-  // Selection Ring Mesh ATTACHED DIRECTLY TO dnaGroup (100% Locked Position!)
+  // Selection Ring Mesh Attached Directly inside dnaGroup (100% Locked Target Position!)
   const selectRingGeometry = new THREE.TorusGeometry(2.8, 0.35, 16, 32);
   const selectRingMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0055, wireframe: true });
   const selectRingMesh = new THREE.Mesh(selectRingGeometry, selectRingMaterial);
   selectRingMesh.visible = false;
-  dnaGroup.add(selectRingMesh); // Attached directly inside dnaGroup!
+  dnaGroup.add(selectRingMesh);
 
-  // Mouse Raycasting & Orbit Physics
+  // Levitating Shockwave Particle System for Chemical Fusion
+  const shockwaveGeo = new THREE.BufferGeometry();
+  const shockwaveCount = 1200;
+  const shockwavePos = new Float32Array(shockwaveCount * 3);
+  for (let s = 0; s < shockwaveCount * 3; s++) shockwavePos[s] = (Math.random() - 0.5) * 80;
+  shockwaveGeo.setAttribute('position', new THREE.BufferAttribute(shockwavePos, 3));
+  const shockwaveMat = new THREE.PointsMaterial({ color: 0x00FF9D, size: 1.2, transparent: true, opacity: 0.0 });
+  const shockwavePoints = new THREE.Points(shockwaveGeo, shockwaveMat);
+  scene.add(shockwavePoints);
+
+  // Periodic Table Element Selection & Live Chemical Synthesis Morphing
+  function morphToStructure(type) {
+    selectRingMesh.visible = false;
+
+    if (type === 'H') {
+      for (let i = 0; i < atomMeshes.length; i++) {
+        const rad = 8.0 + (i % 10) * 2.0;
+        const a = (i / atomMeshes.length) * Math.PI * 12.0;
+        targetPositions[i].set(Math.cos(a) * rad, Math.sin(a) * rad, (i / atomMeshes.length - 0.5) * 30.0);
+      }
+      updateTelemetry("Hydrogen Gas (H2)", "H2", "Diatomic Hydrogen Gas", "Single Covalent Bond (H-H)", "Monatomic / Diatomic State");
+    } else if (type === 'C') {
+      for (let i = 0; i < atomMeshes.length; i++) {
+        const phi = Math.acos(-1 + (2 * i) / atomMeshes.length);
+        const theta = Math.sqrt(atomMeshes.length * Math.PI) * phi;
+        targetPositions[i].setFromSphericalCoords(18.0, phi, theta);
+      }
+      updateTelemetry("Carbon Diamond Lattice (C)", "C60 / Diamond", "Fullerene / Diamond Allotrope", "Tetrahedral Sp3 Covalent Network", "Solid Carbon Crystal");
+    } else if (type === 'H2O') {
+      for (let i = 0; i < atomMeshes.length; i++) {
+        const clusterIdx = Math.floor(i / 3);
+        const subIdx = i % 3;
+        const cx = (clusterIdx % 10 - 5) * 12.0;
+        const cy = (Math.floor(clusterIdx / 10) - 3) * 12.0;
+        
+        if (subIdx === 0) targetPositions[i].set(cx, cy, 0); // Oxygen
+        else if (subIdx === 1) targetPositions[i].set(cx - 3.5, cy + 3.0, 0); // Hydrogen 1 (104.5 deg)
+        else targetPositions[i].set(cx + 3.5, cy + 3.0, 0); // Hydrogen 2
+      }
+      updateTelemetry("Water Molecule (H2O)", "H2O", "Polar Covalent Molecule", "Polar Bent Geometry (104.5°)", "Liquid Phase Equilibrium");
+    } else if (type === 'CO2') {
+      for (let i = 0; i < atomMeshes.length; i++) {
+        const clusterIdx = Math.floor(i / 3);
+        const subIdx = i % 3;
+        const cx = (clusterIdx % 10 - 5) * 14.0;
+        const cy = (Math.floor(clusterIdx / 10) - 3) * 10.0;
+        
+        if (subIdx === 0) targetPositions[i].set(cx, cy, 0); // Carbon Center
+        else if (subIdx === 1) targetPositions[i].set(cx - 5.0, cy, 0); // Oxygen 1
+        else targetPositions[i].set(cx + 5.0, cy, 0); // Oxygen 2
+      }
+      updateTelemetry("Carbon Dioxide (CO2)", "CO2", "Linear Covalent Gas", "Double Bonds (O=C=O)", "Gaseous Phase");
+    } else if (type === 'NaCl') {
+      for (let i = 0; i < atomMeshes.length; i++) {
+        const ix = (i % 6) * 6.0 - 15.0;
+        const iy = (Math.floor(i / 6) % 6) * 6.0 - 15.0;
+        const iz = Math.floor(i / 36) * 6.0 - 15.0;
+        targetPositions[i].set(ix, iy, iz);
+      }
+      updateTelemetry("Sodium Chloride Crystal (NaCl)", "NaCl", "Ionic Salt Lattice", "Ionic Bond Network (Na+ Cl-)", "Crystalline Solid");
+    } else { // Reset to DNA Example
+      for (let i = 0; i < atomMeshes.length; i++) {
+        targetPositions[i].copy(defaultPositions[i]);
+      }
+      updateTelemetry("B-DNA Double Helix (Example)", "P70 O140 N350 C350", "Genetic Macromolecule", "Phosphodiester & Hydrogen Bonds", "Levitating Fluid Equilibrium");
+    }
+
+    // Trigger Levitating Fusion Shockwave
+    shockwaveMat.opacity = 1.0;
+  }
+
+  function updateTelemetry(name, formula, type, bonds, epi) {
+    if (hudName) hudName.textContent = name;
+    if (hudFormula) hudFormula.textContent = formula;
+    if (hudClass) hudClass.textContent = type;
+    if (hudBonds) hudBonds.textContent = bonds;
+    if (hudEpi) hudEpi.textContent = epi;
+  }
+
+  // Bind Periodic Table Cells
+  document.querySelectorAll('.pt-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const sym = cell.getAttribute('data-symbol');
+      morphToStructure(sym);
+    });
+  });
+
+  const btnFuseH2O = document.getElementById('btn-fuse-h2o');
+  if (btnFuseH2O) btnFuseH2O.addEventListener('click', () => morphToStructure('H2O'));
+
+  const btnFuseNaCl = document.getElementById('btn-fuse-nacl');
+  if (btnFuseNaCl) btnFuseNaCl.addEventListener('click', () => morphToStructure('NaCl'));
+
+  if (btnReassemble) btnReassemble.addEventListener('click', () => morphToStructure('DNA'));
+
+  // Mouse Raycasting & Orbit Controls
   const raycaster = new THREE.Raycaster();
   const mouseScreen = new THREE.Vector2();
 
@@ -178,14 +286,10 @@
         hoveredAtom.scale.setScalar(1.0);
       }
       hoveredAtom = intersects[0].object;
-      if (hoveredAtom !== selectedAtom) {
-        hoveredAtom.scale.setScalar(1.6);
-      }
+      if (hoveredAtom !== selectedAtom) hoveredAtom.scale.setScalar(1.6);
       document.body.style.cursor = 'pointer';
     } else {
-      if (hoveredAtom && hoveredAtom !== selectedAtom) {
-        hoveredAtom.scale.setScalar(1.0);
-      }
+      if (hoveredAtom && hoveredAtom !== selectedAtom) hoveredAtom.scale.setScalar(1.0);
       hoveredAtom = null;
       document.body.style.cursor = 'default';
     }
@@ -208,7 +312,7 @@
 
   window.addEventListener('mouseup', () => { isDragging = false; });
 
-  // Direct 3D Raycasting Atom Selection (100% Position Locking Fix)
+  // Direct 3D Raycast Atom Selection (100% Position Lock inside dnaGroup)
   window.addEventListener('click', (e) => {
     if (e.target !== canvas) return;
 
@@ -222,29 +326,15 @@
       const idx = atomMeshes.indexOf(selectedAtom);
       const data = componentData[idx] || { name: "Phosphate-Deoxyribose Backbone Node", formula: "PO4 (3-) / C5 H10 O4", type: "Structural Backbone Monomer", bonds: "Phosphodiester Bond", epi: "Structural Scaffold" };
 
-      // Copy exact local position inside dnaGroup so selection ring locks 100% onto clicked atom!
       selectRingMesh.position.copy(selectedAtom.position);
       selectRingMesh.visible = true;
 
       selectedAtom.scale.setScalar(2.4);
 
       if (hudPanel) hudPanel.style.display = 'block';
-      if (hudName) hudName.textContent = data.name;
-      if (hudFormula) hudFormula.textContent = data.formula;
-      if (hudClass) hudClass.textContent = data.type;
-      if (hudBonds) hudBonds.textContent = data.bonds;
-      if (hudEpi) hudEpi.textContent = data.epi;
+      updateTelemetry(data.name, data.formula, data.type, data.bonds, data.epi);
     }
   });
-
-  if (btnReassemble) {
-    btnReassemble.addEventListener('click', () => {
-      if (selectedAtom) selectedAtom.scale.setScalar(1.0);
-      selectedAtom = null;
-      selectRingMesh.visible = false;
-      if (hudPanel) hudPanel.style.display = 'none';
-    });
-  }
 
   window.addEventListener('wheel', (e) => {
     camera.position.z += e.deltaY * 0.04;
@@ -257,7 +347,7 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // Render Animation Loop
+  // Render Loop (Smooth Levitating Morph Animation)
   let frameCount = 0;
   let lastTime = performance.now();
 
@@ -274,7 +364,17 @@
     const t = now * 0.001;
     pointLight.position.x = Math.sin(t) * 40.0;
 
-    // Rotate selection ring around selected atom
+    // Smooth Levitating Atomic Morphing (Lerp)
+    for (let i = 0; i < atomMeshes.length; i++) {
+      atomMeshes[i].position.lerp(targetPositions[i], 0.05);
+    }
+
+    // Shockwave Fading
+    if (shockwaveMat.opacity > 0.01) {
+      shockwaveMat.opacity -= 0.02;
+      shockwavePoints.rotation.y += 0.02;
+    }
+
     if (selectRingMesh.visible) {
       selectRingMesh.rotation.x = t * 3.0;
       selectRingMesh.rotation.y = t * 3.5;
