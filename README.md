@@ -55,14 +55,14 @@
 
 ---
 
-### ⚗️ Complete IUPAC Periodic Table (118 Elements) // Gold Atom 360° Orbital View
+### 🛠️ Ethernium Registered Paradigms // Public Portfolio Console
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-periodic-table-au.gif?v=500" alt="Complete 118-Element IUPAC Periodic Table with Gold (Au) Atom 3D Orbital Rotation" width="100%" />
+    <img src="particle-public-projects.gif?v=501" alt="SteveBlackbeard Ethernium Public Projects Portfolio Console" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Complete 118-element IUPAC periodic table with Gold (Au, Z=79) electron shell orbital view rotating 360° — [Xe]4f¹⁴5d¹⁰6s¹ — Interactive molecular synthesis platform</i></sub>
+    <sub><i>Sovereign systems portfolio dashboard showing Fonts Forge vector toolkit, Seneschal AI runtime layer, and Chronolith cognitive persistence protocol — Click to launch interactive 3D engine</i></sub>
   </p>
 </div>
 
@@ -71,7 +71,7 @@
 ### 🏛️ Ethernium Corporate Systemic Architecture
 
 <div align="center">
-  <img src="seneschal-chronolith.svg?v=500" alt="Ethernium Corporate Systemic Architecture" width="100%" />
+  <img src="seneschal-chronolith.svg?v=501" alt="Ethernium Corporate Systemic Architecture" width="100%" />
 </div>
 
 ---
