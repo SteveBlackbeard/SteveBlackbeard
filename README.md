@@ -18,9 +18,9 @@
   </p>
 
   <p align="center">
-    <a href="https://github.com/SteveBlackbeard#executive-briefing--corporate-manifesto"><img src="badge-clearance.svg?v=503" alt="Clearance Level 05" width="230" /></a>
-    <a href="https://github.com/SteveBlackbeard#ethernium-corporate-systemic-architecture"><img src="badge-paradigm.svg?v=503" alt="Paradigm Disruptive" width="230" /></a>
-    <a href="https://github.com/SteveBlackbeard#real-b-dna-human-genome-double-helix--tp53-gene-sequence"><img src="badge-telemetry.svg?v=503" alt="GPU Telemetry 60 FPS" width="230" /></a>
+    <a href="#executive-briefing--corporate-manifesto"><img src="badge-clearance.svg?v=503" alt="Clearance Level 05" width="230" /></a>
+    <a href="#ethernium-corporate-systemic-architecture"><img src="badge-paradigm.svg?v=503" alt="Paradigm Disruptive" width="230" /></a>
+    <a href="#real-b-dna-human-genome-double-helix--tp53-gene-sequence"><img src="badge-telemetry.svg?v=503" alt="GPU Telemetry 60 FPS" width="230" /></a>
   </p>
 
   ---
