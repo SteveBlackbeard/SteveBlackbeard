@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 210" width="100%" height="210">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 200" width="100%" height="200">
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&amp;family=Fira+Code:wght@500;700&amp;display=swap');
       
       .bg { fill: #020306; }
-      .grid { stroke: #0F172A; stroke-width: 1; opacity: 0.4; }
+      .grid { stroke: #0F172A; stroke-width: 1; opacity: 0.35; }
       
       .title-text {
         font-family: 'Nebula', 'Orbitron', 'Fira Code', 'Segoe UI', sans-serif;
@@ -15,7 +15,7 @@
         stroke-width: 3px;
         paint-order: stroke fill;
         letter-spacing: 4px;
-        filter: drop-shadow(0px 0px 14px rgba(0, 240, 255, 0.8));
+        filter: drop-shadow(0px 0px 12px rgba(0, 240, 255, 0.7));
       }
       
       .subtitle-text {
@@ -24,7 +24,7 @@
         font-size: 13.5px;
         fill: #00F0FF;
         letter-spacing: 4px;
-        filter: drop-shadow(0px 0px 8px rgba(112, 0, 255, 0.6));
+        filter: drop-shadow(0px 0px 6px rgba(112, 0, 255, 0.5));
       }
       
       .badge-text {
@@ -39,9 +39,9 @@
       }
       
       @keyframes pulse {
-        0% { fill: #00FF9D; opacity: 1; filter: drop-shadow(0 0 6px #00FF9D); }
-        50% { fill: #00F0FF; opacity: 0.3; filter: drop-shadow(0 0 2px #00F0FF); }
-        100% { fill: #00FF9D; opacity: 1; filter: drop-shadow(0 0 6px #00FF9D); }
+        0% { fill: #00F0FF; opacity: 1; filter: drop-shadow(0 0 6px #00F0FF); }
+        50% { fill: #7000FF; opacity: 0.3; filter: drop-shadow(0 0 2px #7000FF); }
+        100% { fill: #00F0FF; opacity: 1; filter: drop-shadow(0 0 6px #00F0FF); }
       }
 
       .glow-border {
@@ -51,70 +51,61 @@
       @keyframes borderGlow {
         0% { stroke: #00F0FF; filter: drop-shadow(0 0 4px #00F0FF); }
         50% { stroke: #7000FF; filter: drop-shadow(0 0 6px #7000FF); }
-        100% { stroke: #00FF9D; filter: drop-shadow(0 0 4px #00FF9D); }
+        100% { stroke: #00F0FF; filter: drop-shadow(0 0 4px #00F0FF); }
       }
     </style>
 
-    <!-- Obsidian Shader Gradients -->
     <linearGradient id="obsidian-base" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#020306" />
       <stop offset="40%" stop-color="#080C16" />
-      <stop offset="80%" stop-color="#04060B" />
-      <stop offset="100%" stop-color="#010204" />
+      <stop offset="100%" stop-color="#020305" />
     </linearGradient>
 
     <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.12" />
-      <stop offset="25%" stop-color="#FFFFFF" stop-opacity="0.04" />
-      <stop offset="50%" stop-color="#00F0FF" stop-opacity="0.02" />
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
     </linearGradient>
 
     <linearGradient id="neon-glow" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#00F0FF" />
       <stop offset="50%" stop-color="#7000FF" />
-      <stop offset="100%" stop-color="#00FF9D" />
+      <stop offset="100%" stop-color="#00F0FF" />
     </linearGradient>
-
-    <filter id="obsidian-blur">
-      <feGaussianBlur stdDeviation="3" />
-    </filter>
   </defs>
 
-  <!-- Obsidian Crystal Base Frame -->
-  <rect width="950" height="210" rx="14" fill="url(#obsidian-base)" stroke="#1E293B" stroke-width="2"/>
-  
-  <!-- Obsidian Glass Shader Sheen Overlay -->
-  <path d="M 0 0 L 950 0 L 650 210 L 0 210 Z" fill="url(#glass-sheen)" />
+  <!-- Obsidian Glass Base Frame -->
+  <rect width="950" height="200" rx="12" fill="url(#obsidian-base)" stroke="#1E293B" stroke-width="2"/>
+  <path d="M 0 0 L 950 0 L 650 200 L 0 200 Z" fill="url(#glass-sheen)" />
 
-  <!-- Cyber Grid Patterns -->
+  <!-- Cyber Grid -->
   <g class="grid">
     <path d="M 0 45 L 950 45 M 0 85 L 950 85 M 0 125 L 950 125 M 0 165 L 950 165" />
-    <path d="M 120 0 L 120 210 M 300 0 L 300 210 M 480 0 L 480 210 M 660 0 L 660 210 M 840 0 L 840 210" />
+    <path d="M 120 0 L 120 200 M 300 0 L 300 200 M 480 0 L 480 200 M 660 0 L 660 200 M 840 0 L 840 200" />
   </g>
 
-  <!-- Obsidian Crystal Bevel Borders -->
+  <!-- Corner Borders -->
   <path d="M 18 18 L 75 18 M 18 18 L 18 75" class="glow-border" stroke-width="3.5" fill="none" />
   <path d="M 932 18 L 875 18 M 932 18 L 932 75" class="glow-border" stroke-width="3.5" fill="none" />
-  <path d="M 18 192 L 75 192 M 18 192 L 18 135" class="glow-border" stroke-width="3.5" fill="none" />
-  <path d="M 932 192 L 875 192 M 932 192 L 932 135" class="glow-border" stroke-width="3.5" fill="none" />
+  <path d="M 18 182 L 75 182 M 18 182 L 18 125" class="glow-border" stroke-width="3.5" fill="none" />
+  <path d="M 932 182 L 875 182 M 932 182 L 932 125" class="glow-border" stroke-width="3.5" fill="none" />
 
-  <!-- Top Glass Monolith Status Header -->
+  <!-- Monolith Status Bar Header -->
   <rect x="40" y="24" width="870" height="30" rx="6" fill="#060A14" stroke="#1E293B" stroke-width="1.5"/>
   <circle cx="60" cy="39" r="4.5" class="pulse-dot" />
-  <text x="76" y="43" class="badge-text">ETH-SENESCHAL // CHRONOLITH CORP MATRIX :: CLEARANCE 05</text>
-  <text x="785" y="43" class="badge-text" fill="#00FF9D">[OBSIDIAN_ONLINE]</text>
+  <text x="76" y="43" class="badge-text">ETH-CORP // SYSTEMIC ARCHITECTURE :: CLEARANCE 05</text>
+  <text x="795" y="43" class="badge-text" fill="#00F0FF">[SYSTEM_ACTIVE]</text>
 
-  <!-- Main Title: White Nebula Font with Black Stroke & Glowing Aura -->
-  <g transform="translate(475, 118)">
+  <!-- Main Title: White Nebula Font with Black Outline -->
+  <g transform="translate(475, 115)">
     <text text-anchor="middle" class="title-text">ETHERNIUM SOVEREIGN SYSTEMS</text>
   </g>
 
   <!-- Subtitle Text -->
-  <g transform="translate(475, 158)">
-    <text text-anchor="middle" class="subtitle-text">SENESCHAL CHRONOLITH • GPU COMPUTE • ARCHETYPAL MINDS</text>
+  <g transform="translate(475, 155)">
+    <text text-anchor="middle" class="subtitle-text">AUTONOMOUS ARCHITECTURES • GPU ENGINE • CONTROL SYSTEMS</text>
   </g>
 
   <!-- Bottom Accent Divider Line -->
-  <line x1="130" y1="178" x2="820" y2="178" stroke="url(#neon-glow)" stroke-width="2.5" />
+  <line x1="140" y1="174" x2="810" y2="174" stroke="url(#neon-glow)" stroke-width="2.5" />
 </svg>

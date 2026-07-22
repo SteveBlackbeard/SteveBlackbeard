@@ -19,7 +19,7 @@
       
       .sub-badge-bg {
         fill: #040A14;
-        stroke: #00FF9D;
+        stroke: #00F0FF;
         stroke-width: 1;
       }
 
@@ -27,9 +27,8 @@
         font-family: 'Fira Code', monospace;
         font-weight: 700;
         font-size: 10.5px;
-        fill: #00FF9D;
+        fill: #00F0FF;
         letter-spacing: 1.5px;
-        filter: drop-shadow(0 0 4px rgba(0, 255, 157, 0.4));
       }
 
       .bullet-text {
@@ -44,13 +43,12 @@
       }
 
       @keyframes pulse {
-        0% { fill: #00FF9D; opacity: 1; filter: drop-shadow(0 0 5px #00FF9D); }
-        50% { fill: #00F0FF; opacity: 0.3; }
-        100% { fill: #00FF9D; opacity: 1; filter: drop-shadow(0 0 5px #00FF9D); }
+        0% { fill: #00F0FF; opacity: 1; filter: drop-shadow(0 0 5px #00F0FF); }
+        50% { fill: #7000FF; opacity: 0.3; }
+        100% { fill: #00F0FF; opacity: 1; filter: drop-shadow(0 0 5px #00F0FF); }
       }
     </style>
 
-    <!-- Obsidian Shader Gradients -->
     <linearGradient id="obsidian-panel" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#070B16" />
       <stop offset="50%" stop-color="#04070F" />
@@ -64,7 +62,7 @@
     </linearGradient>
 
     <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15" />
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.12" />
       <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.03" />
       <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
     </linearGradient>
@@ -77,23 +75,20 @@
     <rect width="280" height="240" rx="8" class="panel-bg" />
     <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
 
-    <!-- Main Header -->
     <rect width="280" height="42" rx="8" class="panel-header" />
     <circle cx="20" cy="21" r="4.5" class="status-pulse" />
-    <!-- WHITE INNER TEXT WITH BLACK STROKE -->
-    <text x="34" y="26" class="col-title">01. LOCAL-FIRST CORE</text>
+    <text x="34" y="26" class="col-title">01. SYSTEMIC CORE</text>
     
-    <!-- Centered Mini Sub-Header Badge -->
     <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
     <text x="140" y="63" text-anchor="middle" class="col-tag">[SOVEREIGN_NODE]</text>
     
     <text x="20" y="98" class="bullet-text">▪ Zero external dependencies.</text>
     <text x="20" y="126" class="bullet-text">▪ Deterministic execution runtime.</text>
-    <text x="20" y="154" class="bullet-text">▪ Frugal bare-metal compute.</text>
-    <text x="20" y="182" class="bullet-text">▪ Isolated scratch sandbox.</text>
+    <text x="20" y="154" class="bullet-text">▪ Bare-metal compute allocation.</text>
+    <text x="20" y="182" class="bullet-text">▪ Isolated sandbox execution.</text>
     <text x="20" y="210" class="bullet-text">▪ Sovereign data autonomy.</text>
 
-    <line x1="20" y1="222" x2="260" y2="222" stroke="#00FF9D" stroke-width="1.5" opacity="0.6"/>
+    <line x1="20" y1="222" x2="260" y2="222" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
   </g>
 
   <!-- COLUMN 2 -->
@@ -101,15 +96,12 @@
     <rect width="280" height="240" rx="8" class="panel-bg" />
     <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
 
-    <!-- Main Header -->
     <rect width="280" height="42" rx="8" class="panel-header" />
     <circle cx="20" cy="21" r="4.5" class="status-pulse" />
-    <!-- WHITE INNER TEXT WITH BLACK STROKE -->
-    <text x="34" y="26" class="col-title">02. GPU TELEMETRY</text>
+    <text x="34" y="26" class="col-title">02. GPU KINETICS</text>
 
-    <!-- Centered Mini Sub-Header Badge -->
     <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
-    <text x="140" y="63" text-anchor="middle" class="col-tag">[60 FPS_SHADERS]</text>
+    <text x="140" y="63" text-anchor="middle" class="col-tag">[60FPS_SHADERS]</text>
     
     <text x="20" y="98" class="bullet-text">▪ Custom GLSL vertex shaders.</text>
     <text x="20" y="126" class="bullet-text">▪ Float32Array buffer geometry.</text>
@@ -117,7 +109,7 @@
     <text x="20" y="182" class="bullet-text">▪ Real-time interactive HUDs.</text>
     <text x="20" y="210" class="bullet-text">▪ Obsidian glassmorphic UI.</text>
 
-    <line x1="20" y1="222" x2="260" y2="222" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
+    <line x1="20" y1="222" x2="260" y2="222" stroke="#7000FF" stroke-width="1.5" opacity="0.6"/>
   </g>
 
   <!-- COLUMN 3 -->
@@ -125,22 +117,19 @@
     <rect width="280" height="240" rx="8" class="panel-bg" />
     <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
 
-    <!-- Main Header -->
     <rect width="280" height="42" rx="8" class="panel-header" />
     <circle cx="20" cy="21" r="4.5" class="status-pulse" />
-    <!-- WHITE INNER TEXT WITH BLACK STROKE -->
-    <text x="34" y="26" class="col-title">03. CONTROL MATH</text>
+    <text x="34" y="26" class="col-title">03. CONTROL SYSTEMS</text>
 
-    <!-- Centered Mini Sub-Header Badge -->
     <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
     <text x="140" y="63" text-anchor="middle" class="col-tag">[OPTIMAL_LOOPS]</text>
     
     <text x="20" y="98" class="bullet-text">▪ Multidisciplinary control loops.</text>
     <text x="20" y="126" class="bullet-text">▪ Discrete math optimization.</text>
-    <text x="20" y="154" class="bullet-text">▪ Archetypal mind synthesis.</text>
+    <text x="20" y="154" class="bullet-text">▪ Autonomous agentic logic.</text>
     <text x="20" y="182" class="bullet-text">▪ Pre-tested regression suites.</text>
-    <text x="20" y="210" class="bullet-text">▪ Dark ops system integrity.</text>
+    <text x="20" y="210" class="bullet-text">▪ Defense-grade system integrity.</text>
 
-    <line x1="20" y1="222" x2="260" y2="222" stroke="#7000FF" stroke-width="1.5" opacity="0.6"/>
+    <line x1="20" y1="222" x2="260" y2="222" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
   </g>
 </svg>
