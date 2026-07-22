@@ -1,144 +1,134 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 360" width="100%" height="360">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 420" width="100%" height="420">
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&amp;family=Fira+Code:wght@500;700&amp;display=swap');
-      
-      .main-title {
+
+      .node-title {
         font-family: 'Nebula', 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 17px;
-        fill: #FFFFFF !important;
-        stroke: #000000;
-        stroke-width: 1.5px;
-        paint-order: stroke fill;
-        letter-spacing: 3px;
-        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.7));
-      }
-
-      .archetype-title {
-        font-family: 'Nebula', 'Orbitron', monospace;
-        font-weight: 800;
-        font-size: 12px;
+        font-size: 13.5px;
         fill: #FFFFFF !important;
         stroke: #000000;
         stroke-width: 1.5px;
         paint-order: stroke fill;
         letter-spacing: 1.5px;
       }
-      
-      .archetype-desc {
+
+      .node-subtitle {
         font-family: 'Fira Code', monospace;
-        font-size: 10.5px;
-        fill: #CBD5E1;
+        font-size: 11px;
+        fill: #00F0FF;
         letter-spacing: 0.5px;
       }
-      
-      .tag-text {
-        font-family: 'Fira Code', monospace;
-        font-size: 9.5px;
+
+      .core-title {
+        font-family: 'Nebula', 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 15px;
         fill: #FFFFFF !important;
         stroke: #000000;
-        stroke-width: 1px;
+        stroke-width: 1.5px;
         paint-order: stroke fill;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.9));
       }
 
-      .glow-node {
-        animation: nodePulse 2s ease-in-out infinite alternate;
+      .line-glow {
+        stroke: #00F0FF;
+        stroke-width: 2px;
+        stroke-dasharray: 6 4;
+        animation: dashMove 2.5s linear infinite;
       }
 
-      @keyframes nodePulse {
-        0% { filter: drop-shadow(0 0 4px #00F0FF); opacity: 0.8; }
-        100% { filter: drop-shadow(0 0 12px #7000FF); opacity: 1; }
+      @keyframes dashMove {
+        from { stroke-dashoffset: 20; }
+        to { stroke-dashoffset: 0; }
       }
     </style>
 
+    <clipPath id="arch-corner-clip">
+      <rect width="950" height="420" rx="16" />
+    </clipPath>
+
     <linearGradient id="obsidian-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#020306" />
-      <stop offset="40%" stop-color="#070B14" />
-      <stop offset="100%" stop-color="#010204" />
+      <stop offset="0%" stop-color="#0E1726" />
+      <stop offset="30%" stop-color="#050811" />
+      <stop offset="70%" stop-color="#020306" />
+      <stop offset="100%" stop-color="#070B14" />
     </linearGradient>
 
-    <linearGradient id="core-crystal" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bevel-glow" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#00F0FF" />
-      <stop offset="50%" stop-color="#7000FF" />
-      <stop offset="100%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#7000FF" />
     </linearGradient>
 
-    <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15" />
-      <stop offset="25%" stop-color="#FFFFFF" stop-opacity="0.03" />
-      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    <linearGradient id="node-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142138" />
+      <stop offset="50%" stop-color="#080D1A" />
+      <stop offset="100%" stop-color="#03050A" />
     </linearGradient>
   </defs>
 
-  <rect width="950" height="360" rx="14" fill="url(#obsidian-bg)" stroke="#1E293B" stroke-width="2"/>
-  <path d="M 0 0 L 950 0 L 650 360 L 0 360 Z" fill="url(#glass-sheen)" opacity="0.4"/>
+  <g clip-path="url(#arch-corner-clip)">
+    <!-- Base 3D Obsidian Window Frame with Rounded Corners -->
+    <rect width="950" height="420" rx="16" fill="url(#obsidian-bg)" stroke="#1E293B" stroke-width="2"/>
+    <rect x="5" y="5" width="940" height="410" rx="14" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
+    <rect x="8" y="8" width="934" height="404" rx="12" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4" />
 
-  <!-- Top Header Bar -->
-  <rect x="30" y="20" width="890" height="36" rx="6" fill="#060A14" stroke="#334155" stroke-width="1.5"/>
-  <text x="475" y="44" text-anchor="middle" class="main-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">ETHERNIUM CORPORATE SYSTEMIC ARCHITECTURE</text>
+    <!-- Top Architecture Header Bar -->
+    <rect x="30" y="18" width="890" height="34" rx="8" fill="#050812" stroke="#1E293B" stroke-width="1.5"/>
+    <text x="475" y="41" text-anchor="middle" class="node-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">🏛️ ETHERNIUM CORPORATE SYSTEMIC ARCHITECTURE</text>
 
-  <!-- CENTRAL MONOLITH CORE (X: 475, Y: 200) -->
-  <g transform="translate(475, 200)">
-    <circle r="75" fill="none" stroke="#1E293B" stroke-width="2" stroke-dasharray="8 6"/>
-    <circle r="65" fill="none" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="14 8" opacity="0.8"/>
-    <circle r="55" fill="none" stroke="#7000FF" stroke-width="2" stroke-dasharray="20 10"/>
+    <!-- Connecting Dynamic Flow Lines -->
+    <line x1="220" y1="120" x2="475" y2="210" class="line-glow" />
+    <line x1="730" y1="120" x2="475" y2="210" class="line-glow" />
+    <line x1="220" y1="320" x2="475" y2="210" class="line-glow" />
+    <line x1="730" y1="320" x2="475" y2="210" class="line-glow" />
 
-    <polygon points="0,-45 35,0 0,45 -35,0" fill="url(#core-crystal)" stroke="#FFFFFF" stroke-width="1.5" filter="drop-shadow(0 0 14px #00F0FF)" />
-    <polygon points="0,-45 15,0 0,45 -15,0" fill="#FFFFFF" opacity="0.25"/>
+    <!-- NODE 1: SENESCHAL-v5 (Top Left) -->
+    <g transform="translate(80, 80)">
+      <rect width="280" height="80" rx="12" fill="url(#node-obsidian)" stroke="#00F0FF" stroke-width="1.5"/>
+      <rect x="3" y="3" width="274" height="74" rx="10" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4"/>
+      <text x="140" y="34" text-anchor="middle" class="node-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">🤖 SENESCHAL-v5</text>
+      <text x="140" y="58" text-anchor="middle" class="node-subtitle">Autonomous Sovereign Companion</text>
+    </g>
 
-    <circle r="6" fill="#00F0FF" class="glow-node"/>
-    <circle r="85" fill="none" stroke="#00F0FF" stroke-width="1" opacity="0.3" stroke-dasharray="4 12"/>
-  </g>
+    <!-- NODE 2: CHRONOLITH (Top Right) -->
+    <g transform="translate(590, 80)">
+      <rect width="280" height="80" rx="12" fill="url(#node-obsidian)" stroke="#7000FF" stroke-width="1.5"/>
+      <rect x="3" y="3" width="274" height="74" rx="10" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4"/>
+      <text x="140" y="34" text-anchor="middle" class="node-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">🔮 CHRONOLITH</text>
+      <text x="140" y="58" text-anchor="middle" class="node-subtitle">Cognitive Governance Protocol</text>
+    </g>
 
-  <!-- CONNECTORS -->
-  <path d="M 270 120 L 415 165" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="6 4" />
-  <path d="M 270 280 L 415 235" stroke="#7000FF" stroke-width="1.5" stroke-dasharray="6 4" />
-  <path d="M 680 120 L 535 165" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="6 4" />
-  <path d="M 680 280 L 535 235" stroke="#7000FF" stroke-width="1.5" stroke-dasharray="6 4" />
+    <!-- CENTER CORE: OFFICIAL WHITE CIRCULAR ETHERNIUM EMBLEM (Replacing Old Symbol) -->
+    <g transform="translate(375, 140)">
+      <!-- Outer Pulsing Glow Circle -->
+      <circle cx="100" cy="80" r="75" fill="#040A14" stroke="url(#bevel-glow)" stroke-width="2.5"/>
+      
+      <!-- Official White Circular Ethernium Emblem Logo (3rd Image) -->
+      <image href="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-emblem-circle.png" x="27" y="7" width="146" height="146" />
 
-  <!-- NODE 01: PROTOCOL ARCHITECTURE (Top Left) -->
-  <g transform="translate(30, 80)">
-    <rect width="250" height="85" rx="8" fill="#050914" stroke="#00F0FF" stroke-width="1.5" />
-    <path d="M 0 0 L 250 0 L 170 85 L 0 85 Z" fill="url(#glass-sheen)" opacity="0.5"/>
-    <text x="15" y="26" class="archetype-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">01. PROTOCOL ARCH</text>
-    <rect x="160" y="10" width="75" height="18" rx="3" fill="#0B132B" stroke="#00F0FF" stroke-width="1"/>
-    <text x="197" y="22" text-anchor="middle" class="tag-text" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[SYSTEMIC]</text>
-    <text x="15" y="48" class="archetype-desc">Sovereign Governance &amp;</text>
-    <text x="15" y="66" class="archetype-desc">Monolithic Architecture Core.</text>
-  </g>
+      <!-- Center Title Badge -->
+      <rect x="-10" y="165" width="220" height="26" rx="6" fill="#040A14" stroke="#00FF9D" stroke-width="1.5"/>
+      <text x="100" y="182" text-anchor="middle" class="core-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">ETHERNIUM CORE</text>
+    </g>
 
-  <!-- NODE 02: CHRONO COMPUTE ENGINE (Bottom Left) -->
-  <g transform="translate(30, 240)">
-    <rect width="250" height="85" rx="8" fill="#050914" stroke="#7000FF" stroke-width="1.5" />
-    <path d="M 0 0 L 250 0 L 170 85 L 0 85 Z" fill="url(#glass-sheen)" opacity="0.5"/>
-    <text x="15" y="26" class="archetype-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">02. REAL-TIME COMPUTE</text>
-    <rect x="160" y="10" width="75" height="18" rx="3" fill="#0B132B" stroke="#7000FF" stroke-width="1"/>
-    <text x="197" y="22" text-anchor="middle" class="tag-text" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[TEMPORAL]</text>
-    <text x="15" y="48" class="archetype-desc">Deterministic Execution &amp;</text>
-    <text x="15" y="66" class="archetype-desc">Low-Latency System Matrix.</text>
-  </g>
+    <!-- NODE 3: INVICTVS GPU ENGINE (Bottom Left) -->
+    <g transform="translate(80, 280)">
+      <rect width="280" height="80" rx="12" fill="url(#node-obsidian)" stroke="#00FF9D" stroke-width="1.5"/>
+      <rect x="3" y="3" width="274" height="74" rx="10" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4"/>
+      <text x="140" y="34" text-anchor="middle" class="node-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">⚡ INVICTVS GPU ENGINE</text>
+      <text x="140" y="58" text-anchor="middle" class="node-subtitle">100,000 Particle Physics Shaders</text>
+    </g>
 
-  <!-- NODE 03: SHADER KINETICS (Top Right) -->
-  <g transform="translate(670, 80)">
-    <rect width="250" height="85" rx="8" fill="#050914" stroke="#00F0FF" stroke-width="1.5" />
-    <path d="M 0 0 L 250 0 L 170 85 L 0 85 Z" fill="url(#glass-sheen)" opacity="0.5"/>
-    <text x="15" y="26" class="archetype-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">03. GPU ENGINE</text>
-    <rect x="160" y="10" width="75" height="18" rx="3" fill="#0B132B" stroke="#00F0FF" stroke-width="1"/>
-    <text x="197" y="22" text-anchor="middle" class="tag-text" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[60FPS_GPU]</text>
-    <text x="15" y="48" class="archetype-desc">Hardware Particle Dynamics &amp;</text>
-    <text x="15" y="66" class="archetype-desc">WebGL/WebGPU Shader Optics.</text>
-  </g>
-
-  <!-- NODE 04: CONTROL SYSTEMS (Bottom Right) -->
-  <g transform="translate(670, 240)">
-    <rect width="250" height="85" rx="8" fill="#050914" stroke="#7000FF" stroke-width="1.5" />
-    <path d="M 0 0 L 250 0 L 170 85 L 0 85 Z" fill="url(#glass-sheen)" opacity="0.5"/>
-    <text x="15" y="26" class="archetype-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">04. CONTROL SYSTEMS</text>
-    <rect x="160" y="10" width="75" height="18" rx="3" fill="#0B132B" stroke="#7000FF" stroke-width="1"/>
-    <text x="197" y="22" text-anchor="middle" class="tag-text" fill="#FFFFFF" stroke="#000000" stroke-width="1" paint-order="stroke fill">[CONTROL]</text>
-    <text x="15" y="48" class="archetype-desc">Multidisciplinary Math &amp;</text>
-    <text x="15" y="66" class="archetype-desc">Cognitive Agentic Loops.</text>
+    <!-- NODE 4: SOVEREIGN MATRIX (Bottom Right) -->
+    <g transform="translate(590, 280)">
+      <rect width="280" height="80" rx="12" fill="url(#node-obsidian)" stroke="#FFD700" stroke-width="1.5"/>
+      <rect x="3" y="3" width="274" height="74" rx="10" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4"/>
+      <text x="140" y="34" text-anchor="middle" class="node-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">🏛️ SOVEREIGN MATRIX</text>
+      <text x="140" y="58" text-anchor="middle" class="node-subtitle">Local-First Bare-Metal Compute</text>
+    </g>
   </g>
 </svg>

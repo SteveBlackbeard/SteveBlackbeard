@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 250" width="100%" height="250">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 240" width="100%" height="240">
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&amp;family=Fira+Code:wght@500;700&amp;display=swap');
@@ -6,12 +6,12 @@
       .main-title {
         font-family: 'Nebula', 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 16px;
+        font-size: 15px;
         fill: #FFFFFF !important;
         stroke: #000000;
         stroke-width: 1.5px;
         paint-order: stroke fill;
-        letter-spacing: 3px;
+        letter-spacing: 2.5px;
         filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.8));
       }
 
@@ -40,62 +40,55 @@
         fill: #00FF9D;
         letter-spacing: 1px;
       }
-
-      .pulse-eye {
-        animation: eyePulse 2s ease-in-out infinite alternate;
-      }
-
-      @keyframes eyePulse {
-        0% { filter: drop-shadow(0 0 6px #00F0FF); opacity: 0.85; }
-        100% { filter: drop-shadow(0 0 16px #00FF9D); opacity: 1; }
-      }
     </style>
 
     <clipPath id="sentinel-corner-clip">
-      <rect width="950" height="250" rx="16" />
+      <rect width="950" height="240" rx="16" />
     </clipPath>
 
     <linearGradient id="obsidian-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#020306" />
-      <stop offset="40%" stop-color="#070B14" />
-      <stop offset="100%" stop-color="#010204" />
+      <stop offset="0%" stop-color="#0E1726" />
+      <stop offset="30%" stop-color="#050811" />
+      <stop offset="70%" stop-color="#020306" />
+      <stop offset="100%" stop-color="#070B14" />
     </linearGradient>
 
-    <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15" />
-      <stop offset="25%" stop-color="#FFFFFF" stop-opacity="0.03" />
-      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    <linearGradient id="bevel-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#7000FF" />
     </linearGradient>
   </defs>
 
   <g clip-path="url(#sentinel-corner-clip)">
-    <rect width="950" height="250" rx="16" fill="url(#obsidian-bg)" stroke="#1E293B" stroke-width="2"/>
-    <path d="M 0 0 L 950 0 L 650 250 L 0 250 Z" fill="url(#glass-sheen)" opacity="0.4"/>
+    <!-- Base Obsidian Window Frame with Rounded Corners -->
+    <rect width="950" height="240" rx="16" fill="url(#obsidian-bg)" stroke="#1E293B" stroke-width="2"/>
+    <rect x="5" y="5" width="940" height="230" rx="14" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
+    <rect x="8" y="8" width="934" height="224" rx="12" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4" />
 
     <!-- Top Title Bar -->
     <rect x="25" y="16" width="900" height="34" rx="6" fill="#060A14" stroke="#334155" stroke-width="1.5"/>
-    <text x="475" y="38" text-anchor="middle" class="main-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">SENESCHAL-v5 // ETHERNIUM AUTONOMOUS SOVEREIGN COMPANION &amp; Ω CORE</text>
+    <text x="475" y="38" text-anchor="middle" class="main-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">SENESCHAL-v5 // ETHERNIUM AUTONOMOUS SOVEREIGN COMPANION</text>
 
-    <!-- LEFT COMPANION HOLOGRAPHIC CORE WITH OFFICIAL ETH SEAL -->
-    <g transform="translate(110, 145)">
-      <circle r="64" fill="none" stroke="#1E293B" stroke-width="2" stroke-dasharray="6 4"/>
-      <circle r="54" fill="none" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="12 6" opacity="0.8"/>
-      <circle r="44" fill="none" stroke="#7000FF" stroke-width="2" stroke-dasharray="16 8"/>
+    <!-- LEFT COMPANION HOLOGRAPHIC CORE WITH OFFICIAL ETHERNIUM EMBLEM -->
+    <g transform="translate(110, 135)">
+      <circle r="58" fill="none" stroke="#1E293B" stroke-width="2" stroke-dasharray="6 4"/>
+      <circle r="48" fill="none" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="12 6" opacity="0.8"/>
+      
+      <!-- Official White Circular Ethernium Emblem Logo -->
+      <image href="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-emblem-circle.png" x="-40" y="-40" width="80" height="80" />
 
-      <!-- Official ETH Monogram Seal -->
-      <image href="ethernium-seal-brand.png" x="-40" y="-40" width="80" height="80" class="pulse-eye" />
-
-      <!-- Outer Status Tag -->
-      <rect x="-65" y="72" width="130" height="20" rx="4" fill="#040A14" stroke="#00FF9D" stroke-width="1"/>
-      <text x="0" y="86" text-anchor="middle" class="val-text">[COMPANION_ONLINE]</text>
+      <!-- Status Tag -->
+      <rect x="-65" y="62" width="130" height="20" rx="4" fill="#040A14" stroke="#00FF9D" stroke-width="1"/>
+      <text x="0" y="76" text-anchor="middle" class="val-text">[COMPANION_ONLINE]</text>
     </g>
 
-    <!-- RIGHT COMPANION CAPABILITIES & LIVE LOG FEED -->
+    <!-- RIGHT COMPANION DIRECTIVES -->
     <g transform="translate(220, 62)">
-      <rect width="705" height="168" rx="8" fill="#050914" stroke="#00F0FF" stroke-width="1.5" />
-      <path d="M 0 0 L 705 0 L 500 168 L 0 168 Z" fill="url(#glass-sheen)" opacity="0.5"/>
+      <rect width="705" height="158" rx="8" fill="#050914" stroke="#00F0FF" stroke-width="1.5" />
+      <rect x="3" y="3" width="699" height="152" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.3" />
 
-      <text x="20" y="26" class="sub-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">🤖 COMPANION AUTONOMOUS CAPABILITIES &amp; Ω AGENTIC DIRECTIVES</text>
+      <text x="20" y="26" class="sub-title" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">🤖 COMPANION AUTONOMOUS CAPABILITIES &amp; AGENTIC DIRECTIVES</text>
       <line x1="20" y1="36" x2="685" y2="36" stroke="#1E293B" stroke-width="1"/>
 
       <text x="20" y="60" class="label-text">▪ <tspan fill="#FFFFFF">Isolated Pre-testing &amp; Sandboxing:</tspan></text>
@@ -107,9 +100,9 @@
       <text x="20" y="108" class="label-text">▪ <tspan fill="#FFFFFF">Multidisciplinary Control Theory:</tspan></text>
       <text x="310" y="108" class="val-text">[OPTIMAL CONTROL LOOPS]</text>
 
-      <!-- LIVE TERMINAL COMPANION LOG -->
-      <rect x="20" y="126" width="665" height="28" rx="4" fill="#020408" stroke="#1E293B" stroke-width="1"/>
-      <text x="30" y="144" class="label-text" fill="#00F0FF">> SENESCHAL_LOG [2026-07-22 03:16 UTC]: Ω Protocol active. Synchronized with Steve Blackbeard.</text>
+      <!-- LIVE LOG FEED -->
+      <rect x="20" y="122" width="665" height="26" rx="4" fill="#020408" stroke="#1E293B" stroke-width="1"/>
+      <text x="30" y="139" class="label-text" fill="#00F0FF">> SENESCHAL_LOG: Official Ethernium brand assets active. Synchronized with Steve Blackbeard.</text>
     </g>
   </g>
 </svg>
