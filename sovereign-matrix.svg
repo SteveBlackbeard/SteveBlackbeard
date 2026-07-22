@@ -1,33 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 260" width="100%" height="260">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 280" width="100%" height="280">
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&amp;family=Fira+Code:wght@400;600&amp;display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&amp;family=Fira+Code:wght@500;700&amp;display=swap');
       
-      .panel-bg { fill: #070B14; stroke: #1E293B; stroke-width: 1.5; }
-      .panel-header { fill: #0F172A; stroke: #334155; stroke-width: 1; }
+      .panel-bg { fill: url(#obsidian-panel); stroke: #1E293B; stroke-width: 1.5; }
+      .panel-header { fill: url(#obsidian-header); stroke: #334155; stroke-width: 1.5; }
       
       .col-title {
         font-family: 'Nebula', 'Orbitron', monospace;
-        font-weight: 800;
-        font-size: 14px;
+        font-weight: 900;
+        font-size: 13.5px;
         fill: #FFFFFF;
         stroke: #000000;
-        stroke-width: 1px;
-        letter-spacing: 2px;
+        stroke-width: 2px;
+        paint-order: stroke fill;
+        letter-spacing: 1.5px;
       }
       
+      .sub-badge-bg {
+        fill: #040A14;
+        stroke: #00FF9D;
+        stroke-width: 1;
+      }
+
       .col-tag {
         font-family: 'Fira Code', monospace;
-        font-weight: 600;
-        font-size: 11px;
-        fill: #00F0FF;
+        font-weight: 700;
+        font-size: 10.5px;
+        fill: #00FF9D;
         letter-spacing: 1.5px;
+        filter: drop-shadow(0 0 4px rgba(0, 255, 157, 0.4));
       }
 
       .bullet-text {
         font-family: 'Fira Code', monospace;
-        font-size: 12px;
-        fill: #CBD5E1;
+        font-size: 11.5px;
+        fill: #E2E8F0;
         letter-spacing: 0.5px;
       }
       
@@ -36,68 +44,103 @@
       }
 
       @keyframes pulse {
-        0% { fill: #00F0FF; opacity: 1; }
-        50% { fill: #7000FF; opacity: 0.3; }
-        100% { fill: #00F0FF; opacity: 1; }
+        0% { fill: #00FF9D; opacity: 1; filter: drop-shadow(0 0 5px #00FF9D); }
+        50% { fill: #00F0FF; opacity: 0.3; }
+        100% { fill: #00FF9D; opacity: 1; filter: drop-shadow(0 0 5px #00FF9D); }
       }
     </style>
 
-    <linearGradient id="panel-glow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#0F172A" />
-      <stop offset="100%" stop-color="#050810" />
+    <!-- Obsidian Shader Gradients -->
+    <linearGradient id="obsidian-panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B16" />
+      <stop offset="50%" stop-color="#04070F" />
+      <stop offset="100%" stop-color="#020408" />
+    </linearGradient>
+
+    <linearGradient id="obsidian-header" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="30%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#080D1A" />
+    </linearGradient>
+
+    <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15" />
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
     </linearGradient>
   </defs>
 
-  <rect width="950" height="260" rx="12" fill="#030508" stroke="#0F172A" stroke-width="2"/>
+  <rect width="950" height="280" rx="12" fill="#020306" stroke="#0F172A" stroke-width="2"/>
 
   <!-- COLUMN 1 -->
   <g transform="translate(25, 20)">
-    <rect width="280" height="220" rx="8" class="panel-bg" />
-    <rect width="280" height="38" rx="8" class="panel-header" />
-    <circle cx="20" cy="19" r="4" class="status-pulse" />
-    <text x="34" y="24" class="col-title">01. LOCAL-FIRST</text>
-    <text x="210" y="23" class="col-tag">[SOVEREIGN]</text>
-    
-    <text x="20" y="70" class="bullet-text">▪ Zero external dependencies.</text>
-    <text x="20" y="98" class="bullet-text">▪ Deterministic compute engine.</text>
-    <text x="20" y="126" class="bullet-text">▪ Frugal bare-metal allocation.</text>
-    <text x="20" y="154" class="bullet-text">▪ Isolated sandbox execution.</text>
-    <text x="20" y="182" class="bullet-text">▪ Zero-latency local data.</text>
+    <rect width="280" height="240" rx="8" class="panel-bg" />
+    <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
 
-    <line x1="20" y1="200" x2="260" y2="200" stroke="#00F0FF" stroke-width="1" opacity="0.4"/>
+    <!-- Main Header -->
+    <rect width="280" height="42" rx="8" class="panel-header" />
+    <circle cx="20" cy="21" r="4.5" class="status-pulse" />
+    <!-- WHITE INNER TEXT WITH BLACK STROKE -->
+    <text x="34" y="26" class="col-title">01. LOCAL-FIRST CORE</text>
+    
+    <!-- Centered Mini Sub-Header Badge -->
+    <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
+    <text x="140" y="63" text-anchor="middle" class="col-tag">[SOVEREIGN_NODE]</text>
+    
+    <text x="20" y="98" class="bullet-text">▪ Zero external dependencies.</text>
+    <text x="20" y="126" class="bullet-text">▪ Deterministic execution runtime.</text>
+    <text x="20" y="154" class="bullet-text">▪ Frugal bare-metal compute.</text>
+    <text x="20" y="182" class="bullet-text">▪ Isolated scratch sandbox.</text>
+    <text x="20" y="210" class="bullet-text">▪ Sovereign data autonomy.</text>
+
+    <line x1="20" y1="222" x2="260" y2="222" stroke="#00FF9D" stroke-width="1.5" opacity="0.6"/>
   </g>
 
   <!-- COLUMN 2 -->
   <g transform="translate(335, 20)">
-    <rect width="280" height="220" rx="8" class="panel-bg" />
-    <rect width="280" height="38" rx="8" class="panel-header" />
-    <circle cx="20" cy="19" r="4" class="status-pulse" />
-    <text x="34" y="24" class="col-title">02. GPU TELEMETRY</text>
-    <text x="220" y="23" class="col-tag">[60 FPS]</text>
-    
-    <text x="20" y="70" class="bullet-text">▪ Custom GLSL vertex shaders.</text>
-    <text x="20" y="98" class="bullet-text">▪ Float32Array buffer geometry.</text>
-    <text x="20" y="126" class="bullet-text">▪ WebGL/WebGPU physics engine.</text>
-    <text x="20" y="154" class="bullet-text">▪ Real-time visual HUDs.</text>
-    <text x="20" y="182" class="bullet-text">▪ Glassmorphic UI pipelines.</text>
+    <rect width="280" height="240" rx="8" class="panel-bg" />
+    <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
 
-    <line x1="20" y1="200" x2="260" y2="200" stroke="#7000FF" stroke-width="1" opacity="0.5"/>
+    <!-- Main Header -->
+    <rect width="280" height="42" rx="8" class="panel-header" />
+    <circle cx="20" cy="21" r="4.5" class="status-pulse" />
+    <!-- WHITE INNER TEXT WITH BLACK STROKE -->
+    <text x="34" y="26" class="col-title">02. GPU TELEMETRY</text>
+
+    <!-- Centered Mini Sub-Header Badge -->
+    <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
+    <text x="140" y="63" text-anchor="middle" class="col-tag">[60 FPS_SHADERS]</text>
+    
+    <text x="20" y="98" class="bullet-text">▪ Custom GLSL vertex shaders.</text>
+    <text x="20" y="126" class="bullet-text">▪ Float32Array buffer geometry.</text>
+    <text x="20" y="154" class="bullet-text">▪ WebGL/WebGPU physics engine.</text>
+    <text x="20" y="182" class="bullet-text">▪ Real-time interactive HUDs.</text>
+    <text x="20" y="210" class="bullet-text">▪ Obsidian glassmorphic UI.</text>
+
+    <line x1="20" y1="222" x2="260" y2="222" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
   </g>
 
   <!-- COLUMN 3 -->
   <g transform="translate(645, 20)">
-    <rect width="280" height="220" rx="8" class="panel-bg" />
-    <rect width="280" height="38" rx="8" class="panel-header" />
-    <circle cx="20" cy="19" r="4" class="status-pulse" />
-    <text x="34" y="24" class="col-title">03. CONTROL MATH</text>
-    <text x="210" y="23" class="col-tag">[OPTIMAL]</text>
-    
-    <text x="20" y="70" class="bullet-text">▪ Multidisciplinary control loops.</text>
-    <text x="20" y="98" class="bullet-text">▪ Discrete math optimization.</text>
-    <text x="20" y="126" class="bullet-text">▪ Autonomous agentic logic.</text>
-    <text x="20" y="154" class="bullet-text">▪ Pre-tested regression suites.</text>
-    <text x="20" y="182" class="bullet-text">▪ Dark ops system integrity.</text>
+    <rect width="280" height="240" rx="8" class="panel-bg" />
+    <path d="M 0 0 L 280 0 L 180 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.6"/>
 
-    <line x1="20" y1="200" x2="260" y2="200" stroke="#00F0FF" stroke-width="1" opacity="0.4"/>
+    <!-- Main Header -->
+    <rect width="280" height="42" rx="8" class="panel-header" />
+    <circle cx="20" cy="21" r="4.5" class="status-pulse" />
+    <!-- WHITE INNER TEXT WITH BLACK STROKE -->
+    <text x="34" y="26" class="col-title">03. CONTROL MATH</text>
+
+    <!-- Centered Mini Sub-Header Badge -->
+    <rect x="70" y="48" width="140" height="22" rx="4" class="sub-badge-bg" />
+    <text x="140" y="63" text-anchor="middle" class="col-tag">[OPTIMAL_LOOPS]</text>
+    
+    <text x="20" y="98" class="bullet-text">▪ Multidisciplinary control loops.</text>
+    <text x="20" y="126" class="bullet-text">▪ Discrete math optimization.</text>
+    <text x="20" y="154" class="bullet-text">▪ Archetypal mind synthesis.</text>
+    <text x="20" y="182" class="bullet-text">▪ Pre-tested regression suites.</text>
+    <text x="20" y="210" class="bullet-text">▪ Dark ops system integrity.</text>
+
+    <line x1="20" y1="222" x2="260" y2="222" stroke="#7000FF" stroke-width="1.5" opacity="0.6"/>
   </g>
 </svg>
