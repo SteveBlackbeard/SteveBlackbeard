@@ -1,7 +1,7 @@
 <!-- ETHERNIUM SOVEREIGN PROFILE README -->
 <div align="center">
   <!-- 3D Obsidian Shader Animated Header Banner -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium.svg?v=6" alt="Ethernium Sovereign Systems Banner" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium.svg?v=7" alt="Ethernium Sovereign Systems Banner" width="100%" />
 
   <br/><br/>
 
