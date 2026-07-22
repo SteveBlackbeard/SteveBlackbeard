@@ -108,8 +108,8 @@ def convert_to_gif_frame(rgba_img):
 def generate_dna_schematic():
     print("Generating Schematic B-DNA Helix GIF...")
     num_frames = 48
-    cx, cy = 590, 160  # Center position of helix shifted to the right to fit the HUD
-    amp = 56.0
+    cx, cy = 590, 158  # Center position of helix shifted to the right to fit the HUD
+    amp = 84.0
     turns = 4.2
     helix_len = 640
     num_bp = 64
@@ -178,13 +178,13 @@ def generate_dna_schematic():
             br1 = max(3, int(4.5 + d1 * 2.8))
             br2 = max(3, int(4.5 + d2 * 2.8))
 
-            # Backbone 1: steel blue with depth shading
-            bb1_bright = max(0, min(255, int(100 + d1 * 80)))
-            bb1_col = (max(0, int(30 + d1 * 20)), max(0, int(50 + d1 * 40)), bb1_bright)
+            # Backbone 1: bright orange/yellow gradient matching the reference image
+            bb1_y = max(0, min(255, int(130 + d1 * 70)))
+            bb1_col = (255, bb1_y, 0)
 
-            # Backbone 2: darker steel
-            bb2_bright = max(0, min(255, int(90 + d2 * 70)))
-            bb2_col = (max(0, int(25 + d2 * 15)), max(0, int(45 + d2 * 35)), bb2_bright)
+            # Backbone 2: bright red/magenta gradient matching the reference image
+            bb2_m = max(0, min(255, int(110 + d2 * 70)))
+            bb2_col = (255, 0, bb2_m)
 
             if 14 < x < width-15:
                 if 50 < y1 < height-14:
@@ -204,8 +204,8 @@ def generate_dna_schematic():
 
                 pr1 = max(2, int(3 + nd1 * 1.5))
                 pr2 = max(2, int(3 + nd2 * 1.5))
-                pc1 = (max(0, int(60 + nd1 * 30)), max(0, int(40 + nd1 * 20)), max(0, int(80 + nd1 * 50)))
-                pc2 = (max(0, int(55 + nd2 * 25)), max(0, int(35 + nd2 * 18)), max(0, int(75 + nd2 * 45)))
+                pc1 = (255, max(0, min(255, int(140 + nd1 * 60))), 0)
+                pc2 = (255, 0, max(0, min(255, int(120 + nd2 * 60))))
                 
                 if 14 < nx < width-15:
                     if 50 < ny1 < height-14:
@@ -236,19 +236,19 @@ def generate_dna_schematic():
         draw.text((32, 185), 'FORM: B-DNA (10.5 bp/turn)', fill=(100, 130, 170, 255))
 
         # Bottom Legend
-        draw.text((25, 298), 'A', fill=(255, 221, 0, 255))
-        draw.text((37, 298), 'T', fill=(0, 212, 255, 255))
-        draw.text((49, 298), 'G', fill=(0, 255, 125, 255))
-        draw.text((61, 298), 'C', fill=(255, 105, 180, 255))
-        draw.text((79, 298), '| BACKBONE', fill=(80, 100, 150, 255))
+        draw.text((25, 288), 'A', fill=(255, 221, 0, 255))
+        draw.text((37, 288), 'T', fill=(0, 212, 255, 255))
+        draw.text((49, 288), 'G', fill=(0, 255, 125, 255))
+        draw.text((61, 288), 'C', fill=(255, 105, 180, 255))
+        draw.text((79, 288), '| BACKBONE', fill=(80, 100, 150, 255))
 
         # Status text & Scrolling Sequence
-        draw.text((25, 280), 'ATOMS: 1260 | 60 FPS | WEBGL 2.0 | REAL HUMAN GENOME SEQUENCE', fill=(60, 80, 110, 255))
+        draw.text((25, 270), 'ATOMS: 1260 | 60 FPS | WEBGL 2.0 | REAL HUMAN GENOME SEQUENCE', fill=(60, 80, 110, 255))
         offset = int(t * len(SEQ)) % len(SEQ)
         seq_display = (SEQ + SEQ)[offset:offset + 48]
         sx = 420
         for ci, ch in enumerate(seq_display):
-            draw.text((sx + ci * 8, 280), ch, fill=BASE_COLORS.get(ch, (150, 150, 150)) + (255,))
+            draw.text((sx + ci * 8, 270), ch, fill=BASE_COLORS.get(ch, (150, 150, 150)) + (255,))
 
         # Scanlines CRT overlay
         scan_layer = Image.new('RGBA', (width, height), (0, 0, 0, 0))
