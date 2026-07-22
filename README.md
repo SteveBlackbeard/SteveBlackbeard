@@ -1,3 +1,4 @@
+<!-- ETHERNIUM SOVEREIGN PROFILE README v5.5 -->
 <div align="center">
   <!-- 3D Obsidian Shader Animated Header Banner -->
   <img src="header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
