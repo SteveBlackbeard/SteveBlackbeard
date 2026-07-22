@@ -1,5 +1,5 @@
-// NULLA-LABS STUDIO-GRADE AAA 3D MOLECULAR DNA ENGINE v35.0
-// Inspired by Modern Medical Research & High-End 3D Visual VFX
+// NULLA-LABS MASTERWORK AAA 3D CPK MOLECULAR ENGINE v40.0
+// Freeze Exact Structure & Fix 100% Locked 3D Selection Ring
 (function() {
   'use strict';
 
@@ -24,39 +24,40 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  renderer.toneMappingExposure = 1.35;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x020306, 0.003);
+  scene.fog = new THREE.FogExp2(0x020306, 0.002);
 
   const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 75);
 
-  // Studio Lighting (Key, Fill, Rim Light)
-  const dirLight1 = new THREE.DirectionalLight(0x00F0FF, 1.8);
-  dirLight1.position.set(50, 50, 50);
+  // 3-Point Studio VFX Lighting
+  const dirLight1 = new THREE.DirectionalLight(0x00F0FF, 2.0);
+  dirLight1.position.set(50, 60, 50);
   scene.add(dirLight1);
 
-  const dirLight2 = new THREE.DirectionalLight(0x7000FF, 1.2);
-  dirLight2.position.set(-50, -30, -30);
+  const dirLight2 = new THREE.DirectionalLight(0x8A2BE2, 1.4);
+  dirLight2.position.set(-50, -40, -30);
   scene.add(dirLight2);
 
-  const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.7);
+  const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.75);
   scene.add(ambientLight);
 
-  const pointLight = new THREE.PointLight(0x00FF9D, 2.0, 80);
+  const pointLight = new THREE.PointLight(0x00FF9D, 2.5, 90);
   scene.add(pointLight);
 
-  // CPK Atomic Palette
-  const matPhosphorus = new THREE.MeshStandardMaterial({ color: 0xFF7700, roughness: 0.2, metalness: 0.7 });
+  // High-Precision CPK Physical Materials (Preserved Color Scheme)
+  const matPhosphorus = new THREE.MeshStandardMaterial({ color: 0xFF8800, roughness: 0.25, metalness: 0.7 });
   const matOxygen     = new THREE.MeshStandardMaterial({ color: 0xFF0055, roughness: 0.3, metalness: 0.5 });
   const matNitrogen   = new THREE.MeshStandardMaterial({ color: 0x00F0FF, roughness: 0.2, metalness: 0.8 });
-  const matCarbon     = new THREE.MeshStandardMaterial({ color: 0x8A2BE2, roughness: 0.3, metalness: 0.6 });
-  const matBond       = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.1, metalness: 0.9, opacity: 0.85, transparent: true });
+  const matCarbon     = new THREE.MeshStandardMaterial({ color: 0x8A2BE2, roughness: 0.25, metalness: 0.65 });
+  const matBond       = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.1, metalness: 0.9, opacity: 0.9, transparent: true });
 
-  const sphereGeo = new THREE.SphereGeometry(1.0, 24, 24);
+  const sphereGeo = new THREE.SphereGeometry(1.0, 32, 32);
   const cylinderGeo = new THREE.CylinderGeometry(0.25, 0.25, 1.0, 16);
 
+  // Frozen Core 3D Group
   const dnaGroup = new THREE.Group();
   scene.add(dnaGroup);
 
@@ -109,7 +110,7 @@
     // 2. Base Pair Cross-Bonds & Nitrogenous Atoms (N, C)
     const basePairType = i % 4;
     let baseData;
-    if (basePairType === 0) baseData = { name: "Adenine (A) - Timine (T)", formula: "C5 H5 N5 / C5 H6 N2 O2", type: "Purine-Pyrimidine Base Pair", bonds: "2 Hydrogen Bonds", epi: "Non-Methylated Locus" };
+    if (basePairType === 0) baseData = { name: "Adenine (A) - Thymine (T)", formula: "C5 H5 N5 / C5 H6 N2 O2", type: "Purine-Pyrimidine Base Pair", bonds: "2 Hydrogen Bonds", epi: "Non-Methylated Locus" };
     else if (basePairType === 1) baseData = { name: "Cytosine (C) - Guanine (G)", formula: "C4 H5 N3 O / C5 H5 N5 O", type: "Pyrimidine-Purine Base Pair", bonds: "3 Hydrogen Bonds", epi: "5mC Epigenetic Methylation Tag" };
     else if (basePairType === 2) baseData = { name: "Guanine (G) - Cytosine (C)", formula: "C5 H5 N5 O / C4 H5 N3 O", type: "Purine-Pyrimidine Base Pair", bonds: "3 Hydrogen Bonds", epi: "CpG Island Active" };
     else baseData = { name: "Thymine (T) - Adenine (A)", formula: "C5 H6 N2 O2 / C5 H5 N5", type: "Pyrimidine-Purine Base Pair", bonds: "2 Hydrogen Bonds", epi: "Non-Methylated Locus" };
@@ -145,12 +146,12 @@
 
   if (particleVal) particleVal.textContent = atomMeshes.length.toLocaleString() + " CPK ATOMS";
 
-  // Selection Ring Mesh
-  const selectRingGeometry = new THREE.TorusGeometry(3.5, 0.3, 16, 32);
-  const selectRingMaterial = new THREE.MeshBasicMaterial({ color: 0x00FF9D, wireframe: true });
+  // Selection Ring Mesh ATTACHED DIRECTLY TO dnaGroup (100% Locked Position!)
+  const selectRingGeometry = new THREE.TorusGeometry(2.8, 0.35, 16, 32);
+  const selectRingMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0055, wireframe: true });
   const selectRingMesh = new THREE.Mesh(selectRingGeometry, selectRingMaterial);
   selectRingMesh.visible = false;
-  scene.add(selectRingMesh);
+  dnaGroup.add(selectRingMesh); // Attached directly inside dnaGroup!
 
   // Mouse Raycasting & Orbit Physics
   const raycaster = new THREE.Raycaster();
@@ -173,11 +174,13 @@
     const intersects = raycaster.intersectObjects(atomMeshes);
 
     if (intersects.length > 0) {
-      if (hoveredAtom && hoveredAtom !== intersects[0].object) {
-        hoveredAtom.scale.setScalar(hoveredAtom === selectedAtom ? 1.8 : 1.0);
+      if (hoveredAtom && hoveredAtom !== intersects[0].object && hoveredAtom !== selectedAtom) {
+        hoveredAtom.scale.setScalar(1.0);
       }
       hoveredAtom = intersects[0].object;
-      hoveredAtom.scale.setScalar(1.8);
+      if (hoveredAtom !== selectedAtom) {
+        hoveredAtom.scale.setScalar(1.6);
+      }
       document.body.style.cursor = 'pointer';
     } else {
       if (hoveredAtom && hoveredAtom !== selectedAtom) {
@@ -205,7 +208,7 @@
 
   window.addEventListener('mouseup', () => { isDragging = false; });
 
-  // Direct 3D Atom Selection & Exploded View Reaction
+  // Direct 3D Raycasting Atom Selection (100% Position Locking Fix)
   window.addEventListener('click', (e) => {
     if (e.target !== canvas) return;
 
@@ -213,14 +216,17 @@
     const intersects = raycaster.intersectObjects(atomMeshes);
 
     if (intersects.length > 0) {
+      if (selectedAtom) selectedAtom.scale.setScalar(1.0);
+
       selectedAtom = intersects[0].object;
       const idx = atomMeshes.indexOf(selectedAtom);
       const data = componentData[idx] || { name: "Phosphate-Deoxyribose Backbone Node", formula: "PO4 (3-) / C5 H10 O4", type: "Structural Backbone Monomer", bonds: "Phosphodiester Bond", epi: "Structural Scaffold" };
 
+      // Copy exact local position inside dnaGroup so selection ring locks 100% onto clicked atom!
       selectRingMesh.position.copy(selectedAtom.position);
       selectRingMesh.visible = true;
 
-      selectedAtom.scale.setScalar(2.2);
+      selectedAtom.scale.setScalar(2.4);
 
       if (hudPanel) hudPanel.style.display = 'block';
       if (hudName) hudName.textContent = data.name;
@@ -268,9 +274,10 @@
     const t = now * 0.001;
     pointLight.position.x = Math.sin(t) * 40.0;
 
+    // Rotate selection ring around selected atom
     if (selectRingMesh.visible) {
-      selectRingMesh.rotation.x = t * 2.0;
-      selectRingMesh.rotation.y = t * 2.5;
+      selectRingMesh.rotation.x = t * 3.0;
+      selectRingMesh.rotation.y = t * 3.5;
     }
 
     currentRotationX += (targetRotationX - currentRotationX) * 0.08;
