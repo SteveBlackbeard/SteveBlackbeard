@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NULLA-LABS // AAA 3D Interactive B-DNA Component Engine</title>
-  <meta name="description" content="NULLA-LABS AAA 3D B-DNA Molecular Component Breakdown & Kinetic Unzipping Shader Engine.">
+  <title>NULLA-LABS // ULTIMATE MULTIDISCIPLINARY WEBGL 3D ENGINE</title>
+  <meta name="description" content="NULLA-LABS Multidisciplinary 3D WebGL B-DNA, Chromatin Nucleosome & ClinVar Genomic Medicine Engine.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -93,6 +93,33 @@
       50% { opacity: 0.3; transform: scale(0.8); }
       100% { opacity: 1; transform: scale(1); }
     }
+    
+    /* Multidisciplinary Mode Switcher Bar */
+    .mode-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      pointer-events: auto;
+    }
+    .btn-mode {
+      padding: 7px 14px;
+      background: #040A14;
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      color: #00F0FF;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+    }
+    .btn-mode:hover {
+      background: #00F0FF;
+      color: #020306;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.8);
+    }
+
     .hud-footer {
       display: flex;
       justify-content: space-between;
@@ -145,12 +172,11 @@
       transform: translateY(-2px);
     }
 
-    /* Side Molecular Breakdown Panel */
     #molecular-hud {
       position: absolute;
-      top: 90px;
+      top: 140px;
       right: 24px;
-      width: 320px;
+      width: 330px;
       display: none;
       z-index: 3;
       pointer-events: auto;
@@ -176,43 +202,53 @@
   <canvas id="webgl-canvas"></canvas>
 
   <div class="hud-layer">
-    <div class="glass-card hud-header">
-      <div>
-        <div class="hud-title">NULLA-LABS // AAA 3D B-DNA MOLECULAR COMPONENT ENGINE</div>
-        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">KINETIC UNZIPPING &bull; MULTI-SPECTRAL GLOW &bull; RAYCAST SELECTION</div>
+    <div class="glass-card">
+      <div class="hud-header">
+        <div>
+          <div class="hud-title">NULLA-LABS // ULTIMATE MULTIDISCIPLINARY WEBGL 3D ENGINE</div>
+          <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">GENETICS &bull; MOLECULAR BIOLOGY &bull; CLINVAR GENOMIC MEDICINE &bull; GPU KINETICS</div>
+        </div>
+        <div class="status-badge">
+          <div class="pulse-dot"></div>
+          SOVEREIGN_PLATFORM_ONLINE
+        </div>
       </div>
-      <div class="status-badge">
-        <div class="pulse-dot"></div>
-        HUMAN_DNA_ACTIVE
+
+      <!-- Mode Switcher Buttons -->
+      <div class="mode-bar">
+        <button class="btn-mode" id="btn-mode-bdna">[1] B-DNA HELIX</button>
+        <button class="btn-mode" id="btn-mode-chromatin" style="border-color:#FF7700; color:#FF7700;">[2] HISTONE CHROMATIN 3D</button>
+        <button class="btn-mode" id="btn-mode-unzip" style="border-color:#00FF9D; color:#00FF9D;">[3] UNZIP &amp; INSPECT</button>
+        <button class="btn-mode" id="btn-mode-clinvar" style="border-color:#FF0055; color:#FF0055;">[4] CLINVAR VARIANTS</button>
       </div>
     </div>
 
-    <!-- MOLECULAR BREAKDOWN HUD SIDE PANEL -->
+    <!-- MOLECULAR / CLINVAR BREAKDOWN HUD SIDE PANEL -->
     <div id="molecular-hud" class="glass-card">
       <div style="font-family:'Orbitron'; font-size:13px; font-weight:900; color:#00F0FF; margin-bottom:12px; border-bottom:1px solid rgba(0,240,255,0.3); padding-bottom:6px;">
-        🔬 MOLECULAR COMPONENT TELEMETRY
+        🔬 TELEMETRY &amp; CLINICAL EVIDENCE
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Component Name</div>
+        <div class="hud-row-label">Component / Locus Name</div>
         <div class="hud-row-val" id="hud-name" style="color:#FFF;">Adenine (A)</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Chemical Formula</div>
+        <div class="hud-row-label">Gene Symbol / Formula</div>
         <div class="hud-row-val" id="hud-formula">C5 H5 N5</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Molecular Classification</div>
+        <div class="hud-row-label">Classification / Evidence</div>
         <div class="hud-row-val" id="hud-class">Purine (Double Ring)</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Hydrogen Bonds</div>
+        <div class="hud-row-label">Hydrogen Bonds / Locus</div>
         <div class="hud-row-val" id="hud-bonds">2 Hydrogen Bonds</div>
       </div>
       <div class="hud-row">
-        <div class="hud-row-label">Epigenetic Status</div>
+        <div class="hud-row-label">Epigenetic / Clinical Status</div>
         <div class="hud-row-val" id="hud-epi" style="color:#FFD700;">CpG Island Active</div>
       </div>
-      <button class="btn-action" id="btn-reassemble" style="width:100%; margin-top:8px;">[RE-ASSEMBLE DOUBLE HELIX]</button>
+      <button class="btn-action" id="btn-reassemble" style="width:100%; margin-top:8px;">[RE-ASSEMBLE B-DNA HELIX]</button>
     </div>
 
     <div class="hud-footer">
@@ -232,7 +268,7 @@
       </div>
 
       <div class="glass-card controls-hint">
-        <div>[CLICK BASE PAIR: UNZIP &amp; INSPECT COMPONENT | DRAG: 3D ORBIT | MOVE MOUSE: CURSOR REPULSION]</div>
+        <div>[CLICK MODE BUTTONS: SWITCH DISCIPLINES | CLICK COMPONENT: INSPECT TELEMETRY | DRAG: 3D ORBIT]</div>
         <a href="https://github.com/SteveBlackbeard" class="btn-action">← RETURN TO GITHUB PROFILE</a>
       </div>
     </div>
