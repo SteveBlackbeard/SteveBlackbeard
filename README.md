@@ -11,6 +11,10 @@
   </p>
 
   <p align="center">
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank"><img src="https://img.shields.io/badge/🚀_LAUNCH_LIVE-GPU_TELEMETRY_HUD-00F0FF?style=for-the-badge&logo=opengl&logoColor=black" alt="Launch Live GPU Telemetry HUD" /></a>
+  </p>
+
+  <p align="center">
     <a href="#-executive-briefing--corporate-manifesto"><img src="https://img.shields.io/badge/CLEARANCE-LEVEL_05-00F0FF?style=for-the-badge&logo=shield&logoColor=white" /></a>
     <a href="#-ethernium-autonomous-companion--seneschal-v5"><img src="https://img.shields.io/badge/COMPANION-ACTIVE_SENTINEL-7000FF?style=for-the-badge&logo=cpu&logoColor=white" /></a>
     <a href="#-system-telemetry"><img src="https://img.shields.io/badge/GPU_TELEMETRY-ACTIVE_60FPS-000000?style=for-the-badge&logo=opengl&logoColor=00F0FF" /></a>

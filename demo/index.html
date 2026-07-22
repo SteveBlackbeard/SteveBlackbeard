@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethernium Sovereign GPU Simulation HUD // 60 FPS Engine</title>
+  <meta name="description" content="Ethernium Sovereign High-Performance GPU Particle Shader Telemetry Engine running at 60 FPS baseline.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #020306;
+      font-family: 'Fira Code', monospace;
+      color: #E2E8F0;
+    }
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    /* Cyberpunk Glassmorphic Overlay HUD */
+    .hud-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+    .glass-card {
+      background: rgba(6, 10, 20, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(0, 240, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px 24px;
+      pointer-events: auto;
+    }
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hud-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: #FFFFFF;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+      letter-spacing: 2px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: #040A14;
+      border: 1px solid #00FF9D;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #00FF9D;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #00FF9D;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00FF9D;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .hud-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .metric-box {
+      font-size: 12px;
+    }
+    .metric-label {
+      color: #94A3B8;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .metric-val {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      color: #00F0FF;
+      font-weight: 700;
+    }
+    .controls-hint {
+      font-size: 11px;
+      color: #94A3B8;
+      text-align: right;
+    }
+    .btn-return {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 16px;
+      background: linear-gradient(90deg, #00F0FF, #7000FF);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 6px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+    .btn-return:hover {
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.8);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="webgl-canvas"></canvas>
+
+  <div class="hud-layer">
+    <!-- Top HUD Header -->
+    <div class="glass-card hud-header">
+      <div>
+        <div class="hud-title">ETHERNIUM SOVEREIGN GPU SIMULATION</div>
+        <div style="font-size: 11px; color: #00F0FF; margin-top: 4px; letter-spacing: 1px;">GLSL VERTEX SHADER &bull; BUFFER GEOMETRY &bull; 60 FPS ENGINE</div>
+      </div>
+      <div class="status-badge">
+        <div class="pulse-dot"></div>
+        SYSTEMIC_GPU_ACTIVE
+      </div>
+    </div>
+
+    <!-- Bottom HUD Telemetry -->
+    <div class="hud-footer">
+      <div class="glass-card telemetry-grid">
+        <div class="metric-box">
+          <div class="metric-label">Frame Rate</div>
+          <div class="metric-val" id="fps-val">60 FPS</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">GPU Particles</div>
+          <div class="metric-val" id="particle-val">25,000</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Compute Shader</div>
+          <div class="metric-val" fill="#00FF9D" style="color:#00FF9D;">GLSL_ACTIVE</div>
+        </div>
+      </div>
+
+      <div class="glass-card controls-hint">
+        <div>[MOUSE INTERACTION: MOVE TO CURVATURE SHOCKWAVE]</div>
+        <a href="https://github.com/SteveBlackbeard" class="btn-return">← RETURN TO GITHUB PROFILE</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local-First Three.js -->
+  <script src="vendor/three.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
