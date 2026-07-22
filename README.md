@@ -1,73 +1,80 @@
 <div align="center">
+  <!-- Custom SVG Banner with White Text, Black Stroke & Ethernium Glow -->
+  <img src="header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
 
-  <!-- Ethernium Header Badge -->
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=00F0FF&center=true&vcenter=true&width=600&height=50&lines=ETHERNIUM+SOVEREIGN+SYSTEMS;AUTONOMOUS+ARCHITECTURES+%26+COMPUTE;HIGH-FIDELITY+GPU+%26+CONTROL+THEORY" alt="Ethernium Sovereign Systems Banner" />
+  <br/><br/>
 
   <p align="center">
-    <strong>Sovereign Systems Architect</strong> • <strong>Control & Compute Engineering</strong> • <strong>High-Performance Web Graphics</strong>
+    <code>[SOVEREIGN SYSTEMS ARCHITECT]</code> &nbsp;•&nbsp; 
+    <code>[CONTROL & COMPUTE ENGINEERING]</code> &nbsp;•&nbsp; 
+    <code>[HIGH-FIDELITY GPU GRAPHICS]</code>
   </p>
 
   <p align="center">
-    <a href="#-sovereign-pillars">Pillars</a> •
-    <a href="#-current-focus--initiatives">Initiatives</a> •
-    <a href="#-technical-stack--arsenal">Tech Stack</a> •
-    <a href="#-system-telemetry">Telemetry</a>
+    <a href="#-executive-briefing--dark-ops-architecture"><img src="https://img.shields.io/badge/CLEARANCE-LEVEL_05-00F0FF?style=for-the-badge&logo=shield&logoColor=black" /></a>
+    <a href="#-ethernium-sovereign-matrix"><img src="https://img.shields.io/badge/SYSTEMS-LOCAL_FIRST-7000FF?style=for-the-badge&logo=cpu&logoColor=white" /></a>
+    <a href="#-sovereign-arsenal--tech-stack-matrix"><img src="https://img.shields.io/badge/GPU_TELEMETRY-ACTIVE_60FPS-000000?style=for-the-badge&logo=opengl&logoColor=00F0FF" /></a>
   </p>
 
   ---
 </div>
 
-### 👁️ Executive Briefing
+### 👁️ Executive Briefing // Dark Ops Architecture
 
-> *“Engineering high-efficiency, resilient, and autonomous computing paradigms by bridging systems theory, GPU acceleration, and cognitive agentic architectures.”*
-
-I specialize in designing **sovereign technical infrastructures** and **ultra-high-performance web architectures**. My approach combines multidisciplinary principles—control theory, discrete mathematics, and low-latency system design—to deliver frugal, local-first systems with state-of-the-art visual telemetry and bulletproof logic.
+> *“Monolithic precision. Zero-trust compute. Engineering sovereign, low-latency architectures by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
 
 ---
 
-### ⚡ Sovereign Pillars & Methodology
+### ⚡ Ethernium Sovereign Matrix
+
+<div align="center">
+  <img src="sovereign-matrix.svg" alt="Ethernium Sovereign Matrix" width="100%" />
+</div>
+
+---
+
+### 🚀 Core Strategic Directives
 
 ```
-┌─────────────────────────┬─────────────────────────┬─────────────────────────┐
-│   01. LOCAL-FIRST CORE  │   02. GPU TELEMETRY     │   03. SYNERGISTIC MATH  │
-├─────────────────────────┼─────────────────────────┼─────────────────────────┤
-│ Zero external bloat.    │ Hardware-accelerated    │ Control theory, discrete│
-│ Deterministic execution.│ WebGL/WebGPU shaders    │ optimization & frugal   │
-│ Sovereign data autonomy.│ @ 60+ FPS stability.     │ compute allocation.     │
-└─────────────────────────┴─────────────────────────┴─────────────────────────┘
+┌── [INIT_01: ETHERNIUM SIMULATION ENGINE] ──────────────────────────────────────────┐
+│  • Low-overhead particle physics & shockwave dynamics running in custom GLSL.   │
+│  • Zero-dependency Three.js BufferGeometry allocation with Float32Array arrays.  │
+│  • Hardware-accelerated glassmorphic telemetry HUDs operating @ 60 FPS.          │
+└───────────────────────────────────────────────────────────────────────────────────┘
+
+┌── [INIT_02: AUTONOMOUS SOVEREIGN AGENTS] ─────────────────────────────────────────┐
+│  • Multidisciplinary control loops leveraging cognitive & system engineering.     │
+│  • Pre-tested isolated scratch sandboxes ensuring zero-regression deployment.     │
+│  • Local-first deterministic workflows built for maximum machine utilization.     │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 🚀 Current Focus & Initiatives
+### 🛠️ Sovereign Arsenal // Tech Stack Matrix
 
-- 🌌 **Ethernium Simulation Engine:** Architecting zero-dependency, GPU-driven particle physics and interactive telemetry HUDs powered by custom shaders and `Float32Array` buffer allocations.
-- 🤖 **Autonomous Sovereign Agents:** Developing resilient control loops, pre-tested isolated testbeds, and local-first intelligent task workflows.
-- 🔬 **High-Fidelity Modular Web:** Building ultra-fast glassmorphic web platforms with robust cyberpunk aesthetics and zero CDN overhead.
-
----
-
-### 🛠️ Technical Stack & Sovereign Arsenal
-
-| Domain | Core Technologies & Frameworks |
-| :--- | :--- |
-| **Compute & Systems** | `TypeScript` • `JavaScript (ESNext)` • `Python` • `C/C++` • `Node.js` |
-| **Graphics & Shaders** | `Three.js` • `WebGL` • `GLSL / Shaders` • `BufferGeometry` • `Canvas API` |
-| **Architecture & UX** | `Local-First Storage` • `Vanilla CSS (Glassmorphism)` • `HTML5 Canvas` • `Web Workers` |
-| **DevOps & Integrity** | `Git` • `Linux / PowerShell` • `CI/CD Pipelines` • `Isolated Scratch Sandbox` |
+```gdb
+[SYSTEM_COMPUTE]   ::  TypeScript  |  JavaScript (ESNext)  |  Python  |  C/C++  |  Node.js
+[GPU_SHADERS]      ::  Three.js    |  WebGL / WebGPU       |  GLSL    |  Canvas API
+[ARCHITECTURE]     ::  Local-First |  Glassmorphism (CSS)  |  Web Workers  |  BufferGeometry
+[OPS_INTEGRITY]    ::  Git         |  Linux / PowerShell   |  Isolated Sandboxes
+```
 
 ---
 
-### 📊 System Telemetry & Metrics
+### 📊 System Telemetry & Dark Compute Metrics
 
 <div align="center">
   <br />
-  <img height="165em" src="https://github-readme-stats.vercel.app/api?username=SteveBlackbeard&show_icons=true&theme=cyberpunk&count_private=true&bg_color=0D1117&title_color=00F0FF&icon_color=7000FF&text_color=8B949E&border_color=30363D" alt="GitHub Stats" />
-  <img height="165em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SteveBlackbeard&layout=compact&theme=cyberpunk&bg_color=0D1117&title_color=00F0FF&text_color=8B949E&border_color=30363D" alt="Top Languages" />
+  <img height="175em" src="https://github-readme-stats.vercel.app/api?username=SteveBlackbeard&show_icons=true&theme=dark&count_private=true&bg_color=04060A&title_color=00F0FF&icon_color=7000FF&text_color=94A3B8&border_color=1E293B" alt="GitHub Stats" />
+  <img height="175em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SteveBlackbeard&layout=compact&theme=dark&bg_color=04060A&title_color=00F0FF&text_color=94A3B8&border_color=1E293B" alt="Top Languages" />
 </div>
 
 ---
 
 <div align="center">
-  <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Built for Resilience & Performance</sub>
+  <br />
+  <code>ETH-SOVEREIGN-CORE v4.0.5 // MONOLITHIC PROTOCOL ENGAGED</code>
+  <br/><br/>
+  <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Maximum Resilience & Zero-Bloat Compute</sub>
 </div>
