@@ -49,15 +49,6 @@
     <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-dna-console-v14-118-elements.gif?v=3" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Click the animated console above to launch full-screen 60 FPS 120,000 Particle Invictvs 3D Mask & Human DNA Simulation</i></sub>
-  </p>
-</div>
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-dna-console-v16-helix.gif?v=1" alt="Real B-DNA Double Helix — TP53 Gene — 3D Particle Engine" width="100%" />
-  </a>
-  <p align="center">
     <sub><i>Real B-DNA double helix of human TP53 tumor suppressor gene (17p13.1) — 70 base pairs with Adenine, Thymine, Guanine, Cytosine — Click to launch interactive 3D engine</i></sub>
   </p>
 </div>
