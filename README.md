@@ -5,7 +5,6 @@
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium-v10.svg?v=15" alt="Ethernium Sovereign Systems Banner" width="90%" />
 
   <br/><br/>
-
   <p align="center">
     <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg?v=3" alt="Launch Live 120K GPU Telemetry HUD" width="480" />
