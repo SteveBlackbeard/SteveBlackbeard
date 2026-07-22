@@ -11,8 +11,8 @@
   </p>
 
   <p align="center">
-    <a href="#-executive-briefing--corporate-manifesto"><img src="https://img.shields.io/badge/CLEARANCE-LEVEL_05-00F0FF?style=for-the-badge&logo=shield&logoColor=black" /></a>
-    <a href="#-ethernium-corporate-systemic-architecture"><img src="https://img.shields.io/badge/PARADIGM-DISRUPTIVE-7000FF?style=for-the-badge&logo=cpu&logoColor=white" /></a>
+    <a href="#-executive-briefing--corporate-manifesto"><img src="https://img.shields.io/badge/CLEARANCE-LEVEL_05-00F0FF?style=for-the-badge&logo=shield&logoColor=white" /></a>
+    <a href="#-ethernium-autonomous-companion--seneschal-v5"><img src="https://img.shields.io/badge/COMPANION-ACTIVE_SENTINEL-7000FF?style=for-the-badge&logo=cpu&logoColor=white" /></a>
     <a href="#-system-telemetry"><img src="https://img.shields.io/badge/GPU_TELEMETRY-ACTIVE_60FPS-000000?style=for-the-badge&logo=opengl&logoColor=00F0FF" /></a>
   </p>
 
@@ -24,6 +24,14 @@
 > *“Ethernium fue concebido a partir de múltiples rupturas de paradigmas conceptuales, y está listo para romper los siguientes.”*
 >
 > *“Engineering high-efficiency, resilient, and autonomous computing paradigms by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
+
+---
+
+### 🤖 Ethernium Autonomous Companion // Seneschal-v5
+
+<div align="center">
+  <img src="ethernium-sentinel.svg" alt="Ethernium Autonomous Companion HUD" width="100%" />
+</div>
 
 ---
 
@@ -94,7 +102,7 @@
 
 <div align="center">
   <br />
-  <code>ETH-CORP // PARADIGM SHIFT PROTOCOL ACTIVE</code>
+  <code>ETH-CORP // SENESCHAL COMPANION & PARADIGM SHIFT PROTOCOL ACTIVE</code>
   <br/><br/>
   <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Low-Latency Corporate Architecture</sub>
 </div>

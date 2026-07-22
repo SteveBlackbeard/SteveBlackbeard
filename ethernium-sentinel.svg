@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 240" width="100%" height="240">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&amp;family=Fira+Code:wght@500;700&amp;display=swap');
+      
+      .main-title {
+        font-family: 'Nebula', 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 16px;
+        fill: #FFFFFF;
+        stroke: #000000;
+        stroke-width: 2px;
+        paint-order: stroke fill;
+        letter-spacing: 3px;
+        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.8));
+      }
+
+      .sub-title {
+        font-family: 'Nebula', 'Orbitron', monospace;
+        font-weight: 800;
+        font-size: 12.5px;
+        fill: #FFFFFF;
+        stroke: #000000;
+        stroke-width: 1.5px;
+        letter-spacing: 1.5px;
+      }
+      
+      .label-text {
+        font-family: 'Fira Code', monospace;
+        font-size: 11px;
+        fill: #E2E8F0;
+        letter-spacing: 0.5px;
+      }
+      
+      .val-text {
+        font-family: 'Fira Code', monospace;
+        font-weight: 700;
+        font-size: 11px;
+        fill: #00FF9D;
+        letter-spacing: 1px;
+      }
+
+      .tag-text {
+        font-family: 'Fira Code', monospace;
+        font-weight: 700;
+        font-size: 10px;
+        fill: #FFFFFF;
+        stroke: #000000;
+        stroke-width: 1px;
+        letter-spacing: 1px;
+      }
+
+      .pulse-eye {
+        animation: eyePulse 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes eyePulse {
+        0% { filter: drop-shadow(0 0 6px #00F0FF); opacity: 0.85; }
+        100% { filter: drop-shadow(0 0 16px #00FF9D); opacity: 1; }
+      }
+    </style>
+
+    <linearGradient id="obsidian-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020306" />
+      <stop offset="40%" stop-color="#070B14" />
+      <stop offset="100%" stop-color="#010204" />
+    </linearGradient>
+
+    <linearGradient id="sentinel-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#7000FF" />
+      <stop offset="100%" stop-color="#00FF9D" />
+    </linearGradient>
+
+    <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15" />
+      <stop offset="25%" stop-color="#FFFFFF" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <rect width="950" height="240" rx="14" fill="url(#obsidian-bg)" stroke="#1E293B" stroke-width="2"/>
+  <path d="M 0 0 L 950 0 L 650 240 L 0 240 Z" fill="url(#glass-sheen)" opacity="0.4"/>
+
+  <!-- Top Title Bar -->
+  <rect x="25" y="16" width="900" height="34" rx="6" fill="#060A14" stroke="#334155" stroke-width="1.5"/>
+  <text x="475" y="38" text-anchor="middle" class="main-title">SENESCHAL-v5 // ETHERNIUM AUTONOMOUS SOVEREIGN COMPANION</text>
+
+  <!-- LEFT COMPANION HOLOGRAPHIC CORE (X: 110, Y: 145) -->
+  <g transform="translate(110, 140)">
+    <circle r="60" fill="none" stroke="#1E293B" stroke-width="2" stroke-dasharray="6 4"/>
+    <circle r="50" fill="none" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="12 6" opacity="0.8"/>
+    <circle r="40" fill="none" stroke="#7000FF" stroke-width="2" stroke-dasharray="16 8"/>
+
+    <!-- Central Sentinel Core Orb -->
+    <circle r="22" fill="url(#sentinel-core)" stroke="#FFFFFF" stroke-width="1.5" class="pulse-eye"/>
+    <circle r="8" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- Outer Status Tag -->
+    <rect x="-65" y="66" width="130" height="20" rx="4" fill="#040A14" stroke="#00FF9D" stroke-width="1"/>
+    <text x="0" y="80" text-anchor="middle" class="val-text">[COMPANION_ONLINE]</text>
+  </g>
+
+  <!-- RIGHT COMPANION CAPABILITIES & LIVE LOG FEED -->
+  <g transform="translate(220, 62)">
+    <rect width="705" height="158" rx="8" fill="#050914" stroke="#00F0FF" stroke-width="1.5" />
+    <path d="M 0 0 L 705 0 L 500 158 L 0 158 Z" fill="url(#glass-sheen)" opacity="0.5"/>
+
+    <text x="20" y="26" class="sub-title">🤖 COMPANION AUTONOMOUS CAPABILITIES &amp; AGENTIC DIRECTIVES</text>
+    <line x1="20" y1="36" x2="685" y2="36" stroke="#1E293B" stroke-width="1"/>
+
+    <text x="20" y="60" class="label-text">▪ <tspan fill="#FFFFFF">Isolated Pre-testing &amp; Sandboxing:</tspan></text>
+    <text x="310" y="60" class="val-text">[AUTOMATED TESTBEDS]</text>
+
+    <text x="20" y="84" class="label-text">▪ <tspan fill="#FFFFFF">GLSL &amp; GPU Shader Compilation:</tspan></text>
+    <text x="310" y="84" class="val-text">[60 FPS REAL-TIME OPTICS]</text>
+
+    <text x="20" y="108" class="label-text">▪ <tspan fill="#FFFFFF">Multidisciplinary Control Theory:</tspan></text>
+    <text x="310" y="108" class="val-text">[OPTIMAL CONTROL LOOPS]</text>
+
+    <!-- LIVE TERMINAL COMPANION LOG -->
+    <rect x="20" y="122" width="665" height="26" rx="4" fill="#020408" stroke="#1E293B" stroke-width="1"/>
+    <text x="30" y="139" class="label-text" fill="#00F0FF">> SENESCHAL_LOG: Active partner listening. Synchronized with Steve Blackbeard protocol.</text>
+  </g>
+</svg>
