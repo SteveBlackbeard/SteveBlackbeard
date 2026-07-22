@@ -1,7 +1,7 @@
 <!-- ETHERNIUM SOVEREIGN PROFILE README -->
 <div align="center">
   <!-- 3D Obsidian Shader Animated Header Banner -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium.svg" alt="Ethernium Sovereign Systems Banner" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/header-ethernium.svg?v=3" alt="Ethernium Sovereign Systems Banner" width="100%" />
 
   <br/><br/>
 
@@ -13,14 +13,14 @@
 
   <p align="center">
     <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg" alt="Launch Live 100K GPU Telemetry HUD" width="480" />
+      <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-launch.svg?v=3" alt="Launch Live 100K GPU Telemetry HUD" width="480" />
     </a>
   </p>
 
   <p align="center">
-    <a href="#-executive-briefing--corporate-manifesto"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-clearance.svg" alt="Clearance Level 05" width="230" /></a>
-    <a href="#-ethernium-corporate-systemic-architecture"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-paradigm.svg" alt="Paradigm Disruptive" width="230" /></a>
-    <a href="#-system-telemetry"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-telemetry.svg" alt="GPU Telemetry 60 FPS" width="230" /></a>
+    <a href="#-executive-briefing--corporate-manifesto"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-clearance.svg?v=3" alt="Clearance Level 05" width="230" /></a>
+    <a href="#-ethernium-corporate-systemic-architecture"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-paradigm.svg?v=3" alt="Paradigm Disruptive" width="230" /></a>
+    <a href="#-system-telemetry"><img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badge-telemetry.svg?v=3" alt="GPU Telemetry 60 FPS" width="230" /></a>
   </p>
 
   ---
@@ -37,7 +37,7 @@
 ### 🤖 Ethernium Autonomous Companion // Seneschal-v5
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-sentinel.svg" alt="Ethernium Autonomous Companion HUD" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-sentinel.svg?v=3" alt="Ethernium Autonomous Companion HUD" width="100%" />
 </div>
 
 ---
@@ -46,10 +46,10 @@
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-console.gif" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
+    <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/particle-console.gif?v=3" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Newtonian GPU Shader Simulation</i></sub>
+    <sub><i>Click the animated console above to launch full-screen 60 FPS 100,000 Particle Invictvs 3D Mask & Human DNA Simulation</i></sub>
   </p>
 </div>
 
@@ -58,7 +58,7 @@
 ### 🏛️ Ethernium Corporate Systemic Architecture
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/seneschal-chronolith.svg" alt="Ethernium Corporate Systemic Architecture" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/seneschal-chronolith.svg?v=3" alt="Ethernium Corporate Systemic Architecture" width="100%" />
 </div>
 
 ---
@@ -66,7 +66,7 @@
 ### ⚡ Sovereign Compute Matrix
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg" alt="Sovereign Compute Matrix" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg?v=3" alt="Sovereign Compute Matrix" width="100%" />
 </div>
 
 ---
@@ -92,21 +92,62 @@
 
 ---
 
-### 🛠️ Core Technical Arsenal
+### 🛠️ Core Technical Arsenal // 3D Animated Obsidian Badges
 
-```gdb
-[COMPUTE_MATRIX]   ::  TypeScript  |  JavaScript (ESNext)  |  Python  |  C/C++  |  Node.js
-[GPU_SHADERS]      ::  Three.js    |  WebGL / WebGPU       |  GLSL    |  Canvas API
-[OBSIDIAN_UI]      ::  Local-First |  Glassmorphism (CSS)  |  Web Workers  |  BufferGeometry
-[OPS_INTEGRITY]    ::  Git         |  Linux / PowerShell   |  Isolated Sandboxes
-```
+<div align="center">
+  <!-- Languages & Compute -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-c.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-cpp.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-python.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rust.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-android.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-markdown.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-yolov5.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-openmpi.svg" />
+
+  <br/><br/>
+
+  <!-- Hardware & Embedded -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-raspberrypi.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arduino.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-esp32.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-stm32.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rk3568.svg" />
+
+  <br/><br/>
+
+  <!-- Git & Ops -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-git.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitlab.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-github.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitea.svg" />
+
+  <br/><br/>
+
+  <!-- Tools & IDEs -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vscode.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-pycharm.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-clion.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vim.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-docker.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-bash.svg" />
+
+  <br/><br/>
+
+  <!-- OS & Platforms -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arch.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-debian.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-ubuntu.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-windows.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-quest3.svg" />
+</div>
 
 ---
 
 ### 📊 System Telemetry
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/system-telemetry.svg" alt="Ethernium System Telemetry Card" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/system-telemetry.svg?v=3" alt="Ethernium System Telemetry Card" width="100%" />
 </div>
 
 ---
