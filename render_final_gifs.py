@@ -49,14 +49,14 @@ AU_SHELLS = [2, 8, 18, 32, 18, 1]
 AU_SHELL_COLORS = [(255,50,50), (255,160,0), (255,255,0), (0,255,120), (0,180,255), (200,100,255)]
 
 def draw_obsidian_terminal_base(draw, img, width, height, radius):
-    # Solid background fill to ensure NO transparent corner glitches in browser/README
-    draw.rectangle([(0, 0), (width, height)], fill=(2, 3, 6, 255))
+    # SOLID background fill (no transparent corner glitches, solid dark)
+    draw.rectangle([(0, 0), (width, height)], fill=(2, 3, 6))
     
-    # Inner panel background
-    draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=radius-2, fill=(5, 9, 18, 255), outline=(0, 0, 0, 255), width=3)
+    # Inner panel background (completely solid dark obsidian, matches other panels)
+    draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=radius-2, fill=(5, 9, 18), outline=(0, 0, 0), width=1)
     
-    # Gradient border image
-    gradient_img = Image.new('RGB', (width, height), (2, 3, 6))
+    # Generate the gradient border image
+    gradient_img = Image.new('RGB', (width, height))
     draw_grad = ImageDraw.Draw(gradient_img)
     for x in range(width):
         frac = x / width
@@ -72,18 +72,23 @@ def draw_obsidian_terminal_base(draw, img, width, height, radius):
             b = int(255 + (255 - 255) * sf)
         draw_grad.line([(x, 0), (x, height)], fill=(r, g, b), width=1)
         
-    # Mask for gradient border at (8, 8)
+    # Create mask for the gradient border outline ONLY (2px width)
     mask = Image.new('L', (width, height), 0)
     draw_mask = ImageDraw.Draw(mask)
-    draw_mask.rounded_rectangle([(8, 8), (width-9, height-9)], radius=radius-4, fill=255, outline=0, width=2)
+    draw_mask.rounded_rectangle([(8, 8), (width-9, height-9)], radius=radius-4, fill=255)
+    draw_mask.rounded_rectangle([(10, 10), (width-11, height-11)], radius=radius-5, fill=0)
     
+    # Paste gradient only onto the border mask
     img.paste(gradient_img, (0, 0), mask=mask)
     
-    # Draw inner white border with opacity
-    inner_white = Image.new('RGBA', (width, height), (0, 0, 0, 0))
-    draw_white = ImageDraw.Draw(inner_white)
-    draw_white.rounded_rectangle([(11, 11), (width-12, height-12)], radius=radius-6, outline=(255, 255, 255, 120), width=1)
-    img.paste(inner_white, (0, 0), mask=inner_white)
+    # Draw inner white border outline ONLY (1px width)
+    inner_white_mask = Image.new('L', (width, height), 0)
+    draw_white_mask = ImageDraw.Draw(inner_white_mask)
+    draw_white_mask.rounded_rectangle([(11, 11), (width-12, height-12)], radius=radius-6, fill=255)
+    draw_white_mask.rounded_rectangle([(12, 12), (width-13, height-13)], radius=radius-7, fill=0)
+    
+    inner_white_color = Image.new('RGB', (width, height), (80, 100, 120))  # Slate/semi-transparent feel
+    img.paste(inner_white_color, (0, 0), mask=inner_white_mask)
 
 # ═══════════════════════════════════════════════════════════════
 # GENERATE SCHEMATIC B-DNA HELIX GIF WITH CROSSHAIR (v16-helix)
@@ -104,7 +109,7 @@ def generate_dna_schematic():
         t = frame_idx / num_frames
         phase = t * math.pi * 2.0
 
-        # SOLID dark obsidian background
+        # SOLID dark obsidian background image
         img = Image.new('RGB', (width, height), (2, 3, 6))
         draw = ImageDraw.Draw(img)
 
@@ -112,10 +117,10 @@ def generate_dna_schematic():
         draw_obsidian_terminal_base(draw, img, width, height, frame_radius)
 
         # Header Bar
-        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8, 255), outline=(0, 0, 0, 255), width=2)
-        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87, 255))
-        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46, 255))
-        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63, 255))
+        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8), outline=(0, 0, 0), width=2)
+        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87))
+        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46))
+        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63))
 
         title_str = 'NULLA-LABS // HIGH-DENSITY B-DNA SCHEMATIC HELIX ENGINE'
         draw.text((81, 23), title_str, fill=(0, 240, 255))
@@ -203,10 +208,10 @@ def generate_pt_console():
         draw_obsidian_terminal_base(draw, img, width, height, frame_radius)
 
         # Header Bar
-        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8, 255), outline=(0, 0, 0, 255), width=2)
-        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87, 255))
-        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46, 255))
-        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63, 255))
+        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8), outline=(0, 0, 0), width=2)
+        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87))
+        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46))
+        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63))
 
         title_str = 'NULLA-LABS // COMPLETE 118-ELEMENT IUPAC 3D PERIODIC TABLE PLATFORM'
         draw.text((81, 23), title_str, fill=(0, 240, 255))
@@ -266,8 +271,7 @@ def generate_pt_console():
                      fill=(nuc_bright, int(nuc_bright*0.8), 0))
         draw.text((atom_cx - 6, atom_cy - 5), 'Au', fill=(40, 30, 0))
 
-        # Shell Orbits (even larger spacing)
-        # Using 6 shells: 2, 8, 18, 32, 18, 1
+        # Shell Orbits
         for shell_idx, (n_electrons, shell_col) in enumerate(zip(AU_SHELLS, AU_SHELL_COLORS)):
             shell_r = 24 + shell_idx * 14
             tilt = (shell_idx * 0.4) + 0.2
