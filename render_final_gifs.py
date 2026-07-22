@@ -49,14 +49,14 @@ AU_SHELLS = [2, 8, 18, 32, 18, 1]
 AU_SHELL_COLORS = [(255,50,50), (255,160,0), (255,255,0), (0,255,120), (0,180,255), (200,100,255)]
 
 def draw_obsidian_terminal_base(draw, img, width, height, radius):
-    # SOLID background fill (no transparent corner glitches, solid dark)
-    draw.rectangle([(0, 0), (width, height)], fill=(2, 3, 6))
+    # Start with a transparent background in RGBA image
+    # Note: Outside the rounded rectangle remains (0, 0, 0, 0) for perfect rounded corners!
     
-    # Inner panel background (completely solid dark obsidian, matches other panels)
-    draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=radius-2, fill=(5, 9, 18), outline=(0, 0, 0), width=1)
+    # Inner panel background (completely solid dark obsidian)
+    draw.rounded_rectangle([(4, 4), (width-5, height-5)], radius=radius-2, fill=(5, 9, 18, 255), outline=(0, 0, 0, 255), width=1)
     
     # Generate the gradient border image
-    gradient_img = Image.new('RGB', (width, height))
+    gradient_img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
     draw_grad = ImageDraw.Draw(gradient_img)
     for x in range(width):
         frac = x / width
@@ -70,25 +70,38 @@ def draw_obsidian_terminal_base(draw, img, width, height, radius):
             r = int(255 + (112 - 255) * sf)
             g = int(255 + (0 - 255) * sf)
             b = int(255 + (255 - 255) * sf)
-        draw_grad.line([(x, 0), (x, height)], fill=(r, g, b), width=1)
+        draw_grad.line([(x, 0), (x, height)], fill=(r, g, b, 255), width=1)
         
-    # Create mask for the gradient border outline ONLY (2px width)
-    mask = Image.new('L', (width, height), 0)
-    draw_mask = ImageDraw.Draw(mask)
-    draw_mask.rounded_rectangle([(8, 8), (width-9, height-9)], radius=radius-4, fill=255)
-    draw_mask.rounded_rectangle([(10, 10), (width-11, height-11)], radius=radius-5, fill=0)
+    # Create mask in RGB first to avoid falsy/None bugs with fill=0 in PIL L-mode
+    mask_rgb = Image.new('RGB', (width, height), (0, 0, 0))
+    draw_mask = ImageDraw.Draw(mask_rgb)
+    draw_mask.rounded_rectangle([(8, 8), (width-9, height-9)], radius=radius-4, fill=(255, 255, 255))
+    draw_mask.rounded_rectangle([(10, 10), (width-11, height-11)], radius=radius-5, fill=(0, 0, 0))
+    mask = mask_rgb.convert('L')
     
     # Paste gradient only onto the border mask
     img.paste(gradient_img, (0, 0), mask=mask)
     
     # Draw inner white border outline ONLY (1px width)
-    inner_white_mask = Image.new('L', (width, height), 0)
-    draw_white_mask = ImageDraw.Draw(inner_white_mask)
-    draw_white_mask.rounded_rectangle([(11, 11), (width-12, height-12)], radius=radius-6, fill=255)
-    draw_white_mask.rounded_rectangle([(12, 12), (width-13, height-13)], radius=radius-7, fill=0)
+    inner_white_rgb = Image.new('RGB', (width, height), (0, 0, 0))
+    draw_white_mask = ImageDraw.Draw(inner_white_rgb)
+    draw_white_mask.rounded_rectangle([(11, 11), (width-12, height-12)], radius=radius-6, fill=(255, 255, 255))
+    draw_white_mask.rounded_rectangle([(12, 12), (width-13, height-13)], radius=radius-7, fill=(0, 0, 0))
+    inner_white_mask = inner_white_rgb.convert('L')
     
-    inner_white_color = Image.new('RGB', (width, height), (80, 100, 120))  # Slate/semi-transparent feel
+    inner_white_color = Image.new('RGBA', (width, height), (80, 100, 120, 120))
     img.paste(inner_white_color, (0, 0), mask=inner_white_mask)
+
+def convert_to_gif_frame(rgba_img):
+    # Convert RGBA to P mode preserving transparency correctly for GIF
+    alpha = rgba_img.getchannel('A')
+    rgb_img = rgba_img.convert('RGB')
+    p_img = rgb_img.convert('P', palette=Image.Palette.ADAPTIVE, colors=255)
+    
+    # Map transparent pixels to index 255
+    transparent_mask = Image.eval(alpha, lambda a: 255 if a <= 128 else 0)
+    p_img.paste(255, mask=transparent_mask)
+    return p_img
 
 # ═══════════════════════════════════════════════════════════════
 # GENERATE SCHEMATIC B-DNA HELIX GIF WITH CROSSHAIR (v16-helix)
@@ -109,21 +122,21 @@ def generate_dna_schematic():
         t = frame_idx / num_frames
         phase = t * math.pi * 2.0
 
-        # SOLID dark obsidian background image
-        img = Image.new('RGB', (width, height), (2, 3, 6))
+        # Transparent background for corner rounding
+        img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
         # Draw terminal frame
         draw_obsidian_terminal_base(draw, img, width, height, frame_radius)
 
         # Header Bar
-        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8), outline=(0, 0, 0), width=2)
-        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87))
-        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46))
-        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63))
+        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8, 255), outline=(0, 0, 0, 255), width=2)
+        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87, 255))
+        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46, 255))
+        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63, 255))
 
         title_str = 'NULLA-LABS // HIGH-DENSITY B-DNA SCHEMATIC HELIX ENGINE'
-        draw.text((81, 23), title_str, fill=(0, 240, 255))
+        draw.text((81, 23), title_str, fill=(0, 240, 255, 255))
 
         # Render B-DNA double helix structure (EXACTLY like the user spec image v14!)
         for bp in range(num_bp):
@@ -149,7 +162,7 @@ def generate_dna_schematic():
 
                 dot_r = max(2, int(3.0 + rd * 1.5))
                 if 14 < x < width-15 and 50 < ry < height-14:
-                    draw.ellipse([x - dot_r, ry - dot_r, x + dot_r, ry + dot_r], fill=col)
+                    draw.ellipse([x - dot_r, ry - dot_r, x + dot_r, ry + dot_r], fill=col + (255,))
 
             # Draw main backbone spheres
             br1 = max(3, int(6.0 + d1 * 3.0))
@@ -163,15 +176,15 @@ def generate_dna_schematic():
 
             if 14 < x < width-15:
                 if 50 < y1 < height-14:
-                    draw.ellipse([x - br1, y1 - br1, x + br1, y1 + br1], fill=bb1_col, outline=(255,255,255), width=1)
+                    draw.ellipse([x - br1, y1 - br1, x + br1, y1 + br1], fill=bb1_col + (255,), outline=(255,255,255,255), width=1)
                 if 50 < y2 < height-14:
-                    draw.ellipse([x - br2, y2 - br2, x + br2, y2 + br2], fill=bb2_col, outline=(255,255,255), width=1)
+                    draw.ellipse([x - br2, y2 - br2, x + br2, y2 + br2], fill=bb2_col + (255,), outline=(255,255,255,255), width=1)
 
         # Draw target crosshair (just like the original screenshot!)
         tx, ty = 520, 140
-        draw.ellipse([tx-12, ty-12, tx+12, ty+12], outline=(255, 0, 85), width=2)
-        draw.line([(tx-18, ty), (tx+18, ty)], fill=(255, 0, 85), width=2)
-        draw.line([(tx, ty-18), (tx, ty+18)], fill=(255, 0, 85), width=2)
+        draw.ellipse([tx-12, ty-12, tx+12, ty+12], outline=(255, 0, 85, 255), width=2)
+        draw.line([(tx-18, ty), (tx+18, ty)], fill=(255, 0, 85, 255), width=2)
+        draw.line([(tx, ty-18), (tx, ty+18)], fill=(255, 0, 85, 255), width=2)
 
         # Scanlines CRT overlay
         scan_layer = Image.new('RGBA', (width, height), (0, 0, 0, 0))
@@ -179,11 +192,11 @@ def generate_dna_schematic():
         for sy in range(50, height-14, 5):
             draw_scan.line([(14, sy), (width-15, sy)], fill=(0, 240, 255, 12), width=1)
 
-        final_frame = Image.alpha_composite(img.convert('RGBA'), scan_layer)
-        frames.append(final_frame.convert('P', palette=Image.Palette.ADAPTIVE))
+        final_frame = Image.alpha_composite(img, scan_layer)
+        frames.append(convert_to_gif_frame(final_frame))
 
     out_gif = os.path.join(target_dir, 'particle-dna-console-v16-helix.gif')
-    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=45, loop=0)
+    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=45, loop=0, transparency=255, disposal=2)
     print("SUCCESS: particle-dna-console-v16-helix.gif (schematic) generated!")
 
 # ═══════════════════════════════════════════════════════════════
@@ -200,21 +213,21 @@ def generate_pt_console():
         t = frame_idx / num_frames
         rot_angle = t * math.pi * 2
 
-        # SOLID dark obsidian background
-        img = Image.new('RGB', (width, height), (2, 3, 6))
+        # Transparent background for corner rounding
+        img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
         # Draw outer obsidian container with gradient border and rounded corners
         draw_obsidian_terminal_base(draw, img, width, height, frame_radius)
 
         # Header Bar
-        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8), outline=(0, 0, 0), width=2)
-        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87))
-        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46))
-        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63))
+        draw.rounded_rectangle([(14, 12), (width-15, 48)], radius=6, fill=(2, 4, 8, 255), outline=(0, 0, 0, 255), width=2)
+        draw.ellipse([(26, 24), (36, 34)], fill=(255, 95, 87, 255))
+        draw.ellipse([(42, 24), (52, 34)], fill=(255, 189, 46, 255))
+        draw.ellipse([(58, 24), (68, 34)], fill=(39, 201, 63, 255))
 
         title_str = 'NULLA-LABS // COMPLETE 118-ELEMENT IUPAC 3D PERIODIC TABLE PLATFORM'
-        draw.text((81, 23), title_str, fill=(0, 240, 255))
+        draw.text((81, 23), title_str, fill=(0, 240, 255, 255))
 
         # Periodic Table Grid Layout (Offset left to fit Gold Atom on the right)
         pt_x, pt_y = 25, 58
@@ -235,30 +248,30 @@ def generate_pt_console():
 
             if is_au:
                 glow_col = tuple(max(0, min(255, int(c * 0.25 * au_pulse))) for c in color)
-                draw.rectangle([cx-2, cy-2, cx+cell_w+2, cy+cell_h+2], fill=glow_col)
+                draw.rectangle([cx-2, cy-2, cx+cell_w+2, cy+cell_h+2], fill=glow_col + (255,))
 
-            draw.rectangle([cx, cy, cx+cell_w, cy+cell_h], fill=bg, outline=border)
-            draw.text((cx + 6, cy + 5), sym, fill=text_col)
+            draw.rectangle([cx, cy, cx+cell_w, cy+cell_h], fill=bg + (255,), outline=border + (255,))
+            draw.text((cx + 6, cy + 5), sym, fill=text_col + (255,))
 
         # Lanthanide / Actinide Indicator Markers
-        draw.text((pt_x + 2*(cell_w+2) + 4, pt_y + 5*(cell_h+2) + 4), '*', fill=(255,105,180))
-        draw.text((pt_x + 2*(cell_w+2) + 4, pt_y + 6*(cell_h+2) + 4), '**', fill=(255,100,50))
+        draw.text((pt_x + 2*(cell_w+2) + 4, pt_y + 5*(cell_h+2) + 4), '*', fill=(255,105,180,255))
+        draw.text((pt_x + 2*(cell_w+2) + 4, pt_y + 6*(cell_h+2) + 4), '**', fill=(255,100,50,255))
 
         # Lanthanides Row
         la_y = pt_y + 7*(cell_h+2) + 6
-        draw.text((pt_x, la_y + 5), '* Lanth:', fill=(255,105,180))
+        draw.text((pt_x, la_y + 5), '* Lanth:', fill=(255,105,180,255))
         for i, (sym, z) in enumerate(LANT):
             lx = pt_x + 70 + i * (cell_w + 2)
-            draw.rectangle([lx, la_y, lx + cell_w, la_y + cell_h], fill=(30,12,22), outline=(100,40,70))
-            draw.text((lx + 4, la_y + 5), sym, fill=(255,105,180))
+            draw.rectangle([lx, la_y, lx + cell_w, la_y + cell_h], fill=(30,12,22,255), outline=(100,40,70,255))
+            draw.text((lx + 4, la_y + 5), sym, fill=(255,105,180,255))
 
         # Actinides Row
         ac_y = la_y + cell_h + 3
-        draw.text((pt_x, ac_y + 5), '** Actin:', fill=(255,100,50))
+        draw.text((pt_x, ac_y + 5), '** Actin:', fill=(255,100,50,255))
         for i, (sym, z) in enumerate(ACTN):
             ax = pt_x + 70 + i * (cell_w + 2)
-            draw.rectangle([ax, ac_y, ax + cell_w, ac_y + cell_h], fill=(30,15,8), outline=(100,50,25))
-            draw.text((ax + 4, ac_y + 5), sym, fill=(255,100,50))
+            draw.rectangle([ax, ac_y, ax + cell_w, ac_y + cell_h], fill=(30,15,8,255), outline=(100,50,25,255))
+            draw.text((ax + 4, ac_y + 5), sym, fill=(255,100,50,255))
 
         # ═══ GOLD ATOM (Au, Z=79) — RIGHT SIDE, 360° SPIN (HUGE ATOM) ═══
         atom_cx, atom_cy = 810, 155
@@ -268,10 +281,11 @@ def generate_pt_console():
         nuc_3d = math.cos(rot_angle * 0.3) * 0.15 + 0.85
         nuc_bright = int(220 * nuc_3d)
         draw.ellipse([atom_cx-nuc_r, atom_cy-nuc_r, atom_cx+nuc_r, atom_cy+nuc_r],
-                     fill=(nuc_bright, int(nuc_bright*0.8), 0))
-        draw.text((atom_cx - 6, atom_cy - 5), 'Au', fill=(40, 30, 0))
+                     fill=(nuc_bright, int(nuc_bright*0.8), 0, 255))
+        draw.text((atom_cx - 6, atom_cy - 5), 'Au', fill=(40, 30, 0, 255))
 
-        # Shell Orbits
+        # Shell Orbits (even larger spacing)
+        # Using 6 shells: 2, 8, 18, 32, 18, 1
         for shell_idx, (n_electrons, shell_col) in enumerate(zip(AU_SHELLS, AU_SHELL_COLORS)):
             shell_r = 24 + shell_idx * 14
             tilt = (shell_idx * 0.4) + 0.2
@@ -297,11 +311,11 @@ def generate_pt_console():
                 
                 # Check clip boundaries to avoid drawing electrons over the border
                 if 14 < sx < width-15 and 50 < sy < height-14:
-                    draw.ellipse([sx-e_r, sy-e_r, sx+e_r, sy+e_r], fill=col)
+                    draw.ellipse([sx-e_r, sy-e_r, sx+e_r, sy+e_r], fill=col + (255,))
 
         # Text descriptor
-        draw.text((755, 255), 'GOLD (Au) Z=79', fill=(255, 205, 50))
-        draw.text((745, 270), '[Xe] 4f14 5d10 6s1', fill=(150, 120, 50))
+        draw.text((755, 255), 'GOLD (Au) Z=79', fill=(255, 205, 50, 255))
+        draw.text((745, 270), '[Xe] 4f14 5d10 6s1', fill=(150, 120, 50, 255))
 
         # Scanlines
         scan_layer = Image.new('RGBA', (width, height), (0, 0, 0, 0))
@@ -309,11 +323,11 @@ def generate_pt_console():
         for sy in range(50, height-14, 5):
             draw_scan.line([(14, sy), (width-15, sy)], fill=(0, 240, 255, 12), width=1)
 
-        final_frame = Image.alpha_composite(img.convert('RGBA'), scan_layer)
-        frames.append(final_frame.convert('P', palette=Image.Palette.ADAPTIVE))
+        final_frame = Image.alpha_composite(img, scan_layer)
+        frames.append(convert_to_gif_frame(final_frame))
 
     out_gif = os.path.join(target_dir, 'particle-periodic-table-au.gif')
-    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=67, loop=0)
+    frames[0].save(out_gif, save_all=True, append_images=frames[1:], duration=67, loop=0, transparency=255, disposal=2)
     print("SUCCESS: particle-periodic-table-au.gif generated!")
 
 if __name__ == '__main__':
