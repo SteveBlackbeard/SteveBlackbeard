@@ -18,7 +18,7 @@ BASE_COLORS = [
 COL_A = (255, 221, 0)     # Adenine: Yellow
 COL_T = (0, 212, 255)     # Thymine: Cyan
 COL_G = (0, 255, 125)     # Guanine: Green
-COL_C = (255, 105, 180)    # Cytosine: Pink
+COL_C = (255, 255, 255)    # Cytosine: White
 
 # Periodic table category colors
 CAT_COLORS = {
@@ -118,7 +118,7 @@ def generate_dna_schematic():
 
     # Real human TP53 gene partial sequence
     SEQ = "ATGGAGGAGCCGCAGTCAGATCCTAGCGTGAGTTTGCACTGATGGAGGAGCCGCAGTCAGATCCTAGCGTGAGT"
-    BASE_COLORS = {'A': (255, 221, 0), 'T': (0, 212, 255), 'G': (0, 255, 125), 'C': (255, 105, 180)}
+    BASE_COLORS = {'A': (255, 221, 0), 'T': (0, 212, 255), 'G': (0, 255, 125), 'C': (255, 255, 255)}
     COMP = {'A':'T', 'T':'A', 'G':'C', 'C':'G'}
 
     for frame_idx in range(num_frames):
@@ -239,7 +239,7 @@ def generate_dna_schematic():
         draw.text((25, 288), 'A', fill=(255, 221, 0, 255))
         draw.text((37, 288), 'T', fill=(0, 212, 255, 255))
         draw.text((49, 288), 'G', fill=(0, 255, 125, 255))
-        draw.text((61, 288), 'C', fill=(255, 105, 180, 255))
+        draw.text((61, 288), 'C', fill=(255, 255, 255, 255))
         draw.text((79, 288), '| BACKBONE', fill=(80, 100, 150, 255))
 
         # Status text & Scrolling Sequence
