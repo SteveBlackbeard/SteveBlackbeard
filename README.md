@@ -11,7 +11,7 @@
   </p>
 
   <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank"><img src="https://img.shields.io/badge/🚀_LAUNCH_LIVE-GPU_TELEMETRY_HUD-00F0FF?style=for-the-badge&logo=opengl&logoColor=black" alt="Launch Live GPU Telemetry HUD" /></a>
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank"><img src="https://img.shields.io/badge/🚀_LAUNCH_LIVE-GPU_TELEMETRY_HUD-00F0FF?style=for-the-badge&logo=opengl&logoColor=white" alt="Launch Live GPU Telemetry HUD" /></a>
   </p>
 
   <p align="center">
@@ -35,6 +35,19 @@
 
 <div align="center">
   <img src="ethernium-sentinel.svg" alt="Ethernium Autonomous Companion HUD" width="100%" />
+</div>
+
+---
+
+### ⚡ INVICTVS GPU Particle Shader Engine // Live Console Window
+
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-console.gif" alt="Ethernium INVICTVS GPU Particle Engine Console" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Click the animated console above to launch full-screen 60 FPS WebGL GPU Shader Simulation</i></sub>
+  </p>
 </div>
 
 ---
@@ -106,7 +119,7 @@
 
 <div align="center">
   <br />
-  <code>ETH-CORP // SENESCHAL COMPANION & PARADIGM SHIFT PROTOCOL ACTIVE</code>
+  <code>ETH-CORP // SENESCHAL COMPANION & INVICTVS PARTICLE ENGINE ACTIVE</code>
   <br/><br/>
   <sub>⚡ Powered by <strong>Ethernium Sovereign Framework</strong> • Low-Latency Corporate Architecture</sub>
 </div>
