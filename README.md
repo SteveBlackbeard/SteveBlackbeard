@@ -78,9 +78,7 @@
 ### 📊 System Telemetry
 
 <div align="center">
-  <br />
-  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=SteveBlackbeard&show_icons=true&theme=dark&count_private=true&bg_color=020306&title_color=00F0FF&icon_color=7000FF&text_color=E2E8F0&border_color=1E293B" alt="GitHub Stats" />
-  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SteveBlackbeard&layout=compact&theme=dark&bg_color=020306&title_color=00F0FF&text_color=E2E8F0&border_color=1E293B" alt="Top Languages" />
+  <img src="system-telemetry.svg" alt="Ethernium System Telemetry Card" width="100%" />
 </div>
 
 ---
