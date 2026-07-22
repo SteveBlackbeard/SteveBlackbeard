@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 44" width="260" height="44">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&amp;family=Fira+Code:wght@700&amp;display=swap');
+
+      .badge-text {
+        font-family: 'Nebula', 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 11.5px;
+        fill: #FFFFFF !important;
+        stroke: #000000;
+        stroke-width: 1.5px;
+        paint-order: stroke fill;
+        letter-spacing: 1.5px;
+        filter: drop-shadow(0 0 6px rgba(0, 255, 157, 0.8));
+      }
+
+      .sheen-move {
+        animation: moveSheen 3.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes moveSheen {
+        0% { transform: translateX(-100px); }
+        100% { transform: translateX(120px); }
+      }
+    </style>
+
+    <linearGradient id="btn-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142138" />
+      <stop offset="30%" stop-color="#080D1A" />
+      <stop offset="70%" stop-color="#03050A" />
+      <stop offset="100%" stop-color="#091020" />
+    </linearGradient>
+
+    <linearGradient id="bevel-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FF9D" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#00F0FF" />
+    </linearGradient>
+
+    <linearGradient id="moving-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <rect width="260" height="44" rx="10" fill="url(#btn-obsidian)" stroke="#1E293B" stroke-width="1.5"/>
+
+  <g class="sheen-move">
+    <polygon points="30,0 110,0 50,44 -30,44" fill="url(#moving-sheen)" />
+  </g>
+
+  <rect x="3" y="3" width="254" height="38" rx="8" fill="none" stroke="url(#bevel-glow)" stroke-width="1.5" />
+  <rect x="5" y="5" width="250" height="34" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.5" />
+
+  <text x="130" y="27" text-anchor="middle" class="badge-text" fill="#FFFFFF" stroke="#000000" stroke-width="1.5" paint-order="stroke fill">📊 GPU TELEMETRY: 60 FPS</text>
+</svg>

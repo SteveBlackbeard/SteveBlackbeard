@@ -17,9 +17,9 @@
   </p>
 
   <p align="center">
-    <a href="#-executive-briefing--corporate-manifesto"><img src="https://img.shields.io/badge/CLEARANCE-LEVEL_05-00F0FF?style=for-the-badge&logo=shield&logoColor=white" /></a>
-    <a href="#-ethernium-autonomous-companion--seneschal-v5"><img src="https://img.shields.io/badge/COMPANION-ACTIVE_SENTINEL-7000FF?style=for-the-badge&logo=cpu&logoColor=white" /></a>
-    <a href="#-system-telemetry"><img src="https://img.shields.io/badge/GPU_TELEMETRY-ACTIVE_60FPS-000000?style=for-the-badge&logo=opengl&logoColor=00F0FF" /></a>
+    <a href="#-executive-briefing--corporate-manifesto"><img src="badge-clearance.svg" alt="Clearance Level 05" width="230" /></a>
+    <a href="#-ethernium-corporate-systemic-architecture"><img src="badge-paradigm.svg" alt="Paradigm Disruptive" width="230" /></a>
+    <a href="#-system-telemetry"><img src="badge-telemetry.svg" alt="GPU Telemetry 60 FPS" width="230" /></a>
   </p>
 
   ---
