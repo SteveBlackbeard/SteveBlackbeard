@@ -1,4 +1,4 @@
-// Ethernium Sovereign AAA Invictvs High-Engineering Volumetric 3D Particle Shader Engine
+// Ethernium Sovereign Multidisciplinary 3-6-9 Fibonacci & Visual Genetics GPU Engine v7.0
 (function() {
   'use strict';
 
@@ -11,13 +11,13 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x020306, 0.008);
+  scene.fog = new THREE.FogExp2(0x020306, 0.0075);
 
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0, 55);
+  camera.position.set(0, 0, 52);
 
-  // 80,000 High-Density Volumetric 3D Particles
-  const PARTICLE_COUNT = 80000;
+  // 90,000 High-Precision GPU Particles (3-6-9 Multiples: 90,000 = 9 * 10,000)
+  const PARTICLE_COUNT = 90000;
   particleVal.textContent = PARTICLE_COUNT.toLocaleString();
 
   const geometry = new THREE.BufferGeometry();
@@ -26,27 +26,38 @@
   const randoms = new Float32Array(PARTICLE_COUNT * 3);
   const colors = new Float32Array(PARTICLE_COUNT * 3);
   const scales = new Float32Array(PARTICLE_COUNT);
-  const phases = new Float32Array(PARTICLE_COUNT);
+  const nodeTypes = new Float32Array(PARTICLE_COUNT); // 3, 6, 9 Nodal Frequency Assignment
 
-  const colorCyan = new THREE.Color(0x00F0FF);
-  const colorViolet = new THREE.Color(0x7000FF);
-  const colorEmerald = new THREE.Color(0x00FF9D);
-  const colorWhite = new THREE.Color(0xFFFFFF);
+  const PHI = (1.0 + Math.sqrt(5.0)) / 2.0; // Golden Ratio 1.61803398875
+  const GOLDEN_ANGLE = Math.PI * (3.0 - Math.sqrt(5.0)); // 137.5077 degrees
 
-  // Rich 3D Volumetric Sphere Distribution (Full X, Y, Z Spread - NO 2D Line Collapse!)
+  // Nucleotide Spectral Palette (Adenine, Thymine, Cytosine, Guanine + Tesla White)
+  const colAdenine = new THREE.Color(0x00F0FF);  // Cyan
+  const colThymine = new THREE.Color(0x7000FF);  // Violet
+  const colCytosine = new THREE.Color(0x00FF9D); // Emerald
+  const colGuanine = new THREE.Color(0xFFD700);  // Gold
+  const colTeslaWhite = new THREE.Color(0xFFFFFF);
+
+  // Multidisciplinary Initialization: Fibonacci Phyllotaxis + DNA Double Helix + Tesla 3-6-9 Nodes
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
 
-    // Full 3D Volumetric Ball Distribution
-    const u = Math.random();
-    const v = Math.random();
-    const theta = u * 2.0 * Math.PI;
-    const phi = Math.acos(2.0 * v - 1.0);
-    const r = Math.cbrt(Math.random()) * 38.0 + 4.0; // Cubic root for uniform 3D sphere volume
+    // Tesla 3-6-9 Nodal Category (0 = Node 3, 1 = Node 6, 2 = Node 9)
+    const nodeCat = i % 3;
+    nodeTypes[i] = nodeCat === 0 ? 3.0 : (nodeCat === 1 ? 6.0 : 9.0);
 
-    positions[i3] = r * Math.sin(phi) * Math.cos(theta);
-    positions[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-    positions[i3 + 2] = r * Math.cos(phi);
+    // Fibonacci Golden Spiral Radii
+    const r = Math.sqrt(i / PARTICLE_COUNT) * 42.0 + 3.0;
+    const theta = i * GOLDEN_ANGLE;
+
+    // DNA Double Helix Strand Offset
+    const strand = (i % 2 === 0) ? 1.0 : -1.0;
+    const helixZ = Math.sin(theta * 3.0) * 8.0 * strand + (Math.random() - 0.5) * 4.0;
+
+    // Arched Rotational Vortex Position
+    positions[i3] = r * Math.cos(theta);
+    positions[i3 + 1] = r * Math.sin(theta);
+    positions[i3 + 2] = helixZ;
 
     origPositions[i3] = positions[i3];
     origPositions[i3 + 1] = positions[i3 + 1];
@@ -56,16 +67,19 @@
     randoms[i3 + 1] = (Math.random() - 0.5) * 2.0;
     randoms[i3 + 2] = (Math.random() - 0.5) * 2.0;
 
+    // Color Assignment by Genetic Base Pair & Tesla Frequency
     const pColor = new THREE.Color();
-    const randCol = Math.random();
-    if (randCol < 0.40) {
-      pColor.copy(colorCyan);
-    } else if (randCol < 0.70) {
-      pColor.copy(colorViolet);
-    } else if (randCol < 0.90) {
-      pColor.copy(colorEmerald);
+    const rCol = Math.random();
+    if (rCol < 0.35) {
+      pColor.copy(colAdenine);
+    } else if (rCol < 0.65) {
+      pColor.copy(colThymine);
+    } else if (rCol < 0.85) {
+      pColor.copy(colCytosine);
+    } else if (rCol < 0.95) {
+      pColor.copy(colGuanine);
     } else {
-      pColor.copy(colorWhite);
+      pColor.copy(colTeslaWhite);
     }
 
     colors[i3] = pColor.r;
@@ -73,27 +87,30 @@
     colors[i3 + 2] = pColor.b;
 
     scales[i] = 1.0 + Math.random() * 3.2;
-    phases[i] = Math.random() * Math.PI * 2.0;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 3));
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
-  geometry.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1));
+  geometry.setAttribute('aNodeType', new THREE.BufferAttribute(nodeTypes, 1));
 
-  // Central Core Mesh
-  const coreGeometry = new THREE.IcosahedronGeometry(5, 2);
-  const coreMaterial = new THREE.MeshBasicMaterial({
-    color: 0x00F0FF,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.65
-  });
-  const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
-  scene.add(coreMesh);
+  // Central 3D Sacred Geometry Monolith (Dual Stellated Octahedron Core)
+  const coreGroup = new THREE.Group();
 
-  // Pure GPU Shader Simulation (GPU Driven - Zero CPU Line Collapse)
+  const coreGeo1 = new THREE.OctahedronGeometry(5, 1);
+  const coreMat1 = new THREE.MeshBasicMaterial({ color: 0x00F0FF, wireframe: true, transparent: true, opacity: 0.75 });
+  const mesh1 = new THREE.Mesh(coreGeo1, coreMat1);
+
+  const coreGeo2 = new THREE.IcosahedronGeometry(7, 1);
+  const coreMat2 = new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true, transparent: true, opacity: 0.45 });
+  const mesh2 = new THREE.Mesh(coreGeo2, coreMat2);
+
+  coreGroup.add(mesh1);
+  coreGroup.add(mesh2);
+  scene.add(coreGroup);
+
+  // Pure GPU Shader Engine with 3-6-9 Vortex Dynamics & Fibonacci Gravitational Lensing
   const uniforms = {
     uTime: { value: 0 },
     uMouse: { value: new THREE.Vector3(0, 0, 0) },
@@ -107,12 +124,14 @@
     attribute vec3 aRandom;
     attribute vec3 aColor;
     attribute float aScale;
-    attribute float aPhase;
+    attribute float aNodeType;
 
     varying vec3 vColor;
     varying float vGlow;
 
-    // Simplex 3D Noise Shader Function
+    #define PHI 1.61803398875
+
+    // 3D Simplex Noise Function
     vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
@@ -165,30 +184,36 @@
       vColor = aColor;
       vec3 p = position;
 
-      // 1. Full 3D Harmonic Wave Swirl
-      float wave = sin(uTime * 0.8 + aPhase) * cos(uTime * 0.8 + p.x * 0.05);
-      p += aRandom * wave * 3.5;
+      // Tesla 3-6-9 Frequency Modulated Oscillation
+      float freqMod = aNodeType / 3.0; // 1.0 for Node 3, 2.0 for Node 6, 3.0 for Node 9
+      float teslaWave = sin(uTime * freqMod * 0.7 + length(p) * 0.1) * cos(uTime * 0.5);
 
-      // 2. 3D Simplex Turbulence (Volumetric Flow)
-      vec3 noiseVec = vec3(
-        snoise(p * 0.04 + vec3(uTime * 0.15, 0.0, 0.0)),
-        snoise(p * 0.04 + vec3(0.0, uTime * 0.15, 0.0)),
-        snoise(p * 0.04 + vec3(0.0, 0.0, uTime * 0.15))
+      // Arched Spinning Rotational Geodesics (Toroidal Flow)
+      float angle = uTime * 0.4 * freqMod + length(p) * 0.04;
+      mat2 rot = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+      p.xy = rot * p.xy;
+      p.z += teslaWave * 2.5;
+
+      // Fibonacci 3D Simplex Flow
+      vec3 noise = vec3(
+        snoise(p * 0.035 + vec3(uTime * 0.12, 0.0, 0.0)),
+        snoise(p * 0.035 + vec3(0.0, uTime * 0.12, 0.0)),
+        snoise(p * 0.035 + vec3(0.0, 0.0, uTime * 0.12))
       );
-      p += noiseVec * 4.0;
+      p += noise * (3.0 * PHI);
 
-      // 3. Mouse Attractor & Radial Shockwave
-      vec3 mouseDelta = p - uMouse;
-      float distToMouse = length(mouseDelta);
-      if (distToMouse < 24.0) {
-        float force = (24.0 - distToMouse) / 24.0;
-        p += normalize(mouseDelta) * force * 10.0 * (1.0 + uImpulse * 3.0);
+      // Mouse Gravitational Lensing & Kinetic Impulse Shockwave
+      vec3 delta = p - uMouse;
+      float dist = length(delta);
+      if (dist < 26.0) {
+        float force = (26.0 - dist) / 26.0;
+        p += normalize(delta) * force * (12.0 + uImpulse * 15.0);
       }
 
-      vGlow = smoothstep(25.0, 0.0, distToMouse);
+      vGlow = smoothstep(26.0, 0.0, dist);
 
       vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-      gl_PointSize = (aScale + vGlow * 3.5) * (360.0 / -mvPosition.z);
+      gl_PointSize = (aScale + vGlow * 4.0) * (380.0 / -mvPosition.z);
       gl_Position = projectionMatrix * mvPosition;
     }
   `;
@@ -199,7 +224,6 @@
     varying float vGlow;
 
     void main() {
-      // Sub-Pixel Soft Gaussian Point Mask
       vec2 coord = gl_PointCoord - vec2(0.5);
       float dist = length(coord);
       if (dist > 0.5) discard;
@@ -207,10 +231,10 @@
       float core = smoothstep(0.18, 0.0, dist);
       float halo = smoothstep(0.5, 0.0, dist);
 
-      vec3 finalColor = mix(vColor, vec3(1.0, 1.0, 1.0), core * 0.75);
-      finalColor += vec3(0.0, 0.94, 1.0) * pow(halo, 2.2) * 0.45;
+      vec3 finalColor = mix(vColor, vec3(1.0, 1.0, 1.0), core * 0.82);
+      finalColor += vec3(1.0, 0.84, 0.0) * pow(halo, 2.0) * 0.35; // Golden Tesla Glow
 
-      gl_FragColor = vec4(finalColor, halo * 0.88);
+      gl_FragColor = vec4(finalColor, halo * 0.92);
     }
   `;
 
@@ -272,15 +296,17 @@
     uniforms.uTime.value = t;
 
     if (uniforms.uImpulse.value > 0.01) {
-      uniforms.uImpulse.value *= 0.92;
+      uniforms.uImpulse.value *= 0.90;
     }
 
-    // 3D Volumetric Rotation of Particle Cloud
-    particleSystem.rotation.y = t * 0.12;
-    particleSystem.rotation.x = Math.sin(t * 0.08) * 0.15;
+    // 3D Sacred Geometry Rotation
+    mesh1.rotation.x = t * 0.5;
+    mesh1.rotation.y = t * 0.7;
 
-    coreMesh.rotation.x = t * 0.4;
-    coreMesh.rotation.y = t * 0.6;
+    mesh2.rotation.x = -t * 0.3;
+    mesh2.rotation.z = t * 0.4;
+
+    particleSystem.rotation.z = t * 0.05;
 
     renderer.render(scene, camera);
   }
