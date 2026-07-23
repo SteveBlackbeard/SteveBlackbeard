@@ -1,6 +1,6 @@
 // NULLA-LABS COMPLETE IUPAC 3D MOLECULAR SYNTHESIS PLATFORM v60.0
 // 118 Real Elements + Chemical Reactions Database + Superfluid Morphing
-(function() {
+window.addEventListener('DOMContentLoaded', function() {
   'use strict';
 
   const canvas = document.getElementById('webgl-canvas');
@@ -3346,4 +3346,4 @@
   }
 
   requestAnimationFrame(animate);
-})();
+});
