@@ -3020,10 +3020,15 @@
 
     // Real-time 3D laser measurement vector line update
     if (isMeasuringMode && selectedMeasureAtoms.length >= 2) {
-      const points = selectedMeasureAtoms.map(a => a.currentPos);
-      if (selectedMeasureAtoms.length === 3) points.push(selectedMeasureAtoms[0].currentPos);
-      if (laserLineMesh) {
-        laserLineMesh.geometry.setFromPoints(points);
+      try {
+        const points = selectedMeasureAtoms.map(a => a.currentPos);
+        if (selectedMeasureAtoms.length === 3) points.push(selectedMeasureAtoms[0].currentPos);
+        if (laserLineMesh) {
+          laserLineMesh.geometry.dispose();
+          laserLineMesh.geometry = new THREE.BufferGeometry().setFromPoints(points);
+        }
+      } catch (e) {
+        console.warn('Laser line update error:', e);
       }
     }
 
