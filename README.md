@@ -25,7 +25,7 @@
   ---
 </div>
 
-### 👁️ Executive Briefing // Corporate Manifesto
+### 👁️ Ethernium Briefing // 
 
 > *“Ethernium fue concebido a partir de múltiples rupturas de paradigmas conceptuales, y está listo para romper los siguientes.”*
 >
@@ -100,9 +100,9 @@
 
 ```
 ┌── [PARADIGM_SHIFT_01: CLOUD DEPENDENCY ➔ LOCAL SOVEREIGNTY] ──────────────────────────┐
-│  • Eliminating external lock-in via local-first, bare-metal hardware efficiency.      │
-│  • Deterministic execution sandboxes delivering bulletproof system resilience.        │
-└───────────────────────────────────────────────────────────────────────────────────────┘
+│  • Eliminating external lock-in via local-first, bare-metal hardware efficiency.       │
+│  • Deterministic execution sandboxes delivering bulletproof system resilience.         │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 
 ┌── [PARADIGM_SHIFT_02: MONOLITHIC BLOAT ➔ FRUGAL GPU KINETICS] ───────────────────────┐
 │  • Real-time particle dynamics & GLSL shaders operating @ 60 FPS baseline.            │
@@ -111,7 +111,7 @@
 
 ┌── [PARADIGM_SHIFT_03: PASSIVE CODE ➔ AUTONOMOUS CONTROL LOOPS] ──────────────────────┐
 │  • Multidisciplinary synthesis of control theory, discrete math & cognitive agentics. │
-│  • Self-verifying regression pipelines maximizing bare-metal compute utilization.    │
+│  • Self-verifying regression pipelines maximizing bare-metal compute utilization.     │
 └───────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
