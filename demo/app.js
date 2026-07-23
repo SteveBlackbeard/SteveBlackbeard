@@ -278,10 +278,16 @@
 
 
   // ═══════════════════════════════════════════════════════════════
-  // WEBGL 3D SETUP
+  // WEBGL 3D SETUP & SAFE CONTEXT CREATION
   // ═══════════════════════════════════════════════════════════════
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference:'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+  } catch (e) {
+    console.warn('High-performance WebGL context failed, falling back to basic WebGL:', e);
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, preserveDrawingBuffer: true });
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
