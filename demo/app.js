@@ -20,10 +20,16 @@
 
   const ptHudPanel = document.getElementById('pt-hud-panel');
 
-  const slotA = document.getElementById('slot-a');
-  const slotB = document.getElementById('slot-b');
+  const slots = [
+    document.getElementById('slot-0'),
+    document.getElementById('slot-1'),
+    document.getElementById('slot-2'),
+    document.getElementById('slot-3'),
+    document.getElementById('slot-4')
+  ];
   const btnFuse = document.getElementById('btn-fuse');
   const btnRandom = document.getElementById('btn-random');
+  const btnUndo = document.getElementById('btn-undo');
   const btnClear = document.getElementById('btn-clear');
   const atomCountEl = document.getElementById('atom-count');
 
