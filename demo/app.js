@@ -856,6 +856,7 @@
     }
 
     spawnAtoms(atoms);
+    if (organelleNavPanel) organelleNavPanel.style.display = 'none';
     updateTelemetry(
       'B-DNA Double Helix (TP53 Gene Locus)',
       'A-T (2 H-Bonds) // G-C (3 H-Bonds) Pairs',
@@ -956,6 +957,7 @@
     }
 
     spawnAtoms(atoms);
+    if (organelleNavPanel) organelleNavPanel.style.display = 'flex';
     updateTelemetry(
       '3D Eukaryotic Cell (Cross-Section Cutaway)',
       'Phospholipids (P,C,O) + Chromatin (N,P) + ATP (C,O,P)',
@@ -2509,6 +2511,38 @@
       buildEukaryoticCell();
     });
   }
+
+  const organelleNavPanel = document.getElementById('organelle-nav-panel');
+
+  function focusOrganelle(key) {
+    playTone(650, 'sine', 0.15);
+    const data = {
+      nuc: { name: 'Núcleo y Nucléolo (Cromatina TP53)', formula: 'DNA + RNA + Histonas H1-H4', cls: 'Organela de Control Genético', bonds: 'Puentes H (Nucleobases A-T / G-C)', note: 'Depósito de información genética y síntesis de ARN ribosomal.' },
+      mito: { name: 'Mitocondria (Síntesis ATP)', formula: 'C₁₀H₁₆N₅O₁₃P₃ (ATP)', cls: 'Central de Energía Oxidativa', bonds: 'Enlaces Éster de Alta Energía P~O', note: 'Generación de ATP celular mediante la cadena transportadora de electrones.' },
+      golgi: { name: 'Aparato de Golgi (Dictiosomas)', formula: 'Glicoproteínas y Glicolípidos', cls: 'Organela Secreta & Empaquetamiento', bonds: 'Enlaces Glicosídicos', note: 'Glicosilación, empaquetamiento vesicular y distribución proteica.' },
+      er: { name: 'Retículo Endoplásmico Rugoso y Liso', formula: 'Lípidos + Ribosomas 80S', cls: 'Síntesis Proteica y Lipídica', bonds: 'Enlaces Peptídicos & Lipídicos', note: 'Plegamiento proteico chaperona y detoxificación lipídica.' },
+      mem: { name: 'Membrana Plasmática', formula: '(C₃₆H₇₂O₈PR)₂', cls: 'Bicapa Semipermeable', bonds: 'Fuerzas de Van der Waals & Hidrofóbicas', note: 'Regulación del gradiente electroquímico y señalización.' },
+      cyto: { name: 'Citosol y Matriz de Electrolitos', formula: 'Na⁺, K⁺, Cl⁻, Ca²⁺, H₂O', cls: 'Matriz Hidroelectrolítica', bonds: 'Iónicos / Solvatación Acuosa', note: 'Mantenimiento de la presión osmótica y velocidad de difusión.' }
+    }[key];
+
+    if (data) {
+      updateTelemetry(data.name, data.formula, data.cls, data.bonds, 'State: [ORGANELLE 3D ZOOM ACTIVE]', -210, 3.2, '99.5%', data.note);
+    }
+  }
+
+  const btnOrgNuc = document.getElementById('btn-org-nuc');
+  const btnOrgMito = document.getElementById('btn-org-mito');
+  const btnOrgGolgi = document.getElementById('btn-org-golgi');
+  const btnOrgEr = document.getElementById('btn-org-er');
+  const btnOrgMem = document.getElementById('btn-org-mem');
+  const btnOrgCyto = document.getElementById('btn-org-cyto');
+
+  if (btnOrgNuc) btnOrgNuc.addEventListener('click', () => focusOrganelle('nuc'));
+  if (btnOrgMito) btnOrgMito.addEventListener('click', () => focusOrganelle('mito'));
+  if (btnOrgGolgi) btnOrgGolgi.addEventListener('click', () => focusOrganelle('golgi'));
+  if (btnOrgEr) btnOrgEr.addEventListener('click', () => focusOrganelle('er'));
+  if (btnOrgMem) btnOrgMem.addEventListener('click', () => focusOrganelle('mem'));
+  if (btnOrgCyto) btnOrgCyto.addEventListener('click', () => focusOrganelle('cyto'));
 
   // RANDOM SYNTHESIS Button (2 to 4 Elements)
   if (btnRandom) {
