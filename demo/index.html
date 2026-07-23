@@ -44,36 +44,34 @@
     .stat-chip { padding:3px 10px; border-radius:6px; font-size:9px; letter-spacing:1px; background:rgba(5,8,18,0.6); border:1px solid rgba(0,240,255,0.1); backdrop-filter:blur(8px); }
 
     /* ═══════════════════════════════════════════════════════════════
-       PERIODIC TABLE FULL-SCREEN MODAL
+       PERIODIC TABLE HUD PANEL (Bottom-Right)
        ═══════════════════════════════════════════════════════════════ */
-    #pt-full-modal {
-      display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:100;
-      background:rgba(2,3,6,0.93); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
-      flex-direction:column; align-items:center; justify-content:center;
-      animation: fadeIn 0.35s ease;
+    #pt-hud-panel {
+      position:fixed; bottom:12px; right:12px; z-index:10;
+      width:480px; backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4);
+      background:rgba(5,8,18,0.75); border:1px solid rgba(0,240,255,0.12); border-radius:10px;
+      padding:10px; display:flex; flex-direction:column; gap:6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
     }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-    .pt-modal-header { display:flex; align-items:center; gap:16px; margin-bottom:10px; }
-    .pt-modal-header h2 { font-family:'Orbitron',sans-serif; font-size:13px; color:#00F0FF; letter-spacing:4px; }
-    #btn-close-modal { background:none; border:1px solid rgba(255,0,85,0.4); color:#FF0055; border-radius:6px; padding:4px 12px; cursor:pointer; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; }
-    #btn-close-modal:hover { background:rgba(255,0,85,0.15); }
+    
+    .pt-panel-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,240,255,0.08); padding-bottom:4px; margin-bottom:2px; }
+    .pt-panel-title { font-family:'Orbitron',sans-serif; font-size:9px; color:#00F0FF; letter-spacing:2px; text-transform:uppercase; text-shadow:0 0 8px rgba(0,240,255,0.3); }
 
     /* Grid Layout — 18 columns for the standard IUPAC periodic table */
     .pt-grid {
-      display:grid; grid-template-columns:repeat(18, 1fr); gap:2px;
-      max-width:980px; width:95%;
+      display:grid; grid-template-columns:repeat(18, 1fr); gap:1.5px;
+      width:100%;
     }
 
     .pt-el {
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      padding:2px 1px; border-radius:4px; cursor:pointer;
-      min-height:36px; min-width:38px; border:1px solid rgba(255,255,255,0.06);
-      transition: all 0.25s ease; position:relative;
+      padding:1px 0px; border-radius:3px; cursor:pointer;
+      min-height:22px; border:1px solid rgba(255,255,255,0.05);
+      transition: all 0.2s ease; position:relative;
     }
-    .pt-el:hover { transform:scale(1.3); z-index:5; box-shadow:0 0 18px currentColor; border-color:currentColor; }
-    .pt-el-num { font-size:7px; color:rgba(200,220,255,0.5); }
-    .pt-el-sym { font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; }
+    .pt-el:hover { transform:scale(1.25); z-index:5; box-shadow:0 0 12px currentColor; border-color:currentColor; }
+    .pt-el-num { font-size:5.5px; color:rgba(200,220,255,0.5); line-height:1; }
+    .pt-el-sym { font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; line-height:1; margin-top:1px; }
 
     /* Category Colors */
     .cat-nonmetal   { background:rgba(0,240,255,0.12); color:#00F0FF; }
@@ -88,42 +86,43 @@
     .cat-actinide   { background:rgba(255,100,50,0.10); color:#FF6432; }
 
     /* Lanthanide/Actinide separator indicator */
-    .pt-spacer { grid-column: span 18; height:6px; }
+    .pt-spacer { grid-column: span 18; height:4px; }
     .pt-la-label, .pt-ac-label {
       grid-column: 1 / 4; display:flex; align-items:center; justify-content:center;
-      font-size:8px; letter-spacing:1px; color:#FF69B4; font-family:'Orbitron',sans-serif;
+      font-size:7px; letter-spacing:0.5px; color:#FF69B4; font-family:'Orbitron',sans-serif;
     }
     .pt-ac-label { color:#FF6432; }
 
     /* ─── FUSION BAR ─── */
     .fusion-bar {
-      display:flex; align-items:center; gap:10px; margin-top:14px;
-      padding:8px 16px; border-radius:8px; background:rgba(5,8,18,0.6); border:1px solid rgba(0,240,255,0.12);
+      display:flex; align-items:center; justify-content:space-between; gap:4px;
+      padding:4px 8px; border-radius:6px; background:rgba(5,8,18,0.5); border:1px solid rgba(0,240,255,0.08);
+      margin-top:2px;
     }
     .fusion-slot {
-      width:42px; height:42px; border-radius:6px; display:flex; align-items:center; justify-content:center;
-      font-family:'Orbitron',sans-serif; font-size:16px; font-weight:700;
+      width:32px; height:32px; border-radius:4px; display:flex; align-items:center; justify-content:center;
+      font-family:'Orbitron',sans-serif; font-size:13px; font-weight:700;
       border:1px solid rgba(0,240,255,0.2); background:rgba(0,240,255,0.05); color:#00F0FF;
     }
-    .fusion-plus { font-size:18px; color:#506080; }
+    .fusion-plus { font-size:14px; color:#506080; }
     .fusion-btn {
-      padding:6px 16px; border-radius:6px; border:1px solid rgba(0,255,157,0.3); background:rgba(0,255,157,0.1);
-      color:#00FF9D; font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:2px; cursor:pointer; transition:all 0.3s;
+      padding:5px 12px; border-radius:4px; border:1px solid rgba(0,255,157,0.3); background:rgba(0,255,157,0.1);
+      color:#00FF9D; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1.5px; cursor:pointer; transition:all 0.3s;
     }
-    .fusion-btn:hover { background:rgba(0,255,157,0.25); box-shadow:0 0 12px rgba(0,255,157,0.4); }
+    .fusion-btn:hover { background:rgba(0,255,157,0.25); box-shadow:0 0 10px rgba(0,255,157,0.35); }
     .fusion-btn-clear {
-      padding:6px 12px; border-radius:6px; border:1px solid rgba(255,0,85,0.3); background:rgba(255,0,85,0.08);
-      color:#FF0055; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; cursor:pointer; transition:all 0.3s;
+      padding:5px 10px; border-radius:4px; border:1px solid rgba(255,0,85,0.3); background:rgba(255,0,85,0.08);
+      color:#FF0055; font-family:'Orbitron',sans-serif; font-size:8px; letter-spacing:1px; cursor:pointer; transition:all 0.3s;
     }
     .fusion-btn-clear:hover { background:rgba(255,0,85,0.2); }
-    .fusion-label { font-size:9px; color:#506080; letter-spacing:1px; }
+    .fusion-label { font-size:8px; color:#506080; letter-spacing:1.5px; font-weight:bold; }
 
     /* ─── LEGEND ─── */
     .pt-legend {
-      display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; justify-content:center;
+      display:flex; flex-wrap:wrap; gap:5px; margin-top:2px; justify-content:center;
     }
-    .pt-legend-item { display:flex; align-items:center; gap:4px; font-size:7px; letter-spacing:0.5px; }
-    .pt-legend-dot { width:8px; height:8px; border-radius:50%; }
+    .pt-legend-item { display:flex; align-items:center; gap:2.5px; font-size:6px; letter-spacing:0.3px; color:rgba(200,220,255,0.75); }
+    .pt-legend-dot { width:5px; height:5px; border-radius:50%; }
   </style>
 </head>
 <body>
@@ -144,24 +143,22 @@
     <div class="hud-row"><span class="hud-label">BONDING</span><span class="hud-val" id="hud-bonds">—</span></div>
     <div class="hud-row"><span class="hud-label">STATE</span><span class="hud-val" id="hud-epi">—</span></div>
     <button id="btn-reassemble">🧬 ADN</button>
-    <button id="btn-open-pt">⊞ OPEN PERIODIC TABLE</button>
   </div>
-
+ 
   <!-- FOOTER STATS -->
   <div class="hud-stats">
     <div class="stat-chip"><span id="fps-val">0 FPS</span></div>
     <div class="stat-chip"><span id="atom-count">0 ATOMS</span></div>
   </div>
-
+ 
   <!-- ═══════════════════════════════════════════════════════════════
-       FULL-SCREEN PERIODIC TABLE MODAL (All 118 IUPAC Elements)
+       ELEMENT SELECTOR & MOLECULAR SYNTHESIS (Always Visible HUD)
        ═══════════════════════════════════════════════════════════════ -->
-  <div id="pt-full-modal">
-    <div class="pt-modal-header">
-      <h2>COMPLETE IUPAC PERIODIC TABLE</h2>
-      <button id="btn-close-modal">✕ CLOSE</button>
+  <div id="pt-hud-panel">
+    <div class="pt-panel-header">
+      <span class="pt-panel-title">SYNTHESIS CONTROLLER</span>
     </div>
-
+ 
     <div class="pt-grid" id="pt-grid-container">
       <!-- ═══ PERIOD 1 ═══ -->
       <div class="pt-el cat-nonmetal" data-z="1" data-symbol="H" style="grid-column:1;grid-row:1"><div class="pt-el-num">1</div><div class="pt-el-sym">H</div></div>
@@ -271,7 +268,7 @@
       <div class="pt-spacer"></div>
 
       <!-- ═══ LANTHANIDES (La 57 → Lu 71) ═══ -->
-      <div class="pt-la-label" style="grid-row:9">★ LANTHANIDES</div>
+      <div class="pt-la-label" style="grid-row:9">★ LA</div>
       <div class="pt-el cat-lanthanide" data-z="57" data-symbol="La" style="grid-column:4;grid-row:9"><div class="pt-el-num">57</div><div class="pt-el-sym">La</div></div>
       <div class="pt-el cat-lanthanide" data-z="58" data-symbol="Ce" style="grid-column:5;grid-row:9"><div class="pt-el-num">58</div><div class="pt-el-sym">Ce</div></div>
       <div class="pt-el cat-lanthanide" data-z="59" data-symbol="Pr" style="grid-column:6;grid-row:9"><div class="pt-el-num">59</div><div class="pt-el-sym">Pr</div></div>
@@ -289,7 +286,7 @@
       <div class="pt-el cat-lanthanide" data-z="71" data-symbol="Lu" style="grid-column:18;grid-row:9"><div class="pt-el-num">71</div><div class="pt-el-sym">Lu</div></div>
 
       <!-- ═══ ACTINIDES (Ac 89 → Lr 103) ═══ -->
-      <div class="pt-ac-label" style="grid-row:10">★★ ACTINIDES</div>
+      <div class="pt-ac-label" style="grid-row:10">★★ AC</div>
       <div class="pt-el cat-actinide" data-z="89" data-symbol="Ac" style="grid-column:4;grid-row:10"><div class="pt-el-num">89</div><div class="pt-el-sym">Ac</div></div>
       <div class="pt-el cat-actinide" data-z="90" data-symbol="Th" style="grid-column:5;grid-row:10"><div class="pt-el-num">90</div><div class="pt-el-sym">Th</div></div>
       <div class="pt-el cat-actinide" data-z="91" data-symbol="Pa" style="grid-column:6;grid-row:10"><div class="pt-el-num">91</div><div class="pt-el-sym">Pa</div></div>

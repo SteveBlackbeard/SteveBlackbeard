@@ -14,9 +14,7 @@
   const hudEpi = document.getElementById('hud-epi');
   const btnReassemble = document.getElementById('btn-reassemble');
 
-  const ptModal = document.getElementById('pt-full-modal');
-  const btnOpenPt = document.getElementById('btn-open-pt');
-  const btnCloseModal = document.getElementById('btn-close-modal');
+  const ptHudPanel = document.getElementById('pt-hud-panel');
 
   const slotA = document.getElementById('slot-a');
   const slotB = document.getElementById('slot-b');
@@ -195,6 +193,18 @@
     'Ag+O':  { name:'Silver Oxide',         formula:'Ag₂O',  atoms:[{z:47,c:2},{z:8,c:1}],    type:'Ionic Solid', bonds:'Ag⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Cubic Network' },
     'Au+O':  { name:'Gold Oxide',           formula:'Au₂O₃', atoms:[{z:79,c:2},{z:8,c:3}],    type:'Covalent Solid', bonds:'Au-O Covalent (×3)', state:'Solid (25°C)', geom:'Trigonal Pyramidal Grid' },
     'Pb+O':  { name:'Lead Oxide',           formula:'PbO',   atoms:[{z:82,c:1},{z:8,c:1}],    type:'Ionic Solid', bonds:'Pb²⁺ O²⁻ Ionic Bond', state:'Solid (Litharge)', geom:'Tetragonal Layered' },
+    
+    // HOMO-ATOMIC MOLECULAR REACTIONS
+    'H+H':   { name:'Hydrogen Gas',         formula:'H₂',    atoms:[{z:1,c:2}],               type:'Covalent Diatomic', bonds:'H-H Covalent Bond', state:'Gas (25°C)', geom:'Linear' },
+    'O+O':   { name:'Oxygen Gas',           formula:'O₂',    atoms:[{z:8,c:2}],               type:'Covalent Diatomic', bonds:'O=O Double Covalent Bond', state:'Gas (25°C)', geom:'Linear' },
+    'N+N':   { name:'Nitrogen Gas',         formula:'N₂',    atoms:[{z:7,c:2}],               type:'Covalent Diatomic', bonds:'N≡N Triple Covalent Bond', state:'Gas (25°C)', geom:'Linear' },
+    'F+F':   { name:'Fluorine Gas',         formula:'F₂',    atoms:[{z:9,c:2}],               type:'Covalent Diatomic', bonds:'F-F Covalent Bond', state:'Gas (25°C)', geom:'Linear' },
+    'Cl+Cl': { name:'Chlorine Gas',         formula:'Cl₂',   atoms:[{z:17,c:2}],              type:'Covalent Diatomic', bonds:'Cl-Cl Covalent Bond', state:'Gas (25°C)', geom:'Linear' },
+    'Br+Br': { name:'Bromine Gas',          formula:'Br₂',   atoms:[{z:35,c:2}],              type:'Covalent Diatomic', bonds:'Br-Br Covalent Bond', state:'Liquid (25°C)', geom:'Linear' },
+    'I+I':   { name:'Iodine Gas',           formula:'I₂',    atoms:[{z:53,c:2}],              type:'Covalent Diatomic', bonds:'I-I Covalent Bond', state:'Solid (25°C)', geom:'Linear' },
+    'S+S':   { name:'Octasulfur Ring',      formula:'S₈',    atoms:[{z:16,c:8}],              type:'Covalent Ring', bonds:'S-S Covalent Bonds (×8)', state:'Solid (25°C)', geom:'Crown Ring' },
+    'P+P':   { name:'White Phosphorus',     formula:'P₄',    atoms:[{z:15,c:4}],              type:'Covalent Molecule', bonds:'P-P Covalent Bonds (×6)', state:'Solid (25°C)', geom:'Tetrahedral' },
+    'C+C':   { name:'Graphite',             formula:'C_n',   atoms:[{z:6,c:14}],              type:'Covalent Network', bonds:'C-C Hexagonal Sheet Bonds', state:'Solid (25°C)', geom:'Hexagonal Sheets' },
   };
 
 
@@ -325,7 +335,7 @@
         moleculeGroup.add(mesh);
 
         let labelSprite = null;
-        if (!isDnaMode) {
+        if (!isDnaMode && !item.noLabel) {
           const spriteColor = '#' + colorHex.toString(16).padStart(6, '0');
           labelSprite = createTextSprite(elData.s, spriteColor);
           labelSprite.position.copy(mesh.position);
@@ -515,8 +525,6 @@
         'Face-Centered Cubic Lattice (FCC)'
       )
     );
-
-    if (ptModal) ptModal.style.display = 'none';
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -767,6 +775,45 @@
       atoms.push({ z: zAu, pos: new THREE.Vector3(2*d, d, 0), scale: 1.8 });
       atoms.push({ z: zAu, pos: new THREE.Vector3(-2*d, -d, 0), scale: 1.8 });
     }
+    else if (['Hydrogen Gas', 'Oxygen Gas', 'Nitrogen Gas', 'Fluorine Gas', 'Chlorine Gas', 'Bromine Gas', 'Iodine Gas'].includes(name)) {
+      const zGas = reaction.atoms[0].z;
+      atoms.push({ z: zGas, pos: new THREE.Vector3(-2.8, 0, 0), scale: 1.6 });
+      atoms.push({ z: zGas, pos: new THREE.Vector3(2.8, 0, 0), scale: 1.6 });
+    }
+    else if (name === 'Octasulfur Ring') {
+      const r = 7.0;
+      const h = 2.0;
+      for (let i = 0; i < 8; i++) {
+        const theta = (i / 8) * Math.PI * 2;
+        const z_coord = (i % 2 === 0) ? h : -h;
+        atoms.push({ z: 16, pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), z_coord), scale: 1.6 });
+      }
+    }
+    else if (name === 'White Phosphorus') {
+      const d = 4.5;
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => atoms.push({ z: 15, pos: v, scale: 1.7 }));
+    }
+    else if (name === 'Graphite') {
+      const r = 5.5;
+      // Sheet 1
+      atoms.push({ z: 6, pos: new THREE.Vector3(0, 0, -3.5), scale: 1.7 });
+      for (let i = 0; i < 6; i++) {
+        const theta = (i / 6) * Math.PI * 2;
+        atoms.push({ z: 6, pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), -3.5), scale: 1.6 });
+      }
+      // Sheet 2
+      atoms.push({ z: 6, pos: new THREE.Vector3(0, 0, 3.5), scale: 1.7 });
+      for (let i = 0; i < 6; i++) {
+        const theta = (i / 6) * Math.PI * 2 + Math.PI / 6;
+        atoms.push({ z: 6, pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), 3.5), scale: 1.6 });
+      }
+    }
     else {
       let totalAtoms = 0;
       reaction.atoms.forEach(group => { totalAtoms += group.c; });
@@ -791,8 +838,32 @@
       'Bonding: ' + reaction.bonds,
       'State: ' + reaction.state
     );
+  }
 
-    if (ptModal) ptModal.style.display = 'none';
+  // ═══════════════════════════════════════════════════════════════
+  // FORM INERT MIXTURE (Alloy / Non-reactive heterogeneous cluster)
+  // ═══════════════════════════════════════════════════════════════
+  function formInertMixture(zA, zB) {
+    isDnaMode = false;
+    const posA = new THREE.Vector3(-14, 0, 0);
+    const posB = new THREE.Vector3(14, 0, 0);
+    const atomsA = getElementAtoms(zA, posA);
+    const atomsB = getElementAtoms(zB, posB);
+    const combinedList = [...atomsA, ...atomsB];
+    spawnAtoms(combinedList);
+
+    const nameA = EL[zA].n;
+    const nameB = EL[zB].n;
+    const symA = EL[zA].s;
+    const symB = EL[zB].s;
+
+    updateTelemetry(
+      `Inert Mixture: ${symA} + ${symB}`,
+      `Non-reactive phase: ${symA} // ${symB}`,
+      `State: Physical Mixture / Heterogeneous Coexistence`,
+      `Bonding: No inter-element bonds formed`,
+      `${nameA} and ${nameB} do not form a stable chemical compound under standard conditions.`
+    );
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -818,7 +889,7 @@
           Math.sin(angle) * shellR,
           (e % 2 === 0 ? 1 : -1) * (shell + 1) * 2.0
         ));
-        atoms.push({ z: 1, pos, startPos: startPos, scale: 0.6 });
+        atoms.push({ z: 1, pos, startPos: startPos, scale: 0.35, isElectron: true, noLabel: true, col: 0x00FFFF });
       }
     }
     else if (symbol === 'B') {
@@ -1135,8 +1206,6 @@
       'Instantaneous Alpha Decay (Exoenergetic)',
       'Decayed (Half-life < 10⁻¹⁸ s) — Helium nuclei ejected'
     );
-
-    if (ptModal) ptModal.style.display = 'none';
   }
 
   function createExplosion(pos, color1, color2) {
@@ -1265,10 +1334,10 @@
       fusionTargetReaction = reaction;
     } else {
       const zSum = zA + zB;
-      if (zSum <= 118) {
-        fusionTargetReaction = { isNuclear: true, z: zSum };
-      } else {
+      if (zSum > 118) {
         fusionTargetReaction = { isFission: true, zA, zB, zResult: zSum };
+      } else {
+        fusionTargetReaction = { isInert: true, zA, zB };
       }
     }
 
@@ -1306,7 +1375,7 @@
         selectedSlotA = { z, sym };
         if (slotA) slotA.textContent = sym;
         formElement(z);
-      } else if (!selectedSlotB && z !== selectedSlotA.z) {
+      } else if (!selectedSlotB) {
         selectedSlotB = { z, sym };
         if (slotB) slotB.textContent = sym;
         // Don't auto-fuse, let user click FUSE
@@ -1355,9 +1424,7 @@
     });
   }
 
-  // Modal controls
-  if (btnOpenPt) btnOpenPt.addEventListener('click', () => { if (ptModal) ptModal.style.display = 'flex'; });
-  if (btnCloseModal) btnCloseModal.addEventListener('click', () => { if (ptModal) ptModal.style.display = 'none'; });
+
 
   // ═══════════════════════════════════════════════════════════════
   // MOUSE ORBIT & RAYCAST SELECTION
@@ -1566,6 +1633,8 @@
             formFissionDecay(fusionTargetReaction.zA, fusionTargetReaction.zB, fusionTargetReaction.zResult);
           } else if (fusionTargetReaction.isNuclear) {
             formElement(fusionTargetReaction.z, true);
+          } else if (fusionTargetReaction.isInert) {
+            formInertMixture(fusionTargetReaction.zA, fusionTargetReaction.zB);
           } else {
             formCompound(fusionTargetReaction);
           }
