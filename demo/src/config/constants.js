@@ -1,8 +1,14 @@
-// NULLA-LABS IUPAC 3D MOLECULAR SYNTHESIS PLATFORM — CONFIG CONSTANTS & THERMODYNAMIC DATABASE
-// Centralized Data, Visual Styling Tokens, Valence Maps, Pauling Electronegativity, and Thermodynamic Reactions Table
+// NULLA-LABS IUPAC 3D MOLECULAR SYNTHESIS PLATFORM — CONFIG CONSTANTS & GRAPHICS PRESETS
+// Centralized Configuration, Visual Styling Tokens, Valence Maps, Pauling Electronegativity, Reactions Table, and Quality Presets
 
 export const MAX_REACTANTS = 5;
 export const PREVIEW_SPACING = 28.0;
+
+export const GRAPHICS_PRESETS = {
+  LOW:    { atomParticles: 800,  bloomPass: false, particleSpeed: 0.5, label: 'LOW (PERFORMANCE)' },
+  MEDIUM: { atomParticles: 2000, bloomPass: true,  particleSpeed: 1.0, label: 'MEDIUM (BALANCED)' },
+  ULTRA:  { atomParticles: 4000, bloomPass: true,  particleSpeed: 1.5, label: 'ULTRA (HIGH FIDELITY)' }
+};
 
 export const VALENCE_MAP = {
   1: 1, 2: 0, 3: 1, 4: 2, 5: 3, 6: 4, 7: -3, 8: -2, 9: -1, 10: 0,
@@ -15,7 +21,6 @@ export const VALENCE_MAP = {
   81: 3, 82: 4, 83: 3, 84: -2, 85: -1, 86: 0
 };
 
-// Pauling Electronegativity Scale
 export const PAULING_EN = {
   1: 2.20, 2: 0.00, 3: 0.98, 4: 1.57, 5: 2.04, 6: 2.55, 7: 3.04, 8: 3.44, 9: 3.98, 10: 0.00,
   11: 0.93, 12: 1.31, 13: 1.61, 14: 1.90, 15: 2.19, 16: 2.58, 17: 3.16, 18: 0.00,
@@ -27,48 +32,26 @@ export const PAULING_EN = {
   81: 1.62, 82: 2.33, 83: 2.02, 84: 2.00, 85: 2.20, 86: 0.00
 };
 
-export const EL_VISUALS = {
-  1: { col: 0xFFFFFF, r: 0.53 }, 2: { col: 0xBF00FF, r: 0.31 }, 3: { col: 0xFFD700, r: 1.67 },
-  4: { col: 0xFF7700, r: 1.12 }, 5: { col: 0x00FF9D, r: 0.87 }, 6: { col: 0x8A2BE2, r: 0.77 },
-  7: { col: 0x00F0FF, r: 0.75 }, 8: { col: 0xFF0055, r: 0.73 }, 9: { col: 0xFF0055, r: 0.64 },
-  10: { col: 0xBF00FF, r: 0.38 }, 11: { col: 0xFFD700, r: 1.90 }, 12: { col: 0xFF7700, r: 1.45 },
-  13: { col: 0xAAAAAA, r: 1.18 }, 14: { col: 0x00FF9D, r: 1.11 }, 15: { col: 0xFF8800, r: 1.06 },
-  16: { col: 0xFFD700, r: 1.02 }, 17: { col: 0x00FF9D, r: 0.99 }, 18: { col: 0xBF00FF, r: 0.71 },
-  19: { col: 0xFFD700, r: 2.43 }, 20: { col: 0xFF7700, r: 1.94 }, 21: { col: 0x00D4FF, r: 1.84 },
-  22: { col: 0x00D4FF, r: 1.76 }, 23: { col: 0x00D4FF, r: 1.71 }, 24: { col: 0x00D4FF, r: 1.66 },
-  25: { col: 0x00D4FF, r: 1.61 }, 26: { col: 0x00D4FF, r: 1.56 }, 27: { col: 0x00D4FF, r: 1.52 },
-  28: { col: 0x00D4FF, r: 1.49 }, 29: { col: 0x00D4FF, r: 1.45 }, 30: { col: 0x00D4FF, r: 1.42 },
-  31: { col: 0xAAAAAA, r: 1.36 }, 32: { col: 0x00FF9D, r: 1.25 }, 33: { col: 0x00FF9D, r: 1.21 },
-  34: { col: 0xFF8800, r: 1.20 }, 35: { col: 0xFF0055, r: 1.20 }, 36: { col: 0xBF00FF, r: 1.16 },
-  37: { col: 0xFFD700, r: 2.35 }, 38: { col: 0xFF7700, r: 2.15 }, 39: { col: 0x00D4FF, r: 1.90 },
-  40: { col: 0x00D4FF, r: 1.75 }, 41: { col: 0x00D4FF, r: 1.64 }, 42: { col: 0x00D4FF, r: 1.54 },
-  43: { col: 0x00D4FF, r: 1.47 }, 44: { col: 0x00D4FF, r: 1.46 }, 45: { col: 0x00D4FF, r: 1.42 },
-  46: { col: 0x00D4FF, r: 1.39 }, 47: { col: 0x00D4FF, r: 1.45 }, 48: { col: 0x00D4FF, r: 1.44 },
-  49: { col: 0xAAAAAA, r: 1.42 }, 50: { col: 0xAAAAAA, r: 1.39 }, 51: { col: 0x00FF9D, r: 1.39 },
-  52: { col: 0x00FF9D, r: 1.38 }, 53: { col: 0xFF0055, r: 1.39 }, 54: { col: 0xBF00FF, r: 1.40 },
-  55: { col: 0xFFD700, r: 2.72 }, 56: { col: 0xFF7700, r: 2.22 }, 57: { col: 0xFF55BB, r: 2.04 },
-  58: { col: 0xFF55BB, r: 2.04 }, 59: { col: 0xFF55BB, r: 2.03 }, 60: { col: 0xFF55BB, r: 2.01 },
-  61: { col: 0xFF55BB, r: 1.99 }, 62: { col: 0xFF55BB, r: 1.98 }, 63: { col: 0xFF55BB, r: 1.98 },
-  64: { col: 0xFF55BB, r: 1.96 }, 65: { col: 0xFF55BB, r: 1.94 }, 66: { col: 0xFF55BB, r: 1.92 },
-  67: { col: 0xFF55BB, r: 1.92 }, 68: { col: 0xFF55BB, r: 1.89 }, 69: { col: 0xFF55BB, r: 1.90 },
-  70: { col: 0xFF55BB, r: 1.87 }, 71: { col: 0xFF55BB, r: 1.87 }, 72: { col: 0x00D4FF, r: 1.75 },
-  73: { col: 0x00D4FF, r: 1.70 }, 74: { col: 0x00D4FF, r: 1.62 }, 75: { col: 0x00D4FF, r: 1.59 },
-  76: { col: 0x00D4FF, r: 1.59 }, 77: { col: 0x00D4FF, r: 1.37 }, 78: { col: 0x00D4FF, r: 1.36 },
-  79: { col: 0xFFD700, r: 1.44 }, 80: { col: 0x00D4FF, r: 1.49 }, 81: { col: 0xAAAAAA, r: 1.48 },
-  82: { col: 0xAAAAAA, r: 1.47 }, 83: { col: 0xAAAAAA, r: 1.46 }, 84: { col: 0xAAAAAA, r: 1.46 },
-  85: { col: 0xFF0055, r: 1.45 }, 86: { col: 0xBF00FF, r: 1.45 }, 87: { col: 0xFFD700, r: 2.90 },
-  88: { col: 0xFF7700, r: 2.35 }, 89: { col: 0xFF5533, r: 2.15 }, 90: { col: 0xFF5533, r: 2.06 },
-  91: { col: 0xFF5533, r: 2.00 }, 92: { col: 0xFF5533, r: 1.96 }, 93: { col: 0xFF5533, r: 1.90 },
-  94: { col: 0xFF5533, r: 1.87 }, 95: { col: 0xFF5533, r: 1.80 }, 96: { col: 0xFF5533, r: 1.69 },
-  97: { col: 0xFF5533, r: 1.66 }, 98: { col: 0xFF5533, r: 1.68 }, 99: { col: 0xFF5533, r: 1.65 },
-  100: { col: 0xFF5533, r: 1.67 }, 101: { col: 0xFF5533, r: 1.73 }, 102: { col: 0xFF5533, r: 1.76 },
-  103: { col: 0xFF5533, r: 1.61 }, 104: { col: 0x00D4FF, r: 1.57 }, 105: { col: 0x00D4FF, r: 1.49 },
-  106: { col: 0x00D4FF, r: 1.43 }, 107: { col: 0x00D4FF, r: 1.41 }, 108: { col: 0x00D4FF, r: 1.34 },
-  109: { col: 0x00D4FF, r: 1.29 }, 110: { col: 0x00D4FF, r: 1.28 }, 111: { col: 0x00D4FF, r: 1.21 },
-  112: { col: 0x00D4FF, r: 1.22 }, 113: { col: 0xAAAAAA, r: 1.36 }, 114: { col: 0xAAAAAA, r: 1.43 },
-  115: { col: 0xAAAAAA, r: 1.62 }, 116: { col: 0xAAAAAA, r: 1.75 }, 117: { col: 0xFF0055, r: 1.65 },
-  118: { col: 0xBF00FF, r: 1.57 }
-};
+export const QUIZ_QUESTIONS = [
+  {
+    question: "¿Cuál es el tipo de enlace dominante en el Cloruro de Sodio (NaCl)?",
+    options: ["Covalente No Polar", "Enlace Iónico Crístalino", "Enlace Metálico", "Puente de Hidrógeno"],
+    correct: 1,
+    explanation: "Debido a la gran diferencia de electronegatividad (ΔEN = 2.23 > 1.7), el NaCl forma una red iónica cristalina."
+  },
+  {
+    question: "¿Qué geometría VSEPR presenta la molécula de Agua (H₂O)?",
+    options: ["Lineal 180°", "Tetraédrica 109.5°", "Angular (Bent 104.5°)", "Trigonal Plana"],
+    correct: 2,
+    explanation: "Los 2 pares de electrones libres en el átomo de Oxígeno empujan los enlaces H-O generando una geometría Angular de 104.5°."
+  },
+  {
+    question: "¿Qué significa que la formación de H₂O tenga una Entalpía ΔHf = -285.8 kJ/mol?",
+    options: ["Es una reacción Endotérmica que absorbe calor", "Es una reacción Exotérmica que libera energía", "Es una reacción sin cambio energético", "Representa la energía de ionización"],
+    correct: 1,
+    explanation: "Una entalpía negativa (ΔHf < 0) indica que la síntesis libera energía en forma de calor (Exotérmica)."
+  }
+];
 
 export const REACTIONS = {
   'H+H+O': { name:'Water',                 formula:'H₂O',   atoms:[{z:8,c:1},{z:1,c:2}],     type:'Polar Covalent', bonds:'O-H Polar Covalent (×2)', state:'Liquid (25°C)', geom:'Bent (104.5°)', enthalpy:-285.8, dipole:1.85, stabilityScore:98.5, note:'Highly exothermic formation. Strong hydrogen bonding dipole.' },

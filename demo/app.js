@@ -2294,6 +2294,115 @@
     });
   }
 
+  // GRAPHICS QUALITY CONTROLS
+  let currentQuality = 'MEDIUM';
+  const btnQualLow = document.getElementById('btn-quality-low');
+  const btnQualMed = document.getElementById('btn-quality-med');
+  const btnQualUltra = document.getElementById('btn-quality-ultra');
+
+  function setQualityPreset(level) {
+    playTone(600, 'sine', 0.1);
+    currentQuality = level;
+    [btnQualLow, btnQualMed, btnQualUltra].forEach(b => {
+      if (b) { b.style.borderColor = 'rgba(255,255,255,0.25)'; b.style.background = 'rgba(18,24,36,0.8)'; }
+    });
+    if (level === 'LOW' && btnQualLow) { btnQualLow.style.borderColor = '#00F0FF'; btnQualLow.style.background = 'rgba(0,240,255,0.2)'; }
+    if (level === 'MEDIUM' && btnQualMed) { btnQualMed.style.borderColor = '#00F0FF'; btnQualMed.style.background = 'rgba(0,240,255,0.2)'; }
+    if (level === 'ULTRA' && btnQualUltra) { btnQualUltra.style.borderColor = '#00F0FF'; btnQualUltra.style.background = 'rgba(0,240,255,0.2)'; }
+  }
+
+  if (btnQualLow) btnQualLow.addEventListener('click', () => setQualityPreset('LOW'));
+  if (btnQualMed) btnQualMed.addEventListener('click', () => setQualityPreset('MEDIUM'));
+  if (btnQualUltra) btnQualUltra.addEventListener('click', () => setQualityPreset('ULTRA'));
+
+  // EDUCATIONAL QUIZ MODAL
+  const btnQuiz = document.getElementById('btn-quiz');
+  const quizModal = document.getElementById('quiz-modal');
+  const btnCloseQuiz = document.getElementById('btn-close-quiz');
+  const quizQuestion = document.getElementById('quiz-question');
+  const quizOptions = document.getElementById('quiz-options');
+  const quizExplanation = document.getElementById('quiz-explanation');
+
+  let currentQuizIdx = 0;
+
+  function loadQuizQuestion(idx) {
+    if (typeof QUIZ_QUESTIONS === 'undefined' || !QUIZ_QUESTIONS || QUIZ_QUESTIONS.length === 0) return;
+    const q = QUIZ_QUESTIONS[idx % QUIZ_QUESTIONS.length];
+    if (quizQuestion) quizQuestion.textContent = q.question;
+    if (quizExplanation) quizExplanation.style.display = 'none';
+
+    if (quizOptions) {
+      quizOptions.innerHTML = '';
+      q.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        btn.style.cssText = `
+          padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3);
+          background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(18,24,36,0.9) 100%);
+          color: #FFFFFF; font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 700;
+          text-align: left; cursor: pointer; transition: all 0.2s;
+        `;
+        btn.textContent = `${optIdx + 1}. ${opt}`;
+        btn.addEventListener('click', () => {
+          if (optIdx === q.correct) {
+            playTone(880, 'sine', 0.2);
+            btn.style.borderColor = '#00FF9D';
+            btn.style.background = 'rgba(0,255,157,0.25)';
+          } else {
+            playTone(220, 'sawtooth', 0.2);
+            btn.style.borderColor = '#FF0055';
+            btn.style.background = 'rgba(255,0,85,0.25)';
+          }
+          if (quizExplanation) {
+            quizExplanation.textContent = q.explanation;
+            quizExplanation.style.display = 'block';
+          }
+        });
+        quizOptions.appendChild(btn);
+      });
+    }
+  }
+
+  if (btnQuiz) {
+    btnQuiz.addEventListener('click', () => {
+      playTone(650, 'triangle', 0.15);
+      loadQuizQuestion(currentQuizIdx);
+      if (quizModal) quizModal.style.display = 'block';
+    });
+  }
+
+  if (btnCloseQuiz) {
+    btnCloseQuiz.addEventListener('click', () => {
+      if (quizModal) quizModal.style.display = 'none';
+    });
+  }
+
+  // URL STATE SHARING (#reactants=11,17)
+  const btnShareUrl = document.getElementById('btn-share-url');
+  if (btnShareUrl) {
+    btnShareUrl.addEventListener('click', () => {
+      playTone(700, 'sine', 0.15);
+      if (selectedReactants.length === 0) return;
+      const zList = selectedReactants.map(r => r.z).join(',');
+      const shareUrl = `${location.origin}${location.pathname}#reactants=${zList}`;
+      navigator.clipboard.writeText(shareUrl);
+      updateTelemetry('URL Direct Share Copied!', shareUrl, 'State Hash Loaded', 'Link copied to clipboard', 'Shareable Quantum Hash');
+    });
+  }
+
+  // Read URL Hash on init
+  if (location.hash && location.hash.includes('reactants=')) {
+    try {
+      const zStr = location.hash.split('reactants=')[1];
+      const zs = zStr.split(',').map(n => parseInt(n)).filter(n => !isNaN(n));
+      if (zs.length > 0) {
+        setTimeout(() => {
+          zs.forEach(z => selectElementForTray(z));
+          attemptMultiFusion();
+        }, 800);
+      }
+    } catch (e) { console.warn('Hash parse error:', e); }
+  }
+
   if (btnExportGltf) {
     btnExportGltf.addEventListener('click', exportGLTFFile);
   }
