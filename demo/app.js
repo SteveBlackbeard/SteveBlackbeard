@@ -11,14 +11,19 @@
   const hudFormula = document.getElementById('hud-formula');
   const hudClass = document.getElementById('hud-class');
   const hudBonds = document.getElementById('hud-bonds');
+  const hudEnthalpy = document.getElementById('hud-enthalpy');
   const hudEpi = document.getElementById('hud-epi');
   const btnReassemble = document.getElementById('btn-reassemble');
+  const btnOrbitals = document.getElementById('btn-orbitals');
+  const btnAudio = document.getElementById('btn-audio');
+  const btnExport = document.getElementById('btn-export');
 
   const ptHudPanel = document.getElementById('pt-hud-panel');
 
   const slotA = document.getElementById('slot-a');
   const slotB = document.getElementById('slot-b');
   const btnFuse = document.getElementById('btn-fuse');
+  const btnRandom = document.getElementById('btn-random');
   const btnClear = document.getElementById('btn-clear');
   const atomCountEl = document.getElementById('atom-count');
 
@@ -287,8 +292,11 @@
   scene.add(moleculeGroup);
 
   // Active Atom Objects
-  let activeAtoms = [];    // { mesh, targetPos, targetScale, currentScale, elData }
-  let activeBonds = [];    // { mesh, startAtom, endAtom }
+  let activeAtoms = [];
+  let activeBonds = [];
+  let activeInstancedMeshes = [];
+  let activeBondInstancedMesh = null;
+  let activeOrbitLines = [];
   let isDnaMode = false;
   let fusionState = 'idle';
   let fusionTimer = 0;
@@ -299,6 +307,9 @@
   let explosionParticles = null;
   let explosionVelocities = [];
   let explosionTimer = 0;
+  let shockwaveRing = null;
+  let shockwaveScale = 0.1;
+  let shockwaveOpacity = 1.0;
 
   // Selection Ring
   const selectRingGeo = new THREE.TorusGeometry(2.8, 0.3, 16, 32);
@@ -307,14 +318,161 @@
   selectRing.visible = false;
   moleculeGroup.add(selectRing);
 
+  // ═══════════════════════════════════════════════════════════════
+  // WEBAUDIO API QUANTUM SYNTHESIZER (Local-First & Frugal)
+  // ═══════════════════════════════════════════════════════════════
+  let audioCtx = null;
+  let audioEnabled = true;
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playTone(freq, type = 'sine', duration = 0.15, vol = 0.08) {
+    if (!audioEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  function playCollisionSound() {
+    if (!audioEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(32, audioCtx.currentTime + 0.45);
+      gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.45);
+    } catch (e) {}
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // ATOMIC ORBITAL DENSITY CLOUD GENERATOR (s, p, d, f Probability Maps)
+  // ═══════════════════════════════════════════════════════════════
+  let orbitalParticleSystem = null;
+
+  function generateAtomicOrbitalCloud(z) {
+    if (orbitalParticleSystem) {
+      moleculeGroup.remove(orbitalParticleSystem);
+      orbitalParticleSystem.geometry.dispose();
+      orbitalParticleSystem.material.dispose();
+      orbitalParticleSystem = null;
+    }
+
+    const count = 3500;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+
+    const el = EL[z] || EL[1];
+    const baseColor = new THREE.Color(el.col);
+
+    for (let i = 0; i < count; i++) {
+      let x = 0, y = 0, zPos = 0;
+
+      if (z <= 2) {
+        // 1s Spherical Orbital
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+        const r = Math.pow(Math.random(), 2.0) * 14.0;
+        x = r * Math.sin(phi) * Math.cos(theta);
+        y = r * Math.sin(phi) * Math.sin(theta);
+        zPos = r * Math.cos(phi);
+      } else if (z <= 10) {
+        // 2p Dumbbell Lobes
+        const axis = Math.floor(Math.random() * 3);
+        const angle = Math.random() * Math.PI * 2;
+        if (axis === 0) {
+          x = (Math.random() > 0.5 ? 1 : -1) * (4.0 + Math.random() * 10.0);
+          y = Math.sin(angle) * 3.5;
+          zPos = Math.cos(angle) * 3.5;
+        } else if (axis === 1) {
+          y = (Math.random() > 0.5 ? 1 : -1) * (4.0 + Math.random() * 10.0);
+          x = Math.sin(angle) * 3.5;
+          zPos = Math.cos(angle) * 3.5;
+        } else {
+          zPos = (Math.random() > 0.5 ? 1 : -1) * (4.0 + Math.random() * 10.0);
+          x = Math.sin(angle) * 3.5;
+          y = Math.cos(angle) * 3.5;
+        }
+      } else {
+        // 3d Cloverleaf Lobes
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.random() * Math.PI;
+        const r = Math.sin(2 * theta) * 15.0 + (Math.random() - 0.5) * 3.0;
+        x = r * Math.sin(phi) * Math.cos(theta);
+        y = r * Math.sin(phi) * Math.sin(theta);
+        zPos = r * Math.cos(phi);
+      }
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = zPos;
+
+      const c = baseColor.clone().lerp(new THREE.Color(0x00FFFF), Math.random() * 0.4);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.8,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.75,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    orbitalParticleSystem = new THREE.Points(geometry, material);
+    moleculeGroup.add(orbitalParticleSystem);
+
+    updateTelemetry(
+      `Quantum Orbital Cloud: ${el.n} (${el.s})`,
+      `Probability Cloud Density Map (N=${count})`,
+      `Orbital Shell: ${el.sh}`,
+      `Quantum Wavefunction |Ψ|²`,
+      `State: [ORBITAL PROBABILITY DENSITY VISUALIZED]`
+    );
+  }
+
+  const materialCache = {};
   function getMaterial(colorHex) {
-    return new THREE.MeshPhysicalMaterial({
+    if (materialCache[colorHex]) return materialCache[colorHex];
+    materialCache[colorHex] = new THREE.MeshPhysicalMaterial({
       color: colorHex,
       roughness: 0.1,
       metalness: 0.1,
       clearcoat: 1.0,
       clearcoatRoughness: 0.04
     });
+    return materialCache[colorHex];
   }
 
   // Create high-fidelity floating 3D text labels for elements
@@ -342,71 +500,160 @@
 
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
-    // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3}]
+    // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
     // Fade out existing atoms that aren't needed
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
-    activeBonds.forEach(b => { 
-      b.meshes.forEach(m => m.scale.set(0.01,0.01,0.01)); 
-      b.removing = true; 
-    });
+    activeBonds.forEach(b => { b.removing = true; });
 
     setTimeout(() => {
-      // Remove old atoms after fade
+      // Remove old atoms and their labels
       activeAtoms.filter(a => a.removing).forEach(a => {
-        moleculeGroup.remove(a.mesh);
         if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
       });
       activeAtoms = activeAtoms.filter(a => !a.removing);
-      activeBonds.filter(b => b.removing).forEach(b => b.meshes.forEach(m => moleculeGroup.remove(m)));
       activeBonds = activeBonds.filter(b => !b.removing);
 
-      // Spawn new atoms
+      // Clear old instanced meshes and orbit lines
+      activeInstancedMeshes.forEach(im => moleculeGroup.remove(im));
+      activeInstancedMeshes = [];
+      if (activeBondInstancedMesh) {
+        moleculeGroup.remove(activeBondInstancedMesh);
+        activeBondInstancedMesh = null;
+      }
+      activeOrbitLines.forEach(line => moleculeGroup.remove(line));
+      activeOrbitLines = [];
+
+      // Group new atoms by `z` and `col`
+      const groups = {};
       atomList.forEach(item => {
         const elData = EL[item.z] || EL[1];
         const colorHex = item.col !== undefined ? item.col : elData.col;
-        const mat = getMaterial(colorHex);
-        const mesh = new THREE.Mesh(sphereGeo, mat);
-        
-        if (item.startPos) {
-          mesh.position.copy(item.startPos);
-        } else {
-          mesh.position.set(
+        const key = `${item.z}_${colorHex}`;
+        if (!groups[key]) {
+          groups[key] = {
+            z: item.z,
+            col: colorHex,
+            items: []
+          };
+        }
+        groups[key].items.push(item);
+      });
+
+      // Find central-most atom item for dense lattices (> 15 atoms)
+      const nonElectronAtoms = atomList.filter(a => !a.isElectron);
+      const isDenseLattice = !isDnaMode && nonElectronAtoms.length > 15;
+      let centralAtomItem = null;
+      if (isDenseLattice) {
+        let minD = Infinity;
+        nonElectronAtoms.forEach(item => {
+          if (item.pos) {
+            const d = item.pos.lengthSq();
+            if (d < minD) { minD = d; centralAtomItem = item; }
+          }
+        });
+      }
+
+      // Create InstancedMesh for each group
+      Object.keys(groups).forEach(key => {
+        const grp = groups[key];
+        const count = grp.items.length;
+        const mat = getMaterial(grp.col);
+        const instMesh = new THREE.InstancedMesh(sphereGeo, mat, count);
+        instMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        moleculeGroup.add(instMesh);
+        activeInstancedMeshes.push(instMesh);
+
+        // Store group metadata for raycasting map
+        instMesh.userData = { z: grp.z, col: grp.col, groupKey: key };
+
+        grp.items.forEach((item, idx) => {
+          const elData = EL[item.z] || EL[1];
+          const start = item.startPos ? item.startPos.clone() : new THREE.Vector3(
             (Math.random()-0.5) * 60,
             (Math.random()-0.5) * 40,
             (Math.random()-0.5) * 30
           );
-        }
-        
-        mesh.scale.setScalar(0.01);
-        moleculeGroup.add(mesh);
+          
+          let labelSprite = null;
+          // Show label if <= 15 atoms OR if this is the single central atom of a dense lattice
+          const showLabel = !isDnaMode && !item.noLabel && (!isDenseLattice || item === centralAtomItem);
+          if (showLabel) {
+            const spriteColor = '#' + grp.col.toString(16).padStart(6, '0');
+            labelSprite = createTextSprite(elData.s, spriteColor);
+            labelSprite.position.copy(start);
+            labelSprite.scale.setScalar(0.01);
+            moleculeGroup.add(labelSprite);
+          }
 
-        let labelSprite = null;
-        if (!isDnaMode && !item.noLabel) {
-          const spriteColor = '#' + colorHex.toString(16).padStart(6, '0');
-          labelSprite = createTextSprite(elData.s, spriteColor);
-          labelSprite.position.copy(mesh.position);
-          labelSprite.scale.setScalar(0.01);
-          moleculeGroup.add(labelSprite);
-        }
+          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
 
-        const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
-
-        activeAtoms.push({
-          mesh,
-          labelSprite,
-          targetPos: item.pos.clone(),
-          targetScale: scale,
-          currentScale: 0.01,
-          elData,
-          z: item.z,
-          removing: false
+          activeAtoms.push({
+            currentPos: start.clone(),
+            targetPos: item.pos.clone(),
+            currentScale: 0.01,
+            targetScale: scale,
+            z: item.z,
+            col: grp.col,
+            elData,
+            isElectron: item.isElectron || false,
+            noLabel: item.noLabel || false,
+            labelSprite,
+            instancedMesh: instMesh,
+            instIdx: idx,
+            velocity: item.velocity || null,
+            basePos: item.basePos || null,
+            parent: item.parent || null,
+            orbitR: item.orbitR || 0,
+            orbitAngle: item.orbitAngle || 0,
+            orbitSpeed: item.orbitSpeed || 0,
+            tiltX: item.tiltX || 0,
+            tiltY: item.tiltY || 0,
+            removing: false
+          });
         });
+      });
+
+      // Add orbit ring lines for noble gas shells
+      atomList.forEach(item => {
+        const elData = EL[item.z] || EL[1];
+        const symbol = elData.s;
+        if (symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn') {
+          if (!item.isElectron) {
+            const electrons = Math.min(item.z, 20);
+            const numShells = Math.ceil(electrons / 8);
+            for (let s = 0; s < numShells; s++) {
+              const shellR = 6.0 + s * 4.0;
+              const points = [];
+              const segments = 64;
+              for (let j = 0; j <= segments; j++) {
+                const theta = (j / segments) * Math.PI * 2;
+                points.push(new THREE.Vector3(Math.cos(theta) * shellR, 0, Math.sin(theta) * shellR));
+              }
+              const geometry = new THREE.BufferGeometry().setFromPoints(points);
+              const material = new THREE.LineBasicMaterial({
+                color: 0x00FFFF,
+                transparent: true,
+                opacity: 0.18,
+                depthWrite: false
+              });
+              const line = new THREE.LineLoop(geometry, material);
+              
+              line.rotation.x = (Math.random() - 0.5) * 0.8;
+              line.rotation.y = (Math.random() - 0.5) * 0.8;
+              line.userData = { nucleusPos: item.pos, tiltX: line.rotation.x, tiltY: line.rotation.y };
+              
+              moleculeGroup.add(line);
+              activeOrbitLines.push(line);
+            }
+          }
+        }
       });
 
       if (!isDnaMode) {
         const newBonds = [];
         for (let i = 0; i < activeAtoms.length; i++) {
           for (let j = i + 1; j < activeAtoms.length; j++) {
+            if (activeAtoms[i].isElectron || activeAtoms[j].isElectron) continue;
             const start = activeAtoms[i].targetPos;
             const end = activeAtoms[j].targetPos;
             const dist = start.distanceTo(end);
@@ -414,19 +661,16 @@
             const r2 = activeAtoms[j].elData.r || 1.0;
             let maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
             
-            // Custom bonding thresholds to ensure physical rods (barillas) show for element lattices
-            if (!isDnaMode) {
-              const sym1 = activeAtoms[i].elData.s;
-              const sym2 = activeAtoms[j].elData.s;
-              if (sym1 === sym2) {
-                if (sym1 === 'Po') maxBondDist = 12.0; // Simple Cubic Cube Frame
-                else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(sym1)) maxBondDist = 13.0; // BCC center-to-corners
-                else if (['Si', 'Ge', 'Sn'].includes(sym1)) maxBondDist = 11.0; // Diamond tetrahedral bonds
-                else if (['As', 'Sb', 'Bi'].includes(sym1)) maxBondDist = 8.5; // Puckered sheets
-                else if (['Se', 'Te'].includes(sym1)) maxBondDist = 7.0; // Helical chain
-                else if (sym1 === 'I') maxBondDist = 4.5; // I2 molecular bonds only
-                else if (['Hg', 'Ga', 'Cs', 'Rb', 'Fr', 'Br'].includes(sym1)) maxBondDist = 7.5; // Liquid dynamic clusters
-              }
+            const sym1 = activeAtoms[i].elData.s;
+            const sym2 = activeAtoms[j].elData.s;
+            if (sym1 === sym2) {
+              if (sym1 === 'Po') maxBondDist = 12.0;
+              else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(sym1)) maxBondDist = 13.0;
+              else if (['Si', 'Ge', 'Sn'].includes(sym1)) maxBondDist = 11.0;
+              else if (['As', 'Sb', 'Bi'].includes(sym1)) maxBondDist = 8.5;
+              else if (['Se', 'Te'].includes(sym1)) maxBondDist = 7.0;
+              else if (sym1 === 'I') maxBondDist = 4.5;
+              else if (['Hg', 'Ga', 'Cs', 'Rb', 'Fr', 'Br'].includes(sym1)) maxBondDist = 7.5;
             }
             
             if (dist > 0.1 && dist < maxBondDist) {
@@ -441,9 +685,9 @@
     }, 300);
   }
 
-  // Spawn chemical bonds between close atoms (supporting single, double, and triple bonds)
+  // Spawn chemical bonds using a single InstancedMesh
   function spawnBonds(bondPairs) {
-    // bondPairs: [{a: atomIdx, b: atomIdx}]
+    let totalCylinders = 0;
     bondPairs.forEach(bp => {
       let order = 1;
       if (!isDnaMode && activeAtoms[bp.a] && activeAtoms[bp.b]) {
@@ -451,23 +695,44 @@
         const zB = activeAtoms[bp.b].z;
         const symA = EL[zA].s;
         const symB = EL[zB].s;
-        
         if ((symA === 'O' && symB === 'O') || (symA === 'C' && symB === 'O') || (symA === 'O' && symB === 'C')) {
-          order = 2; // Double bond in O2 or CO2
+          order = 2;
         } else if (symA === 'N' && symB === 'N') {
-          order = 3; // Triple bond in N2
+          order = 3;
         }
       }
+      totalCylinders += order;
+    });
 
-      const meshes = [];
-      for (let o = 0; o < order; o++) {
-        const mesh = new THREE.Mesh(cylinderGeo, bondMat);
-        mesh.scale.set(0.01, 0.01, 0.01);
-        moleculeGroup.add(mesh);
-        meshes.push(mesh);
+    if (totalCylinders === 0) return;
+
+    const bondInstMesh = new THREE.InstancedMesh(cylinderGeo, bondMat, totalCylinders);
+    bondInstMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    moleculeGroup.add(bondInstMesh);
+    activeBondInstancedMesh = bondInstMesh;
+
+    let instIdx = 0;
+    bondPairs.forEach(bp => {
+      let order = 1;
+      if (!isDnaMode && activeAtoms[bp.a] && activeAtoms[bp.b]) {
+        const zA = activeAtoms[bp.a].z;
+        const zB = activeAtoms[bp.b].z;
+        const symA = EL[zA].s;
+        const symB = EL[zB].s;
+        if ((symA === 'O' && symB === 'O') || (symA === 'C' && symB === 'O') || (symA === 'O' && symB === 'C')) {
+          order = 2;
+        } else if (symA === 'N' && symB === 'N') {
+          order = 3;
+        }
       }
-      
-      activeBonds.push({ meshes, order, aIdx: bp.a, bIdx: bp.b, removing: false });
+      activeBonds.push({
+        aIdx: bp.a,
+        bIdx: bp.b,
+        order,
+        startIdx: instIdx,
+        removing: false
+      });
+      instIdx += order;
     });
   }
 
@@ -484,7 +749,14 @@
 
     const BACKBONE1_COLORS = [0xFFD700, 0x8A2BE2, 0xFF5500, 0xFF0055, 0x00FF9D, 0x00D4FF];
     const BACKBONE2_COLORS = [0x00D4FF, 0x00FF9D, 0xFF5500, 0x8A2BE2, 0xFFD700, 0xFF0055];
-    const RUNG_COLOR = 0x1E2B3E; // Dark navy/slate for rungs
+
+    // Biological nucleobase pairing (A-T = 2 H-bonds, G-C = 3 H-bonds)
+    const BASE_PAIRS = [
+      { col1: 0x00FF9D, col2: 0xFF0055 }, // Adenine (Green) - Thymine (Red)
+      { col1: 0xFFD700, col2: 0x00F0FF }, // Guanine (Yellow) - Cytosine (Cyan)
+      { col1: 0xFF0055, col2: 0x00FF9D }, // Thymine (Red) - Adenine (Green)
+      { col1: 0x00F0FF, col2: 0xFFD700 }  // Cytosine (Cyan) - Guanine (Yellow)
+    ];
 
     for (let i = 0; i < BP; i++) {
       const p = i / BP;
@@ -495,7 +767,7 @@
       const y1 = Math.sin(a1) * HR, z1 = Math.cos(a1) * HR;
       const y2 = Math.sin(a2) * HR, z2 = Math.cos(a2) * HR;
 
-      // Backbone 1 sphere (thick, glossy, colorful)
+      // Backbone 1 sphere (Phosphorus-sugar group)
       atoms.push({
         z: 15,
         pos: new THREE.Vector3(x, y1, z1),
@@ -511,16 +783,18 @@
         scale: 2.3
       });
 
-      // Base pair rungs (every 2 steps to avoid overlapping too much)
+      // Base pair rungs (Biological A-T and G-C pairs)
       if (i % 2 === 0) {
+        const pair = BASE_PAIRS[(i / 2) % BASE_PAIRS.length];
         for (let r = 1; r <= 6; r++) {
           const rp = r / 7;
           const ry = THREE.MathUtils.lerp(y1, y2, rp);
           const rz = THREE.MathUtils.lerp(z1, z2, rp);
+          const rungColor = rp <= 0.5 ? pair.col1 : pair.col2;
           atoms.push({
             z: 6,
             pos: new THREE.Vector3(x, ry, rz),
-            col: RUNG_COLOR,
+            col: rungColor,
             scale: 1.1
           });
         }
@@ -530,10 +804,10 @@
     spawnAtoms(atoms);
     updateTelemetry(
       'B-DNA Double Helix (TP53 Gene Locus)',
-      'Highly Dense Polypeptide & Nucleic Acid Sequence',
-      'Genomic Macromolecule',
+      'A-T (2 H-Bonds) // G-C (3 H-Bonds) Pairs',
+      'Genomic Macromolecule (Watson-Crick B-Form)',
       'Hydrogen Bonds (Nucleobase Rungs)',
-      'Full 120,000 Particle Invictvs 3D Simulation'
+      'State: [BIOMACROMOLECULE: CANONICAL B-DNA]'
     );
   }
 
@@ -921,21 +1195,101 @@
     const symbol = el.s;
     const startPos = fromCenter ? new THREE.Vector3(0, 0, 0) : null;
 
+    function makeRepeatedLattice(z, basis, cellSize, scale, nx=2, ny=2, nz=2) {
+      const latticeAtoms = [];
+      const seen = new Set();
+      const cx = (nx - 1) * cellSize * 0.5;
+      const cy = (ny - 1) * cellSize * 0.5;
+      const cz = (nz - 1) * cellSize * 0.5;
+      for (let ix = 0; ix <= nx; ix++) {
+        for (let iy = 0; iy <= ny; iy++) {
+          for (let iz = 0; iz <= nz; iz++) {
+            basis.forEach(b => {
+              if (ix + b.x > nx || iy + b.y > ny || iz + b.z > nz) return;
+              const px = (ix + b.x) * cellSize - cx;
+              const py = (iy + b.y) * cellSize - cy;
+              const pz = (iz + b.z) * cellSize - cz;
+              const key = `${Math.round(px*100)},${Math.round(py*100)},${Math.round(pz*100)}`;
+              if (!seen.has(key)) {
+                seen.add(key);
+                latticeAtoms.push({
+                  z,
+                  pos: offset.clone().add(new THREE.Vector3(px, py, pz)),
+                  startPos: startPos,
+                  scale: scale
+                });
+              }
+            });
+          }
+        }
+      }
+      return latticeAtoms;
+    }
+
+    function getHcpAtoms(z, a, c, nx=2, ny=2, nz=2) {
+      const hcpAtoms = [];
+      const seen = new Set();
+      const cx = (nx - 0.5) * a * 0.5;
+      const cy = (ny - 0.5) * a * Math.sqrt(3) * 0.25;
+      const cz = (nz - 0.5) * c * 0.5;
+      const basis = [
+        { x: 0, y: 0, z: 0 },
+        { x: 2/3, y: 1/3, z: 0.5 }
+      ];
+      for (let ix = 0; ix <= nx; ix++) {
+        for (let iy = 0; iy <= ny; iy++) {
+          for (let iz = 0; iz <= nz; iz++) {
+            basis.forEach(b => {
+              if (ix + b.x > nx || iy + b.y > ny || iz + b.z > nz) return;
+              const ux = ix + b.x;
+              const uy = iy + b.y;
+              const uz = iz + b.z;
+              const px = (ux + uy * 0.5) * a - cx;
+              const py = (uy * Math.sqrt(3) * 0.5) * a - cy;
+              const pz = uz * c - cz;
+              const key = `${Math.round(px*100)},${Math.round(py*100)},${Math.round(pz*100)}`;
+              if (!seen.has(key)) {
+                seen.add(key);
+                hcpAtoms.push({
+                  z,
+                  pos: offset.clone().add(new THREE.Vector3(px, py, pz)),
+                  startPos: startPos,
+                  scale: 1.5
+                });
+              }
+            });
+          }
+        }
+      }
+      return hcpAtoms;
+    }
+
     if (symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn') {
       // 1. MONATOMIC NOBLE GAS
-      atoms.push({ z, pos: offset.clone(), startPos: startPos, scale: 2.2 });
+      const nucleus = { z, pos: offset.clone(), startPos: startPos, scale: 2.2 };
+      atoms.push(nucleus);
       
       const electrons = Math.min(z, 20);
       for (let e = 0; e < electrons; e++) {
         const shell = Math.floor(e / 8);
-        const shellR = 6.0 + shell * 5.0;
+        const shellR = 6.0 + shell * 4.0;
         const angle = (e / Math.max(1, Math.min(8, electrons - shell*8))) * Math.PI * 2;
-        const pos = offset.clone().add(new THREE.Vector3(
-          Math.cos(angle) * shellR,
-          Math.sin(angle) * shellR,
-          (e % 2 === 0 ? 1 : -1) * (shell + 1) * 2.0
-        ));
-        atoms.push({ z: 1, pos, startPos: startPos, scale: 0.35, isElectron: true, noLabel: true, col: 0x00FFFF });
+        const tiltX = (Math.random() - 0.5) * 0.8;
+        const tiltY = (Math.random() - 0.5) * 0.8;
+        const orbitSpeed = 1.5 + Math.random() * 1.5;
+        atoms.push({
+          z: 1,
+          isElectron: true,
+          noLabel: true,
+          col: 0x00FFFF,
+          scale: 0.35,
+          parent: nucleus,
+          orbitR: shellR,
+          orbitAngle: angle,
+          orbitSpeed: orbitSpeed,
+          tiltX: tiltX,
+          tiltY: tiltY
+        });
       }
     }
     else if (symbol === 'B') {
@@ -961,7 +1315,7 @@
       });
     }
     else if (['Hg', 'Ga', 'Cs', 'Rb', 'Fr'].includes(symbol)) {
-      // 3. DISORDERED LIQUID DROPLET
+      // 3. DISORDERED LIQUID DROPLET (base positions, wobble noise will animate it)
       const numLiquidAtoms = 12;
       for (let i = 0; i < numLiquidAtoms; i++) {
         const phi = Math.acos(2 * Math.random() - 1);
@@ -972,7 +1326,7 @@
           Math.sin(phi) * Math.sin(theta) * r_val,
           Math.cos(phi) * r_val
         ));
-        atoms.push({ z, pos, startPos: startPos, scale: 1.6 });
+        atoms.push({ z, pos: pos.clone(), basePos: pos.clone().sub(offset), startPos: startPos, scale: 1.6 });
       }
     }
     else if (symbol === 'Br') {
@@ -995,12 +1349,14 @@
           Math.cos(bondPhi)
         ).multiplyScalar(3.2);
         
-        atoms.push({ z, pos: pairCenter.clone().sub(dir), startPos: startPos, scale: 1.6 });
-        atoms.push({ z, pos: pairCenter.clone().add(dir), startPos: startPos, scale: 1.6 });
+        const pos1 = pairCenter.clone().sub(dir);
+        const pos2 = pairCenter.clone().add(dir);
+        atoms.push({ z, pos: pos1, basePos: pos1.clone().sub(offset), startPos: startPos, scale: 1.6 });
+        atoms.push({ z, pos: pos2, basePos: pos2.clone().sub(offset), startPos: startPos, scale: 1.6 });
       }
     }
     else if (symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl') {
-      // 5. DIATOMIC GAS MOLECULES
+      // 5. DIATOMIC GAS MOLECULES (inside a bouncing chamber, velocity initialized)
       const offsets = [
         new THREE.Vector3(0, 0, 0),
         new THREE.Vector3(-14, 10, -10),
@@ -1009,8 +1365,11 @@
       offsets.forEach((off, idx) => {
         const theta = idx * 1.5;
         const dir = new THREE.Vector3(Math.cos(theta), Math.sin(theta), Math.cos(theta*2)).normalize().multiplyScalar(3.2);
-        atoms.push({ z, pos: offset.clone().add(off).sub(dir), startPos: startPos, scale: 1.6 });
-        atoms.push({ z, pos: offset.clone().add(off).add(dir), startPos: startPos, scale: 1.6 });
+        const pos1 = offset.clone().add(off).sub(dir);
+        const pos2 = offset.clone().add(off).add(dir);
+        const vel = new THREE.Vector3((Math.random()-0.5)*15, (Math.random()-0.5)*15, (Math.random()-0.5)*15);
+        atoms.push({ z, pos: pos1, startPos: startPos, scale: 1.6, velocity: vel.clone() });
+        atoms.push({ z, pos: pos2, startPos: startPos, scale: 1.6, velocity: vel.clone() });
       });
     }
     else if (symbol === 'I') {
@@ -1084,15 +1443,9 @@
       });
     }
     else if (symbol === 'Po') {
-      // 9. SIMPLE CUBIC LATTICE (SC)
-      const d = 5.5;
-      for (let dx of [-d, d]) {
-        for (let dy of [-d, d]) {
-          for (let dz of [-d, d]) {
-            atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(dx, dy, dz)), startPos: startPos, scale: 1.7 });
-          }
-        }
-      }
+      // 9. SIMPLE CUBIC LATTICE (SC) - repeating
+      const scBasis = [{x:0, y:0, z:0}];
+      atoms.push(...makeRepeatedLattice(z, scBasis, 7.0, 1.7));
     }
     else if (symbol === 'P') {
       // 10. WHITE PHOSPHORUS (P4 Tetrahedron)
@@ -1121,7 +1474,7 @@
       }
     }
     else if (symbol === 'C') {
-      // 12. GRAPHITE LAYERS FOR CARBON (2 parallel sheets of hexagonal rings)
+      // 12. GRAPHITE LAYERS FOR CARBON
       const r = 5.5;
       // Sheet 1 (z = -3.5)
       atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, -3.5)), startPos: startPos, scale: 1.7 });
@@ -1147,68 +1500,26 @@
       }
     }
     else if (symbol === 'Si' || symbol === 'Ge' || symbol === 'Sn') {
-      // 13. COVALENT DIAMOND LATTICE (5 atoms)
-      const d = 6.0;
-      atoms.push({ z, pos: offset.clone(), startPos: startPos, scale: 1.8 });
-      const vertices = [
-        new THREE.Vector3(d, d, d),
-        new THREE.Vector3(-d, -d, d),
-        new THREE.Vector3(-d, d, -d),
-        new THREE.Vector3(d, -d, -d)
+      // 13. COVALENT DIAMOND LATTICE - repeating
+      const diamondBasis = [
+        {x:0, y:0, z:0}, {x:0.5, y:0.5, z:0}, {x:0.5, y:0, z:0.5}, {x:0, y:0.5, z:0.5},
+        {x:0.25, y:0.25, z:0.25}, {x:0.75, y:0.75, z:0.25}, {x:0.75, y:0.25, z:0.75}, {x:0.25, y:0.75, z:0.75}
       ];
-      vertices.forEach(v => atoms.push({ z, pos: offset.clone().add(v), startPos: startPos, scale: 1.7 }));
+      atoms.push(...makeRepeatedLattice(z, diamondBasis, 9.5, 1.6));
     }
     else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(symbol)) {
-      // 14. BODY-CENTERED CUBIC LATTICE (BCC)
-      const d = 7.0;
-      atoms.push({ z, pos: offset.clone(), startPos: startPos, scale: 1.9 });
-      for (let dx of [-d, d]) {
-        for (let dy of [-d, d]) {
-          for (let dz of [-d, d]) {
-            atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(dx, dy, dz)), startPos: startPos, scale: 1.5 });
-          }
-        }
-      }
+      // 14. BODY-CENTERED CUBIC LATTICE (BCC) - repeating
+      const bccBasis = [{x:0, y:0, z:0}, {x:0.5, y:0.5, z:0.5}];
+      atoms.push(...makeRepeatedLattice(z, bccBasis, 8.5, 1.6));
     }
     else if (['Be', 'Mg', 'Ti', 'Co', 'Zn', 'Y', 'Zr', 'Ru', 'Cd', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Lu', 'Hf', 'Re', 'Os', 'Tl'].includes(symbol)) {
-      // 15. HEXAGONAL CLOSE-PACKED LATTICE (HCP)
-      const r = 6.0;
-      const h = 5.0;
-      // Lower hexagon + center
-      for (let i = 0; i < 6; i++) {
-        const theta = (i / 6) * Math.PI * 2;
-        atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), -h)), startPos: startPos, scale: 1.5 });
-      }
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, -h)), startPos: startPos, scale: 1.6 });
-      // Upper hexagon + center
-      for (let i = 0; i < 6; i++) {
-        const theta = (i / 6) * Math.PI * 2;
-        atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), h)), startPos: startPos, scale: 1.5 });
-      }
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, h)), startPos: startPos, scale: 1.6 });
-      // Mid layer triangle
-      const r_mid = r * 0.58;
-      for (let i = 0; i < 3; i++) {
-        const theta = (i / 3) * Math.PI * 2 + Math.PI / 6;
-        atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(r_mid * Math.cos(theta), r_mid * Math.sin(theta), 0)), startPos: startPos, scale: 1.5 });
-      }
+      // 15. HEXAGONAL CLOSE-PACKED LATTICE (HCP) - repeating
+      atoms.push(...getHcpAtoms(z, 8.0, 6.5));
     }
     else {
-      // 16. FACE-CENTERED CUBIC LATTICE (FCC) - Default for metals (Au, Ag, Cu, Pt, Pb, etc.)
-      const d = 7.5;
-      for (let dx of [-d, d]) {
-        for (let dy of [-d, d]) {
-          for (let dz of [-d, d]) {
-            atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(dx, dy, dz)), startPos: startPos, scale: 1.5 });
-          }
-        }
-      }
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(d, 0, 0)), startPos: startPos, scale: 1.6 });
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(-d, 0, 0)), startPos: startPos, scale: 1.6 });
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, d, 0)), startPos: startPos, scale: 1.6 });
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, -d, 0)), startPos: startPos, scale: 1.6 });
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, d)), startPos: startPos, scale: 1.6 });
-      atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, -d)), startPos: startPos, scale: 1.6 });
+      // 16. FACE-CENTERED CUBIC LATTICE (FCC) - Default for metals, repeating
+      const fccBasis = [{x:0, y:0, z:0}, {x:0.5, y:0.5, z:0}, {x:0.5, y:0, z:0.5}, {x:0, y:0.5, z:0.5}];
+      atoms.push(...makeRepeatedLattice(z, fccBasis, 9.0, 1.6));
     }
     return atoms;
   }
@@ -1255,6 +1566,7 @@
   }
 
   function createExplosion(pos, color1, color2) {
+    playCollisionSound();
     const particleCount = 200;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
@@ -1300,82 +1612,185 @@
     explosionParticles = new THREE.Points(geometry, material);
     scene.add(explosionParticles);
     explosionTimer = 35;
+
+    // Shockwave expansion ring
+    if (shockwaveRing) scene.remove(shockwaveRing);
+    const ringGeo = new THREE.RingGeometry(0.5, 3.0, 32);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: color1 || 0x00FFFF,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    shockwaveRing = new THREE.Mesh(ringGeo, ringMat);
+    shockwaveRing.position.copy(pos);
+    shockwaveRing.rotation.x = Math.PI * 0.5;
+    scene.add(shockwaveRing);
+    shockwaveScale = 0.1;
+    shockwaveOpacity = 1.0;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // VALENCE ENGINE & VSEPR GEOMETRY COMPILER
+  // ═══════════════════════════════════════════════════════════════
+  const VALENCE_MAP = {
+    1: 1, 2: 0, 3: 1, 4: 2, 5: 3, 6: 4, 7: -3, 8: -2, 9: -1, 10: 0,
+    11: 1, 12: 2, 13: 3, 14: 4, 15: -3, 16: -2, 17: -1, 18: 0,
+    19: 1, 20: 2, 21: 3, 22: 4, 23: 5, 24: 3, 25: 2, 26: 3, 27: 2, 28: 2, 29: 2, 30: 2,
+    31: 3, 32: 4, 33: -3, 34: -2, 35: -1, 36: 0,
+    37: 1, 38: 2, 39: 3, 40: 4, 41: 5, 42: 6, 43: 7, 44: 4, 45: 3, 46: 2, 47: 1, 48: 2,
+    49: 3, 50: 4, 51: -3, 52: -2, 53: -1, 54: 0,
+    55: 1, 56: 2, 72: 4, 73: 5, 74: 6, 75: 7, 76: 4, 77: 4, 78: 4, 79: 3, 80: 2,
+    81: 3, 82: 4, 83: 3, 84: -2, 85: -1, 86: 0
+  };
+
+  function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
+  function predictCompoundFormula(zA, zB) {
+    const elA = EL[zA] || EL[1];
+    const elB = EL[zB] || EL[1];
+
+    const enA = typeof elA.electronegativity === 'number' ? elA.electronegativity : 2.0;
+    const enB = typeof elB.electronegativity === 'number' ? elB.electronegativity : 2.0;
+
+    let cation = zA, anion = zB;
+    if (enA > enB) { cation = zB; anion = zA; }
+
+    const vCat = Math.abs(VALENCE_MAP[cation] || 1);
+    const vAni = Math.abs(VALENCE_MAP[anion] || 1);
+
+    const g = gcd(vCat, vAni);
+    let countCat = vAni / g;
+    let countAni = vCat / g;
+
+    if (countCat + countAni > 8) {
+      countCat = Math.min(countCat, 2);
+      countAni = Math.min(countAni, 4);
+    }
+
+    const symCat = EL[cation].s;
+    const symAni = EL[anion].s;
+    const formulaStr = (countCat === 1 ? symCat : `${symCat}${countCat}`) +
+                       (countAni === 1 ? symAni : `${symAni}${countAni}`);
+
+    return { cation, anion, countCat, countAni, formulaStr };
+  }
+
+  function buildVseprCompound(pred) {
+    const atoms = [];
+    const { cation, anion, countCat, countAni } = pred;
+    const d = 6.5;
+
+    if (countCat === 1) {
+      atoms.push({ z: cation, pos: new THREE.Vector3(0, 0, 0), scale: 2.2 });
+      const n = countAni;
+
+      if (n === 1) {
+        atoms.push({ z: anion, pos: new THREE.Vector3(d, 0, 0), scale: 1.8 });
+      } else if (n === 2) {
+        const isBent = anion === 8 || anion === 16;
+        if (isBent) {
+          const angle = (104.5 / 180) * Math.PI;
+          atoms.push({ z: anion, pos: new THREE.Vector3(Math.sin(angle*0.5)*d, -Math.cos(angle*0.5)*d, 0), scale: 1.8 });
+          atoms.push({ z: anion, pos: new THREE.Vector3(-Math.sin(angle*0.5)*d, -Math.cos(angle*0.5)*d, 0), scale: 1.8 });
+        } else {
+          atoms.push({ z: anion, pos: new THREE.Vector3(d, 0, 0), scale: 1.8 });
+          atoms.push({ z: anion, pos: new THREE.Vector3(-d, 0, 0), scale: 1.8 });
+        }
+      } else if (n === 3) {
+        for (let i = 0; i < 3; i++) {
+          const theta = (i / 3) * Math.PI * 2;
+          atoms.push({ z: anion, pos: new THREE.Vector3(d * Math.cos(theta), d * Math.sin(theta), 0), scale: 1.8 });
+        }
+      } else if (n === 4) {
+        const vertices = [
+          new THREE.Vector3(0, d, 0),
+          new THREE.Vector3((Math.sqrt(8)/3)*d, (-1/3)*d, 0),
+          new THREE.Vector3((-Math.sqrt(2)/3)*d, (-1/3)*d, (Math.sqrt(2/3))*d),
+          new THREE.Vector3((-Math.sqrt(2)/3)*d, (-1/3)*d, (-Math.sqrt(2/3))*d)
+        ];
+        vertices.forEach(v => atoms.push({ z: anion, pos: v, scale: 1.8 }));
+      } else if (n === 5) {
+        atoms.push({ z: anion, pos: new THREE.Vector3(0, d*1.1, 0), scale: 1.7 });
+        atoms.push({ z: anion, pos: new THREE.Vector3(0, -d*1.1, 0), scale: 1.7 });
+        for (let i = 0; i < 3; i++) {
+          const theta = (i / 3) * Math.PI * 2;
+          atoms.push({ z: anion, pos: new THREE.Vector3(d * Math.cos(theta), 0, d * Math.sin(theta)), scale: 1.7 });
+        }
+      } else {
+        const dirs = [
+          new THREE.Vector3(d, 0, 0), new THREE.Vector3(-d, 0, 0),
+          new THREE.Vector3(0, d, 0), new THREE.Vector3(0, -d, 0),
+          new THREE.Vector3(0, 0, d), new THREE.Vector3(0, 0, -d)
+        ];
+        dirs.forEach(dir => atoms.push({ z: anion, pos: dir, scale: 1.7 }));
+      }
+    } else {
+      const spacing = 8.0;
+      for (let c = 0; c < countCat; c++) {
+        const cPos = new THREE.Vector3((c - (countCat-1)*0.5) * spacing * 1.5, 0, 0);
+        atoms.push({ z: cation, pos: cPos, scale: 2.0 });
+      }
+      for (let a = 0; a < countAni; a++) {
+        const theta = (a / countAni) * Math.PI * 2;
+        const aPos = new THREE.Vector3(
+          Math.cos(theta) * spacing * 1.2,
+          Math.sin(theta) * spacing * 1.2,
+          (a % 2 === 0 ? 1 : -1) * 3.0
+        );
+        atoms.push({ z: anion, pos: aPos, scale: 1.7 });
+      }
+    }
+
+    return atoms;
+  }
+
+  function formVseprCompound(vseprData) {
+    isDnaMode = false;
+    spawnAtoms(vseprData.atoms);
+    
+    const pred = vseprData.pred;
+    const nameCat = EL[pred.cation].n;
+    const nameAni = EL[pred.anion].n;
+    
+    let shapeName = 'Linear (AX)';
+    if (pred.countCat === 1) {
+      if (pred.countAni === 2) shapeName = (pred.anion === 8 || pred.anion === 16) ? 'Bent (AX2E2)' : 'Linear (AX2)';
+      else if (pred.countAni === 3) shapeName = 'Trigonal Planar (AX3)';
+      else if (pred.countAni === 4) shapeName = 'Tetrahedral (AX4)';
+      else if (pred.countAni === 5) shapeName = 'Trigonal Bipyramidal (AX5)';
+      else if (pred.countAni >= 6) shapeName = 'Octahedral (AX6)';
+    } else {
+      shapeName = 'Stoichiometric Network / Chain';
+    }
+
+    updateTelemetry(
+      `Compound: ${pred.formulaStr}`,
+      `${nameCat} + ${nameAni} Stoichiometry`,
+      `Geometry: ${shapeName}`,
+      `Valence Engine Bond Arrangement`,
+      `State: [SYNTHESIZED: ${pred.formulaStr}]`
+    );
   }
 
   function triggerFusionCollision(zA, zB, reaction) {
     isDnaMode = false;
     
-    activeAtoms.forEach(a => {
-      moleculeGroup.remove(a.mesh);
-      if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
-    });
-    activeAtoms = [];
-    activeBonds.forEach(b => { b.meshes.forEach(m => moleculeGroup.remove(m)); });
-    activeBonds = [];
-
     const posA = new THREE.Vector3(-25, 0, 0);
     const posB = new THREE.Vector3(25, 0, 0);
     const atomsA = getElementAtoms(zA, posA);
     const atomsB = getElementAtoms(zB, posB);
-
     const combinedList = [...atomsA, ...atomsB];
     
-    combinedList.forEach((item, idx) => {
-      const elData = EL[item.z] || EL[1];
-      const mat = getMaterial(elData.col);
-      const mesh = new THREE.Mesh(sphereGeo, mat);
-      mesh.position.copy(item.pos).add(new THREE.Vector3(
-        (Math.random()-0.5)*4,
-        (Math.random()-0.5)*4,
-        (Math.random()-0.5)*4
-      ));
-      mesh.scale.setScalar(0.01);
-      moleculeGroup.add(mesh);
-
-      const spriteColor = '#' + elData.col.toString(16).padStart(6, '0');
-      const labelSprite = createTextSprite(elData.s, spriteColor);
-      labelSprite.position.copy(mesh.position);
-      labelSprite.scale.setScalar(0.01);
-      moleculeGroup.add(labelSprite);
-
-      const scale = 1.2 + (elData.r || 1.0) * 0.4;
-      activeAtoms.push({
-        mesh,
-        labelSprite,
-        targetPos: item.pos.clone(),
-        targetScale: scale,
-        currentScale: 0.01,
-        elData,
-        z: item.z,
-        removing: false
-      });
-    });
-
-    const newBonds = [];
-    for (let i = 0; i < activeAtoms.length; i++) {
-      for (let j = i + 1; j < activeAtoms.length; j++) {
-        const start = activeAtoms[i].targetPos;
-        const end = activeAtoms[j].targetPos;
-        const dist = start.distanceTo(end);
-        
-        const r1 = activeAtoms[i].elData.r || 1.0;
-        const r2 = activeAtoms[j].elData.r || 1.0;
-        const maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
-        
-        if (dist > 0.1 && dist < maxBondDist) {
-          newBonds.push({ a: i, b: j });
-        }
-      }
-    }
-    spawnBonds(newBonds);
-
-    if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
+    spawnAtoms(combinedList);
 
     fusionState = 'charging';
     fusionTimer = 55;
     fusionReactantA = zA;
     fusionReactantB = zB;
-    
+
     if (reaction) {
       fusionTargetReaction = reaction;
     } else {
@@ -1383,7 +1798,13 @@
       if (zSum > 118) {
         fusionTargetReaction = { isFission: true, zA, zB, zResult: zSum };
       } else {
-        fusionTargetReaction = { isInert: true, zA, zB };
+        const pred = predictCompoundFormula(zA, zB);
+        const vseprAtoms = buildVseprCompound(pred);
+        fusionTargetReaction = {
+          isVsepr: true,
+          pred,
+          atoms: vseprAtoms
+        };
       }
     }
 
@@ -1410,8 +1831,37 @@
   let selectedSlotA = null;
   let selectedSlotB = null;
 
+  const ptTooltip = document.getElementById('pt-tooltip');
+
   document.querySelectorAll('.pt-el').forEach(cell => {
+    cell.addEventListener('mousemove', e => {
+      const z = parseInt(cell.dataset.z);
+      if (!z) return;
+      const el = EL[z];
+      if (!el) return;
+
+      if (ptTooltip) {
+        ptTooltip.style.display = 'block';
+        ptTooltip.style.left = (e.clientX + 14) + 'px';
+        ptTooltip.style.top = (e.clientY + 14) + 'px';
+
+        const massStr = typeof el.m === 'number' ? el.m.toFixed(3) : el.m;
+        ptTooltip.innerHTML = `
+          <div class="tt-header">${el.n} (${el.s}) — Z=${z}</div>
+          <div class="tt-row"><span class="tt-label">Mass:</span> <span>${massStr} u</span></div>
+          <div class="tt-row"><span class="tt-label">Phase:</span> <span>${el.phase || 'Solid'}</span></div>
+          <div class="tt-row"><span class="tt-label">Category:</span> <span>${el.cat}</span></div>
+          <div class="tt-row"><span class="tt-label">Shells:</span> <span>${el.sh}</span></div>
+        `;
+      }
+    });
+
+    cell.addEventListener('mouseleave', () => {
+      if (ptTooltip) ptTooltip.style.display = 'none';
+    });
+
     cell.addEventListener('click', () => {
+      if (ptTooltip) ptTooltip.style.display = 'none';
       const z = parseInt(cell.dataset.z);
       const sym = cell.dataset.symbol;
       if (!z) return;
@@ -1462,11 +1912,61 @@
   // RESET to DNA
   if (btnReassemble) {
     btnReassemble.addEventListener('click', () => {
+      playTone(330, 'sine', 0.15);
       selectedSlotA = null;
       selectedSlotB = null;
       if (slotA) slotA.textContent = '—';
       if (slotB) slotB.textContent = '—';
       buildDNA();
+    });
+  }
+
+  // RANDOM SYNTHESIS Button
+  if (btnRandom) {
+    btnRandom.addEventListener('click', () => {
+      playTone(440, 'triangle', 0.1);
+      const zA = Math.floor(Math.random() * 118) + 1;
+      const zB = Math.floor(Math.random() * 118) + 1;
+      selectedSlotA = { z: zA, sym: EL[zA].s };
+      selectedSlotB = { z: zB, sym: EL[zB].s };
+      if (slotA) slotA.textContent = EL[zA].s;
+      if (slotB) slotB.textContent = EL[zB].s;
+      
+      const key1 = EL[zA].s + '+' + EL[zB].s;
+      const key2 = EL[zB].s + '+' + EL[zA].s;
+      const reaction = REACTIONS[key1] || REACTIONS[key2];
+      triggerFusionCollision(zA, zB, reaction);
+    });
+  }
+
+  // ATOMIC ORBITALS Button
+  if (btnOrbitals) {
+    btnOrbitals.addEventListener('click', () => {
+      playTone(520, 'sine', 0.2);
+      const targetZ = selectedSlotA ? selectedSlotA.z : (activeAtoms.length > 0 ? activeAtoms[0].z : 6);
+      generateAtomicOrbitalCloud(targetZ);
+    });
+  }
+
+  // AUDIO TOGGLE Button
+  if (btnAudio) {
+    btnAudio.addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      btnAudio.textContent = audioEnabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
+      btnAudio.style.color = audioEnabled ? '#00F0FF' : '#506080';
+    });
+  }
+
+  // EXPORT HD SCREENSHOT Button
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      playTone(880, 'sine', 0.2);
+      renderer.render(scene, camera);
+      const dataUrl = renderer.domElement.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'nulla-labs-synthesis-3d.png';
+      link.href = dataUrl;
+      link.click();
     });
   }
 
@@ -1480,31 +1980,41 @@
 
   let isDragging = false, prevMouse = {x:0,y:0};
   let targetRotX = 0, targetRotY = 0, curRotX = 0, curRotY = 0;
-  let hoveredAtom = null, selectedAtomObj = null;
+  let hoveredAtomObj = null, selectedAtomObj = null;
 
   window.addEventListener('mousemove', e => {
     mouseScreen.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouseScreen.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouseScreen, camera);
-    const meshes = activeAtoms.filter(a => !a.removing).map(a => a.mesh);
-    const hits = raycaster.intersectObjects(meshes);
+    const hits = raycaster.intersectObjects(activeInstancedMeshes);
 
     if (hits.length > 0) {
-      if (hoveredAtom && hoveredAtom !== hits[0].object && hoveredAtom !== (selectedAtomObj && selectedAtomObj.mesh)) {
-        const ha = activeAtoms.find(a => a.mesh === hoveredAtom);
-        if (ha) ha.targetScale = 1.2 + (ha.elData.r || 1.0) * 0.4;
+      const hitMesh = hits[0].object;
+      const hitIdx = hits[0].instanceId;
+      const hit = activeAtoms.find(a => a.instancedMesh === hitMesh && a.instIdx === hitIdx && !a.removing);
+
+      if (hit) {
+        if (hoveredAtomObj && hoveredAtomObj !== hit && hoveredAtomObj !== selectedAtomObj) {
+          hoveredAtomObj.targetScale = hoveredAtomObj.isElectron ? 0.35 : (1.2 + (hoveredAtomObj.elData.r || 1.0) * 0.4);
+        }
+        hoveredAtomObj = hit;
+        if (hit !== selectedAtomObj) {
+          hit.targetScale = (hit.isElectron ? 0.35 : (1.2 + (hit.elData.r || 1.0) * 0.4)) * 1.4;
+        }
+        document.body.style.cursor = 'pointer';
+      } else {
+        resetHover();
       }
-      hoveredAtom = hits[0].object;
-      const ha = activeAtoms.find(a => a.mesh === hoveredAtom);
-      if (ha && ha.mesh !== (selectedAtomObj && selectedAtomObj.mesh)) ha.targetScale = (1.2 + (ha.elData.r || 1.0) * 0.4) * 1.4;
-      document.body.style.cursor = 'pointer';
     } else {
-      if (hoveredAtom && hoveredAtom !== (selectedAtomObj && selectedAtomObj.mesh)) {
-        const ha = activeAtoms.find(a => a.mesh === hoveredAtom);
-        if (ha) ha.targetScale = 1.2 + (ha.elData.r || 1.0) * 0.4;
+      resetHover();
+    }
+
+    function resetHover() {
+      if (hoveredAtomObj && hoveredAtomObj !== selectedAtomObj) {
+        hoveredAtomObj.targetScale = hoveredAtomObj.isElectron ? 0.35 : (1.2 + (hoveredAtomObj.elData.r || 1.0) * 0.4);
       }
-      hoveredAtom = null;
+      hoveredAtomObj = null;
       document.body.style.cursor = 'default';
     }
 
@@ -1522,17 +2032,21 @@
     if (e.target !== canvas) return;
 
     raycaster.setFromCamera(mouseScreen, camera);
-    const meshes = activeAtoms.filter(a => !a.removing).map(a => a.mesh);
-    const hits = raycaster.intersectObjects(meshes);
+    const hits = raycaster.intersectObjects(activeInstancedMeshes);
 
     if (hits.length > 0) {
-      if (selectedAtomObj) selectedAtomObj.targetScale = 1.2 + (selectedAtomObj.elData.r || 1.0) * 0.4;
+      const hitMesh = hits[0].object;
+      const hitIdx = hits[0].instanceId;
+      const hit = activeAtoms.find(a => a.instancedMesh === hitMesh && a.instIdx === hitIdx && !a.removing);
 
-      const hit = activeAtoms.find(a => a.mesh === hits[0].object);
       if (hit) {
+        if (selectedAtomObj) {
+          selectedAtomObj.targetScale = selectedAtomObj.isElectron ? 0.35 : (1.2 + (selectedAtomObj.elData.r || 1.0) * 0.4);
+        }
+
         selectedAtomObj = hit;
-        hit.targetScale = (1.2 + (hit.elData.r || 1.0) * 0.4) * 1.8;
-        selectRing.position.copy(hit.mesh.position);
+        hit.targetScale = (hit.isElectron ? 0.35 : (1.2 + (hit.elData.r || 1.0) * 0.4)) * 1.8;
+        selectRing.position.copy(hit.currentPos);
         selectRing.visible = true;
 
         updateTelemetry(
@@ -1574,71 +2088,143 @@
 
     const t = now * 0.001;
 
-    // Superfluid atom morphing — smooth position lerp + scale lerp
+    // Superfluid atom morphing & dynamic behaviors
+    const dummy = new THREE.Object3D();
+    const instUpdateList = new Set();
+
     for (let i = activeAtoms.length - 1; i >= 0; i--) {
       const a = activeAtoms[i];
       
-      // Brownian motion for liquid elements when idle
-      const isLiquid = ['Hg', 'Br', 'Ga', 'Cs', 'Rb', 'Fr'].includes(a.elData.s);
-      if (isLiquid && fusionState === 'idle' && !a.removing) {
-        a.targetPos.x += (Math.random() - 0.5) * 0.35 - a.targetPos.x * 0.015;
-        a.targetPos.y += (Math.random() - 0.5) * 0.35 - a.targetPos.y * 0.015;
-        a.targetPos.z += (Math.random() - 0.5) * 0.35 - a.targetPos.z * 0.015;
+      // Brownian motion / chamber drift for gas elements when idle
+      const isGas = a.velocity !== null;
+      if (isGas && fusionState === 'idle' && !a.removing) {
+        const dt = 0.016; // approximate delta time
+        a.targetPos.addScaledVector(a.velocity, dt);
+
+        // Bouncing box boundaries (chamber size 24x24x24)
+        const limit = 24.0;
+        if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -1; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
+        if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -1; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
+        if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -1; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
       }
-      a.mesh.position.lerp(a.targetPos, 0.06);
+
+      // Wobble motion for liquid elements when idle
+      const isLiquid = a.basePos !== null;
+      if (isLiquid && fusionState === 'idle' && !a.removing) {
+        const wobbleX = Math.sin(t * 3.5 + a.basePos.y * 0.4) * 0.5;
+        const wobbleY = Math.cos(t * 4.2 + a.basePos.x * 0.4) * 0.5;
+        const wobbleZ = Math.sin(t * 2.8 + a.basePos.z * 0.4) * 0.5;
+        a.targetPos.copy(a.basePos).add(new THREE.Vector3(wobbleX, wobbleY, wobbleZ));
+      }
+
+      // Orbit motion for noble gas electrons
+      if (a.isElectron && a.parent && fusionState === 'idle' && !a.removing) {
+        const parentAtom = activeAtoms.find(other => other === a.parent);
+        const parentPos = parentAtom ? parentAtom.currentPos : a.parent.pos;
+        
+        const angle = a.orbitAngle + t * a.orbitSpeed;
+        const localPos = new THREE.Vector3(Math.cos(angle) * a.orbitR, 0, Math.sin(angle) * a.orbitR);
+        localPos.applyAxisAngle(new THREE.Vector3(1, 0, 0), a.tiltX);
+        localPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), a.tiltY);
+        a.targetPos.copy(parentPos).add(localPos);
+      }
+
+      // Lerp position and scale
+      a.currentPos.lerp(a.targetPos, 0.06);
       a.currentScale += (a.targetScale - a.currentScale) * 0.08;
-      a.mesh.scale.setScalar(Math.max(0.001, a.currentScale));
+      
+      dummy.position.copy(a.currentPos);
+      dummy.scale.setScalar(Math.max(0.001, a.currentScale));
+      dummy.updateMatrix();
+      
+      if (a.instancedMesh) {
+        a.instancedMesh.setMatrixAt(a.instIdx, dummy.matrix);
+        instUpdateList.add(a.instancedMesh);
+      }
 
       if (a.labelSprite) {
-        a.labelSprite.position.copy(a.mesh.position);
+        a.labelSprite.position.copy(a.currentPos);
         a.labelSprite.position.y += a.currentScale * 1.15 + 0.4;
         a.labelSprite.scale.setScalar(Math.max(0.001, a.currentScale * 3.8));
       }
 
       // Remove fully shrunk atoms
       if (a.removing && a.currentScale < 0.05) {
-        moleculeGroup.remove(a.mesh);
         if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
         activeAtoms.splice(i, 1);
       }
     }
 
-    // Update bond stick positions
-    for (let i = activeBonds.length - 1; i >= 0; i--) {
-      const b = activeBonds[i];
-      if (b.removing) {
-        b.meshes.forEach(m => moleculeGroup.remove(m));
-        activeBonds.splice(i, 1);
-        continue;
+    instUpdateList.forEach(im => {
+      im.instanceMatrix.needsUpdate = true;
+    });
+
+    // Update noble gas orbit ring positions
+    activeOrbitLines.forEach(line => {
+      const nucleus = activeAtoms.find(other => other.targetPos === line.userData.nucleusPos);
+      if (nucleus) {
+        line.position.copy(nucleus.currentPos);
       }
-      if (activeAtoms[b.aIdx] && activeAtoms[b.bIdx]) {
-        const start = activeAtoms[b.aIdx].mesh.position;
-        const end = activeAtoms[b.bIdx].mesh.position;
-        const dist = start.distanceTo(end);
-        const center = start.clone().add(end).multiplyScalar(0.5);
-        const dir = end.clone().sub(start).normalize();
-        
-        // Find orthogonal offset vector for multiple bonds
-        let ortho = new THREE.Vector3(0, 1, 0).cross(dir).normalize();
-        if (ortho.lengthSq() < 0.01) {
-          ortho = new THREE.Vector3(0, 0, 1).cross(dir).normalize();
-        }
-        
-        b.meshes.forEach((mesh, idx) => {
-          let pos = center.clone();
-          if (b.order === 2) {
-            const offsetDir = ortho.clone().multiplyScalar((idx === 0 ? 0.35 : -0.35));
-            pos.add(offsetDir);
-          } else if (b.order === 3) {
-            if (idx === 1) pos.add(ortho.clone().multiplyScalar(0.5));
-            if (idx === 2) pos.add(ortho.clone().multiplyScalar(-0.5));
+    });
+
+    // Update bonds inside the single InstancedMesh
+    if (activeBondInstancedMesh) {
+      activeBonds.forEach(b => {
+        if (b.removing) {
+          for (let o = 0; o < b.order; o++) {
+            dummy.position.set(0, 0, 0);
+            dummy.scale.setScalar(0.001);
+            dummy.updateMatrix();
+            activeBondInstancedMesh.setMatrixAt(b.startIdx + o, dummy.matrix);
           }
+          return;
+        }
+
+        const atomA = activeAtoms[b.aIdx];
+        const atomB = activeAtoms[b.bIdx];
+        
+        if (atomA && atomB) {
+          const start = atomA.currentPos;
+          const end = atomB.currentPos;
+          const dist = start.distanceTo(end);
+          const center = start.clone().add(end).multiplyScalar(0.5);
+          const dir = end.clone().sub(start).normalize();
           
-          mesh.position.copy(pos);
-          mesh.scale.set(0.3, dist, 0.3);
-          mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-        });
-      }
+          let ortho = new THREE.Vector3(0, 1, 0).cross(dir).normalize();
+          if (ortho.lengthSq() < 0.01) {
+            ortho = new THREE.Vector3(0, 0, 1).cross(dir).normalize();
+          }
+
+          const scaleA = atomA.currentScale;
+          const scaleB = atomB.currentScale;
+          const bondScale = Math.min(scaleA, scaleB) * 0.3;
+
+          for (let idx = 0; idx < b.order; idx++) {
+            let pos = center.clone();
+            if (b.order === 2) {
+              const offsetDir = ortho.clone().multiplyScalar((idx === 0 ? 0.35 : -0.35));
+              pos.add(offsetDir);
+            } else if (b.order === 3) {
+              if (idx === 1) pos.add(ortho.clone().multiplyScalar(0.5));
+              if (idx === 2) pos.add(ortho.clone().multiplyScalar(-0.5));
+            }
+            
+            dummy.position.copy(pos);
+            dummy.scale.set(bondScale, dist, bondScale);
+            dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+            dummy.updateMatrix();
+            activeBondInstancedMesh.setMatrixAt(b.startIdx + idx, dummy.matrix);
+          }
+        } else {
+          for (let o = 0; o < b.order; o++) {
+            dummy.position.set(0, 0, 0);
+            dummy.scale.setScalar(0.001);
+            dummy.updateMatrix();
+            activeBondInstancedMesh.setMatrixAt(b.startIdx + o, dummy.matrix);
+          }
+        }
+      });
+      activeBondInstancedMesh.instanceMatrix.needsUpdate = true;
     }
 
     // Camera shake effect
@@ -1666,7 +2252,6 @@
       if (fusionTimer === 0) {
         fusionState = 'idle';
         
-        // Custom explosion colors for fission
         const isFiss = fusionTargetReaction && fusionTargetReaction.isFission;
         const col1 = isFiss ? 0xFF3300 : EL[fusionReactantA].col;
         const col2 = isFiss ? 0xFFCC00 : EL[fusionReactantB].col;
@@ -1675,7 +2260,9 @@
         camShakeTimer = 25;
         
         if (fusionTargetReaction) {
-          if (fusionTargetReaction.isFission) {
+          if (fusionTargetReaction.isVsepr) {
+            formVseprCompound(fusionTargetReaction);
+          } else if (fusionTargetReaction.isFission) {
             formFissionDecay(fusionTargetReaction.zA, fusionTargetReaction.zB, fusionTargetReaction.zResult);
           } else if (fusionTargetReaction.isNuclear) {
             formElement(fusionTargetReaction.z, true);
@@ -1686,10 +2273,7 @@
           }
         } else {
           activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
-          activeBonds.forEach(b => { 
-            b.meshes.forEach(m => m.scale.set(0.01,0.01,0.01)); 
-            b.removing = true; 
-          });
+          activeBonds.forEach(b => { b.removing = true; });
           updateTelemetry(
             `No Stable Reaction: ${EL[fusionReactantA].s} + ${EL[fusionReactantB].s}`,
             `${EL[fusionReactantA].s} + ${EL[fusionReactantB].s} collided at high kinetic energy`,
@@ -1698,6 +2282,20 @@
             'Try elements with stable reaction paths in the periodic table!'
           );
         }
+      }
+    }
+
+    // Animate shockwave expansion ring
+    if (shockwaveRing && shockwaveOpacity > 0.01) {
+      shockwaveScale += 1.8;
+      shockwaveOpacity *= 0.88;
+      shockwaveRing.scale.set(shockwaveScale, shockwaveScale, shockwaveScale);
+      shockwaveRing.material.opacity = shockwaveOpacity;
+      if (shockwaveOpacity <= 0.01) {
+        scene.remove(shockwaveRing);
+        shockwaveRing.geometry.dispose();
+        shockwaveRing.material.dispose();
+        shockwaveRing = null;
       }
     }
 
@@ -1725,7 +2323,7 @@
 
     // Selection ring follows selected atom
     if (selectRing.visible && selectedAtomObj && !selectedAtomObj.removing) {
-      selectRing.position.copy(selectedAtomObj.mesh.position);
+      selectRing.position.copy(selectedAtomObj.currentPos);
       selectRing.rotation.x = t * 3.0;
       selectRing.rotation.y = t * 3.5;
     }
@@ -1739,7 +2337,28 @@
     renderer.render(scene, camera);
   }
 
-  // Initialize with B-DNA example
-  buildDNA();
+  // URL Query Parameters Auto-Loader (e.g. ?z=79 or ?fuse=C+F)
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramZ = urlParams.get('z');
+  const paramFuse = urlParams.get('fuse');
+
+  if (paramZ && parseInt(paramZ) >= 1 && parseInt(paramZ) <= 118) {
+    formElement(parseInt(paramZ));
+  } else if (paramFuse && paramFuse.includes('+')) {
+    const parts = paramFuse.split('+');
+    const zA = Object.keys(EL).find(k => EL[k].s === parts[0]);
+    const zB = Object.keys(EL).find(k => EL[k].s === parts[1]);
+    if (zA && zB) {
+      const key1 = parts[0] + '+' + parts[1];
+      const key2 = parts[1] + '+' + parts[0];
+      const reaction = REACTIONS[key1] || REACTIONS[key2];
+      triggerFusionCollision(parseInt(zA), parseInt(zB), reaction);
+    } else {
+      buildDNA();
+    }
+  } else {
+    buildDNA();
+  }
+
   requestAnimationFrame(animate);
 })();

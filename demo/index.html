@@ -123,10 +123,25 @@
     }
     .pt-legend-item { display:flex; align-items:center; gap:2.5px; font-size:6px; letter-spacing:0.3px; color:rgba(200,220,255,0.75); }
     .pt-legend-dot { width:5px; height:5px; border-radius:50%; }
+
+    /* ─── HOVER TOOLTIP ─── */
+    #pt-tooltip {
+      position:fixed; z-index:100; pointer-events:none; display:none;
+      padding:8px 12px; border-radius:6px;
+      backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5);
+      background:rgba(5,8,18,0.92); border:1px solid rgba(0,240,255,0.4);
+      box-shadow:0 4px 20px rgba(0,240,255,0.3);
+    }
+    .tt-header { font-family:'Orbitron',sans-serif; font-size:11px; font-weight:700; color:#00F0FF; margin-bottom:4px; border-bottom:1px solid rgba(0,240,255,0.15); padding-bottom:2px; }
+    .tt-row { font-size:9.5px; color:#c0d8ff; margin-bottom:2px; display:flex; justify-content:space-between; gap:12px; }
+    .tt-label { color:#607595; }
   </style>
 </head>
 <body>
   <canvas id="webgl-canvas"></canvas>
+
+  <!-- TOOLTIP -->
+  <div id="pt-tooltip"></div>
 
   <!-- HEADER -->
   <div class="hud-header">
@@ -141,14 +156,20 @@
     <div class="hud-row"><span class="hud-label">FORMULA</span><span class="hud-val" id="hud-formula">—</span></div>
     <div class="hud-row"><span class="hud-label">CLASS</span><span class="hud-val" id="hud-class">—</span></div>
     <div class="hud-row"><span class="hud-label">BONDING</span><span class="hud-val" id="hud-bonds">—</span></div>
+    <div class="hud-row"><span class="hud-label">ENTHALPY</span><span class="hud-val" id="hud-enthalpy">—</span></div>
     <div class="hud-row"><span class="hud-label">STATE</span><span class="hud-val" id="hud-epi">—</span></div>
-    <button id="btn-reassemble">🧬 ADN</button>
+    <div style="display:flex; gap:4px; margin-top:6px;">
+      <button id="btn-reassemble" style="flex:1;">🧬 ADN</button>
+      <button id="btn-orbitals" style="flex:1; margin-top:8px; padding:7px 0; border:1px solid rgba(191,0,255,0.3); border-radius:6px; background:rgba(191,0,255,0.1); color:#BF00FF; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; cursor:pointer;">⚛️ ORBITALES</button>
+    </div>
   </div>
  
   <!-- FOOTER STATS -->
   <div class="hud-stats">
     <div class="stat-chip"><span id="fps-val">0 FPS</span></div>
     <div class="stat-chip"><span id="atom-count">0 ATOMS</span></div>
+    <button class="stat-chip" id="btn-audio" style="cursor:pointer; color:#00F0FF; background:rgba(5,8,18,0.6);">🔊 AUDIO: ON</button>
+    <button class="stat-chip" id="btn-export" style="cursor:pointer; color:#00FF9D; background:rgba(5,8,18,0.6);">📸 CAPTURA HD</button>
   </div>
  
   <!-- ═══════════════════════════════════════════════════════════════
@@ -326,6 +347,7 @@
       <div class="fusion-slot" id="slot-b">—</div>
       <span class="fusion-plus">→</span>
       <button class="fusion-btn" id="btn-fuse">⚡ FUSE</button>
+      <button class="fusion-btn" id="btn-random" style="border-color:rgba(191,0,255,0.3); background:rgba(191,0,255,0.1); color:#BF00FF;">🔀 RANDOM</button>
       <button class="fusion-btn-clear" id="btn-clear">✕ CLEAR</button>
     </div>
   </div>
