@@ -1968,6 +1968,19 @@
     return suggestions.slice(0, 5);
   }
 
+  function calculateGibbsFreeEnergy(deltaH, deltaS, tempK) {
+    const dH = typeof deltaH === 'number' ? deltaH : -240.0;
+    const dS = typeof deltaS === 'number' ? deltaS : -110.0;
+    const tK = tempK || temperatureK || 298;
+
+    const deltaG = dH - (tK * (dS / 1000.0));
+    const isSpontaneous = deltaG < 0;
+    const statusLabel = isSpontaneous ? 'SPONTANEOUS (FAVORABLE)' : 'ENDERGONIC (HIGH ENERGY INPUT)';
+    const colorHex = isSpontaneous ? '#00FF9D' : '#FF0055';
+
+    return { deltaG: parseFloat(deltaG.toFixed(1)), isSpontaneous, statusLabel, colorHex };
+  }
+
   function updateTelemetry(name, formula, cls, bonds, epi, enthalpy, dipole, stability, note) {
     if (hudName) hudName.textContent = name || '—';
     if (hudFormula) hudFormula.textContent = formula || '—';
@@ -1977,8 +1990,17 @@
 
     if (hudEnthalpy) hudEnthalpy.textContent = enthalpy !== undefined ? (typeof enthalpy === 'number' ? `${enthalpy} kJ/mol` : enthalpy) : '—';
     if (hudDipole) hudDipole.textContent = dipole !== undefined ? (typeof dipole === 'number' ? `${dipole} Debye` : dipole) : '—';
-    if (hudStability) hudStability.textContent = stability !== undefined ? (typeof stability === 'number' ? `${stability}%` : stability) : '95.0%';
-    if (hudNote) hudNote.textContent = note || 'Stable chemical configuration.';
+    
+    // Calculate Gibbs Free Energy Spontaneity (ΔG = ΔH - TΔS)
+    const gibbs = calculateGibbsFreeEnergy(enthalpy, -110.0, temperatureK);
+    if (hudStability) {
+      const isNum = typeof stability === 'number';
+      const stabVal = isNum ? `${stability}%` : (stability || '95.0%');
+      hudStability.textContent = `${stabVal} | ΔG: ${gibbs.deltaG} kJ/mol [${gibbs.isSpontaneous ? 'FAVORABLE' : 'UNFAVORABLE'}]`;
+      hudStability.style.color = gibbs.colorHex;
+    }
+
+    if (hudNote) hudNote.textContent = note || `Thermodynamic State: ${gibbs.statusLabel}`;
 
     // Calculate spectroscopy photon data
     const spec = calculateSpectroscopyData(formula || name || '', cls || '');

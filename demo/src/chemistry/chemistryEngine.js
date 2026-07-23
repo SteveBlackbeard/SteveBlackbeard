@@ -27,6 +27,20 @@ export function calculateThermodynamicStability(zA, zB) {
   };
 }
 
+export function calculateGibbsFreeEnergy(deltaH = -250, deltaS = -120, tempK = 298) {
+  const deltaG = deltaH - (tempK * (deltaS / 1000.0));
+  const isSpontaneous = deltaG < 0;
+  const statusLabel = isSpontaneous ? 'SPONTANEOUS (FAVORABLE)' : 'NON-SPONTANEOUS (ENDERGONIC)';
+  const colorHex = isSpontaneous ? '#00FF9D' : '#FF0055';
+  
+  return {
+    deltaG: parseFloat(deltaG.toFixed(1)),
+    isSpontaneous,
+    statusLabel,
+    colorHex
+  };
+}
+
 export function calculateSpectroscopyData(formula, bondType) {
   let lambdaMax = 220;
   let colorHex = '#00F0FF';
