@@ -470,39 +470,33 @@
     
     if (materialCache[key]) return materialCache[key];
 
-    let metalness = 0.1;
-    let roughness = 0.35;
-    let clearcoat = 0.5;
-    let clearcoatRoughness = 0.08;
-    let transmission = 0.0;
-    let transparent = false;
-    let opacity = 1.0;
+    // High-Vibrancy Cyberpunk Glassmorphic PBR
+    let metalness = 0.2;
+    let roughness = 0.08;
+    let clearcoat = 1.0;
+    let clearcoatRoughness = 0.02;
+    let reflectance = 0.9;
 
     if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide')) {
-      // High Metallic Reflective Polish (Metals)
-      metalness = 0.85;
-      roughness = 0.16;
-      clearcoat = 1.0;
-      clearcoatRoughness = 0.04;
-    } else if (cat.includes('noble')) {
-      // Translucent Plasma Bubble (Noble Gases)
-      metalness = 0.0;
-      roughness = 0.05;
-      transmission = 0.80;
-      transparent = true;
-      opacity = 0.75;
-    } else if (cat.includes('metalloid')) {
-      // Semiconductor Crystalline Polish
       metalness = 0.45;
-      roughness = 0.22;
-      clearcoat = 0.8;
-      clearcoatRoughness = 0.06;
+      roughness = 0.06;
+      clearcoat = 1.0;
+      clearcoatRoughness = 0.01;
+    } else if (cat.includes('noble')) {
+      metalness = 0.15;
+      roughness = 0.02;
+      clearcoat = 1.0;
+      clearcoatRoughness = 0.01;
+    } else if (cat.includes('metalloid')) {
+      metalness = 0.35;
+      roughness = 0.08;
+      clearcoat = 1.0;
+      clearcoatRoughness = 0.02;
     } else if (cat.includes('halogen') || cat.includes('nonmetal')) {
-      // Organic Satin Matte (Nonmetals)
-      metalness = 0.05;
-      roughness = 0.45;
-      clearcoat = 0.3;
-      clearcoatRoughness = 0.15;
+      metalness = 0.15;
+      roughness = 0.10;
+      clearcoat = 1.0;
+      clearcoatRoughness = 0.03;
     }
 
     materialCache[key] = new THREE.MeshPhysicalMaterial({
@@ -511,9 +505,7 @@
       roughness,
       clearcoat,
       clearcoatRoughness,
-      transmission,
-      transparent,
-      opacity
+      reflectance
     });
     return materialCache[key];
   }
