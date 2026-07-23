@@ -1810,7 +1810,7 @@
     }
 
     updateTelemetry(
-      `Compound: ${pred.formulaStr}`,
+      `${nameCat} ${nameAni} (${pred.formulaStr})`,
       `${nameCat} + ${nameAni} Stoichiometry`,
       `Geometry: ${shapeName}`,
       `Valence Engine Bond Arrangement`,
