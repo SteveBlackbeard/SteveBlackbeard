@@ -547,8 +547,9 @@
 
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
-    // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
-    // Fade out existing atoms that aren't needed
+    const isInitialLoad = (activeAtoms.length === 0);
+    const delay = isInitialLoad ? 0 : 100;
+
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
     activeBonds.forEach(b => { b.removing = true; });
 
@@ -574,7 +575,7 @@
       const groups = {};
       atomList.forEach(item => {
         const elData = EL[item.z] || EL[1];
-        const colorHex = item.col !== undefined ? item.col : elData.col;
+        const colorHex = item.col !== undefined ? item.col : (elData ? elData.col : 0x00F0FF);
         const key = `${item.z}_${colorHex}`;
         if (!groups[key]) {
           groups[key] = {
@@ -616,33 +617,41 @@
 
         grp.items.forEach((item, idx) => {
           const elData = EL[item.z] || EL[1];
-          const start = item.startPos ? item.startPos.clone() : new THREE.Vector3(
+          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData ? (elData.r || 1.0) : 1.0) * 0.4);
+          
+          const start = isInitialLoad ? item.pos.clone() : (item.startPos ? item.startPos.clone() : new THREE.Vector3(
             (Math.random()-0.5) * 60,
             (Math.random()-0.5) * 40,
             (Math.random()-0.5) * 30
-          );
-          
+          ));
+          const initScale = isInitialLoad ? scale : 0.01;
+
           let labelSprite = null;
           // Show label if <= 15 atoms OR if this is the single central atom of a dense lattice
           const showLabel = !isDnaMode && !item.noLabel && (!isDenseLattice || item === centralAtomItem);
           if (showLabel) {
             const spriteColor = '#' + grp.col.toString(16).padStart(6, '0');
-            labelSprite = createTextSprite(elData.s, spriteColor);
+            labelSprite = createTextSprite(elData ? elData.s : 'X', spriteColor);
             labelSprite.position.copy(start);
-            labelSprite.scale.setScalar(0.01);
+            labelSprite.scale.setScalar(initScale * 3.8);
             moleculeGroup.add(labelSprite);
           }
 
-          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
+          // InstancedMesh initial matrix positioning
+          const dummy = new THREE.Object3D();
+          dummy.position.copy(start);
+          dummy.scale.setScalar(initScale);
+          dummy.updateMatrix();
+          instMesh.setMatrixAt(idx, dummy.matrix);
 
           activeAtoms.push({
             currentPos: start.clone(),
             targetPos: item.pos.clone(),
-            currentScale: 0.01,
+            currentScale: initScale,
             targetScale: scale,
             z: item.z,
             col: grp.col,
-            elData,
+            elData: elData || { s:'X', n:'Element', m:1, cat:'Unknown', sh:'' },
             isElectron: item.isElectron || false,
             noLabel: item.noLabel || false,
             labelSprite,
@@ -659,12 +668,14 @@
             removing: false
           });
         });
+
+        instMesh.instanceMatrix.needsUpdate = true;
       });
 
       // Add orbit ring lines for noble gas shells
       atomList.forEach(item => {
         const elData = EL[item.z] || EL[1];
-        const symbol = elData.s;
+        const symbol = elData ? elData.s : '';
         if (symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn') {
           if (!item.isElectron) {
             const electrons = Math.min(item.z, 20);
@@ -705,12 +716,12 @@
             const start = activeAtoms[i].targetPos;
             const end = activeAtoms[j].targetPos;
             const dist = start.distanceTo(end);
-            const r1 = activeAtoms[i].elData.r || 1.0;
-            const r2 = activeAtoms[j].elData.r || 1.0;
+            const r1 = (activeAtoms[i].elData && activeAtoms[i].elData.r) || 1.0;
+            const r2 = (activeAtoms[j].elData && activeAtoms[j].elData.r) || 1.0;
             let maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
             
-            const sym1 = activeAtoms[i].elData.s;
-            const sym2 = activeAtoms[j].elData.s;
+            const sym1 = activeAtoms[i].elData ? activeAtoms[i].elData.s : '';
+            const sym2 = activeAtoms[j].elData ? activeAtoms[j].elData.s : '';
             if (sym1 === sym2) {
               if (sym1 === 'Po') maxBondDist = 12.0;
               else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(sym1)) maxBondDist = 13.0;
@@ -730,7 +741,7 @@
       }
 
       if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
-    }, 300);
+    }, delay);
   }
 
   // Spawn chemical bonds using a single InstancedMesh
