@@ -6,6 +6,7 @@
   const canvas = document.getElementById('webgl-canvas');
   const fpsVal = document.getElementById('fps-val');
 
+  const topBanner = document.getElementById('active-synthesis-banner');
   const hudPanel = document.getElementById('molecular-hud');
   const hudName = document.getElementById('hud-name');
   const hudFormula = document.getElementById('hud-formula');
@@ -1912,6 +1913,10 @@
     if (hudClass) hudClass.textContent = cls;
     if (hudBonds) hudBonds.textContent = bonds;
     if (hudEpi) hudEpi.textContent = epi;
+
+    if (topBanner && name) {
+      topBanner.textContent = String(name).toUpperCase();
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════
