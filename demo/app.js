@@ -3299,12 +3299,14 @@
 
     moleculeGroup.rotation.x = curRotX;
     moleculeGroup.rotation.y = curRotY + t * 0.3;
-    } catch (renderErr) {
-      console.warn('Fail-Safe Render Guard caught exception:', renderErr);
-    }
 
-    renderer.render(scene, camera);
+    if (renderer && scene && camera) {
+      renderer.render(scene, camera);
+    }
+  } catch (renderErr) {
+    console.warn('Fail-Safe Render Guard caught exception:', renderErr);
   }
+}
 
   // URL Query Parameters Auto-Loader (e.g. ?z=79 or ?fuse=C+F)
   const urlParams = new URLSearchParams(window.location.search);
