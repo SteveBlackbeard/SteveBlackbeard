@@ -6,7 +6,6 @@
   const canvas = document.getElementById('webgl-canvas');
   const fpsVal = document.getElementById('fps-val');
 
-  const topBanner = document.getElementById('active-synthesis-banner');
   const hudPanel = document.getElementById('molecular-hud');
   const hudName = document.getElementById('hud-name');
   const hudFormula = document.getElementById('hud-formula');
@@ -21,16 +20,10 @@
 
   const ptHudPanel = document.getElementById('pt-hud-panel');
 
-  const slots = [
-    document.getElementById('slot-0'),
-    document.getElementById('slot-1'),
-    document.getElementById('slot-2'),
-    document.getElementById('slot-3'),
-    document.getElementById('slot-4')
-  ];
+  const slotA = document.getElementById('slot-a');
+  const slotB = document.getElementById('slot-b');
   const btnFuse = document.getElementById('btn-fuse');
   const btnRandom = document.getElementById('btn-random');
-  const btnUndo = document.getElementById('btn-undo');
   const btnClear = document.getElementById('btn-clear');
   const atomCountEl = document.getElementById('atom-count');
 
@@ -268,41 +261,25 @@
 
   // ═══════════════════════════════════════════════════════════════
   // WEBGL 3D SETUP
-  if (!canvas) {
-    console.error("Canvas element #webgl-canvas not found in document!");
-  }
-
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+  // ═══════════════════════════════════════════════════════════════
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference:'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x020306);
-  scene.fog = new THREE.FogExp2(0x020306, 0.0015);
+  scene.fog = new THREE.FogExp2(0x020306, 0.002);
 
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 75);
-  camera.lookAt(0, 0, 0);
 
-  // Studio Lighting (3-Point + Hemisphere)
-  const keyLight = new THREE.DirectionalLight(0x00F0FF, 2.2);
-  keyLight.position.set(50, 60, 50);
-  scene.add(keyLight);
-
-  const fillLight = new THREE.DirectionalLight(0xFFFFFF, 1.2);
-  fillLight.position.set(-40, 30, 40);
-  scene.add(fillLight);
-
-  const rimLight = new THREE.DirectionalLight(0x8A2BE2, 1.6);
+  // Studio Lighting (3-Point)
+  scene.add(new THREE.DirectionalLight(0x00F0FF, 2.0).translateX(50).translateY(60).translateZ(50));
+  const rimLight = new THREE.DirectionalLight(0x8A2BE2, 1.4);
   rimLight.position.set(-50, -40, -30);
   scene.add(rimLight);
-
-  const hemiLight = new THREE.HemisphereLight(0x00F0FF, 0x112233, 0.85);
-  scene.add(hemiLight);
-
-  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.85));
+  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.75));
 
   // ═══════════════════════════════════════════════════════════════
   // DYNAMIC ATOM POOL - Spawn/Despawn with Superfluid Transitions
@@ -487,9 +464,9 @@
 
   const materialCache = {};
   function getMaterialForElement(elData, overrideCol) {
-    const col = overrideCol !== undefined ? overrideCol : (elData ? elData.col : 0x00F0FF);
-    const cat = (elData && elData.cat) ? String(elData.cat).toLowerCase() : '';
-    const key = `${elData ? elData.z : 1}_${col}_${cat}`;
+    const col = overrideCol !== undefined ? overrideCol : elData.col;
+    const cat = elData.cat ? elData.cat.toLowerCase() : '';
+    const key = `${elData.z}_${col}_${cat}`;
     
     if (materialCache[key]) return materialCache[key];
 
@@ -498,8 +475,9 @@
     let roughness = 0.08;
     let clearcoat = 1.0;
     let clearcoatRoughness = 0.02;
+    let reflectance = 0.9;
 
-    if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide') || cat.includes('metal')) {
+    if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide')) {
       metalness = 0.45;
       roughness = 0.06;
       clearcoat = 1.0;
@@ -521,10 +499,13 @@
       clearcoatRoughness = 0.03;
     }
 
-    materialCache[key] = new THREE.MeshStandardMaterial({
+    materialCache[key] = new THREE.MeshPhysicalMaterial({
       color: col,
-      metalness: metalness,
-      roughness: roughness
+      metalness,
+      roughness,
+      clearcoat,
+      clearcoatRoughness,
+      reflectance
     });
     return materialCache[key];
   }
@@ -554,12 +535,12 @@
 
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
-    const isInitialLoad = (activeAtoms.length === 0);
-
+    // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
+    // Fade out existing atoms that aren't needed
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
     activeBonds.forEach(b => { b.removing = true; });
 
-    const doSpawn = () => {
+    setTimeout(() => {
       // Remove old atoms and their labels
       activeAtoms.filter(a => a.removing).forEach(a => {
         if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
@@ -581,7 +562,7 @@
       const groups = {};
       atomList.forEach(item => {
         const elData = EL[item.z] || EL[1];
-        const colorHex = item.col !== undefined ? item.col : (elData ? elData.col : 0x00F0FF);
+        const colorHex = item.col !== undefined ? item.col : elData.col;
         const key = `${item.z}_${colorHex}`;
         if (!groups[key]) {
           groups[key] = {
@@ -623,37 +604,33 @@
 
         grp.items.forEach((item, idx) => {
           const elData = EL[item.z] || EL[1];
-          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData ? (elData.r || 1.0) : 1.0) * 0.4);
+          const start = item.startPos ? item.startPos.clone() : new THREE.Vector3(
+            (Math.random()-0.5) * 60,
+            (Math.random()-0.5) * 40,
+            (Math.random()-0.5) * 30
+          );
           
-          const start = item.pos.clone();
-          const initScale = isInitialLoad ? scale : 0.01;
-
           let labelSprite = null;
           // Show label if <= 15 atoms OR if this is the single central atom of a dense lattice
           const showLabel = !isDnaMode && !item.noLabel && (!isDenseLattice || item === centralAtomItem);
           if (showLabel) {
             const spriteColor = '#' + grp.col.toString(16).padStart(6, '0');
-            labelSprite = createTextSprite(elData ? elData.s : 'X', spriteColor);
+            labelSprite = createTextSprite(elData.s, spriteColor);
             labelSprite.position.copy(start);
-            labelSprite.scale.setScalar(initScale * 3.8);
+            labelSprite.scale.setScalar(0.01);
             moleculeGroup.add(labelSprite);
           }
 
-          // InstancedMesh initial matrix positioning
-          const dummy = new THREE.Object3D();
-          dummy.position.copy(start);
-          dummy.scale.setScalar(initScale);
-          dummy.updateMatrix();
-          instMesh.setMatrixAt(idx, dummy.matrix);
+          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
 
           activeAtoms.push({
             currentPos: start.clone(),
             targetPos: item.pos.clone(),
-            currentScale: initScale,
+            currentScale: 0.01,
             targetScale: scale,
             z: item.z,
             col: grp.col,
-            elData: elData || { s:'X', n:'Element', m:1, cat:'Unknown', sh:'' },
+            elData,
             isElectron: item.isElectron || false,
             noLabel: item.noLabel || false,
             labelSprite,
@@ -670,14 +647,12 @@
             removing: false
           });
         });
-
-        instMesh.instanceMatrix.needsUpdate = true;
       });
 
       // Add orbit ring lines for noble gas shells
       atomList.forEach(item => {
         const elData = EL[item.z] || EL[1];
-        const symbol = elData ? elData.s : '';
+        const symbol = elData.s;
         if (symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn') {
           if (!item.isElectron) {
             const electrons = Math.min(item.z, 20);
@@ -718,12 +693,12 @@
             const start = activeAtoms[i].targetPos;
             const end = activeAtoms[j].targetPos;
             const dist = start.distanceTo(end);
-            const r1 = (activeAtoms[i].elData && activeAtoms[i].elData.r) || 1.0;
-            const r2 = (activeAtoms[j].elData && activeAtoms[j].elData.r) || 1.0;
+            const r1 = activeAtoms[i].elData.r || 1.0;
+            const r2 = activeAtoms[j].elData.r || 1.0;
             let maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
             
-            const sym1 = activeAtoms[i].elData ? activeAtoms[i].elData.s : '';
-            const sym2 = activeAtoms[j].elData ? activeAtoms[j].elData.s : '';
+            const sym1 = activeAtoms[i].elData.s;
+            const sym2 = activeAtoms[j].elData.s;
             if (sym1 === sym2) {
               if (sym1 === 'Po') maxBondDist = 12.0;
               else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(sym1)) maxBondDist = 13.0;
@@ -743,13 +718,7 @@
       }
 
       if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
-    };
-
-    if (isInitialLoad) {
-      doSpawn();
-    } else {
-      setTimeout(doSpawn, 100);
-    }
+    }, 300);
   }
 
   // Spawn chemical bonds using a single InstancedMesh
@@ -1591,29 +1560,6 @@
     return atoms;
   }
 
-  function formCompound(rx) {
-    isDnaMode = false;
-    const atoms = [];
-    if (rx && rx.atoms) {
-      rx.atoms.forEach((item, itemIdx) => {
-        const count = item.c || item.count || 1;
-        const spacing = 8.0;
-        const offsetVec = new THREE.Vector3((itemIdx - (rx.atoms.length - 1) * 0.5) * spacing * 1.5, 0, 0);
-        const elAtoms = getElementAtoms(item.z, offsetVec);
-        atoms.push(...elAtoms);
-      });
-    }
-    spawnAtoms(atoms);
-
-    updateTelemetry(
-      rx.name || 'Synthesized Compound',
-      rx.formula || 'Chemical Product',
-      rx.type || 'Chemical Compound',
-      rx.bonds || 'Covalent/Ionic Bonds',
-      `State: [SYNTHESIZED: ${rx.formula || 'PRODUCT'}]`
-    );
-  }
-
   // ═══════════════════════════════════════════════════════════════
   // UNSTABLE SUPERHEAVY FISSION DECAY EVENT (Z > 118)
   // ═══════════════════════════════════════════════════════════════
@@ -1913,10 +1859,6 @@
     if (hudClass) hudClass.textContent = cls;
     if (hudBonds) hudBonds.textContent = bonds;
     if (hudEpi) hudEpi.textContent = epi;
-
-    if (topBanner && name) {
-      topBanner.textContent = String(name).toUpperCase();
-    }
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -1953,32 +1895,11 @@
     isDnaMode = false;
     const atoms = [];
     const count = selectedReactants.length;
-
-    // Wide horizontal separation (56+ units clearance) to eliminate any cluster overlap
-    const offsets = [];
-    if (count === 2) {
-      offsets.push(new THREE.Vector3(-28.0, 0, 0));
-      offsets.push(new THREE.Vector3(28.0, 0, 0));
-    } else if (count === 3) {
-      offsets.push(new THREE.Vector3(-32.0, -6.0, 0));
-      offsets.push(new THREE.Vector3(0, 16.0, 0));
-      offsets.push(new THREE.Vector3(32.0, -6.0, 0));
-    } else if (count === 4) {
-      offsets.push(new THREE.Vector3(-36.0, -8.0, 0));
-      offsets.push(new THREE.Vector3(-14.0, 14.0, 0));
-      offsets.push(new THREE.Vector3(14.0, 14.0, 0));
-      offsets.push(new THREE.Vector3(36.0, -8.0, 0));
-    } else {
-      offsets.push(new THREE.Vector3(-40.0, -10.0, 0));
-      offsets.push(new THREE.Vector3(-20.0, 12.0, 0));
-      offsets.push(new THREE.Vector3(0, -6.0, 0));
-      offsets.push(new THREE.Vector3(20.0, 12.0, 0));
-      offsets.push(new THREE.Vector3(40.0, -10.0, 0));
-    }
+    const spacing = 12.0;
 
     selectedReactants.forEach((r, idx) => {
-      const offset = offsets[idx] || new THREE.Vector3((idx - (count - 1) * 0.5) * 26.0, 0, 0);
-      const elAtoms = getElementAtoms(r.z, offset);
+      const posX = (idx - (count - 1) * 0.5) * spacing;
+      const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, 0, 0));
       atoms.push(...elAtoms);
     });
 
@@ -1990,7 +1911,7 @@
       symbolsStr,
       `State: ACTIVE INJECTION TRAY`,
       `Ready for Collision (Click ⚡ FUSE ALL)`,
-      `Wide Horizontal 3D Quantum Separation`
+      `Side-by-Side 3D Quantum Alignment`
     );
   }
 
@@ -2054,28 +1975,9 @@
       isDnaMode = false;
       
       const atoms = [];
-      const count = selectedReactants.length;
-      const offsets = [];
-      if (count === 3) {
-        offsets.push(new THREE.Vector3(-32.0, -6.0, 0));
-        offsets.push(new THREE.Vector3(0, 16.0, 0));
-        offsets.push(new THREE.Vector3(32.0, -6.0, 0));
-      } else if (count === 4) {
-        offsets.push(new THREE.Vector3(-36.0, -8.0, 0));
-        offsets.push(new THREE.Vector3(-14.0, 14.0, 0));
-        offsets.push(new THREE.Vector3(14.0, 14.0, 0));
-        offsets.push(new THREE.Vector3(36.0, -8.0, 0));
-      } else {
-        offsets.push(new THREE.Vector3(-40.0, -10.0, 0));
-        offsets.push(new THREE.Vector3(-20.0, 12.0, 0));
-        offsets.push(new THREE.Vector3(0, -6.0, 0));
-        offsets.push(new THREE.Vector3(20.0, 12.0, 0));
-        offsets.push(new THREE.Vector3(40.0, -10.0, 0));
-      }
-
       selectedReactants.forEach((r, idx) => {
-        const offset = offsets[idx] || new THREE.Vector3((idx - (count - 1) * 0.5) * 26.0, 0, 0);
-        const elAtoms = getElementAtoms(r.z, offset);
+        const posX = (idx - (selectedReactants.length - 1) * 0.5) * 16.0;
+        const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, 0, 0));
         atoms.push(...elAtoms);
       });
 
@@ -2104,7 +2006,7 @@
       updateTelemetry(
         `Multi-Fusion Acceleration (${selectedReactants.length} Elements)`,
         selectedReactants.map(r => r.sym).join(' + '),
-        `Collision State: CONVERGING RADIANTS TO CENTROID`,
+        `Collision State: CONVERGING TO CENTROID`,
         `Engaging Quantum Shockwave Generator`,
         `Synthesizing Multi-Element Complex`
       );
@@ -2613,9 +2515,4 @@
   }
 
   requestAnimationFrame(animate);
-
-  console.log("⚡ NULLA-LABS IUPAC 3D Engine Initialized");
-  console.log("Three.js Revision:", typeof THREE !== 'undefined' ? THREE.REVISION : 'MISSING');
-  console.log("Scene Children:", (scene && scene.children) ? scene.children.length : 0);
-  console.log("Active Atoms Loaded:", activeAtoms ? activeAtoms.length : 0);
 })();
