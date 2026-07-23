@@ -3028,12 +3028,7 @@
 
       const t = now * 0.001;
 
-      // Fail-Safe: Ensure activeAtoms is never empty or stuck
-      if (activeAtoms.length === 0 && fusionState === 'idle') {
-        buildDNA();
-      }
-
-    // Superfluid atom morphing & dynamic behaviors
+      // Superfluid atom morphing & dynamic behaviors
     const dummy = new THREE.Object3D();
     const instUpdateList = new Set();
 
