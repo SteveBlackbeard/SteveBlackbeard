@@ -117,7 +117,7 @@
 
 ---
 
-### 🛠️ Core Technical Arsenal // 3D Animated Obsidian Badges
+### 🛠️ Core Technical Arsenal //
 
 <div align="center">
   <!-- Languages & Compute -->
@@ -172,7 +172,6 @@
 
 <div align="center">
   <br />
-  <code>NULLA-LABS // SENESCHAL COMPANION & INVICTVS PARTICLE ENGINE ACTIVE</code>
   <br/><br/>
   <sub>⚡ Powered by <strong>Nulla Labs</strong> • I+D and Innovations</sub>
 </div>
