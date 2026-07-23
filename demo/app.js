@@ -463,16 +463,59 @@
   }
 
   const materialCache = {};
-  function getMaterial(colorHex) {
-    if (materialCache[colorHex]) return materialCache[colorHex];
-    materialCache[colorHex] = new THREE.MeshPhysicalMaterial({
-      color: colorHex,
-      roughness: 0.1,
-      metalness: 0.1,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.04
+  function getMaterialForElement(elData, overrideCol) {
+    const col = overrideCol !== undefined ? overrideCol : elData.col;
+    const cat = elData.cat ? elData.cat.toLowerCase() : '';
+    const key = `${elData.z}_${col}_${cat}`;
+    
+    if (materialCache[key]) return materialCache[key];
+
+    let metalness = 0.1;
+    let roughness = 0.35;
+    let clearcoat = 0.5;
+    let clearcoatRoughness = 0.08;
+    let transmission = 0.0;
+    let transparent = false;
+    let opacity = 1.0;
+
+    if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide')) {
+      // High Metallic Reflective Polish (Metals)
+      metalness = 0.85;
+      roughness = 0.16;
+      clearcoat = 1.0;
+      clearcoatRoughness = 0.04;
+    } else if (cat.includes('noble')) {
+      // Translucent Plasma Bubble (Noble Gases)
+      metalness = 0.0;
+      roughness = 0.05;
+      transmission = 0.80;
+      transparent = true;
+      opacity = 0.75;
+    } else if (cat.includes('metalloid')) {
+      // Semiconductor Crystalline Polish
+      metalness = 0.45;
+      roughness = 0.22;
+      clearcoat = 0.8;
+      clearcoatRoughness = 0.06;
+    } else if (cat.includes('halogen') || cat.includes('nonmetal')) {
+      // Organic Satin Matte (Nonmetals)
+      metalness = 0.05;
+      roughness = 0.45;
+      clearcoat = 0.3;
+      clearcoatRoughness = 0.15;
+    }
+
+    materialCache[key] = new THREE.MeshPhysicalMaterial({
+      color: col,
+      metalness,
+      roughness,
+      clearcoat,
+      clearcoatRoughness,
+      transmission,
+      transparent,
+      opacity
     });
-    return materialCache[colorHex];
+    return materialCache[key];
   }
 
   // Create high-fidelity floating 3D text labels for elements
@@ -557,7 +600,8 @@
       Object.keys(groups).forEach(key => {
         const grp = groups[key];
         const count = grp.items.length;
-        const mat = getMaterial(grp.col);
+        const elData = EL[grp.z] || EL[1];
+        const mat = getMaterialForElement(elData, grp.col);
         const instMesh = new THREE.InstancedMesh(sphereGeo, mat, count);
         instMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
         moleculeGroup.add(instMesh);
