@@ -1952,11 +1952,13 @@
     isDnaMode = false;
     const atoms = [];
     const count = selectedReactants.length;
-    const spacing = 12.0;
+    const radius = count <= 3 ? 15.0 : 18.0;
 
     selectedReactants.forEach((r, idx) => {
-      const posX = (idx - (count - 1) * 0.5) * spacing;
-      const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, 0, 0));
+      const angle = (idx / count) * Math.PI * 2 - Math.PI * 0.5;
+      const posX = Math.cos(angle) * radius;
+      const posY = Math.sin(angle) * radius;
+      const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, posY, 0));
       atoms.push(...elAtoms);
     });
 
@@ -1968,7 +1970,7 @@
       symbolsStr,
       `State: ACTIVE INJECTION TRAY`,
       `Ready for Collision (Click ⚡ FUSE ALL)`,
-      `Side-by-Side 3D Quantum Alignment`
+      `Circular 3D Quantum Ring Orbit`
     );
   }
 
@@ -2032,9 +2034,14 @@
       isDnaMode = false;
       
       const atoms = [];
+      const count = selectedReactants.length;
+      const radius = count <= 3 ? 16.0 : 20.0;
+
       selectedReactants.forEach((r, idx) => {
-        const posX = (idx - (selectedReactants.length - 1) * 0.5) * 16.0;
-        const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, 0, 0));
+        const angle = (idx / count) * Math.PI * 2 - Math.PI * 0.5;
+        const posX = Math.cos(angle) * radius;
+        const posY = Math.sin(angle) * radius;
+        const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, posY, 0));
         atoms.push(...elAtoms);
       });
 
@@ -2063,7 +2070,7 @@
       updateTelemetry(
         `Multi-Fusion Acceleration (${selectedReactants.length} Elements)`,
         selectedReactants.map(r => r.sym).join(' + '),
-        `Collision State: CONVERGING TO CENTROID`,
+        `Collision State: CONVERGING RADIANTS TO CENTROID`,
         `Engaging Quantum Shockwave Generator`,
         `Synthesizing Multi-Element Complex`
       );
