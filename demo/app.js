@@ -2998,21 +2998,34 @@
   });
 
   // ═══════════════════════════════════════════════════════════════
-  // RENDER LOOP — Superfluid Transitions
+  // RENDER LOOP — Superfluid Transitions & Fail-Safe Guard Engine
   // ═══════════════════════════════════════════════════════════════
   let frameCount = 0, lastTime = performance.now();
+
+  function sanitizeVector(v) {
+    if (!v) return;
+    if (isNaN(v.x) || !isFinite(v.x)) v.x = 0;
+    if (isNaN(v.y) || !isFinite(v.y)) v.y = 0;
+    if (isNaN(v.z) || !isFinite(v.z)) v.z = 0;
+  }
 
   function animate(now) {
     requestAnimationFrame(animate);
 
-    frameCount++;
-    if (now - lastTime >= 1000) {
-      if (fpsVal) fpsVal.textContent = frameCount + ' FPS';
-      frameCount = 0;
-      lastTime = now;
-    }
+    try {
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        if (fpsVal) fpsVal.textContent = frameCount + ' FPS';
+        frameCount = 0;
+        lastTime = now;
+      }
 
-    const t = now * 0.001;
+      const t = now * 0.001;
+
+      // Fail-Safe: Ensure activeAtoms is never empty or stuck
+      if (activeAtoms.length === 0 && fusionState === 'idle') {
+        buildDNA();
+      }
 
     // Superfluid atom morphing & dynamic behaviors
     const dummy = new THREE.Object3D();
@@ -3283,11 +3296,11 @@
       selectRing.rotation.y = t * 3.5;
     }
 
-    curRotX += (targetRotX - curRotX) * 0.08;
-    curRotY += (targetRotY - curRotY) * 0.08;
-
     moleculeGroup.rotation.x = curRotX;
     moleculeGroup.rotation.y = curRotY + t * 0.3;
+    } catch (renderErr) {
+      console.warn('Fail-Safe Render Guard caught exception:', renderErr);
+    }
 
     renderer.render(scene, camera);
   }
