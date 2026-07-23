@@ -1867,152 +1867,6 @@
   let selectedSlotA = null;
   let selectedSlotB = null;
 
-  // ═══════════════════════════════════════════════════════════════
-  // MULTI-ELEMENT REACTANT TRAY MANAGER (2 to 5 Elements)
-  // ═══════════════════════════════════════════════════════════════
-  let selectedReactants = [];
-  const MAX_REACTANTS = 5;
-
-  function updateReactantsTrayHUD() {
-    for (let i = 0; i < 5; i++) {
-      if (slots[i]) {
-        if (i < selectedReactants.length) {
-          slots[i].textContent = selectedReactants[i].sym;
-          const el = EL[selectedReactants[i].z];
-          const colorStr = '#' + (el ? el.col : 0x00F0FF).toString(16).padStart(6, '0');
-          slots[i].style.color = colorStr;
-        } else {
-          slots[i].textContent = '—';
-          slots[i].style.color = '#00F0FF';
-        }
-      }
-    }
-  }
-
-  function renderSideBySidePreviewAtoms() {
-    if (selectedReactants.length === 0) return;
-    
-    isDnaMode = false;
-    const atoms = [];
-    const count = selectedReactants.length;
-    const spacing = 12.0;
-
-    selectedReactants.forEach((r, idx) => {
-      const posX = (idx - (count - 1) * 0.5) * spacing;
-      const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, 0, 0));
-      atoms.push(...elAtoms);
-    });
-
-    spawnAtoms(atoms);
-
-    const symbolsStr = selectedReactants.map(r => r.sym).join(' + ');
-    updateTelemetry(
-      `Multi-Reactant Tray (${count}/${MAX_REACTANTS})`,
-      symbolsStr,
-      `State: ACTIVE INJECTION TRAY`,
-      `Ready for Collision (Click ⚡ FUSE ALL)`,
-      `Side-by-Side 3D Quantum Alignment`
-    );
-  }
-
-  function selectElementForTray(z) {
-    playTone(400 + selectedReactants.length * 80, 'sine', 0.12);
-    if (selectedReactants.length >= MAX_REACTANTS) {
-      updateTelemetry(
-        `Tray Maximum Reached (5/5)`,
-        `Multi-body quantum kinetics capped at 5 elements`,
-        `Reaction State: TRAY FULL`,
-        `Click ⚡ FUSE ALL or ↩ UNDO`,
-        `Multi-body collision limit enforced`
-      );
-      return;
-    }
-
-    const sym = EL[z]?.s || 'X';
-    selectedReactants.push({ z, sym });
-    updateReactantsTrayHUD();
-
-    if (selectedReactants.length === 1) {
-      formElement(z);
-    } else {
-      renderSideBySidePreviewAtoms();
-    }
-  }
-
-  function undoLastReactant() {
-    playTone(300, 'triangle', 0.1);
-    if (selectedReactants.length > 0) {
-      selectedReactants.pop();
-      updateReactantsTrayHUD();
-      if (selectedReactants.length === 1) {
-        formElement(selectedReactants[0].z);
-      } else if (selectedReactants.length > 1) {
-        renderSideBySidePreviewAtoms();
-      } else {
-        buildDNA();
-      }
-    }
-  }
-
-  function clearReactantTray() {
-    playTone(200, 'sawtooth', 0.15);
-    selectedReactants = [];
-    updateReactantsTrayHUD();
-  }
-
-  function attemptMultiFusion() {
-    if (selectedReactants.length < 2) return;
-
-    playTone(600, 'triangle', 0.2);
-    const sortedSymbols = selectedReactants.map(r => r.sym).sort().join('+');
-    const directSymbols = selectedReactants.map(r => r.sym).join('+');
-
-    const reaction = REACTIONS[sortedSymbols] || REACTIONS[directSymbols];
-
-    if (selectedReactants.length === 2) {
-      triggerFusionCollision(selectedReactants[0].z, selectedReactants[1].z, reaction);
-    } else {
-      isDnaMode = false;
-      
-      const atoms = [];
-      selectedReactants.forEach((r, idx) => {
-        const posX = (idx - (selectedReactants.length - 1) * 0.5) * 16.0;
-        const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, 0, 0));
-        atoms.push(...elAtoms);
-      });
-
-      spawnAtoms(atoms);
-
-      fusionState = 'charging';
-      fusionTimer = 55;
-      fusionReactantA = selectedReactants[0].z;
-      fusionReactantB = selectedReactants[1].z;
-
-      if (reaction) {
-        fusionTargetReaction = reaction;
-      } else {
-        const cationR = selectedReactants.find(r => !['O','F','Cl','Br','I','S','N'].includes(r.sym)) || selectedReactants[0];
-        const anionR = selectedReactants.find(r => ['O','F','Cl','Br','I','S','N'].includes(r.sym)) || selectedReactants[selectedReactants.length-1];
-        
-        const pred = predictCompoundFormula(cationR.z, anionR.z);
-        const vseprAtoms = buildVseprCompound(pred);
-        fusionTargetReaction = {
-          isVsepr: true,
-          pred,
-          atoms: vseprAtoms
-        };
-      }
-
-      updateTelemetry(
-        `Multi-Fusion Acceleration (${selectedReactants.length} Elements)`,
-        selectedReactants.map(r => r.sym).join(' + '),
-        `Collision State: CONVERGING TO CENTROID`,
-        `Engaging Quantum Shockwave Generator`,
-        `Synthesizing Multi-Element Complex`
-      );
-    }
-  }
-
   const ptTooltip = document.getElementById('pt-tooltip');
 
   document.querySelectorAll('.pt-el').forEach(cell => {
@@ -2045,26 +1899,49 @@
     cell.addEventListener('click', () => {
       if (ptTooltip) ptTooltip.style.display = 'none';
       const z = parseInt(cell.dataset.z);
+      const sym = cell.dataset.symbol;
       if (!z) return;
-      selectElementForTray(z);
+
+      // If no slot filled → fill slot A and also show the element
+      if (!selectedSlotA) {
+        selectedSlotA = { z, sym };
+        if (slotA) slotA.textContent = sym;
+        formElement(z);
+      } else if (!selectedSlotB) {
+        selectedSlotB = { z, sym };
+        if (slotB) slotB.textContent = sym;
+        // Don't auto-fuse, let user click FUSE
+      } else {
+        // Replace slot A, clear B
+        selectedSlotA = { z, sym };
+        selectedSlotB = null;
+        if (slotA) slotA.textContent = sym;
+        if (slotB) slotB.textContent = '—';
+        formElement(z);
+      }
     });
   });
 
   // FUSE Button
   if (btnFuse) {
-    btnFuse.addEventListener('click', attemptMultiFusion);
-  }
-
-  // UNDO Button
-  if (btnUndo) {
-    btnUndo.addEventListener('click', undoLastReactant);
+    btnFuse.addEventListener('click', () => {
+      if (!selectedSlotA || !selectedSlotB) return;
+      const symA = EL[selectedSlotA.z].s;
+      const symB = EL[selectedSlotB.z].s;
+      const key1 = symA + '+' + symB;
+      const key2 = symB + '+' + symA;
+      const reaction = REACTIONS[key1] || REACTIONS[key2];
+      triggerFusionCollision(selectedSlotA.z, selectedSlotB.z, reaction);
+    });
   }
 
   // CLEAR Button
   if (btnClear) {
     btnClear.addEventListener('click', () => {
-      clearReactantTray();
-      buildDNA();
+      selectedSlotA = null;
+      selectedSlotB = null;
+      if (slotA) slotA.textContent = '—';
+      if (slotB) slotB.textContent = '—';
     });
   }
 
@@ -2072,24 +1949,29 @@
   if (btnReassemble) {
     btnReassemble.addEventListener('click', () => {
       playTone(330, 'sine', 0.15);
-      clearReactantTray();
+      selectedSlotA = null;
+      selectedSlotB = null;
+      if (slotA) slotA.textContent = '—';
+      if (slotB) slotB.textContent = '—';
       buildDNA();
     });
   }
 
-  // RANDOM SYNTHESIS Button (2 to 4 Elements)
+  // RANDOM SYNTHESIS Button
   if (btnRandom) {
     btnRandom.addEventListener('click', () => {
       playTone(440, 'triangle', 0.1);
-      clearReactantTray();
-      const count = Math.floor(Math.random() * 3) + 2; // 2 to 4
-      for (let i = 0; i < count; i++) {
-        const randZ = Math.floor(Math.random() * 118) + 1;
-        selectElementForTray(randZ);
-      }
-      setTimeout(() => {
-        attemptMultiFusion();
-      }, 500);
+      const zA = Math.floor(Math.random() * 118) + 1;
+      const zB = Math.floor(Math.random() * 118) + 1;
+      selectedSlotA = { z: zA, sym: EL[zA].s };
+      selectedSlotB = { z: zB, sym: EL[zB].s };
+      if (slotA) slotA.textContent = EL[zA].s;
+      if (slotB) slotB.textContent = EL[zB].s;
+      
+      const key1 = EL[zA].s + '+' + EL[zB].s;
+      const key2 = EL[zB].s + '+' + EL[zA].s;
+      const reaction = REACTIONS[key1] || REACTIONS[key2];
+      triggerFusionCollision(zA, zB, reaction);
     });
   }
 
