@@ -48,25 +48,108 @@
     18:{s:'Ar',n:'Argon',m:39.948,cat:'Noble Gas',sh:'[Ne]3s²3p⁶',col:0xBF00FF,r:0.71},
     19:{s:'K',n:'Potassium',m:39.098,cat:'Alkali Metal',sh:'[Ar]4s¹',col:0xFFD700,r:2.43},
     20:{s:'Ca',n:'Calcium',m:40.078,cat:'Alkaline Earth',sh:'[Ar]4s²',col:0xFF7700,r:1.94},
-    26:{s:'Fe',n:'Iron',m:55.845,cat:'Transition Metal',sh:'[Ar]3d⁶4s²',col:0x00D4FF,r:1.26},
-    29:{s:'Cu',n:'Copper',m:63.546,cat:'Transition Metal',sh:'[Ar]3d¹⁰4s¹',col:0x00D4FF,r:1.28},
-    30:{s:'Zn',n:'Zinc',m:65.38,cat:'Transition Metal',sh:'[Ar]3d¹⁰4s²',col:0x00D4FF,r:1.22},
-    35:{s:'Br',n:'Bromine',m:79.904,cat:'Halogen',sh:'[Ar]3d¹⁰4s²4p⁵',col:0xFF0055,r:1.14},
-    47:{s:'Ag',n:'Silver',m:107.87,cat:'Transition Metal',sh:'[Kr]4d¹⁰5s¹',col:0x00D4FF,r:1.44},
-    53:{s:'I',n:'Iodine',m:126.90,cat:'Halogen',sh:'[Kr]4d¹⁰5s²5p⁵',col:0xFF0055,r:1.33},
+    21:{s:'Sc',n:'Scandium',m:44.956,cat:'Transition Metal',sh:'[Ar]3d¹4s²',col:0x00D4FF,r:1.84},
+    22:{s:'Ti',n:'Titanium',m:47.867,cat:'Transition Metal',sh:'[Ar]3d²4s²',col:0x00D4FF,r:1.76},
+    23:{s:'V',n:'Vanadium',m:50.942,cat:'Transition Metal',sh:'[Ar]3d³4s²',col:0x00D4FF,r:1.71},
+    24:{s:'Cr',n:'Chromium',m:51.996,cat:'Transition Metal',sh:'[Ar]3d⁵4s¹',col:0x00D4FF,r:1.66},
+    25:{s:'Mn',n:'Manganese',m:54.938,cat:'Transition Metal',sh:'[Ar]3d⁵4s²',col:0x00D4FF,r:1.61},
+    26:{s:'Fe',n:'Iron',m:55.845,cat:'Transition Metal',sh:'[Ar]3d⁶4s²',col:0x00D4FF,r:1.56},
+    27:{s:'Co',n:'Cobalt',m:58.933,cat:'Transition Metal',sh:'[Ar]3d⁷4s²',col:0x00D4FF,r:1.52},
+    28:{s:'Ni',n:'Nickel',m:58.693,cat:'Transition Metal',sh:'[Ar]3d⁸4s²',col:0x00D4FF,r:1.49},
+    29:{s:'Cu',n:'Copper',m:63.546,cat:'Transition Metal',sh:'[Ar]3d¹⁰4s¹',col:0x00D4FF,r:1.45},
+    30:{s:'Zn',n:'Zinc',m:65.38,cat:'Transition Metal',sh:'[Ar]3d¹⁰4s²',col:0x00D4FF,r:1.42},
+    31:{s:'Ga',n:'Gallium',m:69.723,cat:'Post-Transition',sh:'[Ar]3d¹⁰4s²4p¹',col:0xAAAAAA,r:1.36},
+    32:{s:'Ge',n:'Germanium',m:72.630,cat:'Metalloid',sh:'[Ar]3d¹⁰4s²4p²',col:0x00FF9D,r:1.25},
+    33:{s:'As',n:'Arsenic',m:74.922,cat:'Metalloid',sh:'[Ar]3d¹⁰4s²4p³',col:0x00FF9D,r:1.21},
+    34:{s:'Se',n:'Selenium',m:78.971,cat:'Nonmetal',sh:'[Ar]3d¹⁰4s²4p⁴',col:0xFF8800,r:1.20},
+    35:{s:'Br',n:'Bromine',m:79.904,cat:'Halogen',sh:'[Ar]3d¹⁰4s²4p⁵',col:0xFF0055,r:1.20},
+    36:{s:'Kr',n:'Krypton',m:83.798,cat:'Noble Gas',sh:'[Ar]3d¹⁰4s²4p⁶',col:0xBF00FF,r:1.16},
+    37:{s:'Rb',n:'Rubidium',m:85.468,cat:'Alkali Metal',sh:'[Kr]5s¹',col:0xFFD700,r:2.35},
+    38:{s:'Sr',n:'Strontium',m:87.62,cat:'Alkaline Earth',sh:'[Kr]5s²',col:0xFF7700,r:2.15},
+    39:{s:'Y',n:'Yttrium',m:88.906,cat:'Transition Metal',sh:'[Kr]4d¹5s²',col:0x00D4FF,r:1.90},
+    40:{s:'Zr',n:'Zirconium',m:91.224,cat:'Transition Metal',sh:'[Kr]4d²5s²',col:0x00D4FF,r:1.75},
+    41:{s:'Nb',n:'Niobium',m:92.906,cat:'Transition Metal',sh:'[Kr]4d⁴5s¹',col:0x00D4FF,r:1.64},
+    42:{s:'Mo',n:'Molybdenum',m:95.95,cat:'Transition Metal',sh:'[Kr]4d⁵5s¹',col:0x00D4FF,r:1.54},
+    43:{s:'Tc',n:'Technetium',m:98,cat:'Transition Metal',sh:'[Kr]4d⁵5s²',col:0x00D4FF,r:1.47},
+    44:{s:'Ru',n:'Ruthenium',m:101.07,cat:'Transition Metal',sh:'[Kr]4d⁷5s¹',col:0x00D4FF,r:1.46},
+    45:{s:'Rh',n:'Rhodium',m:102.91,cat:'Transition Metal',sh:'[Kr]4d⁸5s¹',col:0x00D4FF,r:1.42},
+    46:{s:'Pd',n:'Palladium',m:106.42,cat:'Transition Metal',sh:'[Kr]4d¹⁰',col:0x00D4FF,r:1.39},
+    47:{s:'Ag',n:'Silver',m:107.87,cat:'Transition Metal',sh:'[Kr]4d¹⁰5s¹',col:0x00D4FF,r:1.45},
+    48:{s:'Cd',n:'Cadmium',m:112.41,cat:'Transition Metal',sh:'[Kr]4d¹⁰5s²',col:0x00D4FF,r:1.44},
+    49:{s:'In',n:'Indium',m:114.82,cat:'Post-Transition',sh:'[Kr]4d¹⁰5s²5p¹',col:0xAAAAAA,r:1.42},
+    50:{s:'Sn',n:'Tin',m:118.71,cat:'Post-Transition',sh:'[Kr]4d¹⁰5s²5p²',col:0xAAAAAA,r:1.39},
+    51:{s:'Sb',n:'Antimony',m:121.76,cat:'Metalloid',sh:'[Kr]4d¹⁰5s²5p³',col:0x00FF9D,r:1.39},
+    52:{s:'Te',n:'Tellurium',m:127.60,cat:'Metalloid',sh:'[Kr]4d¹⁰5s²5p⁴',col:0x00FF9D,r:1.38},
+    53:{s:'I',n:'Iodine',m:126.90,cat:'Halogen',sh:'[Kr]4d¹⁰5s²5p⁵',col:0xFF0055,r:1.39},
+    54:{s:'Xe',n:'Xenon',m:131.29,cat:'Noble Gas',sh:'[Kr]4d¹⁰5s²5p⁶',col:0xBF00FF,r:1.40},
+    55:{s:'Cs',n:'Cesium',m:132.91,cat:'Alkali Metal',sh:'[Xe]6s¹',col:0xFFD700,r:2.72},
+    56:{s:'Ba',n:'Barium',m:137.33,cat:'Alkaline Earth',sh:'[Xe]6s²',col:0xFF7700,r:2.22},
+    57:{s:'La',n:'Lanthanum',m:138.91,cat:'Lanthanide',sh:'[Xe]5d¹6s²',col:0xFF55BB,r:2.04},
+    58:{s:'Ce',n:'Cerium',m:140.12,cat:'Lanthanide',sh:'[Xe]4f¹5d¹6s²',col:0xFF55BB,r:2.04},
+    59:{s:'Pr',n:'Praseodymium',m:140.91,cat:'Lanthanide',sh:'[Xe]4f³6s²',col:0xFF55BB,r:2.03},
+    60:{s:'Nd',n:'Neodymium',m:144.24,cat:'Lanthanide',sh:'[Xe]4f⁴6s²',col:0xFF55BB,r:2.01},
+    61:{s:'Pm',n:'Promethium',m:145,cat:'Lanthanide',sh:'[Xe]4f⁵6s²',col:0xFF55BB,r:1.99},
+    62:{s:'Sm',n:'Samarium',m:150.36,cat:'Lanthanide',sh:'[Xe]4f⁶6s²',col:0xFF55BB,r:1.98},
+    63:{s:'Eu',n:'Europium',m:151.96,cat:'Lanthanide',sh:'[Xe]4f⁷6s²',col:0xFF55BB,r:1.98},
+    64:{s:'Gd',n:'Gadolinium',m:157.25,cat:'Lanthanide',sh:'[Xe]4f⁷5d¹6s²',col:0xFF55BB,r:1.96},
+    65:{s:'Tb',n:'Terbium',m:158.93,cat:'Lanthanide',sh:'[Xe]4f⁹6s²',col:0xFF55BB,r:1.94},
+    66:{s:'Dy',n:'Dysprosium',m:162.50,cat:'Lanthanide',sh:'[Xe]4f¹⁰6s²',col:0xFF55BB,r:1.92},
+    67:{s:'Ho',n:'Holmium',m:164.93,cat:'Lanthanide',sh:'[Xe]4f¹¹6s²',col:0xFF55BB,r:1.92},
+    68:{s:'Er',n:'Erbium',m:167.26,cat:'Lanthanide',sh:'[Xe]4f¹²6s²',col:0xFF55BB,r:1.89},
+    69:{s:'Tm',n:'Thulium',m:168.93,cat:'Lanthanide',sh:'[Xe]4f¹³6s²',col:0xFF55BB,r:1.90},
+    70:{s:'Yb',n:'Ytterbium',m:173.05,cat:'Lanthanide',sh:'[Xe]4f¹⁴6s²',col:0xFF55BB,r:1.87},
+    71:{s:'Lu',n:'Lutetium',m:174.97,cat:'Lanthanide',sh:'[Xe]4f¹⁴5d¹6s²',col:0xFF55BB,r:1.87},
+    72:{s:'Hf',n:'Hafnium',m:178.49,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d²6s²',col:0x00D4FF,r:1.75},
+    73:{s:'Ta',n:'Tantalum',m:180.95,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d³6s²',col:0x00D4FF,r:1.70},
+    74:{s:'W',n:'Tungsten',m:183.84,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d⁴6s²',col:0x00D4FF,r:1.62},
+    75:{s:'Re',n:'Rhenium',m:186.21,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d⁵6s²',col:0x00D4FF,r:1.59},
+    76:{s:'Os',n:'Osmium',m:190.23,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d⁶6s²',col:0x00D4FF,r:1.59},
+    77:{s:'Ir',n:'Iridium',m:192.22,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d⁷6s²',col:0x00D4FF,r:1.37},
+    78:{s:'Pt',n:'Platinum',m:195.08,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d⁹6s¹',col:0x00D4FF,r:1.36},
     79:{s:'Au',n:'Gold',m:196.97,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d¹⁰6s¹',col:0xFFD700,r:1.44},
-    80:{s:'Hg',n:'Mercury',m:200.59,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d¹⁰6s²',col:0x00D4FF,r:1.51},
-    82:{s:'Pb',n:'Lead',m:207.2,cat:'Post-Transition',sh:'[Xe]4f¹⁴5d¹⁰6s²6p²',col:0xAAAAAA,r:1.75},
-    92:{s:'U',n:'Uranium',m:238.03,cat:'Actinide',sh:'[Rn]5f³6d¹7s²',col:0xFF5500,r:1.96}
+    80:{s:'Hg',n:'Mercury',m:200.59,cat:'Transition Metal',sh:'[Xe]4f¹⁴5d¹⁰6s²',col:0x00D4FF,r:1.49},
+    81:{s:'Tl',n:'Thallium',m:204.38,cat:'Post-Transition',sh:'[Xe]4f¹⁴5d¹⁰6s²6p¹',col:0xAAAAAA,r:1.48},
+    82:{s:'Pb',n:'Lead',m:207.2,cat:'Post-Transition',sh:'[Xe]4f¹⁴5d¹⁰6s²6p²',col:0xAAAAAA,r:1.47},
+    83:{s:'Bi',n:'Bismuth',m:208.98,cat:'Post-Transition',sh:'[Xe]4f¹⁴5d¹⁰6s²6p³',col:0xAAAAAA,r:1.46},
+    84:{s:'Po',n:'Polonium',m:209,cat:'Post-Transition',sh:'[Xe]4f¹⁴5d¹⁰6s²6p⁴',col:0xAAAAAA,r:1.46},
+    85:{s:'At',n:'Astatine',m:210,cat:'Halogen',sh:'[Xe]4f¹⁴5d¹⁰6s²6p⁵',col:0xFF0055,r:1.45},
+    86:{s:'Rn',n:'Radon',m:222,cat:'Noble Gas',sh:'[Xe]4f¹⁴5d¹⁰6s²6p⁶',col:0xBF00FF,r:1.45},
+    87:{s:'Fr',n:'Francium',m:223,cat:'Alkali Metal',sh:'[Rn]7s¹',col:0xFFD700,r:2.90},
+    88:{s:'Ra',n:'Radium',m:226,cat:'Alkaline Earth',sh:'[Rn]7s²',col:0xFF7700,r:2.35},
+    89:{s:'Ac',n:'Actinium',m:227,cat:'Actinide',sh:'[Rn]6d¹7s²',col:0xFF5533,r:2.15},
+    90:{s:'Th',n:'Thorium',m:232.04,cat:'Actinide',sh:'[Rn]6d²7s²',col:0xFF5533,r:2.06},
+    91:{s:'Pa',n:'Protactinium',m:231.04,cat:'Actinide',sh:'[Rn]5f²6d¹7s²',col:0xFF5533,r:2.00},
+    92:{s:'U',n:'Uranium',m:238.03,cat:'Actinide',sh:'[Rn]5f³6d¹7s²',col:0xFF5533,r:1.96},
+    93:{s:'Np',n:'Neptunium',m:237,cat:'Actinide',sh:'[Rn]5f⁴6d¹7s²',col:0xFF5533,r:1.90},
+    94:{s:'Pu',n:'Plutonium',m:244,cat:'Actinide',sh:'[Rn]5f⁶7s²',col:0xFF5533,r:1.87},
+    95:{s:'Am',n:'Americium',m:243,cat:'Actinide',sh:'[Rn]5f⁷7s²',col:0xFF5533,r:1.80},
+    96:{s:'Cm',n:'Curium',m:247,cat:'Actinide',sh:'[Rn]5f⁷6d¹7s²',col:0xFF5533,r:1.69},
+    97:{s:'Bk',n:'Berkelium',m:247,cat:'Actinide',sh:'[Rn]5f⁹7s²',col:0xFF5533,r:1.66},
+    98:{s:'Cf',n:'Californium',m:251,cat:'Actinide',sh:'[Rn]5f¹⁰7s²',col:0xFF5533,r:1.68},
+    99:{s:'Es',n:'Einsteinium',m:252,cat:'Actinide',sh:'[Rn]5f¹¹7s²',col:0xFF5533,r:1.65},
+    100:{s:'Fm',n:'Fermium',m:257,cat:'Actinide',sh:'[Rn]5f¹²7s²',col:0xFF5533,r:1.67},
+    101:{s:'Md',n:'Mendelevium',m:258,cat:'Actinide',sh:'[Rn]5f¹³7s²',col:0xFF5533,r:1.73},
+    102:{s:'No',n:'Nobelium',m:259,cat:'Actinide',sh:'[Rn]5f¹⁴7s²',col:0xFF5533,r:1.76},
+    103:{s:'Lr',n:'Lawrencium',m:262,cat:'Actinide',sh:'[Rn]5f¹⁴6d¹7s²',col:0xFF5533,r:1.61},
+    104:{s:'Rf',n:'Rutherfordium',m:267,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d²7s²',col:0x00D4FF,r:1.57},
+    105:{s:'Db',n:'Dubnium',m:268,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d³7s²',col:0x00D4FF,r:1.49},
+    106:{s:'Sg',n:'Seaborgium',m:271,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d⁴7s²',col:0x00D4FF,r:1.43},
+    107:{s:'Bh',n:'Bohrium',m:272,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d⁵7s²',col:0x00D4FF,r:1.41},
+    108:{s:'Hs',n:'Hassium',m:270,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d⁶7s²',col:0x00D4FF,r:1.34},
+    109:{s:'Mt',n:'Meitnerium',m:276,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d⁷7s²',col:0x00D4FF,r:1.29},
+    110:{s:'Ds',n:'Darmstadtium',m:281,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d⁸7s²',col:0x00D4FF,r:1.28},
+    111:{s:'Rg',n:'Roentgenium',m:280,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d⁹7s²',col:0x00D4FF,r:1.21},
+    112:{s:'Cn',n:'Copernicium',m:285,cat:'Transition Metal',sh:'[Rn]5f¹⁴6d¹⁰7s²',col:0x00D4FF,r:1.22},
+    113:{s:'Nh',n:'Nihonium',m:284,cat:'Post-Transition',sh:'[Rn]5f¹⁴6d¹⁰7s²7p¹',col:0xAAAAAA,r:1.36},
+    114:{s:'Fl',n:'Flerovium',m:289,cat:'Post-Transition',sh:'[Rn]5f¹⁴6d¹⁰7s²7p²',col:0xAAAAAA,r:1.43},
+    115:{s:'Mc',n:'Moscovium',m:288,cat:'Post-Transition',sh:'[Rn]5f¹⁴6d¹⁰7s²7p³',col:0xAAAAAA,r:1.62},
+    116:{s:'Lv',n:'Livermorium',m:293,cat:'Post-Transition',sh:'[Rn]5f¹⁴6d¹⁰7s²7p⁴',col:0xAAAAAA,r:1.75},
+    117:{s:'Ts',n:'Tennessine',m:294,cat:'Halogen',sh:'[Rn]5f¹⁴6d¹⁰7s²7p⁵',col:0xFF0055,r:1.65},
+    118:{s:'Og',n:'Oganesson',m:294,cat:'Noble Gas',sh:'[Rn]5f¹⁴6d¹⁰7s²7p⁶',col:0xBF00FF,r:1.57}
   };
 
-  // Fill generic data for all 118 elements not explicitly defined
-  for (let z = 1; z <= 118; z++) {
-    if (!EL[z]) EL[z] = { s:'?', n:'Element '+z, m:z*2.2, cat:'Element', sh:'Shell '+z, col:0x00D4FF, r:1.0 };
-  }
-
   // ═══════════════════════════════════════════════════════════════
-  // REAL CHEMICAL REACTIONS DATABASE
+  // REAL CHEMICAL REACTIONS DATABASE (EXPANDED TO >30 FUSIONS)
   // Each reaction: key = sorted symbol pair, result = compound info
   // ═══════════════════════════════════════════════════════════════
   const REACTIONS = {
@@ -84,7 +167,7 @@
     'K+Cl':  { name:'Potassium Chloride',   formula:'KCl',   atoms:[{z:19,c:1},{z:17,c:1}],   type:'Ionic Crystal', bonds:'K⁺ Cl⁻ Ionic Bond', state:'Solid Crystal (25°C)', geom:'Cubic FCC Lattice' },
     'Ca+O':  { name:'Calcium Oxide',        formula:'CaO',   atoms:[{z:20,c:1},{z:8,c:1}],    type:'Ionic', bonds:'Ca²⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Rock Salt Structure' },
     'Ca+C':  { name:'Calcium Carbide',      formula:'CaC₂',  atoms:[{z:20,c:1},{z:6,c:2}],    type:'Ionic/Covalent', bonds:'Ca²⁺ C₂²⁻', state:'Solid (25°C)', geom:'Tetragonal' },
-    'Fe+O':  { name:'Iron Oxide (Rust)',     formula:'Fe₂O₃', atoms:[{z:26,c:2},{z:8,c:3}],   type:'Ionic', bonds:'Fe³⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Corundum Structure' },
+    'Fe+O':  { name:'Iron Oxide (Rust)',    formula:'Fe₂O₃', atoms:[{z:26,c:2},{z:8,c:3}],   type:'Ionic', bonds:'Fe³⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Corundum Structure' },
     'Cu+O':  { name:'Copper Oxide',         formula:'CuO',   atoms:[{z:29,c:1},{z:8,c:1}],    type:'Ionic', bonds:'Cu²⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Monoclinic' },
     'Mg+O':  { name:'Magnesium Oxide',      formula:'MgO',   atoms:[{z:12,c:1},{z:8,c:1}],    type:'Ionic', bonds:'Mg²⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Rock Salt Structure' },
     'Si+O':  { name:'Silicon Dioxide',      formula:'SiO₂',  atoms:[{z:14,c:1},{z:8,c:2}],    type:'Covalent Network', bonds:'Si-O Covalent Network', state:'Solid Crystal (Quartz)', geom:'Tetrahedral Network' },
@@ -95,7 +178,25 @@
     'C+Cl':  { name:'Carbon Tetrachloride', formula:'CCl₄',  atoms:[{z:6,c:1},{z:17,c:4}],    type:'Covalent', bonds:'C-Cl Covalent (×4)', state:'Liquid (25°C)', geom:'Tetrahedral' },
     'P+O':   { name:'Phosphorus Pentoxide', formula:'P₂O₅',  atoms:[{z:15,c:2},{z:8,c:5}],    type:'Covalent', bonds:'P-O & P=O Bonds', state:'Solid (25°C)', geom:'Cage Structure' },
     'N+H':   { name:'Ammonia',              formula:'NH₃',   atoms:[{z:7,c:1},{z:1,c:3}],     type:'Polar Covalent', bonds:'N-H Polar Covalent (×3)', state:'Gas (25°C)', geom:'Trigonal Pyramidal' },
+    
+    // NEW BINARY FUSION REACTIONS (EXTENDED DATABASE)
+    'Li+O':  { name:'Lithium Oxide',        formula:'Li₂O',  atoms:[{z:3,c:2},{z:8,c:1}],     type:'Ionic Solid', bonds:'Li⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Antifluorite Structure' },
+    'C+S':   { name:'Carbon Disulfide',     formula:'CS₂',   atoms:[{z:6,c:1},{z:16,c:2}],    type:'Covalent Liquid', bonds:'C=S Double Bond (×2)', state:'Liquid (25°C)', geom:'Linear 180°' },
+    'C+F':   { name:'Carbon Tetrafluoride', formula:'CF₄',   atoms:[{z:6,c:1},{z:9,c:4}],     type:'Covalent Gas', bonds:'C-F Polar Covalent (×4)', state:'Gas (25°C)', geom:'Tetrahedral' },
+    'Si+C':  { name:'Silicon Carbide',      formula:'SiC',   atoms:[{z:14,c:1},{z:6,c:1}],    type:'Covalent Network', bonds:'Si-C Covalent Network', state:'Solid (Carborundum)', geom:'Tetrahedral Grid' },
+    'Mg+Cl': { name:'Magnesium Chloride',   formula:'MgCl₂', atoms:[{z:12,c:1},{z:17,c:2}],   type:'Ionic Solid', bonds:'Mg²⁺ Cl⁻ Ionic Bond', state:'Solid (25°C)', geom:'Cadmium Chloride Structure' },
+    'Ca+Cl': { name:'Calcium Chloride',     formula:'CaCl₂', atoms:[{z:20,c:1},{z:17,c:2}],   type:'Ionic Solid', bonds:'Ca²⁺ Cl⁻ Ionic Bond', state:'Solid (25°C)', geom:'Rutile-like Structure' },
+    'Al+Cl': { name:'Aluminium Chloride',   formula:'AlCl₃', atoms:[{z:13,c:1},{z:17,c:3}],   type:'Covalent/Ionic', bonds:'Al-Cl Polar Covalent', state:'Solid (25°C)', geom:'Layered Sheet Structure' },
+    'Ti+Cl': { name:'Titanium Tetrachloride',formula:'TiCl₄', atoms:[{z:22,c:1},{z:17,c:4}],   type:'Covalent Liquid', bonds:'Ti-Cl Covalent (×4)', state:'Liquid (25°C)', geom:'Tetrahedral' },
+    'Fe+Cl': { name:'Iron Chloride',        formula:'FeCl₃', atoms:[{z:26,c:1},{z:17,c:3}],   type:'Covalent Solid', bonds:'Fe-Cl Covalent (×3)', state:'Solid (25°C)', geom:'BiI3 Layered Structure' },
+    'Cu+Cl': { name:'Copper Chloride',      formula:'CuCl₂', atoms:[{z:29,c:1},{z:17,c:2}],   type:'Covalent/Ionic', bonds:'Cu-Cl Polar Covalent', state:'Solid (25°C)', geom:'Monoclinic Chains' },
+    'Zn+O':  { name:'Zinc Oxide',           formula:'ZnO',   atoms:[{z:30,c:1},{z:8,c:1}],    type:'Ionic/Covalent', bonds:'Zn²⁺ O²⁻ Polar Bond', state:'Solid (25°C)', geom:'Wurtzite/Hexagonal' },
+    'Zn+Cl': { name:'Zinc Chloride',        formula:'ZnCl₂', atoms:[{z:30,c:1},{z:17,c:2}],   type:'Ionic/Covalent', bonds:'Zn-Cl Polar Covalent', state:'Solid (25°C)', geom:'Orthorhombic Network' },
+    'Ag+O':  { name:'Silver Oxide',         formula:'Ag₂O',  atoms:[{z:47,c:2},{z:8,c:1}],    type:'Ionic Solid', bonds:'Ag⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Cubic Network' },
+    'Au+O':  { name:'Gold Oxide',           formula:'Au₂O₃', atoms:[{z:79,c:2},{z:8,c:3}],    type:'Covalent Solid', bonds:'Au-O Covalent (×3)', state:'Solid (25°C)', geom:'Trigonal Pyramidal Grid' },
+    'Pb+O':  { name:'Lead Oxide',           formula:'PbO',   atoms:[{z:82,c:1},{z:8,c:1}],    type:'Ionic Solid', bonds:'Pb²⁺ O²⁻ Ionic Bond', state:'Solid (Litharge)', geom:'Tetragonal Layered' },
   };
+
 
   // ═══════════════════════════════════════════════════════════════
   // WEBGL 3D SETUP
@@ -346,7 +447,13 @@
       `Electron Config: ${el.sh}`,
       `Real Structure: ` + (
         symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn' ? 'Monatomic Gas (Orbital Cloud)' :
-        symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl' || symbol === 'Br' || symbol === 'I' ? 'Diatomic Gas Clusters' :
+        symbol === 'B' ? 'Boron B₁₂ Icosahedral Cluster' :
+        ['Hg', 'Ga', 'Cs', 'Rb', 'Fr'].includes(symbol) ? 'Amorphous Liquid Droplet' :
+        symbol === 'Br' ? 'Diatomic Liquid Droplet' :
+        symbol === 'I' ? 'Solid Diatomic Molecular Lattice (I₂ Network)' :
+        symbol === 'Se' || symbol === 'Te' ? 'Infinite Helical Spirals' :
+        symbol === 'As' || symbol === 'Sb' || symbol === 'Bi' ? 'Puckered Hexagonal Double-Layers' :
+        symbol === 'Po' ? 'Simple Cubic Lattice (SC)' :
         symbol === 'P' ? 'P₄ Molecular Tetrahedron' :
         symbol === 'S' ? 'S₈ Crown Ring' :
         symbol === 'C' ? 'Graphite Hexagonal Sheets' :
@@ -479,8 +586,69 @@
         atoms.push({ z: 1, pos, startPos: startPos, scale: 0.6 });
       }
     }
-    else if (symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl' || symbol === 'Br' || symbol === 'I') {
-      // 2. DIATOMIC GAS/LIQUID MOLECULES
+    else if (symbol === 'B') {
+      // 2. BORON B12 ICOSAHEDRON
+      const phi = (1 + Math.sqrt(5)) / 2;
+      const scaleFactor = 4.8;
+      const baseVertices = [
+        new THREE.Vector3(0, 1, phi),
+        new THREE.Vector3(0, 1, -phi),
+        new THREE.Vector3(0, -1, phi),
+        new THREE.Vector3(0, -1, -phi),
+        new THREE.Vector3(1, phi, 0),
+        new THREE.Vector3(1, -phi, 0),
+        new THREE.Vector3(-1, phi, 0),
+        new THREE.Vector3(-1, -phi, 0),
+        new THREE.Vector3(phi, 0, 1),
+        new THREE.Vector3(phi, 0, -1),
+        new THREE.Vector3(-phi, 0, 1),
+        new THREE.Vector3(-phi, 0, -1)
+      ];
+      baseVertices.forEach(v => {
+        atoms.push({ z, pos: offset.clone().add(v.multiplyScalar(scaleFactor)), startPos: startPos, scale: 1.6 });
+      });
+    }
+    else if (['Hg', 'Ga', 'Cs', 'Rb', 'Fr'].includes(symbol)) {
+      // 3. DISORDERED LIQUID DROPLET
+      const numLiquidAtoms = 12;
+      for (let i = 0; i < numLiquidAtoms; i++) {
+        const phi = Math.acos(2 * Math.random() - 1);
+        const theta = Math.random() * Math.PI * 2;
+        const r_val = 2.0 + Math.random() * 6.0;
+        const pos = offset.clone().add(new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta) * r_val,
+          Math.sin(phi) * Math.sin(theta) * r_val,
+          Math.cos(phi) * r_val
+        ));
+        atoms.push({ z, pos, startPos: startPos, scale: 1.6 });
+      }
+    }
+    else if (symbol === 'Br') {
+      // 4. DIATOMIC LIQUID DROPLET
+      const numPairs = 6;
+      for (let i = 0; i < numPairs; i++) {
+        const phi = Math.acos(2 * Math.random() - 1);
+        const theta = Math.random() * Math.PI * 2;
+        const r_val = 2.0 + Math.random() * 6.0;
+        const pairCenter = offset.clone().add(new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta) * r_val,
+          Math.sin(phi) * Math.sin(theta) * r_val,
+          Math.cos(phi) * r_val
+        ));
+        const bondPhi = Math.acos(2 * Math.random() - 1);
+        const bondTheta = Math.random() * Math.PI * 2;
+        const dir = new THREE.Vector3(
+          Math.sin(bondPhi) * Math.cos(bondTheta),
+          Math.sin(bondPhi) * Math.sin(bondTheta),
+          Math.cos(bondPhi)
+        ).multiplyScalar(3.2);
+        
+        atoms.push({ z, pos: pairCenter.clone().sub(dir), startPos: startPos, scale: 1.6 });
+        atoms.push({ z, pos: pairCenter.clone().add(dir), startPos: startPos, scale: 1.6 });
+      }
+    }
+    else if (symbol === 'H' || symbol === 'N' || symbol === 'O' || symbol === 'F' || symbol === 'Cl') {
+      // 5. DIATOMIC GAS MOLECULES
       const offsets = [
         new THREE.Vector3(0, 0, 0),
         new THREE.Vector3(-14, 10, -10),
@@ -493,8 +661,89 @@
         atoms.push({ z, pos: offset.clone().add(off).add(dir), startPos: startPos, scale: 1.6 });
       });
     }
+    else if (symbol === 'I') {
+      // 6. SOLID DIATOMIC IODINE (I2 Molecular network)
+      const spacing = 9.0;
+      const bondDist = 2.8;
+      const directions = [
+        new THREE.Vector3(1, 0.5, 0.2).normalize(),
+        new THREE.Vector3(-1, 0.5, -0.2).normalize(),
+        new THREE.Vector3(0.2, 1, 0.5).normalize(),
+        new THREE.Vector3(-0.2, -1, 0.5).normalize(),
+        new THREE.Vector3(0.5, 0.2, 1).normalize(),
+        new THREE.Vector3(0.5, -0.2, -1).normalize()
+      ];
+      const pairCenters = [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(spacing, 0, spacing*0.5),
+        new THREE.Vector3(-spacing, 0, -spacing*0.5),
+        new THREE.Vector3(0, spacing, spacing*0.5),
+        new THREE.Vector3(0, -spacing, -spacing*0.5),
+        new THREE.Vector3(spacing*0.5, spacing*0.5, spacing)
+      ];
+      for (let i = 0; i < 6; i++) {
+        const pCenter = pairCenters[i];
+        const dir = directions[i].multiplyScalar(bondDist * 0.5);
+        atoms.push({ z, pos: offset.clone().add(pCenter).sub(dir), startPos: startPos, scale: 1.6 });
+        atoms.push({ z, pos: offset.clone().add(pCenter).add(dir), startPos: startPos, scale: 1.6 });
+      }
+    }
+    else if (symbol === 'Se' || symbol === 'Te') {
+      // 7. HELICAL CHAINS
+      const radius = 5.0;
+      const pitch = 1.8;
+      const numAtoms = 12;
+      for (let i = 0; i < numAtoms; i++) {
+        const theta = (i - numAtoms/2) * 1.2;
+        const pos = offset.clone().add(new THREE.Vector3(
+          radius * Math.cos(theta),
+          radius * Math.sin(theta),
+          pitch * theta
+        ));
+        atoms.push({ z, pos, startPos: startPos, scale: 1.7 });
+      }
+    }
+    else if (symbol === 'As' || symbol === 'Sb' || symbol === 'Bi') {
+      // 8. PUCKERED LAYERS (chair conformation rings)
+      const spacing = 5.5;
+      const pucker = 1.5;
+      const coords = [
+        {x: 0, y: 0, z: pucker},
+        {x: spacing, y: 0, z: -pucker},
+        {x: spacing * 1.5, y: spacing * 0.86, z: pucker},
+        {x: spacing, y: spacing * 1.73, z: -pucker},
+        {x: 0, y: spacing * 1.73, z: pucker},
+        {x: -spacing * 0.5, y: spacing * 0.86, z: -pucker},
+        {x: spacing * 2, y: 0, z: pucker},
+        {x: spacing * 2.5, y: spacing * 0.86, z: -pucker},
+        {x: spacing * 2, y: spacing * 1.73, z: pucker},
+        {x: spacing * 0.5, y: -spacing * 0.86, z: -pucker},
+        {x: -spacing, y: 0, z: pucker},
+        {x: -spacing * 1.5, y: spacing * 0.86, z: -pucker}
+      ];
+      const centerShift = new THREE.Vector3(spacing * 0.75, spacing * 0.43, 0);
+      coords.forEach(c => {
+        atoms.push({
+          z,
+          pos: offset.clone().add(new THREE.Vector3(c.x, c.y, c.z).sub(centerShift)),
+          startPos: startPos,
+          scale: 1.6
+        });
+      });
+    }
+    else if (symbol === 'Po') {
+      // 9. SIMPLE CUBIC LATTICE (SC)
+      const d = 5.5;
+      for (let dx of [-d, d]) {
+        for (let dy of [-d, d]) {
+          for (let dz of [-d, d]) {
+            atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(dx, dy, dz)), startPos: startPos, scale: 1.7 });
+          }
+        }
+      }
+    }
     else if (symbol === 'P') {
-      // 3. WHITE PHOSPHORUS (P4 Tetrahedron)
+      // 10. WHITE PHOSPHORUS (P4 Tetrahedron)
       const d = 4.5;
       const vertices = [
         new THREE.Vector3(d, d, d),
@@ -505,7 +754,7 @@
       vertices.forEach(v => atoms.push({ z, pos: offset.clone().add(v), startPos: startPos, scale: 1.7 }));
     }
     else if (symbol === 'S') {
-      // 4. OCTASULFUR (S8 Crown Ring)
+      // 11. OCTASULFUR (S8 Crown Ring)
       const r = 7.0;
       const h = 2.0;
       for (let i = 0; i < 8; i++) {
@@ -520,7 +769,7 @@
       }
     }
     else if (symbol === 'C') {
-      // 5. GRAPHITE LAYERS FOR CARBON (2 parallel sheets of hexagonal rings)
+      // 12. GRAPHITE LAYERS FOR CARBON (2 parallel sheets of hexagonal rings)
       const r = 5.5;
       // Sheet 1 (z = -3.5)
       atoms.push({ z, pos: offset.clone().add(new THREE.Vector3(0, 0, -3.5)), startPos: startPos, scale: 1.7 });
@@ -546,7 +795,7 @@
       }
     }
     else if (symbol === 'Si' || symbol === 'Ge' || symbol === 'Sn') {
-      // 6. COVALENT DIAMOND LATTICE (5 atoms)
+      // 13. COVALENT DIAMOND LATTICE (5 atoms)
       const d = 6.0;
       atoms.push({ z, pos: offset.clone(), startPos: startPos, scale: 1.8 });
       const vertices = [
@@ -558,7 +807,7 @@
       vertices.forEach(v => atoms.push({ z, pos: offset.clone().add(v), startPos: startPos, scale: 1.7 }));
     }
     else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(symbol)) {
-      // 7. BODY-CENTERED CUBIC LATTICE (BCC)
+      // 14. BODY-CENTERED CUBIC LATTICE (BCC)
       const d = 7.0;
       atoms.push({ z, pos: offset.clone(), startPos: startPos, scale: 1.9 });
       for (let dx of [-d, d]) {
@@ -570,7 +819,7 @@
       }
     }
     else if (['Be', 'Mg', 'Ti', 'Co', 'Zn', 'Y', 'Zr', 'Ru', 'Cd', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Lu', 'Hf', 'Re', 'Os', 'Tl'].includes(symbol)) {
-      // 8. HEXAGONAL CLOSE-PACKED LATTICE (HCP)
+      // 15. HEXAGONAL CLOSE-PACKED LATTICE (HCP)
       const r = 6.0;
       const h = 5.0;
       // Lower hexagon + center
@@ -593,7 +842,7 @@
       }
     }
     else {
-      // 9. FACE-CENTERED CUBIC LATTICE (FCC) - Default for metals (Au, Ag, Cu, Pt, Pb, etc.)
+      // 16. FACE-CENTERED CUBIC LATTICE (FCC) - Default for metals (Au, Ag, Cu, Pt, Pb, etc.)
       const d = 7.5;
       for (let dx of [-d, d]) {
         for (let dy of [-d, d]) {
@@ -612,6 +861,9 @@
     return atoms;
   }
 
+  // ═══════════════════════════════════════════════════════════════
+  // UNSTABLE SUPERHEAVY FISSION DECAY EVENT (Z > 118)
+  // ═══════════════════════════════════════════════════════════════
   function formFissionDecay(zA, zB, zResult) {
     isDnaMode = false;
     const atoms = [];
@@ -967,6 +1219,14 @@
     // Superfluid atom morphing — smooth position lerp + scale lerp
     for (let i = activeAtoms.length - 1; i >= 0; i--) {
       const a = activeAtoms[i];
+      
+      // Brownian motion for liquid elements when idle
+      const isLiquid = ['Hg', 'Br', 'Ga', 'Cs', 'Rb', 'Fr'].includes(a.elData.s);
+      if (isLiquid && fusionState === 'idle' && !a.removing) {
+        a.targetPos.x += (Math.random() - 0.5) * 0.35 - a.targetPos.x * 0.015;
+        a.targetPos.y += (Math.random() - 0.5) * 0.35 - a.targetPos.y * 0.015;
+        a.targetPos.z += (Math.random() - 0.5) * 0.35 - a.targetPos.z * 0.015;
+      }
       a.mesh.position.lerp(a.targetPos, 0.06);
       a.currentScale += (a.targetScale - a.currentScale) * 0.08;
       a.mesh.scale.setScalar(Math.max(0.001, a.currentScale));
