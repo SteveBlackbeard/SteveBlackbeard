@@ -2610,29 +2610,54 @@
     const dummy = new THREE.Object3D();
     const instUpdateList = new Set();
 
+    // Real-time 3D laser measurement vector line update
+    if (isMeasuringMode && selectedMeasureAtoms.length >= 2) {
+      const points = selectedMeasureAtoms.map(a => a.currentPos);
+      if (selectedMeasureAtoms.length === 3) points.push(selectedMeasureAtoms[0].currentPos);
+      if (laserLineMesh) {
+        laserLineMesh.geometry.dispose();
+        laserLineMesh.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      }
+    }
+
     for (let i = activeAtoms.length - 1; i >= 0; i--) {
       const a = activeAtoms[i];
       
-      // Brownian motion / chamber drift for gas elements when idle
-      const isGas = a.velocity !== null;
-      if (isGas && fusionState === 'idle' && !a.removing) {
-        const dt = 0.016; // approximate delta time
-        a.targetPos.addScaledVector(a.velocity, dt);
-
-        // Bouncing box boundaries (chamber size 24x24x24)
-        const limit = 24.0;
-        if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -1; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
-        if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -1; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
-        if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -1; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
-      }
-
-      // Wobble motion for liquid elements when idle
-      const isLiquid = a.basePos !== null;
-      if (isLiquid && fusionState === 'idle' && !a.removing) {
-        const wobbleX = Math.sin(t * 3.5 + a.basePos.y * 0.4) * 0.5;
-        const wobbleY = Math.cos(t * 4.2 + a.basePos.x * 0.4) * 0.5;
-        const wobbleZ = Math.sin(t * 2.8 + a.basePos.z * 0.4) * 0.5;
-        a.targetPos.copy(a.basePos).add(new THREE.Vector3(wobbleX, wobbleY, wobbleZ));
+      // Real Thermal Phase Behavior (Solid < 273K, Liquid 273K - 373K, Gas >= 373K)
+      if (fusionState === 'idle' && !a.removing && !a.isElectron) {
+        if (temperatureK < 273) {
+          // SOLID LATTICE: rigid crystal structure with tight harmonic oscillation
+          const solidScale = temperatureK / 273.0;
+          if (a.basePos) a.targetPos.copy(a.basePos);
+          const vibX = Math.sin(t * 8.0 + a.instIdx) * (0.04 * solidScale);
+          const vibY = Math.cos(t * 9.5 + a.instIdx) * (0.04 * solidScale);
+          const vibZ = Math.sin(t * 7.2 + a.instIdx) * (0.04 * solidScale);
+          a.currentPos.add(new THREE.Vector3(vibX, vibY, vibZ));
+          if (hudEpi && i === 0) hudEpi.textContent = `SOLID CRYSTAL LATTICE (${temperatureK}K)`;
+        } else if (temperatureK < 373) {
+          // LIQUID FLUID: amorphous fluid cohesion with smooth wave motion
+          const liqWobbleX = Math.sin(t * 3.5 + (a.basePos ? a.basePos.y : a.instIdx) * 0.4) * 0.7;
+          const liqWobbleY = Math.cos(t * 4.2 + (a.basePos ? a.basePos.x : a.instIdx) * 0.4) * 0.7;
+          const liqWobbleZ = Math.sin(t * 2.8 + (a.basePos ? a.basePos.z : a.instIdx) * 0.4) * 0.7;
+          if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(liqWobbleX, liqWobbleY, liqWobbleZ));
+          if (hudEpi && i === 0) hudEpi.textContent = `LIQUID COHESIVE FLUID (${temperatureK}K)`;
+        } else {
+          // GAS BROWNIAN EXPANSION: high kinetic dispersion with bouncing boundaries
+          const gasScale = (temperatureK - 373.0) * 0.005 + 1.0;
+          if (!a.velocity) {
+            a.velocity = new THREE.Vector3(
+              (Math.random() - 0.5) * 8.0 * gasScale,
+              (Math.random() - 0.5) * 8.0 * gasScale,
+              (Math.random() - 0.5) * 8.0 * gasScale
+            );
+          }
+          a.targetPos.addScaledVector(a.velocity, 0.016 * gasScale);
+          const limit = 26.0;
+          if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -1; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
+          if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -1; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
+          if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -1; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
+          if (hudEpi && i === 0) hudEpi.textContent = `GAS BROWNIAN EXPANSION (${temperatureK}K)`;
+        }
       }
 
       // Orbit motion for noble gas electrons
@@ -2645,15 +2670,6 @@
         localPos.applyAxisAngle(new THREE.Vector3(1, 0, 0), a.tiltX);
         localPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), a.tiltY);
         a.targetPos.copy(parentPos).add(localPos);
-      }
-
-      // Microscopic Thermal Vibration (kB * T scaling with slider)
-      if (fusionState === 'idle' && !a.removing && !a.isElectron) {
-        const tempScale = temperatureK / 298.0;
-        const vibX = Math.sin(t * (12.0 * tempScale) + a.instIdx * 1.5) * (0.08 * tempScale);
-        const vibY = Math.cos(t * (15.0 * tempScale) + a.instIdx * 2.1) * (0.08 * tempScale);
-        const vibZ = Math.sin(t * (10.0 * tempScale) + a.instIdx * 0.9) * (0.08 * tempScale);
-        a.currentPos.add(new THREE.Vector3(vibX, vibY, vibZ));
       }
 
       // Lerp position and scale
