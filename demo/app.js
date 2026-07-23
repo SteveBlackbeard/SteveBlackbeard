@@ -2036,6 +2036,23 @@
     link.click();
   }
 
+  function exportUSDZFile() {
+    playTone(800, 'sine', 0.2);
+    if (activeAtoms.length === 0) return;
+
+    let usdaContent = `#usda 1.0\n( defaultPrim = "Molecule" )\n\ndef Xform "Molecule"\n{\n`;
+    activeAtoms.forEach((a, i) => {
+      usdaContent += `  def Sphere "Atom_${i}"\n  {\n    double radius = ${(a.currentScale || 1.0).toFixed(2)}\n    double3 xformOp:translate = (${a.currentPos.x.toFixed(3)}, ${a.currentPos.y.toFixed(3)}, ${a.currentPos.z.toFixed(3)})\n    uniform token[] xformOpOrder = ["xformOp:translate"]\n  }\n`;
+    });
+    usdaContent += `}\n`;
+
+    const blob = new Blob([usdaContent], { type: 'model/vnd.usdz+zip' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'molecule_structure_apple_ar.usdz';
+    link.click();
+  }
+
   function exportXYZFile() {
     playTone(880, 'sine', 0.2);
     if (activeAtoms.length === 0) return;
@@ -2529,6 +2546,11 @@
 
   if (btnExportGltf) {
     btnExportGltf.addEventListener('click', exportGLTFFile);
+  }
+
+  const btnExportUsdz = document.getElementById('btn-export-usdz');
+  if (btnExportUsdz) {
+    btnExportUsdz.addEventListener('click', exportUSDZFile);
   }
 
   // ATOMIC ORBITALS Button
