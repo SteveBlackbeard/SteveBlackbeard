@@ -267,20 +267,25 @@
 
   // ═══════════════════════════════════════════════════════════════
   // WEBGL 3D SETUP
-  // ═══════════════════════════════════════════════════════════════
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference:'high-performance' });
+  if (!canvas) {
+    console.error("Canvas element #webgl-canvas not found in document!");
+  }
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x020306, 0.002);
+  scene.background = new THREE.Color(0x020306);
+  scene.fog = new THREE.FogExp2(0x020306, 0.0015);
 
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 75);
+  camera.lookAt(0, 0, 0);
 
-  // Studio Lighting (3-Point)
+  // Studio Lighting (3-Point + Hemisphere)
   const keyLight = new THREE.DirectionalLight(0x00F0FF, 2.2);
   keyLight.position.set(50, 60, 50);
   scene.add(keyLight);
@@ -292,6 +297,9 @@
   const rimLight = new THREE.DirectionalLight(0x8A2BE2, 1.6);
   rimLight.position.set(-50, -40, -30);
   scene.add(rimLight);
+
+  const hemiLight = new THREE.HemisphereLight(0x00F0FF, 0x112233, 0.85);
+  scene.add(hemiLight);
 
   scene.add(new THREE.AmbientLight(0xFFFFFF, 0.85));
 
@@ -512,12 +520,10 @@
       clearcoatRoughness = 0.03;
     }
 
-    materialCache[key] = new THREE.MeshPhysicalMaterial({
+    materialCache[key] = new THREE.MeshStandardMaterial({
       color: col,
       metalness: metalness,
-      roughness: roughness,
-      clearcoat: clearcoat,
-      clearcoatRoughness: clearcoatRoughness
+      roughness: roughness
     });
     return materialCache[key];
   }
@@ -2566,4 +2572,9 @@
   }
 
   requestAnimationFrame(animate);
+
+  console.log("⚡ NULLA-LABS IUPAC 3D Engine Initialized");
+  console.log("Three.js Revision:", typeof THREE !== 'undefined' ? THREE.REVISION : 'MISSING');
+  console.log("Scene Children:", (scene && scene.children) ? scene.children.length : 0);
+  console.log("Active Atoms Loaded:", activeAtoms ? activeAtoms.length : 0);
 })();
