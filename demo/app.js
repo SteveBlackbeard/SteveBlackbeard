@@ -624,11 +624,7 @@
           const elData = EL[item.z] || EL[1];
           const scale = item.scale !== undefined ? item.scale : (1.2 + (elData ? (elData.r || 1.0) : 1.0) * 0.4);
           
-          const start = isInitialLoad ? item.pos.clone() : (item.startPos ? item.startPos.clone() : new THREE.Vector3(
-            (Math.random()-0.5) * 60,
-            (Math.random()-0.5) * 40,
-            (Math.random()-0.5) * 30
-          ));
+          const start = item.pos.clone();
           const initScale = isInitialLoad ? scale : 0.01;
 
           let labelSprite = null;
@@ -1952,13 +1948,32 @@
     isDnaMode = false;
     const atoms = [];
     const count = selectedReactants.length;
-    const radius = count <= 3 ? 15.0 : 18.0;
+
+    // Wide horizontal separation (56+ units clearance) to eliminate any cluster overlap
+    const offsets = [];
+    if (count === 2) {
+      offsets.push(new THREE.Vector3(-28.0, 0, 0));
+      offsets.push(new THREE.Vector3(28.0, 0, 0));
+    } else if (count === 3) {
+      offsets.push(new THREE.Vector3(-32.0, -6.0, 0));
+      offsets.push(new THREE.Vector3(0, 16.0, 0));
+      offsets.push(new THREE.Vector3(32.0, -6.0, 0));
+    } else if (count === 4) {
+      offsets.push(new THREE.Vector3(-36.0, -8.0, 0));
+      offsets.push(new THREE.Vector3(-14.0, 14.0, 0));
+      offsets.push(new THREE.Vector3(14.0, 14.0, 0));
+      offsets.push(new THREE.Vector3(36.0, -8.0, 0));
+    } else {
+      offsets.push(new THREE.Vector3(-40.0, -10.0, 0));
+      offsets.push(new THREE.Vector3(-20.0, 12.0, 0));
+      offsets.push(new THREE.Vector3(0, -6.0, 0));
+      offsets.push(new THREE.Vector3(20.0, 12.0, 0));
+      offsets.push(new THREE.Vector3(40.0, -10.0, 0));
+    }
 
     selectedReactants.forEach((r, idx) => {
-      const angle = (idx / count) * Math.PI * 2 - Math.PI * 0.5;
-      const posX = Math.cos(angle) * radius;
-      const posY = Math.sin(angle) * radius;
-      const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, posY, 0));
+      const offset = offsets[idx] || new THREE.Vector3((idx - (count - 1) * 0.5) * 26.0, 0, 0);
+      const elAtoms = getElementAtoms(r.z, offset);
       atoms.push(...elAtoms);
     });
 
@@ -1970,7 +1985,7 @@
       symbolsStr,
       `State: ACTIVE INJECTION TRAY`,
       `Ready for Collision (Click ⚡ FUSE ALL)`,
-      `Circular 3D Quantum Ring Orbit`
+      `Wide Horizontal 3D Quantum Separation`
     );
   }
 
@@ -2035,13 +2050,27 @@
       
       const atoms = [];
       const count = selectedReactants.length;
-      const radius = count <= 3 ? 16.0 : 20.0;
+      const offsets = [];
+      if (count === 3) {
+        offsets.push(new THREE.Vector3(-32.0, -6.0, 0));
+        offsets.push(new THREE.Vector3(0, 16.0, 0));
+        offsets.push(new THREE.Vector3(32.0, -6.0, 0));
+      } else if (count === 4) {
+        offsets.push(new THREE.Vector3(-36.0, -8.0, 0));
+        offsets.push(new THREE.Vector3(-14.0, 14.0, 0));
+        offsets.push(new THREE.Vector3(14.0, 14.0, 0));
+        offsets.push(new THREE.Vector3(36.0, -8.0, 0));
+      } else {
+        offsets.push(new THREE.Vector3(-40.0, -10.0, 0));
+        offsets.push(new THREE.Vector3(-20.0, 12.0, 0));
+        offsets.push(new THREE.Vector3(0, -6.0, 0));
+        offsets.push(new THREE.Vector3(20.0, 12.0, 0));
+        offsets.push(new THREE.Vector3(40.0, -10.0, 0));
+      }
 
       selectedReactants.forEach((r, idx) => {
-        const angle = (idx / count) * Math.PI * 2 - Math.PI * 0.5;
-        const posX = Math.cos(angle) * radius;
-        const posY = Math.sin(angle) * radius;
-        const elAtoms = getElementAtoms(r.z, new THREE.Vector3(posX, posY, 0));
+        const offset = offsets[idx] || new THREE.Vector3((idx - (count - 1) * 0.5) * 26.0, 0, 0);
+        const elAtoms = getElementAtoms(r.z, offset);
         atoms.push(...elAtoms);
       });
 
