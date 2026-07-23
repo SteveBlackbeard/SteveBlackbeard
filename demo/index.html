@@ -65,32 +65,33 @@
        ═══════════════════════════════════════════════════════════════ */
     #pt-hud-panel {
       position:fixed; bottom:14px; right:14px; z-index:10;
-      width:490px; backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      width:500px; backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
       background:linear-gradient(145deg, rgba(14,18,26,0.90) 0%, rgba(4,6,12,0.95) 100%);
       border:1px solid rgba(255,255,255,0.22); border-radius:14px;
-      padding:12px; display:flex; flex-direction:column; gap:8px;
+      padding:10px 12px; display:flex; flex-direction:column; gap:6px;
       box-shadow:0 12px 40px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.2);
+      box-sizing:border-box; overflow:hidden;
     }
     
-    .pt-panel-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px; margin-bottom:2px; }
-    .pt-panel-title { font-family:'Orbitron',sans-serif; font-size:10px; color:#FFFFFF; letter-spacing:2px; text-transform:uppercase; text-shadow:0 0 8px rgba(255,255,255,0.6); }
+    .pt-panel-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:4px; margin-bottom:2px; }
+    .pt-panel-title { font-family:'Orbitron',sans-serif; font-size:9.5px; color:#FFFFFF; letter-spacing:2px; text-transform:uppercase; text-shadow:0 0 8px rgba(255,255,255,0.6); }
 
     /* Grid Layout — 18 columns for the standard IUPAC periodic table */
     .pt-grid {
-      display:grid; grid-template-columns:repeat(18, 1fr); gap:2px;
-      width:100%;
+      display:grid; grid-template-columns:repeat(18, 1fr); gap:1.5px;
+      width:100%; box-sizing:border-box;
     }
 
     .pt-el {
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      padding:2px 0px; border-radius:6px; cursor:pointer;
-      min-height:24px; border:1px solid rgba(255,255,255,0.15);
+      padding:2px 0px; border-radius:5px; cursor:pointer;
+      min-height:22px; border:1px solid rgba(255,255,255,0.15);
       transition: all 0.2s ease; position:relative;
       box-shadow:inset 0 1px 1px rgba(255,255,255,0.2);
     }
     .pt-el:hover { transform:scale(1.28); z-index:5; box-shadow:0 0 14px currentColor; border-color:currentColor; }
     .pt-el-num { font-size:5.5px; color:rgba(255,255,255,0.7); line-height:1; }
-    .pt-el-sym { font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; line-height:1; margin-top:1px; }
+    .pt-el-sym { font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; line-height:1; margin-top:1px; }
 
     /* Category Colors */
     .cat-nonmetal   { background:rgba(0,240,255,0.15); color:#FFFFFF; }
@@ -105,47 +106,40 @@
     .cat-actinide   { background:rgba(255,100,50,0.15); color:#FFFFFF; }
 
     /* Lanthanide/Actinide separator indicator */
-    .pt-spacer { grid-column: span 18; height:4px; }
+    .pt-spacer { grid-column: span 18; height:3px; }
     .pt-la-label, .pt-ac-label {
       grid-column: 1 / 4; display:flex; align-items:center; justify-content:center;
-      font-size:7.5px; letter-spacing:0.5px; color:#FFFFFF; font-family:'Orbitron',sans-serif; font-weight:600;
+      font-size:7px; letter-spacing:0.5px; color:#FFFFFF; font-family:'Orbitron',sans-serif; font-weight:600;
     }
 
     /* ─── FUSION BAR ─── */
     .fusion-bar {
-      display:flex; align-items:center; justify-content:space-between; gap:6px;
-      padding:6px 12px; border-radius:10px; background:rgba(8,12,20,0.7); border:1px solid rgba(255,255,255,0.2);
-      margin-top:4px;
+      display:flex; align-items:center; justify-content:space-between; gap:4px;
+      padding:4px 8px; border-radius:10px; background:rgba(8,12,20,0.7); border:1px solid rgba(255,255,255,0.2);
+      margin-top:2px; box-sizing:border-box; width:100%; overflow:hidden;
     }
     .fusion-slot {
-      width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center;
-      font-family:'Orbitron',sans-serif; font-size:13px; font-weight:700;
+      width:26px; height:26px; border-radius:7px; display:flex; align-items:center; justify-content:center;
+      font-family:'Orbitron',sans-serif; font-size:10.5px; font-weight:700;
       border:1px solid rgba(255,255,255,0.3); background:linear-gradient(145deg, rgba(20,26,38,0.9) 0%, rgba(8,12,20,0.95) 100%);
-      color:#FFFFFF; box-shadow:inset 0 2px 4px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5);
+      color:#FFFFFF; box-shadow:inset 0 2px 4px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5); flex-shrink:0;
     }
-    .fusion-plus { font-size:14px; color:rgba(255,255,255,0.7); }
-    .fusion-btn {
-      padding:7px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.35);
+    .fusion-plus { font-size:12px; color:rgba(255,255,255,0.7); }
+    .fusion-btn, .fusion-btn-undo, .fusion-btn-clear {
+      padding:5px 7px; border-radius:8px; border:1px solid rgba(255,255,255,0.35);
       background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%);
-      color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9.5px; font-weight:700; letter-spacing:1.5px; cursor:pointer;
-      transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.6);
-      text-shadow:0 1px 3px rgba(0,0,0,0.8);
+      color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; letter-spacing:0.5px; cursor:pointer;
+      transition:all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); flex-shrink:0; white-space:nowrap;
+      box-shadow:0 3px 10px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.6);
+      text-shadow:0 1px 2px rgba(0,0,0,0.8);
     }
-    .fusion-btn:hover {
-      transform:translateY(-2px);
+    .fusion-btn:hover, .fusion-btn-undo:hover, .fusion-btn-clear:hover {
+      transform:translateY(-1px);
       background:linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.15) 45%, rgba(28,38,56,0.95) 100%);
-      box-shadow:0 8px 22px rgba(255,255,255,0.2), inset 0 1px 2px rgba(255,255,255,0.7);
+      box-shadow:0 6px 16px rgba(255,255,255,0.2), inset 0 1px 2px rgba(255,255,255,0.7);
       border-color:rgba(255,255,255,0.6);
     }
-    .fusion-btn-clear {
-      padding:7px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.35);
-      background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%);
-      color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; letter-spacing:1px; cursor:pointer;
-      transition:all 0.25s; box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5);
-    }
-    .fusion-btn-clear:hover { transform:translateY(-2px); border-color:rgba(255,255,255,0.6); }
-    .fusion-label { font-size:8.5px; color:#FFFFFF; letter-spacing:1.5px; font-weight:bold; }
+    .fusion-label { font-size:8px; color:#FFFFFF; letter-spacing:1px; font-weight:bold; flex-shrink:0; }
 
     /* ─── LEGEND ─── */
     .pt-legend {
@@ -374,7 +368,7 @@
     <!-- FUSION BAR -->
     <div class="fusion-bar">
       <span class="fusion-label">TRAY:</span>
-      <div id="multi-tray-container" style="display:flex; gap:6px;">
+      <div id="multi-tray-container" style="display:flex; gap:3px;">
         <div class="fusion-slot" id="slot-0">—</div>
         <div class="fusion-slot" id="slot-1">—</div>
         <div class="fusion-slot" id="slot-2">—</div>
@@ -382,8 +376,8 @@
         <div class="fusion-slot" id="slot-4">—</div>
       </div>
       <button class="fusion-btn" id="btn-fuse">⚡ FUSE ALL</button>
-      <button class="fusion-btn" id="btn-random" style="border-color:rgba(191,0,255,0.3); background:rgba(191,0,255,0.1); color:#BF00FF;">🔀 RANDOM</button>
-      <button class="fusion-btn-undo" id="btn-undo" style="padding:6px 12px; border-radius:6px; border:1px solid rgba(255,215,0,0.3); background:rgba(255,215,0,0.1); color:#FFD700; font-family:'Orbitron',sans-serif; font-size:10px; cursor:pointer;">↩ UNDO</button>
+      <button class="fusion-btn" id="btn-random">🔀 RANDOM</button>
+      <button class="fusion-btn-undo" id="btn-undo">↩ UNDO</button>
       <button class="fusion-btn-clear" id="btn-clear">✕ CLEAR</button>
     </div>
   </div>
