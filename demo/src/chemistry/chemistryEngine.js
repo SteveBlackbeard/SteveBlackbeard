@@ -1,7 +1,92 @@
-// NULLA-LABS IUPAC 3D MOLECULAR SYNTHESIS PLATFORM — CHEMISTRY ENGINE
-// Stoichiometry, Valence Predictions, Reaction Lookups, and VSEPR Compiler
+// NULLA-LABS IUPAC 3D MOLECULAR SYNTHESIS PLATFORM — CHEMISTRY & THERMODYNAMIC ENGINE
+// Stoichiometry, Pauling Electronegativity Stability Predictions, Top 3-5 Generative Compound Recommender, and VSEPR Compiler
 
-import { VALENCE_MAP, REACTIONS } from '../config/constants.js';
+import { VALENCE_MAP, PAULING_EN, REACTIONS } from '../config/constants.js';
+
+export function calculateThermodynamicStability(zA, zB) {
+  const enA = PAULING_EN[zA] !== undefined ? PAULING_EN[zA] : 1.5;
+  const enB = PAULING_EN[zB] !== undefined ? PAULING_EN[zB] : 2.5;
+  const deltaEN = Math.abs(enA - enB);
+
+  let bondType = 'Non-Polar Covalent';
+  let score = 72.0 + deltaEN * 8.5;
+
+  if (deltaEN >= 1.7) {
+    bondType = 'Ionic Lattice';
+    score = 88.0 + (deltaEN - 1.7) * 4.5;
+  } else if (deltaEN >= 0.4) {
+    bondType = 'Polar Covalent';
+    score = 80.0 + deltaEN * 7.0;
+  }
+
+  score = Math.min(99.5, Math.max(45.0, score));
+  return {
+    deltaEN: deltaEN.toFixed(2),
+    bondType,
+    stabilityScore: score.toFixed(1) + '%'
+  };
+}
+
+export function generateTopCompoundSuggestions(reactantsArray) {
+  if (!reactantsArray || reactantsArray.length === 0) return [];
+
+  const presentZ = Array.from(new Set(reactantsArray.map(r => r.z)));
+  const sortedSyms = reactantsArray.map(r => r.sym).sort().join('+');
+  const directSyms = reactantsArray.map(r => r.sym).join('+');
+
+  const suggestions = [];
+
+  // Check exact database reactions
+  const exactMatch = REACTIONS[sortedSyms] || REACTIONS[directSyms];
+  if (exactMatch) {
+    suggestions.push({
+      name: exactMatch.name,
+      formula: exactMatch.formula,
+      type: exactMatch.type,
+      stability: (exactMatch.stabilityScore || 95.0) + '%',
+      enthalpy: exactMatch.enthalpy ? `${exactMatch.enthalpy} kJ/mol` : 'N/A',
+      isExact: true
+    });
+  }
+
+  // Generate Pauling stoichiometric candidates
+  if (presentZ.length >= 2) {
+    const zA = presentZ[0];
+    const zB = presentZ[1];
+    const pred = predictCompoundFormula(zA, zB);
+    const thermo = calculateThermodynamicStability(zA, zB);
+
+    const isAlreadyAdded = suggestions.some(s => s.formula === pred.formulaStr);
+    if (!isAlreadyAdded) {
+      suggestions.push({
+        name: `Predicted ${pred.formulaStr} (${thermo.bondType})`,
+        formula: pred.formulaStr,
+        type: thermo.bondType,
+        stability: thermo.stabilityScore,
+        enthalpy: thermo.bondType.includes('Ionic') ? '-450.0 kJ/mol (Est)' : '-210.0 kJ/mol (Est)',
+        isExact: false
+      });
+    }
+  }
+
+  // Fallback procedural options if less than 3
+  if (suggestions.length < 3 && presentZ.length >= 1) {
+    const z = presentZ[0];
+    const el = (typeof PERIODIC_DATA !== 'undefined' ? PERIODIC_DATA[z] : null) || { s:'El', n:'Element' };
+    
+    if (z === 8 || presentZ.includes(8)) {
+      suggestions.push({ name: 'Oxide Complex', formula: `${el.s}₂O₃`, type: 'Oxide Lattice', stability: '89.4%', enthalpy: '-520 kJ/mol', isExact: false });
+    }
+    if (z === 1 || presentZ.includes(1)) {
+      suggestions.push({ name: 'Hydride Unit', formula: `H${el.s}`, type: 'Polar Hydride', stability: '86.2%', enthalpy: '-140 kJ/mol', isExact: false });
+    }
+    if (suggestions.length < 3) {
+      suggestions.push({ name: `${el.n} Monatomic Lattice`, formula: `${el.s}₁`, type: 'Pure Element', stability: '99.0%', enthalpy: '0.0 kJ/mol', isExact: false });
+    }
+  }
+
+  return suggestions.slice(0, 5);
+}
 
 export function predictCompoundFormula(zA, zB) {
   const elA = (typeof PERIODIC_DATA !== 'undefined' ? PERIODIC_DATA[zA] : null) || { s:'A', n:'Element A', en:1.5 };
@@ -18,7 +103,10 @@ export function predictCompoundFormula(zA, zB) {
   countA /= common;
   countB /= common;
 
-  const isACation = (elA.en || 1.5) <= (elB.en || 2.5);
+  const enValA = PAULING_EN[zA] || 1.5;
+  const enValB = PAULING_EN[zB] || 2.5;
+
+  const isACation = enValA <= enValB;
   const cation = isACation ? zA : zB;
   const anion = isACation ? zB : zA;
   const countCat = isACation ? countA : countB;
