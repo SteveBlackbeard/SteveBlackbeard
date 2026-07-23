@@ -3,7 +3,6 @@
   <!-- 3D Obsidian Shader Animated Header Banner -->
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Sovereign Systems Banner" width="90%" />
-
   <br/><br/>
   <p align="center">
     <code>[SOVEREIGN SYSTEMS ARCHITECT]</code> &nbsp;•&nbsp; 
