@@ -3023,8 +3023,7 @@
       const points = selectedMeasureAtoms.map(a => a.currentPos);
       if (selectedMeasureAtoms.length === 3) points.push(selectedMeasureAtoms[0].currentPos);
       if (laserLineMesh) {
-        laserLineMesh.geometry.dispose();
-        laserLineMesh.geometry = new THREE.BufferGeometry().setFromPoints(points);
+        laserLineMesh.geometry.setFromPoints(points);
       }
     }
 

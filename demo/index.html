@@ -191,7 +191,7 @@
   </div>
 
   <!-- TELEMETRY PANEL -->
-  <div id="molecular-hud" style="width:310px;">
+  <div id="molecular-hud" style="width:320px; max-height:calc(100vh - 110px); overflow-y:auto; scrollbar-width:thin;">
     <h3>◆ MOLECULAR TELEMETRY</h3>
     <div class="hud-row"><span class="hud-label">ASSEMBLY</span><span class="hud-val" id="hud-name">B-DNA Double Helix</span></div>
     <div class="hud-row"><span class="hud-label">FORMULA</span><span class="hud-val" id="hud-formula">—</span></div>
@@ -217,7 +217,7 @@
     
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-top:8px;">
       <button id="btn-reassemble">🧬 ADN</button>
-      <button id="btn-cell" style="padding:6px 0; border:1px solid rgba(0,255,157,0.4); border-radius:8px; background:linear-gradient(180deg, rgba(0,255,157,0.25) 0%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">🧫 CÉLULA</button>
+      <button id="btn-cell" style="padding:6px 0; border:1px solid rgba(0,255,157,0.5); border-radius:8px; background:linear-gradient(180deg, rgba(0,255,157,0.3) 0%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:900; cursor:pointer; text-shadow:0 0 8px rgba(0,255,157,0.8);">🧫 CÉLULA</button>
       <button id="btn-orbitals" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">⚛️ ORBITALES</button>
     </div>
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-top:4px;">
@@ -225,9 +225,8 @@
       <button id="btn-export-gltf" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📱 AR (.GLTF)</button>
       <button id="btn-export-usdz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;"> USDZ (iOS)</button>
     </div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-top:4px;">
-      <button id="btn-export-usdz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;"> USDZ AR (iOS)</button>
-      <button id="btn-export-xyz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">💾 EXPORTAR .XYZ</button>
+    <div style="display:grid; grid-template-columns: 1fr; gap:4px; margin-top:4px;">
+      <button id="btn-export-xyz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">💾 EXPORTAR COORDENADAS .XYZ</button>
     </div>
 
     <!-- ORGANELLE 3D ZOOM NAVIGATOR (Visible when Cell Mode Active) -->
