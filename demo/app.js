@@ -292,6 +292,18 @@
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
 
+  if (canvas) {
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      console.warn('WebGL context lost. Suppressing crash...');
+    });
+    canvas.addEventListener('webglcontextrestored', () => {
+      console.log('WebGL context restored. Re-rendering 3D model...');
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      buildDNA();
+    });
+  }
+
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x020306, 0.002);
 
@@ -620,6 +632,7 @@
         const mat = getMaterialForElement(elData, grp.col);
         const instMesh = new THREE.InstancedMesh(sphereGeo, mat, count);
         instMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        instMesh.frustumCulled = false;
         moleculeGroup.add(instMesh);
         activeInstancedMeshes.push(instMesh);
 
@@ -768,6 +781,7 @@
 
     const bondInstMesh = new THREE.InstancedMesh(cylinderGeo, bondMat, totalCylinders);
     bondInstMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    bondInstMesh.frustumCulled = false;
     moleculeGroup.add(bondInstMesh);
     activeBondInstancedMesh = bondInstMesh;
 
