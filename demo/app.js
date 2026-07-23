@@ -320,7 +320,23 @@
             const dist = start.distanceTo(end);
             const r1 = activeAtoms[i].elData.r || 1.0;
             const r2 = activeAtoms[j].elData.r || 1.0;
-            const maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
+            let maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
+            
+            // Custom bonding thresholds to ensure physical rods (barillas) show for element lattices
+            if (!isDnaMode) {
+              const sym1 = activeAtoms[i].elData.s;
+              const sym2 = activeAtoms[j].elData.s;
+              if (sym1 === sym2) {
+                if (sym1 === 'Po') maxBondDist = 12.0; // Simple Cubic Cube Frame
+                else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(sym1)) maxBondDist = 13.0; // BCC center-to-corners
+                else if (['Si', 'Ge', 'Sn'].includes(sym1)) maxBondDist = 11.0; // Diamond tetrahedral bonds
+                else if (['As', 'Sb', 'Bi'].includes(sym1)) maxBondDist = 8.5; // Puckered sheets
+                else if (['Se', 'Te'].includes(sym1)) maxBondDist = 7.0; // Helical chain
+                else if (sym1 === 'I') maxBondDist = 4.5; // I2 molecular bonds only
+                else if (['Hg', 'Ga', 'Cs', 'Rb', 'Fr', 'Br'].includes(sym1)) maxBondDist = 7.5; // Liquid dynamic clusters
+              }
+            }
+            
             if (dist > 0.1 && dist < maxBondDist) {
               newBonds.push({ a: i, b: j });
             }
