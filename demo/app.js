@@ -498,8 +498,12 @@
       atoms.push({ z: outerZ, pos: new THREE.Vector3(-4.8, -1.8, 0), scale: 1.4 });
       atoms.push({ z: outerZ, pos: new THREE.Vector3(4.8, -1.8, 0), scale: 1.4 });
     }
-    else if (name === 'Carbon Dioxide' || name === 'Nitric Oxide' || name === 'Hydrochloric Acid' || name === 'Hydrogen Fluoride' || name === 'Hydrogen Bromide') {
-      if (reaction.atoms.length === 2 && reaction.atoms[0].c === 1 && reaction.atoms[1].c === 1) {
+    else if (['Carbon Dioxide', 'Nitric Oxide', 'Hydrochloric Acid', 'Hydrogen Fluoride', 'Hydrogen Bromide', 'Carbon Disulfide', 'Hydrogen Cyanide'].includes(name)) {
+      if (name === 'Hydrogen Cyanide') {
+        atoms.push({ z: 1, pos: new THREE.Vector3(-5.0, 0, 0), scale: 1.3 }); // H
+        atoms.push({ z: 6, pos: new THREE.Vector3(0, 0, 0), scale: 1.7 });    // C
+        atoms.push({ z: 7, pos: new THREE.Vector3(4.5, 0, 0), scale: 1.7 });   // N
+      } else if (reaction.atoms.length === 2 && reaction.atoms[0].c === 1 && reaction.atoms[1].c === 1) {
         atoms.push({ z: reaction.atoms[0].z, pos: new THREE.Vector3(-3.5, 0, 0), scale: 1.7 });
         atoms.push({ z: reaction.atoms[1].z, pos: new THREE.Vector3(3.5, 0, 0), scale: 1.7 });
       } else {
@@ -518,7 +522,7 @@
       atoms.push({ z: outerZ, pos: new THREE.Vector3(-4.3, -1.5, -2.5), scale: 1.3 });
       atoms.push({ z: outerZ, pos: new THREE.Vector3(4.3, -1.5, -2.5), scale: 1.3 });
     }
-    else if (name === 'Methane' || name === 'Carbon Tetrachloride') {
+    else if (['Methane', 'Carbon Tetrachloride', 'Carbon Tetrafluoride', 'Titanium Tetrachloride'].includes(name)) {
       const centralZ = reaction.atoms[0].z; 
       const outerZ = reaction.atoms[1].z;   
       atoms.push({ z: centralZ, pos: new THREE.Vector3(0, 0, 0), scale: 1.7 });
@@ -531,7 +535,7 @@
       ];
       vertices.forEach(v => atoms.push({ z: outerZ, pos: v, scale: 1.3 }));
     }
-    else if (name === 'Sodium Chloride' || name === 'Potassium Chloride' || name === 'Sodium Fluoride') {
+    else if (['Sodium Chloride', 'Potassium Chloride', 'Sodium Fluoride', 'Calcium Oxide', 'Magnesium Oxide'].includes(name)) {
       const zA = reaction.atoms[0].z;
       const zB = reaction.atoms[1].z;
       const d = 6.0;
@@ -547,6 +551,185 @@
           }
         }
       }
+    }
+    else if (name === 'Sodium Oxide' || name === 'Lithium Oxide' || name === 'Silver Oxide') {
+      const zMetal = reaction.atoms[0].z; 
+      const zO = reaction.atoms[1].z;     
+      const d = 6.5;
+      const oPos = [
+        new THREE.Vector3(-d, -d, -d), new THREE.Vector3(d, d, -d),
+        new THREE.Vector3(d, -d, d), new THREE.Vector3(-d, d, d)
+      ];
+      oPos.forEach(p => atoms.push({ z: zO, pos: p, scale: 1.8 }));
+      const h = d * 0.5;
+      for (let dx of [-h, h]) {
+        for (let dy of [-h, h]) {
+          for (let dz of [-h, h]) {
+            atoms.push({ z: zMetal, pos: new THREE.Vector3(dx, dy, dz), scale: 1.3 });
+          }
+        }
+      }
+    }
+    else if (name === 'Silicon Carbide' || name === 'Silicon Dioxide') {
+      const zSi = 14;
+      const zOther = name === 'Silicon Carbide' ? 6 : 8; 
+      const d = 5.0;
+      atoms.push({ z: zSi, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
+      const vertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      vertices.forEach(v => {
+        atoms.push({ z: zOther, pos: v.clone().multiplyScalar(0.5), scale: 1.4 });
+        atoms.push({ z: zSi, pos: v, scale: 1.8 });
+      });
+    }
+    else if (name === 'Iron Oxide (Rust)' || name === 'Aluminium Oxide') {
+      const zMetal = reaction.atoms[0].z; 
+      const zO = reaction.atoms[1].z;     
+      const r = 5.5;
+      for (let i = 0; i < 6; i++) {
+        const theta = (i / 6) * Math.PI * 2;
+        const h = (i % 2 === 0 ? 1.8 : -1.8);
+        atoms.push({ z: zO, pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), h), scale: 1.5 });
+      }
+      atoms.push({ z: zMetal, pos: new THREE.Vector3(0, 2.5, 4.0), scale: 1.7 });
+      atoms.push({ z: zMetal, pos: new THREE.Vector3(0, -2.5, -4.0), scale: 1.7 });
+      atoms.push({ z: zMetal, pos: new THREE.Vector3(-2.5, 0, 1.0), scale: 1.7 });
+      atoms.push({ z: zMetal, pos: new THREE.Vector3(2.5, 0, -1.0), scale: 1.7 });
+    }
+    else if (name === 'Copper Oxide' || name === 'Lead Oxide') {
+      const zMetal = reaction.atoms[0].z; 
+      const zO = reaction.atoms[1].z;     
+      const d = 5.5;
+      for (let ix = -1; ix <= 1; ix++) {
+        for (let iy = -1; iy <= 1; iy++) {
+          const isMetal = (ix + iy) % 2 === 0;
+          atoms.push({
+            z: isMetal ? zMetal : zO,
+            pos: new THREE.Vector3(ix * d, iy * d, (isMetal ? 0.8 : -0.8)),
+            scale: isMetal ? 1.7 : 1.5
+          });
+        }
+      }
+    }
+    else if (name === 'Calcium Carbide') {
+      const zCa = 20;
+      const zC = 6;
+      const d = 6.0;
+      for (let dx of [-d, d]) {
+        for (let dy of [-d, d]) {
+          atoms.push({ z: zCa, pos: new THREE.Vector3(dx, dy, 0), scale: 1.8 });
+        }
+      }
+      const cDumbbells = [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, d, d*0.5),
+        new THREE.Vector3(0, -d, -d*0.5)
+      ];
+      cDumbbells.forEach(center => {
+        atoms.push({ z: zC, pos: center.clone().add(new THREE.Vector3(0, 0, -1.5)), scale: 1.5 });
+        atoms.push({ z: zC, pos: center.clone().add(new THREE.Vector3(0, 0, 1.5)), scale: 1.5 });
+      });
+    }
+    else if (name === 'Phosphorus Pentoxide') {
+      const zP = 15;
+      const zO = 8;
+      const d = 6.0;
+      const pVertices = [
+        new THREE.Vector3(d, d, d),
+        new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d),
+        new THREE.Vector3(d, -d, -d)
+      ];
+      pVertices.forEach(v => atoms.push({ z: zP, pos: v, scale: 1.7 }));
+      for (let i = 0; i < pVertices.length; i++) {
+        for (let j = i + 1; j < pVertices.length; j++) {
+          const mid = pVertices[i].clone().add(pVertices[j]).multiplyScalar(0.5);
+          atoms.push({ z: zO, pos: mid, scale: 1.4 });
+        }
+      }
+      pVertices.forEach(v => {
+        const terminal = v.clone().normalize().multiplyScalar(v.length() + 3.0);
+        atoms.push({ z: zO, pos: terminal, scale: 1.4 });
+      });
+    }
+    else if (name === 'Aluminium Chloride' || name === 'Iron Chloride') {
+      const zMetal = reaction.atoms[0].z; 
+      const zCl = 17;
+      atoms.push({ z: zMetal, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
+      const d = 5.8;
+      const clPos = [
+        new THREE.Vector3(d, 0, 0), new THREE.Vector3(-d, 0, 0),
+        new THREE.Vector3(0, d, 0), new THREE.Vector3(0, -d, 0),
+        new THREE.Vector3(0, 0, d), new THREE.Vector3(0, 0, -d)
+      ];
+      clPos.forEach(p => atoms.push({ z: zCl, pos: p, scale: 1.5 }));
+    }
+    else if (name === 'Magnesium Chloride' || name === 'Calcium Chloride') {
+      const zMetal = reaction.atoms[0].z; 
+      const zCl = 17;
+      atoms.push({ z: zMetal, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
+      const d = 6.0;
+      const clPos = [
+        new THREE.Vector3(d, d, 0), new THREE.Vector3(-d, -d, 0),
+        new THREE.Vector3(-d, d, d), new THREE.Vector3(d, -d, -d)
+      ];
+      clPos.forEach(p => atoms.push({ z: zCl, pos: p, scale: 1.5 }));
+    }
+    else if (name === 'Copper Chloride') {
+      const zCu = 29;
+      const zCl = 17;
+      const spacing = 6.0;
+      for (let i = -1; i <= 1; i++) {
+        const x = i * spacing;
+        atoms.push({ z: zCu, pos: new THREE.Vector3(x, 0, 0), scale: 1.7 });
+        atoms.push({ z: zCl, pos: new THREE.Vector3(x + spacing*0.5, 3.5, 1.5), scale: 1.5 });
+        atoms.push({ z: zCl, pos: new THREE.Vector3(x + spacing*0.5, -3.5, -1.5), scale: 1.5 });
+      }
+    }
+    else if (name === 'Zinc Chloride') {
+      const zZn = 30;
+      const zCl = 17;
+      const d = 5.0;
+      atoms.push({ z: zZn, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
+      const clPos = [
+        new THREE.Vector3(d, d, d), new THREE.Vector3(-d, -d, d),
+        new THREE.Vector3(-d, d, -d), new THREE.Vector3(d, -d, -d)
+      ];
+      clPos.forEach(p => atoms.push({ z: zCl, pos: p, scale: 1.5 }));
+    }
+    else if (name === 'Zinc Oxide') {
+      const zZn = 30;
+      const zO = 8;
+      const r = 5.8;
+      const h = 4.0;
+      for (let i = 0; i < 6; i++) {
+        const theta = (i / 6) * Math.PI * 2;
+        const isZn = i % 2 === 0;
+        atoms.push({ z: isZn ? zZn : zO, pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), -h), scale: 1.6 });
+      }
+      atoms.push({ z: zZn, pos: new THREE.Vector3(0, 0, -h), scale: 1.7 });
+      for (let i = 0; i < 6; i++) {
+        const theta = (i / 6) * Math.PI * 2 + Math.PI / 6;
+        const isZn = i % 2 !== 0;
+        atoms.push({ z: isZn ? zZn : zO, pos: new THREE.Vector3(r * Math.cos(theta), r * Math.sin(theta), h), scale: 1.6 });
+      }
+      atoms.push({ z: zO, pos: new THREE.Vector3(0, 0, h), scale: 1.5 });
+    }
+    else if (name === 'Gold Oxide') {
+      const zAu = 79;
+      const zO = 8;
+      const d = 5.2;
+      atoms.push({ z: zAu, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
+      atoms.push({ z: zO, pos: new THREE.Vector3(d, 0, 0), scale: 1.4 });
+      atoms.push({ z: zO, pos: new THREE.Vector3(-d, 0, 0), scale: 1.4 });
+      atoms.push({ z: zO, pos: new THREE.Vector3(0, d, 0), scale: 1.4 });
+      atoms.push({ z: zO, pos: new THREE.Vector3(0, -d, 0), scale: 1.4 });
+      atoms.push({ z: zAu, pos: new THREE.Vector3(2*d, d, 0), scale: 1.8 });
+      atoms.push({ z: zAu, pos: new THREE.Vector3(-2*d, -d, 0), scale: 1.8 });
     }
     else {
       let totalAtoms = 0;
