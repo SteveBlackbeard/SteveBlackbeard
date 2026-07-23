@@ -2709,6 +2709,93 @@
     }).catch(() => {});
   }
 
+  // ═══════════════════════════════════════════════════════════════
+  // INTERACTIVE GUIDED ONBOARDING TUTORIAL ENGINE
+  // ═══════════════════════════════════════════════════════════════
+  let currentTutorialStep = 0;
+  const btnTutorial = document.getElementById('btn-tutorial');
+  const onboardingOverlay = document.getElementById('onboarding-overlay');
+  const onboardingTitle = document.getElementById('onboarding-title');
+  const onboardingInstruction = document.getElementById('onboarding-instruction');
+  const onboardingStepIndicator = document.getElementById('onboarding-step-indicator');
+  const btnNextOnboarding = document.getElementById('btn-next-onboarding');
+  const btnCloseOnboarding = document.getElementById('btn-close-onboarding');
+
+  const TUTORIAL_STEPS = [
+    {
+      step: 1,
+      title: "🚀 PASO 1/3: SELECCIÓN EN LA TABLA PERIÓDICA",
+      instruction: "Haz clic en 2 elementos de la tabla inferior (por ejemplo, Sodio Na (11) y Cloro Cl (17)) para colocarlos en la bandeja de síntesis.",
+      targetId: "pt-hud-panel"
+    },
+    {
+      step: 2,
+      title: "💥 PASO 2/3: FUSIÓN Y SÍNTESIS QUÍMICA",
+      instruction: "Una vez seleccionados tus reactantes, pulsa el botón brillante [FUSE] para simular la colisión termodinámica a alta energía cinética.",
+      targetId: "btn-fuse"
+    },
+    {
+      step: 3,
+      title: "🔬 PASO 3/3: TELEMETRÍA 3D, MEDICIÓN Y TÉRRMICA",
+      instruction: "¡Enhorabuena! Observa la energía libre de Gibbs ΔG en la telemetría, mueve el slider de temperatura (0-1000 K) o pulsa 📏 MEDIR 3D para conectar átomos y medir ángulos VSEPR.",
+      targetId: "molecular-hud"
+    }
+  ];
+
+  function showTutorialStep(idx) {
+    if (!onboardingOverlay) return;
+    currentTutorialStep = idx % TUTORIAL_STEPS.length;
+    const s = TUTORIAL_STEPS[currentTutorialStep];
+
+    if (onboardingTitle) onboardingTitle.textContent = s.title;
+    if (onboardingInstruction) onboardingInstruction.textContent = s.instruction;
+    if (onboardingStepIndicator) onboardingStepIndicator.textContent = `PASO ${s.step} / 3`;
+
+    if (btnNextOnboarding) {
+      btnNextOnboarding.textContent = s.step === 3 ? "¡ENTENDIDO! ✓" : "SIGUIENTE ➔";
+    }
+
+    onboardingOverlay.style.display = 'block';
+
+    const targetEl = document.getElementById(s.targetId);
+    if (targetEl) {
+      targetEl.style.boxShadow = '0 0 35px rgba(0, 255, 157, 0.9)';
+      setTimeout(() => {
+        if (targetEl) targetEl.style.boxShadow = '';
+      }, 3500);
+    }
+  }
+
+  if (btnTutorial) {
+    btnTutorial.addEventListener('click', () => {
+      playTone(700, 'sine', 0.15);
+      showTutorialStep(0);
+    });
+  }
+
+  if (btnNextOnboarding) {
+    btnNextOnboarding.addEventListener('click', () => {
+      playTone(600, 'sine', 0.1);
+      if (currentTutorialStep >= 2) {
+        if (onboardingOverlay) onboardingOverlay.style.display = 'none';
+      } else {
+        showTutorialStep(currentTutorialStep + 1);
+      }
+    });
+  }
+
+  if (btnCloseOnboarding) {
+    btnCloseOnboarding.addEventListener('click', () => {
+      if (onboardingOverlay) onboardingOverlay.style.display = 'none';
+    });
+  }
+
+  if (!location.hash && typeof paramZ === 'undefined' && typeof paramFuse === 'undefined') {
+    setTimeout(() => {
+      showTutorialStep(0);
+    }, 1200);
+  }
+
   // WEBXR / VR VIRTUAL REALITY SESSION BUTTON
   const btnWebxr = document.getElementById('btn-webxr');
   if (btnWebxr) {
