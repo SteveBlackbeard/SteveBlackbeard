@@ -655,7 +655,7 @@
             instancedMesh: instMesh,
             instIdx: idx,
             velocity: item.velocity || null,
-            basePos: item.basePos || null,
+            basePos: item.basePos ? item.basePos.clone() : item.pos.clone(),
             parent: item.parent || null,
             orbitR: item.orbitR || 0,
             orbitAngle: item.orbitAngle || 0,
@@ -2709,30 +2709,30 @@
       
       // Real Thermal Phase Behavior (Solid < 273K, Liquid 273K - 373K, Gas >= 373K)
       if (fusionState === 'idle' && !a.removing && !a.isElectron) {
+        const base = a.basePos || a.targetPos;
         if (temperatureK < 273) {
           // SOLID LATTICE: rigid crystal structure with tight harmonic oscillation
           const solidScale = temperatureK / 273.0;
-          if (a.basePos) a.targetPos.copy(a.basePos);
-          const vibX = Math.sin(t * 8.0 + a.instIdx) * (0.04 * solidScale);
-          const vibY = Math.cos(t * 9.5 + a.instIdx) * (0.04 * solidScale);
-          const vibZ = Math.sin(t * 7.2 + a.instIdx) * (0.04 * solidScale);
-          a.currentPos.add(new THREE.Vector3(vibX, vibY, vibZ));
+          const vibX = Math.sin(t * 8.0 + a.instIdx) * (0.05 * solidScale);
+          const vibY = Math.cos(t * 9.5 + a.instIdx) * (0.05 * solidScale);
+          const vibZ = Math.sin(t * 7.2 + a.instIdx) * (0.05 * solidScale);
+          a.targetPos.copy(base).add(new THREE.Vector3(vibX, vibY, vibZ));
           if (hudEpi && i === 0) hudEpi.textContent = `SOLID CRYSTAL LATTICE (${temperatureK}K)`;
         } else if (temperatureK < 373) {
           // LIQUID FLUID: amorphous fluid cohesion with smooth wave motion
-          const liqWobbleX = Math.sin(t * 3.5 + (a.basePos ? a.basePos.y : a.instIdx) * 0.4) * 0.7;
-          const liqWobbleY = Math.cos(t * 4.2 + (a.basePos ? a.basePos.x : a.instIdx) * 0.4) * 0.7;
-          const liqWobbleZ = Math.sin(t * 2.8 + (a.basePos ? a.basePos.z : a.instIdx) * 0.4) * 0.7;
-          if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(liqWobbleX, liqWobbleY, liqWobbleZ));
+          const liqWobbleX = Math.sin(t * 3.5 + (base ? base.y : a.instIdx) * 0.4) * 0.6;
+          const liqWobbleY = Math.cos(t * 4.2 + (base ? base.x : a.instIdx) * 0.4) * 0.6;
+          const liqWobbleZ = Math.sin(t * 2.8 + (base ? base.z : a.instIdx) * 0.4) * 0.6;
+          a.targetPos.copy(base).add(new THREE.Vector3(liqWobbleX, liqWobbleY, liqWobbleZ));
           if (hudEpi && i === 0) hudEpi.textContent = `LIQUID COHESIVE FLUID (${temperatureK}K)`;
         } else {
           // GAS BROWNIAN EXPANSION: high kinetic dispersion with bouncing boundaries
           const gasScale = (temperatureK - 373.0) * 0.005 + 1.0;
           if (!a.velocity) {
             a.velocity = new THREE.Vector3(
-              (Math.random() - 0.5) * 8.0 * gasScale,
-              (Math.random() - 0.5) * 8.0 * gasScale,
-              (Math.random() - 0.5) * 8.0 * gasScale
+              (Math.random() - 0.5) * 6.0 * gasScale,
+              (Math.random() - 0.5) * 6.0 * gasScale,
+              (Math.random() - 0.5) * 6.0 * gasScale
             );
           }
           a.targetPos.addScaledVector(a.velocity, 0.016 * gasScale);
