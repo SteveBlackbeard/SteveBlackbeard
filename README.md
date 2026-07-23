@@ -169,10 +169,8 @@
 </div>
 
 ---
-
 <div align="center">
   <br />
-  Knowledge is not individual, but of the expansion itself.
   <br/><br/>
   <sub>⚡ Powered by <strong>Nulla Labs</strong> • I+D and Innovations</sub>
 </div>
