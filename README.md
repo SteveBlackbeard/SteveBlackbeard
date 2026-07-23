@@ -27,8 +27,6 @@
 
 ### 👁️ Ethernium Briefing // 
 
-> *“Ethernium fue concebido a partir de múltiples rupturas de paradigmas conceptuales, y está listo para romper los siguientes.”*
->
 > *“Engineering high-efficiency, resilient, and autonomous computing paradigms by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
 
 ---
