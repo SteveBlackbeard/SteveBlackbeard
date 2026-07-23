@@ -16,125 +16,156 @@
     /* ─── HEADER ─── */
     .hud-header {
       position:fixed; top:0; left:0; right:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
-      padding:8px 18px; backdrop-filter:blur(18px) saturate(1.6); -webkit-backdrop-filter:blur(18px) saturate(1.6);
-      background:rgba(2,3,6,0.7); border-bottom:1px solid rgba(0,240,255,0.15);
+      padding:10px 22px; backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      background:linear-gradient(145deg, rgba(14,18,26,0.90) 0%, rgba(4,6,12,0.95) 100%);
+      border-bottom:1px solid rgba(255,255,255,0.22);
+      box-shadow:0 8px 32px rgba(0,0,0,0.85);
     }
-    .hud-title { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#00F0FF; text-shadow:0 0 12px rgba(0,240,255,0.5); }
-    .hud-badge { padding:2px 10px; border-radius:9px; font-size:9px; letter-spacing:1px; background:rgba(0,240,255,0.15); color:#00F0FF; border:1px solid rgba(0,240,255,0.3); }
+    .hud-title { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#FFFFFF; text-shadow:0 0 10px rgba(255,255,255,0.8); }
+    .hud-badge { padding:4px 12px; border-radius:10px; font-size:9px; letter-spacing:1px; background:linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); color:#FFFFFF; border:1px solid rgba(255,255,255,0.3); font-weight:600; box-shadow:inset 0 1px 1px rgba(255,255,255,0.3); }
 
     /* ─── TELEMETRY PANEL ─── */
     #molecular-hud {
-      position:fixed; top:52px; left:12px; z-index:10; width:300px;
-      backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4);
-      background:rgba(5,8,18,0.75); border:1px solid rgba(0,240,255,0.12); border-radius:10px; padding:14px;
+      position:fixed; top:60px; left:14px; z-index:10; width:310px;
+      backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      background:linear-gradient(145deg, rgba(14,18,26,0.90) 0%, rgba(4,6,12,0.95) 100%);
+      border:1px solid rgba(255,255,255,0.22); border-radius:14px; padding:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.2);
     }
-    #molecular-hud h3 { font-family:'Orbitron',sans-serif; font-size:9px; color:#00F0FF; letter-spacing:2px; margin-bottom:10px; }
-    .hud-row { display:flex; font-size:10px; margin-bottom:5px; }
-    .hud-label { color:#506080; width:85px; flex-shrink:0; }
-    .hud-val { color:#c0d8ff; flex:1; word-break:break-all; }
+    #molecular-hud h3 { font-family:'Orbitron',sans-serif; font-size:10px; color:#FFFFFF; letter-spacing:2px; margin-bottom:12px; text-shadow:0 0 8px rgba(255,255,255,0.6); }
+    .hud-row { display:flex; font-size:10.5px; margin-bottom:6px; }
+    .hud-label { color:rgba(255,255,255,0.65); width:90px; flex-shrink:0; }
+    .hud-val { color:#FFFFFF; flex:1; word-break:break-all; font-weight:600; }
     #btn-reassemble, #btn-open-pt {
-      width:100%; margin-top:8px; padding:7px 0; border:1px solid rgba(0,240,255,0.25); border-radius:6px;
-      background:rgba(0,240,255,0.08); color:#00F0FF; font-family:'Orbitron',sans-serif; font-size:9px;
-      letter-spacing:2px; cursor:pointer; transition:all 0.3s;
+      width:100%; margin-top:10px; padding:9px 0; border:1px solid rgba(255,255,255,0.35); border-radius:10px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%);
+      color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9.5px; font-weight:700;
+      letter-spacing:2px; cursor:pointer; transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.6);
+      text-shadow:0 1px 3px rgba(0,0,0,0.8);
     }
-    #btn-reassemble:hover, #btn-open-pt:hover { background:rgba(0,240,255,0.2); box-shadow:0 0 12px rgba(0,240,255,0.3); }
+    #btn-reassemble:hover, #btn-open-pt:hover {
+      transform:translateY(-2px);
+      background:linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.15) 45%, rgba(28,38,56,0.95) 100%);
+      box-shadow:0 8px 22px rgba(255,255,255,0.2), inset 0 1px 2px rgba(255,255,255,0.7), inset 0 -2px 4px rgba(0,0,0,0.6);
+      border-color:rgba(255,255,255,0.6);
+    }
 
     /* ─── FOOTER STATS ─── */
-    .hud-stats { position:fixed; bottom:10px; left:14px; z-index:10; display:flex; gap:14px; }
-    .stat-chip { padding:3px 10px; border-radius:6px; font-size:9px; letter-spacing:1px; background:rgba(5,8,18,0.6); border:1px solid rgba(0,240,255,0.1); backdrop-filter:blur(8px); }
+    .hud-stats { position:fixed; bottom:14px; left:14px; z-index:10; display:flex; gap:12px; }
+    .stat-chip {
+      padding:6px 14px; border-radius:10px; font-size:9.5px; font-weight:700; letter-spacing:1px; color:#FFFFFF;
+      background:linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 45%, rgba(18,24,36,0.9) 100%);
+      border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(16px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.4);
+    }
 
     /* ═══════════════════════════════════════════════════════════════
        PERIODIC TABLE HUD PANEL (Bottom-Right)
        ═══════════════════════════════════════════════════════════════ */
     #pt-hud-panel {
-      position:fixed; bottom:12px; right:12px; z-index:10;
-      width:480px; backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4);
-      background:rgba(5,8,18,0.75); border:1px solid rgba(0,240,255,0.12); border-radius:10px;
-      padding:10px; display:flex; flex-direction:column; gap:6px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      position:fixed; bottom:14px; right:14px; z-index:10;
+      width:490px; backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      background:linear-gradient(145deg, rgba(14,18,26,0.90) 0%, rgba(4,6,12,0.95) 100%);
+      border:1px solid rgba(255,255,255,0.22); border-radius:14px;
+      padding:12px; display:flex; flex-direction:column; gap:8px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.2);
     }
     
-    .pt-panel-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,240,255,0.08); padding-bottom:4px; margin-bottom:2px; }
-    .pt-panel-title { font-family:'Orbitron',sans-serif; font-size:9px; color:#00F0FF; letter-spacing:2px; text-transform:uppercase; text-shadow:0 0 8px rgba(0,240,255,0.3); }
+    .pt-panel-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px; margin-bottom:2px; }
+    .pt-panel-title { font-family:'Orbitron',sans-serif; font-size:10px; color:#FFFFFF; letter-spacing:2px; text-transform:uppercase; text-shadow:0 0 8px rgba(255,255,255,0.6); }
 
     /* Grid Layout — 18 columns for the standard IUPAC periodic table */
     .pt-grid {
-      display:grid; grid-template-columns:repeat(18, 1fr); gap:1.5px;
+      display:grid; grid-template-columns:repeat(18, 1fr); gap:2px;
       width:100%;
     }
 
     .pt-el {
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      padding:1px 0px; border-radius:3px; cursor:pointer;
-      min-height:22px; border:1px solid rgba(255,255,255,0.05);
+      padding:2px 0px; border-radius:6px; cursor:pointer;
+      min-height:24px; border:1px solid rgba(255,255,255,0.15);
       transition: all 0.2s ease; position:relative;
+      box-shadow:inset 0 1px 1px rgba(255,255,255,0.2);
     }
-    .pt-el:hover { transform:scale(1.25); z-index:5; box-shadow:0 0 12px currentColor; border-color:currentColor; }
-    .pt-el-num { font-size:5.5px; color:rgba(200,220,255,0.5); line-height:1; }
-    .pt-el-sym { font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; line-height:1; margin-top:1px; }
+    .pt-el:hover { transform:scale(1.28); z-index:5; box-shadow:0 0 14px currentColor; border-color:currentColor; }
+    .pt-el-num { font-size:5.5px; color:rgba(255,255,255,0.7); line-height:1; }
+    .pt-el-sym { font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; line-height:1; margin-top:1px; }
 
     /* Category Colors */
-    .cat-nonmetal   { background:rgba(0,240,255,0.12); color:#00F0FF; }
-    .cat-noble      { background:rgba(191,0,255,0.12); color:#BF00FF; }
-    .cat-alkali     { background:rgba(255,215,0,0.12); color:#FFD700; }
-    .cat-alkaline   { background:rgba(255,153,0,0.12); color:#FF9900; }
-    .cat-transition { background:rgba(0,212,255,0.10); color:#00D4FF; }
-    .cat-post       { background:rgba(170,170,170,0.10); color:#AAAAAA; }
-    .cat-metalloid  { background:rgba(0,255,157,0.10); color:#00FF9D; }
-    .cat-halogen    { background:rgba(255,0,85,0.12); color:#FF0055; }
-    .cat-lanthanide { background:rgba(255,105,180,0.10); color:#FF69B4; }
-    .cat-actinide   { background:rgba(255,100,50,0.10); color:#FF6432; }
+    .cat-nonmetal   { background:rgba(0,240,255,0.15); color:#FFFFFF; }
+    .cat-noble      { background:rgba(191,0,255,0.15); color:#FFFFFF; }
+    .cat-alkali     { background:rgba(255,215,0,0.15); color:#FFFFFF; }
+    .cat-alkaline   { background:rgba(255,153,0,0.15); color:#FFFFFF; }
+    .cat-transition { background:rgba(0,212,255,0.15); color:#FFFFFF; }
+    .cat-post       { background:rgba(170,170,170,0.15); color:#FFFFFF; }
+    .cat-metalloid  { background:rgba(0,255,157,0.15); color:#FFFFFF; }
+    .cat-halogen    { background:rgba(255,0,85,0.15); color:#FFFFFF; }
+    .cat-lanthanide { background:rgba(255,105,180,0.15); color:#FFFFFF; }
+    .cat-actinide   { background:rgba(255,100,50,0.15); color:#FFFFFF; }
 
     /* Lanthanide/Actinide separator indicator */
     .pt-spacer { grid-column: span 18; height:4px; }
     .pt-la-label, .pt-ac-label {
       grid-column: 1 / 4; display:flex; align-items:center; justify-content:center;
-      font-size:7px; letter-spacing:0.5px; color:#FF69B4; font-family:'Orbitron',sans-serif;
+      font-size:7.5px; letter-spacing:0.5px; color:#FFFFFF; font-family:'Orbitron',sans-serif; font-weight:600;
     }
-    .pt-ac-label { color:#FF6432; }
 
     /* ─── FUSION BAR ─── */
     .fusion-bar {
-      display:flex; align-items:center; justify-content:space-between; gap:4px;
-      padding:4px 8px; border-radius:6px; background:rgba(5,8,18,0.5); border:1px solid rgba(0,240,255,0.08);
-      margin-top:2px;
+      display:flex; align-items:center; justify-content:space-between; gap:6px;
+      padding:6px 12px; border-radius:10px; background:rgba(8,12,20,0.7); border:1px solid rgba(255,255,255,0.2);
+      margin-top:4px;
     }
     .fusion-slot {
-      width:32px; height:32px; border-radius:4px; display:flex; align-items:center; justify-content:center;
+      width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center;
       font-family:'Orbitron',sans-serif; font-size:13px; font-weight:700;
-      border:1px solid rgba(0,240,255,0.2); background:rgba(0,240,255,0.05); color:#00F0FF;
+      border:1px solid rgba(255,255,255,0.3); background:linear-gradient(145deg, rgba(20,26,38,0.9) 0%, rgba(8,12,20,0.95) 100%);
+      color:#FFFFFF; box-shadow:inset 0 2px 4px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5);
     }
-    .fusion-plus { font-size:14px; color:#506080; }
+    .fusion-plus { font-size:14px; color:rgba(255,255,255,0.7); }
     .fusion-btn {
-      padding:5px 12px; border-radius:4px; border:1px solid rgba(0,255,157,0.3); background:rgba(0,255,157,0.1);
-      color:#00FF9D; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1.5px; cursor:pointer; transition:all 0.3s;
+      padding:7px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.35);
+      background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%);
+      color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9.5px; font-weight:700; letter-spacing:1.5px; cursor:pointer;
+      transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.6);
+      text-shadow:0 1px 3px rgba(0,0,0,0.8);
     }
-    .fusion-btn:hover { background:rgba(0,255,157,0.25); box-shadow:0 0 10px rgba(0,255,157,0.35); }
+    .fusion-btn:hover {
+      transform:translateY(-2px);
+      background:linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.15) 45%, rgba(28,38,56,0.95) 100%);
+      box-shadow:0 8px 22px rgba(255,255,255,0.2), inset 0 1px 2px rgba(255,255,255,0.7);
+      border-color:rgba(255,255,255,0.6);
+    }
     .fusion-btn-clear {
-      padding:5px 10px; border-radius:4px; border:1px solid rgba(255,0,85,0.3); background:rgba(255,0,85,0.08);
-      color:#FF0055; font-family:'Orbitron',sans-serif; font-size:8px; letter-spacing:1px; cursor:pointer; transition:all 0.3s;
+      padding:7px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.35);
+      background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%);
+      color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; letter-spacing:1px; cursor:pointer;
+      transition:all 0.25s; box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5);
     }
-    .fusion-btn-clear:hover { background:rgba(255,0,85,0.2); }
-    .fusion-label { font-size:8px; color:#506080; letter-spacing:1.5px; font-weight:bold; }
+    .fusion-btn-clear:hover { transform:translateY(-2px); border-color:rgba(255,255,255,0.6); }
+    .fusion-label { font-size:8.5px; color:#FFFFFF; letter-spacing:1.5px; font-weight:bold; }
 
     /* ─── LEGEND ─── */
     .pt-legend {
-      display:flex; flex-wrap:wrap; gap:5px; margin-top:2px; justify-content:center;
+      display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; justify-content:center;
     }
-    .pt-legend-item { display:flex; align-items:center; gap:2.5px; font-size:6px; letter-spacing:0.3px; color:rgba(200,220,255,0.75); }
-    .pt-legend-dot { width:5px; height:5px; border-radius:50%; }
+    .pt-legend-item { display:flex; align-items:center; gap:3px; font-size:6.5px; letter-spacing:0.3px; color:#FFFFFF; font-weight:500; }
+    .pt-legend-dot { width:6px; height:6px; border-radius:50%; box-shadow:0 0 4px currentColor; }
 
     /* ─── HOVER TOOLTIP ─── */
     #pt-tooltip {
       position:fixed; z-index:100; pointer-events:none; display:none;
-      padding:8px 12px; border-radius:6px;
-      backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5);
-      background:rgba(5,8,18,0.92); border:1px solid rgba(0,240,255,0.4);
-      box-shadow:0 4px 20px rgba(0,240,255,0.3);
+      padding:10px 14px; border-radius:12px;
+      backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      background:linear-gradient(145deg, rgba(14,18,26,0.95) 0%, rgba(4,6,12,0.98) 100%);
+      border:1px solid rgba(255,255,255,0.3);
+      box-shadow:0 8px 32px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.3);
     }
-    .tt-header { font-family:'Orbitron',sans-serif; font-size:11px; font-weight:700; color:#00F0FF; margin-bottom:4px; border-bottom:1px solid rgba(0,240,255,0.15); padding-bottom:2px; }
-    .tt-row { font-size:9.5px; color:#c0d8ff; margin-bottom:2px; display:flex; justify-content:space-between; gap:12px; }
-    .tt-label { color:#607595; }
+    .tt-header { font-family:'Orbitron',sans-serif; font-size:11px; font-weight:700; color:#FFFFFF; margin-bottom:5px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:3px; text-shadow:0 0 6px rgba(255,255,255,0.5); }
+    .tt-row { font-size:10px; color:#FFFFFF; margin-bottom:3px; display:flex; justify-content:space-between; gap:14px; }
+    .tt-label { color:rgba(255,255,255,0.65); }
   </style>
 </head>
 <body>
@@ -146,7 +177,7 @@
   <!-- HEADER -->
   <div class="hud-header">
     <span class="hud-title">NULLA-LABS // IUPAC 3D SYNTHESIS</span>
-    <div id="active-synthesis-banner" style="position:absolute; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; letter-spacing:3px; color:#00F0FF; text-transform:uppercase; background:rgba(5,7,12,0.88); border:1px solid rgba(0,240,255,0.4); border-radius:8px; padding:4px 20px; box-shadow:inset 0 2px 8px rgba(0,0,0,0.9), 0 0 14px rgba(0,240,255,0.3); text-shadow:0 0 12px rgba(0,240,255,0.8); pointer-events:none;">B-DNA DOUBLE HELIX</div>
+    <div id="active-synthesis-banner" style="position:absolute; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; letter-spacing:3px; color:#FFFFFF; text-transform:uppercase; background:linear-gradient(135deg, rgba(14,18,26,0.95) 0%, rgba(4,6,12,0.98) 100%); border:1px solid rgba(255,255,255,0.35); border-radius:12px; padding:6px 24px; box-shadow:0 8px 24px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.3); text-shadow:0 0 14px rgba(255,255,255,0.9); pointer-events:none;">B-DNA DOUBLE HELIX</div>
     <span class="hud-badge">▸ WEBGL ACTIVE · 118 ELEMENTS</span>
   </div>
 
@@ -159,9 +190,9 @@
     <div class="hud-row"><span class="hud-label">BONDING</span><span class="hud-val" id="hud-bonds">—</span></div>
     <div class="hud-row"><span class="hud-label">ENTHALPY</span><span class="hud-val" id="hud-enthalpy">—</span></div>
     <div class="hud-row"><span class="hud-label">STATE</span><span class="hud-val" id="hud-epi">—</span></div>
-    <div style="display:flex; gap:4px; margin-top:6px;">
+    <div style="display:flex; gap:6px; margin-top:8px;">
       <button id="btn-reassemble" style="flex:1;">🧬 ADN</button>
-      <button id="btn-orbitals" style="flex:1; margin-top:8px; padding:7px 0; border:1px solid rgba(191,0,255,0.3); border-radius:6px; background:rgba(191,0,255,0.1); color:#BF00FF; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; cursor:pointer;">⚛️ ORBITALES</button>
+      <button id="btn-orbitals" style="flex:1; margin-top:10px; padding:9px 0; border:1px solid rgba(255,255,255,0.35); border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9.5px; font-weight:700; letter-spacing:1px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5); text-shadow:0 1px 3px rgba(0,0,0,0.8);">⚛️ ORBITALES</button>
     </div>
   </div>
  
@@ -169,8 +200,8 @@
   <div class="hud-stats">
     <div class="stat-chip"><span id="fps-val">0 FPS</span></div>
     <div class="stat-chip"><span id="atom-count">0 ATOMS</span></div>
-    <button class="stat-chip" id="btn-audio" style="cursor:pointer; color:#00F0FF; background:rgba(5,8,18,0.6);">🔊 AUDIO: ON</button>
-    <button class="stat-chip" id="btn-export" style="cursor:pointer; color:#00FF9D; background:rgba(5,8,18,0.6);">📸 CAPTURA HD</button>
+    <button class="stat-chip" id="btn-audio" style="cursor:pointer; color:#FFFFFF;">🔊 AUDIO: ON</button>
+    <button class="stat-chip" id="btn-export" style="cursor:pointer; color:#FFFFFF;">📸 CAPTURA HD</button>
   </div>
  
   <!-- ═══════════════════════════════════════════════════════════════

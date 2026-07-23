@@ -2152,7 +2152,7 @@
     btnAudio.addEventListener('click', () => {
       audioEnabled = !audioEnabled;
       btnAudio.textContent = audioEnabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
-      btnAudio.style.color = audioEnabled ? '#00F0FF' : '#506080';
+      btnAudio.style.color = audioEnabled ? '#FFFFFF' : 'rgba(255,255,255,0.4)';
     });
   }
 
