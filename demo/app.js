@@ -1884,6 +1884,90 @@
     });
   }
 
+  function calculateSpectroscopyData(formula, bondType) {
+    let lambdaMax = 220;
+    let colorHex = '#00F0FF';
+    let irStretch = '3000 cm⁻¹';
+    let region = 'Far-UV Absorption';
+
+    const str = String(formula || '');
+    if (str.includes('O₂') || str.includes('H₂O') || str.includes('Water')) {
+      lambdaMax = 185; colorHex = '#00F0FF'; irStretch = '3650 cm⁻¹ (O-H Stretch)'; region = 'Vacuum UV';
+    } else if (str.includes('NaCl') || str.includes('CaO') || str.includes('Sodium Chloride')) {
+      lambdaMax = 310; colorHex = '#FFD700'; irStretch = '550 cm⁻¹ (Ionic Lattice Stretch)'; region = 'Near UV';
+    } else if (str.includes('CO₂') || str.includes('Carbon Dioxide')) {
+      lambdaMax = 230; colorHex = '#00FF9D'; irStretch = '2349 cm⁻¹ (C=O Asymmetric Stretch)'; region = 'Mid-IR Active';
+    } else if (str.includes('Fe₂O₃') || str.includes('CuO')) {
+      lambdaMax = 480; colorHex = '#FF7700'; irStretch = '570 cm⁻¹ (Fe-O Metal-Oxide Stretch)'; region = 'Visible Range';
+    } else if (str.includes('KMnO₄')) {
+      lambdaMax = 525; colorHex = '#BF00FF'; irStretch = '905 cm⁻¹ (Mn=O Charge Transfer)'; region = 'Visible Range';
+    } else if (bondType && String(bondType).includes('Ionic')) {
+      lambdaMax = 290; colorHex = '#FFD700'; irStretch = '600 cm⁻¹ (Ionic Lattice)'; region = 'UV-Vis Transition';
+    } else if (bondType && String(bondType).includes('Polar')) {
+      lambdaMax = 245; colorHex = '#00FF9D'; irStretch = '2950 cm⁻¹ (Polar Covalent)'; region = 'Mid-UV Range';
+    }
+
+    return { lambdaMax: `${lambdaMax} nm`, colorHex, irStretch, region };
+  }
+
+  function generateTopCompoundSuggestions(reactantsArray) {
+    if (!reactantsArray || reactantsArray.length === 0) return [];
+
+    const presentZ = Array.from(new Set(reactantsArray.map(r => r.z)));
+    const sortedSyms = reactantsArray.map(r => r.sym).sort().join('+');
+    const directSyms = reactantsArray.map(r => r.sym).join('+');
+
+    const suggestions = [];
+
+    const exactMatch = REACTIONS[sortedSyms] || REACTIONS[directSyms];
+    if (exactMatch) {
+      suggestions.push({
+        name: exactMatch.name,
+        formula: exactMatch.formula,
+        type: exactMatch.type,
+        stability: (exactMatch.stabilityScore || 95.0) + '%',
+        enthalpy: exactMatch.enthalpy ? `${exactMatch.enthalpy} kJ/mol` : 'N/A',
+        isExact: true
+      });
+    }
+
+    if (presentZ.length >= 2) {
+      const zA = presentZ[0];
+      const zB = presentZ[1];
+      const pred = predictCompoundFormula(zA, zB);
+      const thermo = calculateThermodynamicStability(zA, zB);
+
+      const isAlreadyAdded = suggestions.some(s => s.formula === pred.formulaStr);
+      if (!isAlreadyAdded) {
+        suggestions.push({
+          name: `Predicted ${pred.formulaStr} (${thermo.bondType})`,
+          formula: pred.formulaStr,
+          type: thermo.bondType,
+          stability: thermo.stabilityScore,
+          enthalpy: thermo.bondType.includes('Ionic') ? '-450.0 kJ/mol (Est)' : '-210.0 kJ/mol (Est)',
+          isExact: false
+        });
+      }
+    }
+
+    if (suggestions.length < 3 && presentZ.length >= 1) {
+      const z = presentZ[0];
+      const el = (typeof PERIODIC_DATA !== 'undefined' ? PERIODIC_DATA[z] : null) || { s:'El', n:'Element' };
+      
+      if (z === 8 || presentZ.includes(8)) {
+        suggestions.push({ name: 'Oxide Complex', formula: `${el.s}₂O₃`, type: 'Oxide Lattice', stability: '89.4%', enthalpy: '-520 kJ/mol', isExact: false });
+      }
+      if (z === 1 || presentZ.includes(1)) {
+        suggestions.push({ name: 'Hydride Unit', formula: `H${el.s}`, type: 'Polar Hydride', stability: '86.2%', enthalpy: '-140 kJ/mol', isExact: false });
+      }
+      if (suggestions.length < 3) {
+        suggestions.push({ name: `${el.n} Monatomic Lattice`, formula: `${el.s}₁`, type: 'Pure Element', stability: '99.0%', enthalpy: '0.0 kJ/mol', isExact: false });
+      }
+    }
+
+    return suggestions.slice(0, 5);
+  }
+
   function updateTelemetry(name, formula, cls, bonds, epi, enthalpy, dipole, stability, note) {
     if (hudName) hudName.textContent = name || '—';
     if (hudFormula) hudFormula.textContent = formula || '—';
