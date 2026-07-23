@@ -1560,6 +1560,29 @@
     return atoms;
   }
 
+  function formCompound(rx) {
+    isDnaMode = false;
+    const atoms = [];
+    if (rx && rx.atoms) {
+      rx.atoms.forEach((item, itemIdx) => {
+        const count = item.c || item.count || 1;
+        const spacing = 8.0;
+        const offsetVec = new THREE.Vector3((itemIdx - (rx.atoms.length - 1) * 0.5) * spacing * 1.5, 0, 0);
+        const elAtoms = getElementAtoms(item.z, offsetVec);
+        atoms.push(...elAtoms);
+      });
+    }
+    spawnAtoms(atoms);
+
+    updateTelemetry(
+      rx.name || 'Synthesized Compound',
+      rx.formula || 'Chemical Product',
+      rx.type || 'Chemical Compound',
+      rx.bonds || 'Covalent/Ionic Bonds',
+      `State: [SYNTHESIZED: ${rx.formula || 'PRODUCT'}]`
+    );
+  }
+
   // ═══════════════════════════════════════════════════════════════
   // UNSTABLE SUPERHEAVY FISSION DECAY EVENT (Z > 118)
   // ═══════════════════════════════════════════════════════════════
