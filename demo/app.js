@@ -281,11 +281,19 @@
   camera.position.set(0, 0, 75);
 
   // Studio Lighting (3-Point)
-  scene.add(new THREE.DirectionalLight(0x00F0FF, 2.0).translateX(50).translateY(60).translateZ(50));
-  const rimLight = new THREE.DirectionalLight(0x8A2BE2, 1.4);
+  const keyLight = new THREE.DirectionalLight(0x00F0FF, 2.2);
+  keyLight.position.set(50, 60, 50);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xFFFFFF, 1.2);
+  fillLight.position.set(-40, 30, 40);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0x8A2BE2, 1.6);
   rimLight.position.set(-50, -40, -30);
   scene.add(rimLight);
-  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.75));
+
+  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.85));
 
   // ═══════════════════════════════════════════════════════════════
   // DYNAMIC ATOM POOL - Spawn/Despawn with Superfluid Transitions
@@ -470,9 +478,9 @@
 
   const materialCache = {};
   function getMaterialForElement(elData, overrideCol) {
-    const col = overrideCol !== undefined ? overrideCol : elData.col;
-    const cat = elData.cat ? elData.cat.toLowerCase() : '';
-    const key = `${elData.z}_${col}_${cat}`;
+    const col = overrideCol !== undefined ? overrideCol : (elData ? elData.col : 0x00F0FF);
+    const cat = (elData && elData.cat) ? String(elData.cat).toLowerCase() : '';
+    const key = `${elData ? elData.z : 1}_${col}_${cat}`;
     
     if (materialCache[key]) return materialCache[key];
 
@@ -481,9 +489,8 @@
     let roughness = 0.08;
     let clearcoat = 1.0;
     let clearcoatRoughness = 0.02;
-    let reflectance = 0.9;
 
-    if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide')) {
+    if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide') || cat.includes('metal')) {
       metalness = 0.45;
       roughness = 0.06;
       clearcoat = 1.0;
@@ -507,11 +514,10 @@
 
     materialCache[key] = new THREE.MeshPhysicalMaterial({
       color: col,
-      metalness,
-      roughness,
-      clearcoat,
-      clearcoatRoughness,
-      reflectance
+      metalness: metalness,
+      roughness: roughness,
+      clearcoat: clearcoat,
+      clearcoatRoughness: clearcoatRoughness
     });
     return materialCache[key];
   }
