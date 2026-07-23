@@ -572,11 +572,14 @@ window.addEventListener('DOMContentLoaded', function() {
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
     // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
+    const isInitial = activeAtoms.length === 0;
+    const spawnDelay = isInitial ? 0 : 300;
+
     // Fade out existing atoms that aren't needed
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
     activeBonds.forEach(b => { b.removing = true; });
 
-    setTimeout(() => {
+    const doSpawn = () => {
       // Remove old atoms and their labels
       activeAtoms.filter(a => a.removing).forEach(a => {
         if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
@@ -624,6 +627,8 @@ window.addEventListener('DOMContentLoaded', function() {
         });
       }
 
+      const dummy = new THREE.Object3D();
+
       // Create InstancedMesh for each group
       Object.keys(groups).forEach(key => {
         const grp = groups[key];
@@ -641,11 +646,13 @@ window.addEventListener('DOMContentLoaded', function() {
 
         grp.items.forEach((item, idx) => {
           const elData = EL[item.z] || EL[1];
-          const start = item.startPos ? item.startPos.clone() : new THREE.Vector3(
+          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
+          const start = isInitial ? item.pos.clone() : (item.startPos ? item.startPos.clone() : new THREE.Vector3(
             (Math.random()-0.5) * 60,
             (Math.random()-0.5) * 40,
             (Math.random()-0.5) * 30
-          );
+          ));
+          const initScale = isInitial ? scale : 0.01;
           
           let labelSprite = null;
           // Show label if <= 15 atoms OR if this is the single central atom of a dense lattice
@@ -654,16 +661,19 @@ window.addEventListener('DOMContentLoaded', function() {
             const spriteColor = '#' + grp.col.toString(16).padStart(6, '0');
             labelSprite = createTextSprite(elData.s, spriteColor);
             labelSprite.position.copy(start);
-            labelSprite.scale.setScalar(0.01);
+            labelSprite.scale.setScalar(initScale * 3.8);
             moleculeGroup.add(labelSprite);
           }
 
-          const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
+          dummy.position.copy(start);
+          dummy.scale.setScalar(initScale);
+          dummy.updateMatrix();
+          instMesh.setMatrixAt(idx, dummy.matrix);
 
           activeAtoms.push({
             currentPos: start.clone(),
             targetPos: item.pos.clone(),
-            currentScale: 0.01,
+            currentScale: initScale,
             targetScale: scale,
             z: item.z,
             col: grp.col,
@@ -755,7 +765,13 @@ window.addEventListener('DOMContentLoaded', function() {
       }
 
       if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
-    }, 300);
+    };
+
+    if (spawnDelay === 0) {
+      doSpawn();
+    } else {
+      setTimeout(doSpawn, spawnDelay);
+    }
   }
 
   // Spawn chemical bonds using a single InstancedMesh
