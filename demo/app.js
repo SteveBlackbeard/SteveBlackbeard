@@ -261,6 +261,29 @@
     });
   }
 
+  // Create high-fidelity floating 3D text labels for elements
+  function createTextSprite(text, colorStr) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.font = 'bold 26px "Orbitron", "Fira Code", monospace';
+    ctx.fillStyle = colorStr || '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.fillText(text, 32, 32);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(3.8, 3.8, 1);
+    return sprite;
+  }
+
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
     // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3}]
@@ -273,7 +296,10 @@
 
     setTimeout(() => {
       // Remove old atoms after fade
-      activeAtoms.filter(a => a.removing).forEach(a => moleculeGroup.remove(a.mesh));
+      activeAtoms.filter(a => a.removing).forEach(a => {
+        moleculeGroup.remove(a.mesh);
+        if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
+      });
       activeAtoms = activeAtoms.filter(a => !a.removing);
       activeBonds.filter(b => b.removing).forEach(b => b.meshes.forEach(m => moleculeGroup.remove(m)));
       activeBonds = activeBonds.filter(b => !b.removing);
@@ -298,10 +324,20 @@
         mesh.scale.setScalar(0.01);
         moleculeGroup.add(mesh);
 
+        let labelSprite = null;
+        if (!isDnaMode) {
+          const spriteColor = '#' + colorHex.toString(16).padStart(6, '0');
+          labelSprite = createTextSprite(elData.s, spriteColor);
+          labelSprite.position.copy(mesh.position);
+          labelSprite.scale.setScalar(0.01);
+          moleculeGroup.add(labelSprite);
+        }
+
         const scale = item.scale !== undefined ? item.scale : (1.2 + (elData.r || 1.0) * 0.4);
 
         activeAtoms.push({
           mesh,
+          labelSprite,
           targetPos: item.pos.clone(),
           targetScale: scale,
           currentScale: 0.01,
@@ -1154,7 +1190,10 @@
   function triggerFusionCollision(zA, zB, reaction) {
     isDnaMode = false;
     
-    activeAtoms.forEach(a => moleculeGroup.remove(a.mesh));
+    activeAtoms.forEach(a => {
+      moleculeGroup.remove(a.mesh);
+      if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
+    });
     activeAtoms = [];
     activeBonds.forEach(b => { b.meshes.forEach(m => moleculeGroup.remove(m)); });
     activeBonds = [];
@@ -1178,9 +1217,16 @@
       mesh.scale.setScalar(0.01);
       moleculeGroup.add(mesh);
 
+      const spriteColor = '#' + elData.col.toString(16).padStart(6, '0');
+      const labelSprite = createTextSprite(elData.s, spriteColor);
+      labelSprite.position.copy(mesh.position);
+      labelSprite.scale.setScalar(0.01);
+      moleculeGroup.add(labelSprite);
+
       const scale = 1.2 + (elData.r || 1.0) * 0.4;
       activeAtoms.push({
         mesh,
+        labelSprite,
         targetPos: item.pos.clone(),
         targetScale: scale,
         currentScale: 0.01,
@@ -1430,9 +1476,16 @@
       a.currentScale += (a.targetScale - a.currentScale) * 0.08;
       a.mesh.scale.setScalar(Math.max(0.001, a.currentScale));
 
+      if (a.labelSprite) {
+        a.labelSprite.position.copy(a.mesh.position);
+        a.labelSprite.position.y += a.currentScale * 1.15 + 0.4;
+        a.labelSprite.scale.setScalar(Math.max(0.001, a.currentScale * 3.8));
+      }
+
       // Remove fully shrunk atoms
       if (a.removing && a.currentScale < 0.05) {
         moleculeGroup.remove(a.mesh);
+        if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
         activeAtoms.splice(i, 1);
       }
     }
