@@ -548,12 +548,11 @@
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
     const isInitialLoad = (activeAtoms.length === 0);
-    const delay = isInitialLoad ? 0 : 100;
 
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
     activeBonds.forEach(b => { b.removing = true; });
 
-    setTimeout(() => {
+    const doSpawn = () => {
       // Remove old atoms and their labels
       activeAtoms.filter(a => a.removing).forEach(a => {
         if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
@@ -741,7 +740,13 @@
       }
 
       if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
-    }, delay);
+    };
+
+    if (isInitialLoad) {
+      doSpawn();
+    } else {
+      setTimeout(doSpawn, 100);
+    }
   }
 
   // Spawn chemical bonds using a single InstancedMesh
