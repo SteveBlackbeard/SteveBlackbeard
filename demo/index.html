@@ -181,6 +181,7 @@
     </div>
     <div id="active-synthesis-banner" style="position:absolute; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; letter-spacing:3px; color:#FFFFFF; text-transform:uppercase; background:linear-gradient(135deg, rgba(14,18,26,0.95) 0%, rgba(4,6,12,0.98) 100%); border:1px solid rgba(255,255,255,0.35); border-radius:12px; padding:6px 24px; box-shadow:0 8px 24px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.3); text-shadow:0 0 14px rgba(255,255,255,0.9); pointer-events:none;">B-DNA DOUBLE HELIX</div>
     <div style="display:flex; align-items:center; gap:6px;">
+      <button id="btn-docs" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(0,240,255,0.4); background:rgba(0,240,255,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">📖 DOCS</button>
       <button id="btn-quiz" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(255,215,0,0.4); background:rgba(255,215,0,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🎓 QUIZ</button>
       <button id="btn-share-url" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(0,255,157,0.4); background:rgba(0,255,157,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🔗 SHARE</button>
       <span class="hud-badge">▸ WEBGL ACTIVE · 118 ELEMENTS</span>
@@ -421,6 +422,44 @@
       <button id="btn-close-suggest" style="background:none; border:none; color:#FFFFFF; font-size:12px; cursor:pointer;">✕</button>
     </div>
     <div id="suggestion-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+  </div>
+
+  <!-- TECHNICAL DOCUMENTATION MODAL -->
+  <div id="docs-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:160; width:520px; max-height:80vh; overflow-y:auto; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:1px solid rgba(0,240,255,0.5); border-radius:16px; padding:20px; box-shadow:0 16px 60px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px; margin-bottom:14px;">
+      <span style="font-size:12px; font-weight:900; color:#00F0FF; letter-spacing:2px;">📖 GUÍA TÉCNICA Y DOCUMENTACIÓN IUPAC 3D</span>
+      <button id="btn-close-docs" style="background:none; border:none; color:#FFFFFF; font-size:16px; cursor:pointer;">✕</button>
+    </div>
+    <div style="font-family:'Fira Code',monospace; font-size:9.5px; color:rgba(255,255,255,0.9); line-height:1.6; display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <h4 style="color:#FFD700; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;">1. TRANSICIÓN DE FASE REAL (0 K - 1000 K)</h4>
+        <p>El slider modula el estado kinético de la materia:</p>
+        <ul style="padding-left:14px; margin-top:4px; color:rgba(255,255,255,0.85);">
+          <li><b>T &lt; 273 K (Sólido):</b> Red cristalina rígida con oscilación reticular armónica.</li>
+          <li><b>273 K - 373 K (Líquido):</b> Cohesión fluida amorfa con deformación de superficie.</li>
+          <li><b>T &gt; 373 K (Gas):</b> Expansión de gas browniano con colisión elástica en paredes.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="color:#00FF9D; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;">2. HERRAMIENTA DE MEDICIÓN LÁSER 3D</h4>
+        <p>Activa <b>📏 MEDIR 3D</b> en la telemetría:</p>
+        <ul style="padding-left:14px; margin-top:4px; color:rgba(255,255,255,0.85);">
+          <li><b>2 Átomos:</b> Distancia interatómica en Ångströms (Å) y Picómetros (pm).</li>
+          <li><b>3 Átomos:</b> Ángulo de enlace geométrico VSEPR en grados (°).</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="color:#BF00FF; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;">3. FÍSICA LENNARD-JONES &amp; SÍNTESIS</h4>
+        <p>Combina elementos en el <b>SYNTHESIS CONTROLLER</b> inferior y pulsa <b>[FUSE]</b> para generar reacciones termodinámicas estables (NaCl, H₂O, CO₂, etc.).</p>
+      </div>
+
+      <div>
+        <h4 style="color:#FF0055; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;">4. EXPORTACIÓN &amp; COMPARTIR</h4>
+        <p>Descarga modelos tridimensionales para AR (<b>.GLTF</b>) o coordenadas computacionales (<b>.XYZ</b>). Pulsa <b>🔗 SHARE</b> para generar enlaces URL directos con el estado de tu molécula.</p>
+      </div>
+    </div>
   </div>
 
   <!-- EDUCATIONAL QUIZ MODAL -->

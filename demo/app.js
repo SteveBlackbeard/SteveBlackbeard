@@ -2316,6 +2316,24 @@
     });
   }
 
+  // TECHNICAL DOCUMENTATION MODAL
+  const btnDocs = document.getElementById('btn-docs');
+  const docsModal = document.getElementById('docs-modal');
+  const btnCloseDocs = document.getElementById('btn-close-docs');
+
+  if (btnDocs) {
+    btnDocs.addEventListener('click', () => {
+      playTone(600, 'sine', 0.15);
+      if (docsModal) docsModal.style.display = 'block';
+    });
+  }
+
+  if (btnCloseDocs) {
+    btnCloseDocs.addEventListener('click', () => {
+      if (docsModal) docsModal.style.display = 'none';
+    });
+  }
+
   // EXPORT .XYZ Button
   if (btnExportXyz) {
     btnExportXyz.addEventListener('click', exportXYZFile);
