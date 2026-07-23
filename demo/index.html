@@ -177,7 +177,7 @@
   </div>
 
   <!-- TELEMETRY PANEL -->
-  <div id="molecular-hud">
+  <div id="molecular-hud" style="width:310px;">
     <h3>◆ MOLECULAR TELEMETRY</h3>
     <div class="hud-row"><span class="hud-label">ASSEMBLY</span><span class="hud-val" id="hud-name">B-DNA Double Helix</span></div>
     <div class="hud-row"><span class="hud-label">FORMULA</span><span class="hud-val" id="hud-formula">—</span></div>
@@ -186,13 +186,28 @@
     <div class="hud-row"><span class="hud-label">ENTHALPY</span><span class="hud-val" id="hud-enthalpy">—</span></div>
     <div class="hud-row"><span class="hud-label">DIPOLE (μ)</span><span class="hud-val" id="hud-dipole">—</span></div>
     <div class="hud-row"><span class="hud-label">STABILITY</span><span class="hud-val" id="hud-stability">—</span></div>
+    <div class="hud-row"><span class="hud-label">SPECTRUM</span><span class="hud-val" id="hud-spectrum" style="color:#00F0FF; font-weight:700;">220 nm (UV)</span></div>
+    <div class="hud-row"><span class="hud-label">IR STRETCH</span><span class="hud-val" id="hud-ir" style="font-size:8.5px;">3000 cm⁻¹</span></div>
     <div class="hud-row"><span class="hud-label">STATE</span><span class="hud-val" id="hud-epi">—</span></div>
-    <div class="hud-row" style="flex-direction:column; margin-top:4px;"><span class="hud-label" style="width:100%;">EXPLANATION NOTE:</span><span class="hud-val" id="hud-note" style="font-size:9px; color:rgba(255,255,255,0.85); font-style:italic; margin-top:2px;">Canonical genomic DNA helix structure.</span></div>
-    <div style="display:flex; gap:4px; margin-top:8px;">
-      <button id="btn-reassemble" style="flex:1;">🧬 ADN</button>
-      <button id="btn-orbitals" style="flex:1; margin-top:10px; padding:9px 0; border:1px solid rgba(255,255,255,0.35); border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; letter-spacing:1px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5); text-shadow:0 1px 3px rgba(0,0,0,0.8);">⚛️ ORBITALES</button>
-      <button id="btn-export-xyz" style="flex:1; margin-top:10px; padding:9px 0; border:1px solid rgba(255,255,255,0.35); border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.5); text-shadow:0 1px 3px rgba(0,0,0,0.8);">💾 .XYZ</button>
+    
+    <!-- THERMAL KINETIC CONTROLLER (0-1000 K) -->
+    <div class="hud-row" style="flex-direction:column; margin-top:4px; gap:2px;">
+      <div style="display:flex; justify-content:space-between; width:100%; font-size:8px; color:#FFFFFF; font-weight:bold;">
+        <span>THERMAL TEMP (T):</span>
+        <span id="temp-val" style="color:#00F0FF;">298 K (25°C)</span>
+      </div>
+      <input type="range" id="temp-slider" min="0" max="1000" value="298" style="width:100%; accent-color:#00F0FF; cursor:pointer; height:4px;">
     </div>
+
+    <div class="hud-row" style="flex-direction:column; margin-top:4px;"><span class="hud-label" style="width:100%;">EXPLANATION NOTE:</span><span class="hud-val" id="hud-note" style="font-size:9px; color:rgba(255,255,255,0.85); font-style:italic; margin-top:2px;">Canonical genomic DNA helix structure.</span></div>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-top:8px;">
+      <button id="btn-reassemble">🧬 ADN</button>
+      <button id="btn-orbitals" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">⚛️ ORBITALES</button>
+      <button id="btn-measure" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📏 MEDIR 3D</button>
+      <button id="btn-export-gltf" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📱 AR (.GLTF)</button>
+    </div>
+    <button id="btn-export-xyz" style="width:100%; margin-top:4px; padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">💾 EXPORTAR COORDENADAS (.XYZ)</button>
   </div>
  
   <!-- FOOTER STATS -->

@@ -1,5 +1,5 @@
 // NULLA-LABS IUPAC 3D MOLECULAR SYNTHESIS PLATFORM — CHEMISTRY & THERMODYNAMIC ENGINE
-// Stoichiometry, Pauling Electronegativity Stability Predictions, Top 3-5 Generative Compound Recommender, and VSEPR Compiler
+// Stoichiometry, Pauling Electronegativity Stability Predictions, Top 3-5 Generative Recommender, VSEPR Compiler & Spectroscopy Data
 
 import { VALENCE_MAP, PAULING_EN, REACTIONS } from '../config/constants.js';
 
@@ -27,6 +27,31 @@ export function calculateThermodynamicStability(zA, zB) {
   };
 }
 
+export function calculateSpectroscopyData(formula, bondType) {
+  let lambdaMax = 220;
+  let colorHex = '#00F0FF';
+  let irStretch = '3000 cm⁻¹';
+  let region = 'Far-UV Absorption';
+
+  if (formula.includes('O₂') || formula.includes('H₂O')) {
+    lambdaMax = 185; colorHex = '#00F0FF'; irStretch = '3650 cm⁻¹ (O-H Stretch)'; region = 'Vacuum UV';
+  } else if (formula.includes('NaCl') || formula.includes('CaO')) {
+    lambdaMax = 310; colorHex = '#FFD700'; irStretch = '550 cm⁻¹ (Ionic Lattice Stretch)'; region = 'Near UV';
+  } else if (formula.includes('CO₂')) {
+    lambdaMax = 230; colorHex = '#00FF9D'; irStretch = '2349 cm⁻¹ (C=O Asymmetric Stretch)'; region = 'Mid-IR Active';
+  } else if (formula.includes('Fe₂O₃') || formula.includes('CuO')) {
+    lambdaMax = 480; colorHex = '#FF7700'; irStretch = '570 cm⁻¹ (Fe-O Metal-Oxide Stretch)'; region = 'Visible Range (Blue Absorbed)';
+  } else if (formula.includes('KMnO₄')) {
+    lambdaMax = 525; colorHex = '#BF00FF'; irStretch = '905 cm⁻¹ (Mn=O Charge Transfer)'; region = 'Visible Range (Green Absorbed)';
+  } else if (bondType.includes('Ionic')) {
+    lambdaMax = 290; colorHex = '#FFD700'; irStretch = '600 cm⁻¹ (Ionic Lattice)'; region = 'UV-Vis Transition';
+  } else if (bondType.includes('Polar')) {
+    lambdaMax = 245; colorHex = '#00FF9D'; irStretch = '2950 cm⁻¹ (Polar Covalent)'; region = 'Mid-UV Range';
+  }
+
+  return { lambdaMax: `${lambdaMax} nm`, colorHex, irStretch, region };
+}
+
 export function generateTopCompoundSuggestions(reactantsArray) {
   if (!reactantsArray || reactantsArray.length === 0) return [];
 
@@ -36,7 +61,6 @@ export function generateTopCompoundSuggestions(reactantsArray) {
 
   const suggestions = [];
 
-  // Check exact database reactions
   const exactMatch = REACTIONS[sortedSyms] || REACTIONS[directSyms];
   if (exactMatch) {
     suggestions.push({
@@ -49,7 +73,6 @@ export function generateTopCompoundSuggestions(reactantsArray) {
     });
   }
 
-  // Generate Pauling stoichiometric candidates
   if (presentZ.length >= 2) {
     const zA = presentZ[0];
     const zB = presentZ[1];
@@ -69,7 +92,6 @@ export function generateTopCompoundSuggestions(reactantsArray) {
     }
   }
 
-  // Fallback procedural options if less than 3
   if (suggestions.length < 3 && presentZ.length >= 1) {
     const z = presentZ[0];
     const el = (typeof PERIODIC_DATA !== 'undefined' ? PERIODIC_DATA[z] : null) || { s:'El', n:'Element' };

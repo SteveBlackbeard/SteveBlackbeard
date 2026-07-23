@@ -15,10 +15,16 @@
   const hudEnthalpy = document.getElementById('hud-enthalpy');
   const hudDipole = document.getElementById('hud-dipole');
   const hudStability = document.getElementById('hud-stability');
+  const hudSpectrum = document.getElementById('hud-spectrum');
+  const hudIr = document.getElementById('hud-ir');
   const hudNote = document.getElementById('hud-note');
   const hudEpi = document.getElementById('hud-epi');
+  const tempSlider = document.getElementById('temp-slider');
+  const tempVal = document.getElementById('temp-val');
   const btnReassemble = document.getElementById('btn-reassemble');
   const btnOrbitals = document.getElementById('btn-orbitals');
+  const btnMeasure = document.getElementById('btn-measure');
+  const btnExportGltf = document.getElementById('btn-export-gltf');
   const btnExportXyz = document.getElementById('btn-export-xyz');
   const btnAudio = document.getElementById('btn-audio');
   const btnExport = document.getElementById('btn-export');
@@ -1869,6 +1875,15 @@
     );
   }
 
+  let temperatureK = 298;
+  if (tempSlider) {
+    tempSlider.addEventListener('input', e => {
+      temperatureK = parseInt(e.target.value);
+      const c = temperatureK - 273;
+      if (tempVal) tempVal.textContent = `${temperatureK} K (${c > 0 ? '+' + c : c}°C)`;
+    });
+  }
+
   function updateTelemetry(name, formula, cls, bonds, epi, enthalpy, dipole, stability, note) {
     if (hudName) hudName.textContent = name || '—';
     if (hudFormula) hudFormula.textContent = formula || '—';
@@ -1881,9 +1896,38 @@
     if (hudStability) hudStability.textContent = stability !== undefined ? (typeof stability === 'number' ? `${stability}%` : stability) : '95.0%';
     if (hudNote) hudNote.textContent = note || 'Stable chemical configuration.';
 
+    // Calculate spectroscopy photon data
+    const spec = calculateSpectroscopyData(formula || name || '', cls || '');
+    if (hudSpectrum) {
+      hudSpectrum.textContent = `${spec.lambdaMax} (${spec.region})`;
+      hudSpectrum.style.color = spec.colorHex;
+    }
+    if (hudIr) hudIr.textContent = spec.irStretch;
+
     if (topBanner && name) {
       topBanner.textContent = String(name).toUpperCase();
     }
+  }
+
+  function exportGLTFFile() {
+    playTone(750, 'sine', 0.2);
+    if (activeAtoms.length === 0) return;
+
+    const gltfStructure = {
+      asset: { version: "2.0", generator: "NULLA-LABS IUPAC 3D Engine" },
+      scenes: [{ nodes: activeAtoms.map((_, idx) => idx) }],
+      nodes: activeAtoms.map((a, idx) => ({
+        name: a.elData?.n || `Atom_${idx}`,
+        translation: [a.currentPos.x, a.currentPos.y, a.currentPos.z],
+        scale: [a.scale, a.scale, a.scale]
+      }))
+    };
+
+    const blob = new Blob([JSON.stringify(gltfStructure, null, 2)], { type: 'model/gltf+json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'molecule_structure_ar.gltf';
+    link.click();
   }
 
   function exportXYZFile() {
@@ -2231,6 +2275,29 @@
     });
   }
 
+  let isMeasuringMode = false;
+  let selectedMeasureAtoms = [];
+  let laserLineMesh = null;
+
+  if (btnMeasure) {
+    btnMeasure.addEventListener('click', () => {
+      isMeasuringMode = !isMeasuringMode;
+      selectedMeasureAtoms = [];
+      btnMeasure.style.borderColor = isMeasuringMode ? '#00FF9D' : 'rgba(255,255,255,0.35)';
+      btnMeasure.style.color = isMeasuringMode ? '#00FF9D' : '#FFFFFF';
+      playTone(isMeasuringMode ? 700 : 350, 'triangle', 0.15);
+
+      if (!isMeasuringMode && laserLineMesh) {
+        scene.remove(laserLineMesh);
+        laserLineMesh = null;
+      }
+    });
+  }
+
+  if (btnExportGltf) {
+    btnExportGltf.addEventListener('click', exportGLTFFile);
+  }
+
   // ATOMIC ORBITALS Button
   if (btnOrbitals) {
     btnOrbitals.addEventListener('click', () => {
@@ -2332,22 +2399,72 @@
       const hit = activeAtoms.find(a => a.instancedMesh === hitMesh && a.instIdx === hitIdx && !a.removing);
 
       if (hit) {
-        if (selectedAtomObj) {
-          selectedAtomObj.targetScale = selectedAtomObj.isElectron ? 0.35 : (1.2 + (selectedAtomObj.elData.r || 1.0) * 0.4);
+        if (isMeasuringMode) {
+          playTone(600 + selectedMeasureAtoms.length * 150, 'sine', 0.12);
+          if (selectedMeasureAtoms.length >= 3) selectedMeasureAtoms = [];
+          selectedMeasureAtoms.push(hit);
+
+          if (laserLineMesh) scene.remove(laserLineMesh);
+
+          if (selectedMeasureAtoms.length >= 2) {
+            const posA = selectedMeasureAtoms[0].currentPos;
+            const posB = selectedMeasureAtoms[1].currentPos;
+            const distWorld = posA.distanceTo(posB);
+            const distAngstrom = (distWorld * 0.42).toFixed(2);
+            const distPicometer = (distWorld * 42.0).toFixed(0);
+
+            const points = [posA, posB];
+            let angleStr = '';
+
+            if (selectedMeasureAtoms.length === 3) {
+              const posC = selectedMeasureAtoms[2].currentPos;
+              points.push(posC, posA);
+              const vAB = new THREE.Vector3().subVectors(posA, posB);
+              const vCB = new THREE.Vector3().subVectors(posC, posB);
+              const angleRad = vAB.angleTo(vCB);
+              const angleDeg = (angleRad * 180 / Math.PI).toFixed(1);
+              angleStr = ` | Bond Angle: ${angleDeg}°`;
+            }
+
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+            const lineMat = new THREE.LineBasicMaterial({ color: 0x00FF9D, linewidth: 2 });
+            laserLineMesh = new THREE.Line(lineGeo, lineMat);
+            scene.add(laserLineMesh);
+
+            updateTelemetry(
+              `Laser 3D Measurement Mode`,
+              `Distance: ${distAngstrom} Å (${distPicometer} pm)${angleStr}`,
+              `3D Laser Distance & VSEPR Angle Gizmo`,
+              `Selected: ${selectedMeasureAtoms.map(a => a.elData.s).join(' — ')}`,
+              `Active Laser Vector`
+            );
+          } else {
+            updateTelemetry(
+              `Laser 3D Measurement Mode`,
+              `Atom 1 Selected (${hit.elData.s})`,
+              `Click 2nd atom to measure distance in Ångströms`,
+              `Click 3rd atom to measure bond angle (°)`,
+              `Laser Target Locked`
+            );
+          }
+        } else {
+          if (selectedAtomObj) {
+            selectedAtomObj.targetScale = selectedAtomObj.isElectron ? 0.35 : (1.2 + (selectedAtomObj.elData.r || 1.0) * 0.4);
+          }
+
+          selectedAtomObj = hit;
+          hit.targetScale = (hit.isElectron ? 0.35 : (1.2 + (hit.elData.r || 1.0) * 0.4)) * 1.8;
+          selectRing.position.copy(hit.currentPos);
+          selectRing.visible = true;
+
+          updateTelemetry(
+            `${hit.elData.n} (${hit.elData.s}) — Z = ${hit.z}`,
+            `Atomic Mass: ${hit.elData.m} u`,
+            `Category: ${hit.elData.cat}`,
+            `Electron Config: ${hit.elData.sh}`,
+            `Individual Atom Selected`
+          );
         }
-
-        selectedAtomObj = hit;
-        hit.targetScale = (hit.isElectron ? 0.35 : (1.2 + (hit.elData.r || 1.0) * 0.4)) * 1.8;
-        selectRing.position.copy(hit.currentPos);
-        selectRing.visible = true;
-
-        updateTelemetry(
-          `${hit.elData.n} (${hit.elData.s}) — Z = ${hit.z}`,
-          `Atomic Mass: ${hit.elData.m} u`,
-          `Category: ${hit.elData.cat}`,
-          `Electron Config: ${hit.elData.sh}`,
-          `Individual Atom Selected`
-        );
       }
     }
   });
@@ -2419,6 +2536,15 @@
         localPos.applyAxisAngle(new THREE.Vector3(1, 0, 0), a.tiltX);
         localPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), a.tiltY);
         a.targetPos.copy(parentPos).add(localPos);
+      }
+
+      // Microscopic Thermal Vibration (kB * T scaling with slider)
+      if (fusionState === 'idle' && !a.removing && !a.isElectron) {
+        const tempScale = temperatureK / 298.0;
+        const vibX = Math.sin(t * (12.0 * tempScale) + a.instIdx * 1.5) * (0.08 * tempScale);
+        const vibY = Math.cos(t * (15.0 * tempScale) + a.instIdx * 2.1) * (0.08 * tempScale);
+        const vibZ = Math.sin(t * (10.0 * tempScale) + a.instIdx * 0.9) * (0.08 * tempScale);
+        a.currentPos.add(new THREE.Vector3(vibX, vibY, vibZ));
       }
 
       // Lerp position and scale
