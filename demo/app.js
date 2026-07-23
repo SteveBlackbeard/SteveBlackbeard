@@ -866,6 +866,106 @@
   }
 
   // ═══════════════════════════════════════════════════════════════
+  // BUILD 3D CROSS-SECTION EUKARYOTIC CELL MODEL (Organelle Composition)
+  // ═══════════════════════════════════════════════════════════════
+  function buildEukaryoticCell() {
+    isDnaMode = true;
+    const atoms = [];
+
+    // 1. Plasma Membrane (Cross-section Hemisphere: Phospholipids P=15, C=6, O=8)
+    const memRadius = 30.0;
+    const numMemAtoms = 160;
+    for (let i = 0; i < numMemAtoms; i++) {
+      const phi = Math.random() * Math.PI * 0.85; 
+      const theta = Math.random() * Math.PI;
+      if (phi > Math.PI * 0.4 && theta > Math.PI * 0.25 && theta < Math.PI * 0.75) continue; // Cutaway front view
+
+      const x = memRadius * Math.sin(phi) * Math.cos(theta);
+      const y = memRadius * Math.sin(phi) * Math.sin(theta);
+      const z = memRadius * Math.cos(phi);
+
+      const isPhosphorusHead = i % 3 === 0;
+      atoms.push({
+        z: isPhosphorusHead ? 15 : 6, // P (15) or C (6)
+        pos: new THREE.Vector3(x, y, z),
+        col: isPhosphorusHead ? 0x00F0FF : 0xFFD700,
+        scale: isPhosphorusHead ? 1.7 : 1.1
+      });
+    }
+
+    // 2. Nucleus & Chromatin DNA (Central Core: N=7, P=15, C=6)
+    const nucRadius = 11.0;
+    for (let i = 0; i < 65; i++) {
+      const r = Math.random() * nucRadius;
+      const phi = Math.random() * Math.PI * 2;
+      const theta = Math.random() * Math.PI;
+
+      const zElem = i % 3 === 0 ? 7 : (i % 3 === 1 ? 15 : 6);
+      const col = zElem === 7 ? 0xBF00FF : (zElem === 15 ? 0xFF5500 : 0x00FF9D);
+      atoms.push({
+        z: zElem,
+        pos: new THREE.Vector3(
+          r * Math.sin(theta) * Math.cos(phi),
+          r * Math.sin(theta) * Math.sin(phi),
+          r * Math.cos(theta)
+        ),
+        col,
+        scale: 1.4
+      });
+    }
+
+    // 3. Mitochondria Energy Powerhouses (C=6, O=8, P=15)
+    const mitCenters = [
+      new THREE.Vector3(-16, 10, -6),
+      new THREE.Vector3(15, -12, 5)
+    ];
+    mitCenters.forEach(center => {
+      for (let m = 0; m < 16; m++) {
+        atoms.push({
+          z: 8, // Oxygen
+          pos: new THREE.Vector3(
+            center.x + (Math.random() - 0.5) * 7.5,
+            center.y + (Math.random() - 0.5) * 4.5,
+            center.z + (Math.random() - 0.5) * 4.5
+          ),
+          col: 0xFF0055,
+          scale: 1.3
+        });
+      }
+    });
+
+    // 4. Cytosol Ionic Electrolyte Matrix (Na+=11, K+=19, Cl-=17, Ca2+=20)
+    const electrolytes = [11, 19, 17, 20];
+    const eleCol = { 11: 0xFFD700, 19: 0x8A2BE2, 17: 0x00FF9D, 20: 0xFF7700 };
+    for (let e = 0; e < 45; e++) {
+      const r = 13 + Math.random() * 13;
+      const phi = Math.random() * Math.PI * 2;
+      const theta = Math.random() * Math.PI;
+      const zEl = electrolytes[e % electrolytes.length];
+
+      atoms.push({
+        z: zEl,
+        pos: new THREE.Vector3(
+          r * Math.sin(theta) * Math.cos(phi),
+          r * Math.sin(theta) * Math.sin(phi),
+          r * Math.cos(theta)
+        ),
+        col: eleCol[zEl],
+        scale: 1.2
+      });
+    }
+
+    spawnAtoms(atoms);
+    updateTelemetry(
+      '3D Eukaryotic Cell (Cross-Section Cutaway)',
+      'Phospholipids (P,C,O) + Chromatin (N,P) + ATP (C,O,P)',
+      'Biological Cell Architecture (Cutaway Interior)',
+      'Membrane Lipids & Cytosol Ionic Matrix (Na⁺, K⁺, Cl⁻, Ca²⁺)',
+      '3D Organelle Element Composition'
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════
   // FORM SINGLE ELEMENT (Real Crystal Lattices & Molecular States)
   // ═══════════════════════════════════════════════════════════════
   function formElement(z, fromCenter) {
@@ -2397,6 +2497,16 @@
       playTone(330, 'sine', 0.15);
       clearReactantTray();
       buildDNA();
+    });
+  }
+
+  // 3D CELL MODEL Button
+  const btnCell = document.getElementById('btn-cell');
+  if (btnCell) {
+    btnCell.addEventListener('click', () => {
+      playTone(550, 'triangle', 0.15);
+      clearReactantTray();
+      buildEukaryoticCell();
     });
   }
 
