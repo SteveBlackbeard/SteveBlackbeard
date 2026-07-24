@@ -29,25 +29,6 @@
 
   <br/>
 
-  <!-- Languages: only English active for now -->
-  <p align="center">
-    <a href="#ethernium">
-      <img src="https://img.shields.io/badge/EN-English-0A7A3E?style=for-the-badge&logo=googletranslate&logoColor=white" alt="English" />
-    </a>
-    <img src="https://img.shields.io/badge/ES-Español-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Spanish (soon)" />
-    <img src="https://img.shields.io/badge/FR-Français-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="French (soon)" />
-    <img src="https://img.shields.io/badge/DE-Deutsch-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="German (soon)" />
-    <img src="https://img.shields.io/badge/PT-Português-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Portuguese (soon)" />
-    <img src="https://img.shields.io/badge/IT-Italiano-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Italian (soon)" />
-    <img src="https://img.shields.io/badge/JA-日本語-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Japanese (soon)" />
-    <img src="https://img.shields.io/badge/ZH-中文-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Chinese (soon)" />
-    <img src="https://img.shields.io/badge/KO-한국어-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Korean (soon)" />
-    <img src="https://img.shields.io/badge/RU-Русский-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Russian (soon)" />
-    <img src="https://img.shields.io/badge/AR-العربية-6B7280?style=for-the-badge&logo=googletranslate&logoColor=D1D5DB" alt="Arabic (soon)" />
-  </p>
-
-</div>
-
 ---
 
 ### Ethernium
