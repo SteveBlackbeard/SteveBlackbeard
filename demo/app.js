@@ -3,6 +3,25 @@
 window.addEventListener('DOMContentLoaded', function() {
   'use strict';
 
+  // === URL PARAMETERS SAFE PARSING (Hoisted to avoid Temporal Dead Zone) ===
+  let paramZ = null;
+  let paramFuse = null;
+
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    paramZ = urlParams.get('z');
+    paramFuse = urlParams.get('fuse');
+
+    if (!paramFuse && window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      if (hash.includes('reactants')) {
+        paramFuse = hash.split('=')[1];
+      }
+    }
+  } catch (e) {
+    console.warn("Error parsing URL params:", e);
+  }
+
   const canvas = document.getElementById('webgl-canvas');
   const fpsVal = document.getElementById('fps-val');
 
@@ -2826,7 +2845,7 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  if (!location.hash && typeof paramZ === 'undefined' && typeof paramFuse === 'undefined') {
+  if (!location.hash && !paramZ && !paramFuse) {
     setTimeout(() => {
       showTutorialStep(0);
     }, 1200);
@@ -3339,10 +3358,6 @@ window.addEventListener('DOMContentLoaded', function() {
 }
 
   // URL Query Parameters Auto-Loader (e.g. ?z=79 or ?fuse=C+F)
-  const urlParams = new URLSearchParams(window.location.search);
-  const paramZ = urlParams.get('z');
-  const paramFuse = urlParams.get('fuse');
-
   if (paramZ && parseInt(paramZ) >= 1 && parseInt(paramZ) <= 118) {
     formElement(parseInt(paramZ));
   } else if (paramFuse && paramFuse.includes('+')) {
