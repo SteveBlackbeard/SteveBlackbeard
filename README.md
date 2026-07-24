@@ -140,14 +140,6 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 ---
 
-### Sovereign Compute Matrix
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg?v=3" alt="Sovereign Compute Matrix" width="100%" />
-</div>
-
----
-
 ### Technical Stack
 
 <div align="center">
