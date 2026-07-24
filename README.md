@@ -121,7 +121,7 @@ Visual engines and experimental interfaces live here:
 
 ---
 
-### Autonomous Systems
+### Autonomous Terminal
 
 <div align="center">
   <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
