@@ -220,5 +220,5 @@ It develops the software architectures, GPU rendering engines, autonomous system
     R&amp;D by <strong>Nemeth Corp</strong>
   </sub>
   <br/><br/>
-  <img src="ethernium-mark.png" alt="Ethernium" width="48" />
+  <img src="Nemeth-mark.png" alt="Ethernium" width="48" />
 </div>
