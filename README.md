@@ -109,9 +109,7 @@ Visual engines and experimental interfaces live here:
     <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
-
 <br/>
-
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
     <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
