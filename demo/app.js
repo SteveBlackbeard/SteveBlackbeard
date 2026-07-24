@@ -594,6 +594,14 @@ window.addEventListener('DOMContentLoaded', function() {
     const isInitial = activeAtoms.length === 0;
     const spawnDelay = isInitial ? 0 : 300;
 
+    // Clean up any existing quantum orbital particle cloud
+    if (orbitalParticleSystem) {
+      moleculeGroup.remove(orbitalParticleSystem);
+      orbitalParticleSystem.geometry.dispose();
+      orbitalParticleSystem.material.dispose();
+      orbitalParticleSystem = null;
+    }
+
     // Fade out existing atoms that aren't needed
     activeAtoms.forEach(a => { a.targetScale = 0.0; a.removing = true; });
     activeBonds.forEach(b => { b.removing = true; });
@@ -1124,6 +1132,10 @@ window.addEventListener('DOMContentLoaded', function() {
     spawnAtoms(atoms);
     
     const symbol = el.s;
+
+    if (['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn'].includes(symbol) || (el.cat && el.cat.includes('noble'))) {
+      generateAtomicOrbitalCloud(z);
+    }
     updateTelemetry(
       `${el.n} (${el.s}) [Z = ${z}]`,
       `Mass: ${typeof el.m === 'number' ? el.m.toFixed(3) : el.m} u | Electronegativity: ${el.electronegativity ? el.electronegativity : (el.cat && el.cat.includes('noble') ? '0.0 (Inert Noble Gas)' : 'Est. (Superheavy Transactinide)')}`,
@@ -2433,6 +2445,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function selectElementForTray(z) {
     playTone(400 + selectedReactants.length * 80, 'sine', 0.12);
+
+    // Auto-clear single element selection so clicking a new element displays it fresh
+    if (selectedReactants.length === 1) {
+      selectedReactants = [];
+    }
+
     if (selectedReactants.length >= MAX_REACTANTS) {
       updateTelemetry(
         `Tray Maximum Reached (5/5)`,
