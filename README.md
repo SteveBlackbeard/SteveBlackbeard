@@ -5,9 +5,9 @@
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Sovereign Systems Banner" width="90%" />
   <br/><br/>
   <p align="center">
-    <code>[SOVEREIGN SYSTEMS ARCHITECT]</code> &nbsp;•&nbsp; 
-    <code>[CONCEPTUAL PARADIGM SHIFTS]</code> &nbsp;•&nbsp; 
-    <code>[HIGH-FIDELITY GPU GRAPHICS]</code>
+    <code>[TRANSMEDIA PLATFORM]</code> &nbsp;•&nbsp; 
+    <code>[RESEARCH · ENTERTAINMENT · SOLUTIONS]</code> &nbsp;•&nbsp; 
+    <code>[EDUCATION · SOFTWARE · AI]</code>
   </p>
 
   <p align="center">
@@ -17,17 +17,21 @@
   </p>
 
   <p align="center">
-    <a href="#executive-briefing--corporate-manifesto"><img src="badge-clearance.svg?v=504" alt="Clearance Level 05" width="230" /></a>
-    <a href="#ethernium-corporate-systemic-architecture"><img src="badge-paradigm.svg?v=504" alt="Paradigm Disruptive" width="230" /></a>
+    <a href="#️-ethernium--plataforma-transmedia"><img src="badge-clearance.svg?v=504" alt="Clearance Level 05" width="230" /></a>
+    <a href="#️-nulla-corp--id-corporativo"><img src="badge-paradigm.svg?v=504" alt="Paradigm Disruptive" width="230" /></a>
     <a href="#real-b-dna-human-genome-double-helix--tp53-gene-sequence"><img src="badge-telemetry.svg?v=504" alt="GPU Telemetry 60 FPS" width="230" /></a>
   </p>
 
   ---
 </div>
 
-### 👁️ Ethernium Briefing // 
+### 👁️ Ethernium // Plataforma Transmedia
 
-> *“Engineering high-efficiency, resilient, and autonomous computing paradigms by synthesizing control theory, discrete optimization, and hardware-accelerated GPU pipelines.”*
+> **Ethernium** es la cara visible y plataforma transmedia encargada de ofrecer **investigación, entretenimiento, utilidades, productos y soluciones** desde la perspectiva profesional en diversas especialidades — incluyendo **educación, software e inteligencia artificial**.
+>
+> Diseñada como un ecosistema unificado, Ethernium integra herramientas interactivas de alta fidelidad, motores de visualización científica en tiempo real, y experiencias de aprendizaje inmersivas que conectan la innovación tecnológica con aplicaciones prácticas en múltiples industrias.
+>
+> *Detrás de Ethernium opera* [**Nulla Corp**](#-nulla-corp--id-corporativo) *— la marca corporativa de I+D responsable de la arquitectura, investigación y desarrollo de todas las tecnologías que impulsan el ecosistema.*
 
 ---
 
@@ -78,10 +82,12 @@
 
 ---
 
-### 🏛️ Ethernium Corporate Systemic Architecture
+### 🏛️ Nulla Corp // I+D Corporativo
+
+> **Nulla Corp** es la marca corporativa de Investigación y Desarrollo (I+D) detrás de Ethernium. Opera como el laboratorio de innovación responsable del diseño de arquitecturas de software, motores de renderizado GPU, sistemas autónomos, pipelines de inteligencia artificial y soluciones de computación de alto rendimiento que constituyen la infraestructura tecnológica de todo el ecosistema Ethernium.
 
 <div align="center">
-  <img src="seneschal-chronolith.svg?v=504" alt="Ethernium Corporate Systemic Architecture" width="100%" />
+  <img src="seneschal-chronolith.svg?v=504" alt="Nulla Corp — I+D Corporativo — Arquitectura Sistémica" width="100%" />
 </div>
 
 ---
@@ -159,17 +165,19 @@
 
 ---
 
-### 👁️ Ethernium Corporate Vision
+### 👁️ Visión Corporativa
 
 <div align="center">
   <br />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Sovereign Vision Hologram" width="100%" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium — Plataforma Transmedia — Visión Corporativa" width="100%" />
 </div>
 
 ---
 <div align="center">
   <br />
-  Knowledge is not individual, but of the expansion itself.
+  <em>El conocimiento no es individual, sino de la expansión misma.</em>
   <br/><br/>
-  <sub>⚡ Powered by <strong>Nulla Labs</strong> • I+D and Innovations</sub>
+  <sub>⚡ <strong>Ethernium</strong> — Plataforma Transmedia de Investigación, Entretenimiento y Soluciones</sub>
+  <br/>
+  <sub>🔬 Powered by <strong>Nulla Corp</strong> — Marca Corporativa de I+D</sub>
 </div>
