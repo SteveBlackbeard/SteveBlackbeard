@@ -29,9 +29,7 @@
 
 ### Autonomous Systems
 
-<div align="center">
-  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
-</div>
+**[Launch Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)**
 
 ### Ethernium
 
@@ -88,7 +86,9 @@ Raster → TTF / WOFF / WOFF2 with Bézier fitting and forensic watermarking.
 
 Visual engines and experimental interfaces:
 
-**[Launch Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)**
+<div align="center">
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg?v=3" alt="Sovereign Compute Matrix" width="100%" />
+</div>
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/CHRONOLITH-by-Ethernium/" target="_blank">
