@@ -55,7 +55,7 @@
 **Ethernium** is a platform focused on practical AI tools for people who work intensively with language models.  
 It helps reduce costs, maintain control over long-running projects, and build with a **local-first** approach.
 
-Behind Ethernium operates **Nulla Corp**, the R&D brand responsible for the core architecture and development of the ecosystem.
+Behind Ethernium operates **Nemeth Corp**, the R&D brand responsible for the core architecture and development of the ecosystem.
 
 ---
 
