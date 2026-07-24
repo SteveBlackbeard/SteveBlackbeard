@@ -46,6 +46,19 @@ R&D by **Nemeth Corp**.
 
 ---
 
+### Public Portfolio
+
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
+  </p>
+</div>
+
+---
+
 ### Main Projects
 
 #### Chronolith
@@ -84,19 +97,6 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 - Focused on branding and custom typography  
 
 [Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
-
----
-
-### Public Portfolio
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
-  </p>
-</div>
 
 ---
 
