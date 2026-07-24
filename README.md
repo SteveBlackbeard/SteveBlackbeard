@@ -101,6 +101,13 @@ Visual engines and experimental interfaces:
 </div>
 
 <div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Complete 118-element IUPAC periodic table with Gold (Au) electron shell orbital view — Click to explore</i></sub>
+  </p>
+</div>
 
 ---
 
@@ -132,10 +139,4 @@ Visual engines and experimental interfaces:
   <br/>
   <sub>R&D by <strong>Nemeth Corp</strong></sub>
 </div>
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Complete 118-element IUPAC periodic table with Gold (Au) electron shell orbital view — Click to explore</i></sub>
-  </p>
-</div>
+
