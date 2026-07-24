@@ -934,19 +934,23 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // BUILD 100% PHOTOREALISTIC 3D ANIMAL EUKARYOTIC CELL CUTAWAY (9 Organelles)
   // ═══════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
+  // BUILD 100% PHOTOREALISTIC DENSE 3D ANIMAL EUKARYOTIC CELL CUTAWAY (9 Organelles, ~3,300+ Particles)
+  // ═══════════════════════════════════════════════════════════════
   function buildEukaryoticCell() {
     isDnaMode = true;
     const atoms = [];
 
-    // 1. PLASMA MEMBRANE BILAYER & TRANSMEMBRANE ION CHANNELS (Cutaway Hemisphere R=34.0)
+    // 1. PLASMA MEMBRANE BILAYER & TRANSMEMBRANE ION CHANNELS (Cutaway Hemisphere R=34.0, 1,200 Particles)
     const memRadiusOuter = 34.0;
-    const memRadiusInner = 30.5;
-    const numMemAtoms = 300;
+    const memRadiusInner = 31.0;
+    const numMemAtoms = 1200;
     for (let i = 0; i < numMemAtoms; i++) {
-      const phi = Math.random() * Math.PI * 0.88; 
-      const theta = Math.random() * Math.PI;
-      // Front 120° cutaway window so internal organelles are 100% visible
-      if (phi > Math.PI * 0.30 && theta > Math.PI * 0.18 && theta < Math.PI * 0.82) continue;
+      const phi = Math.random() * Math.PI * 0.90; 
+      const theta = Math.random() * Math.PI * 2;
+
+      // Front 110° cutaway window so internal organelles are 100% visible
+      if (phi > Math.PI * 0.28 && theta > Math.PI * 0.20 && theta < Math.PI * 0.80) continue;
 
       const isOuter = i % 2 === 0;
       const r = isOuter ? memRadiusOuter : memRadiusInner;
@@ -954,33 +958,33 @@ window.addEventListener('DOMContentLoaded', function() {
       const y = r * Math.sin(phi) * Math.sin(theta);
       const z = r * Math.cos(phi);
 
-      const isProtein = i % 14 === 0;
-      const isPhosphorusHead = isOuter;
+      const isTransmembraneProtein = i % 18 === 0;
+      const isGlycoproteinHead = isOuter && (i % 7 === 0);
 
       atoms.push({
-        z: isProtein ? 7 : (isPhosphorusHead ? 15 : 6),
+        z: isTransmembraneProtein ? 7 : (isGlycoproteinHead ? 15 : 6),
         pos: new THREE.Vector3(x, y, z),
-        col: isProtein ? 0x00F0FF : (isPhosphorusHead ? 0x00FF9D : 0xFFD700),
-        scale: isProtein ? 2.4 : (isPhosphorusHead ? 1.75 : 1.15)
+        col: isTransmembraneProtein ? 0x00F0FF : (isGlycoproteinHead ? 0x00FF9D : 0xFFD700),
+        scale: isTransmembraneProtein ? 2.3 : (isGlycoproteinHead ? 1.6 : 1.1)
       });
     }
 
-    // 2. NUCLEUS: NUCLEOLUS CORE + DOUBLE ENVELOPE + CHROMATIN HELICES + NUCLEAR PORES
+    // 2. NUCLEUS: DENSE NUCLEOLUS CORE + DOUBLE ENVELOPE + CHROMATIN LOOPS + NUCLEAR PORES (480 Particles)
     const nucRadius = 12.5;
-    // Nucleolus Core (Ribosomal RNA Assembly Center)
-    for (let i = 0; i < 35; i++) {
-      const r = Math.random() * 5.0;
+    // Nucleolus Core (Ribosomal RNA Assembly Center - 90 Particles)
+    for (let i = 0; i < 90; i++) {
+      const r = Math.random() * 5.2;
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
       atoms.push({
         z: 7, // Nitrogen / RNA
         pos: new THREE.Vector3(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta)),
-        col: 0xBF00FF, // Deep Purple Nucleolus
-        scale: 1.7
+        col: 0xBF00FF, // Deep Purple Nucleolus Core
+        scale: 1.65
       });
     }
-    // Chromatin DNA Double-Helices inside Nucleoplasm
-    for (let i = 0; i < 85; i++) {
+    // Chromatin DNA Double-Helices inside Nucleoplasm (320 Particles)
+    for (let i = 0; i < 320; i++) {
       const r = 5.0 + Math.random() * (nucRadius - 5.0);
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
@@ -989,13 +993,13 @@ window.addEventListener('DOMContentLoaded', function() {
         z: zElem,
         pos: new THREE.Vector3(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta)),
         col: zElem === 15 ? 0xFF5500 : (zElem === 7 ? 0x00FF9D : 0xFFD700),
-        scale: 1.35
+        scale: 1.25
       });
     }
-    // Nuclear Envelope Pores (Pore Complexes)
-    for (let p = 0; p < 14; p++) {
-      const phi = (p / 14) * Math.PI;
-      const theta = (p * 2.4) % (Math.PI * 2);
+    // Nuclear Envelope Pores (24 Pore Complexes)
+    for (let p = 0; p < 24; p++) {
+      const phi = (p / 24) * Math.PI;
+      const theta = (p * 2.5) % (Math.PI * 2);
       const px = nucRadius * Math.sin(phi) * Math.cos(theta);
       const py = nucRadius * Math.sin(phi) * Math.sin(theta);
       const pz = nucRadius * Math.cos(phi);
@@ -1003,139 +1007,143 @@ window.addEventListener('DOMContentLoaded', function() {
         z: 15,
         pos: new THREE.Vector3(px, py, pz),
         col: 0xFFD700, // Gold Nuclear Pore Ring
-        scale: 1.85
+        scale: 1.8
       });
     }
 
-    // 3. ROUGH ENDOPLASMIC RETICULUM (RER) & STUDDED RIBOSOMES (4 Concentric Folded Sheets)
-    const rerRings = [15.0, 17.5, 20.0, 22.5];
+    // 3. ROUGH ENDOPLASMIC RETICULUM (RER) & STUDDED RIBOSOMES (6 Concentric Sheets, 450 Particles)
+    const rerRings = [14.5, 16.5, 18.5, 20.5, 22.5, 24.5];
     rerRings.forEach((rRing, rIdx) => {
-      const numPts = 40;
+      const numPts = 75;
       for (let i = 0; i < numPts; i++) {
-        const angle = (i / numPts) * Math.PI * 1.55 - Math.PI * 0.78;
+        const angle = (i / numPts) * Math.PI * 1.6 - Math.PI * 0.8;
         const x = Math.cos(angle) * rRing;
-        const y = Math.sin(angle) * rRing + (Math.sin(i * 0.6) * 1.6);
-        const z = (rIdx - 1.5) * 3.8;
+        const y = Math.sin(angle) * rRing + (Math.sin(i * 0.5) * 1.8);
+        const z = (rIdx - 2.5) * 3.2;
 
         const hasRibosome = i % 2 === 0;
         atoms.push({
           z: hasRibosome ? 7 : 6,
           pos: new THREE.Vector3(x, y, z),
           col: hasRibosome ? 0xFF0055 : 0x9D00FF, // Magenta Ribosomes on Violet ER Sheets
-          scale: hasRibosome ? 1.45 : 1.15
+          scale: hasRibosome ? 1.4 : 1.1
         });
       }
     });
 
-    // 4. SMOOTH ENDOPLASMIC RETICULUM (SER) (Tubular Lipid Synthesis Network)
-    for (let s = 0; s < 30; s++) {
-      const angle = (s / 30) * Math.PI * 1.3;
-      const x = -Math.cos(angle) * 23.5;
-      const y = -Math.sin(angle) * 19.5 + (Math.cos(s * 0.8) * 2.2);
-      const z = (Math.sin(s * 0.5) - 0.5) * 9.0;
+    // 4. SMOOTH ENDOPLASMIC RETICULUM (SER) (Tubular Lipid Network, 180 Particles)
+    for (let s = 0; s < 180; s++) {
+      const angle = (s / 180) * Math.PI * 1.4;
+      const r = 21.0 + (Math.sin(s * 0.2) * 3.5);
+      const x = -Math.cos(angle) * r;
+      const y = -Math.sin(angle) * (r * 0.85) + (Math.cos(s * 0.4) * 2.5);
+      const z = (Math.sin(s * 0.3) - 0.5) * 12.0;
       atoms.push({
         z: 6,
         pos: new THREE.Vector3(x, y, z),
         col: 0x77FF00, // Lime Green SER
-        scale: 1.3
+        scale: 1.25
       });
     }
 
-    // 5. GOLGI APPARATUS & SECRETORY VESICLE TRANSPORT NETWORK (6 Cisternae Stacks)
+    // 5. GOLGI APPARATUS & SECRETORY VESICLE SWARM (8 Cisternae Stacks, 220 Particles)
     const golgiCenter = new THREE.Vector3(18.5, 15.0, -2.5);
-    for (let layer = 0; layer < 6; layer++) {
-      const arcLen = 14;
+    for (let layer = 0; layer < 8; layer++) {
+      const arcLen = 22;
       for (let g = 0; g < arcLen; g++) {
         const t = (g / arcLen) - 0.5;
-        const gx = golgiCenter.x + t * 13.0;
-        const gy = golgiCenter.y + (layer * 2.2) - (t * t * 6.5);
-        const gz = golgiCenter.z + (layer * 1.25);
+        const gx = golgiCenter.x + t * 15.0;
+        const gy = golgiCenter.y + (layer * 1.8) - (t * t * 7.5);
+        const gz = golgiCenter.z + (layer * 1.1);
         atoms.push({
           z: 6,
           pos: new THREE.Vector3(gx, gy, gz),
           col: 0xFFAA00, // Amber Golgi Cisternae
-          scale: 1.35
+          scale: 1.3
         });
       }
     }
-    // Secretory Vesicles budding from Golgi towards Plasma Membrane
-    const vesicles = [
-      new THREE.Vector3(26.0, 19.0, 2.0),
-      new THREE.Vector3(28.0, 23.0, -4.0),
-      new THREE.Vector3(23.0, 25.0, 6.0),
-      new THREE.Vector3(30.0, 15.0, 0.0)
-    ];
-    vesicles.forEach(vPos => {
+    // Secretory Vesicles budding from Golgi towards Plasma Membrane (44 Vesicles)
+    for (let v = 0; v < 44; v++) {
+      const vPos = new THREE.Vector3(
+        18.0 + Math.random() * 14.0,
+        12.0 + Math.random() * 16.0,
+        -8.0 + Math.random() * 16.0
+      );
       atoms.push({
         z: 15,
         pos: vPos,
         col: 0xFFD700,
-        scale: 1.85
+        scale: 1.6
       });
-    });
+    }
 
-    // 6. MITOCHONDRIA ATP POWERHOUSES (4 Elongated Double-Membrane Capsules)
+    // 6. MITOCHONDRIA ATP POWERHOUSES (6 Elongated Double-Membrane Capsules, 360 Particles)
     const mitocenters = [
       new THREE.Vector3(-19.0, 15.0, -8.5),
       new THREE.Vector3(17.0, -17.0, 6.5),
       new THREE.Vector3(-15.0, -19.0, 4.5),
-      new THREE.Vector3(20.0, -6.0, -12.0)
+      new THREE.Vector3(20.0, -6.0, -12.0),
+      new THREE.Vector3(-22.0, 4.0, 10.0),
+      new THREE.Vector3(8.0, 24.0, -6.0)
     ];
-    mitocenters.forEach((center, idx) => {
-      for (let m = 0; m < 22; m++) {
+    mitocenters.forEach((center) => {
+      for (let m = 0; m < 60; m++) {
         const offset = new THREE.Vector3(
-          (m - 11) * 0.75,
-          Math.sin(m * 0.6) * 2.4,
-          Math.cos(m * 0.6) * 2.4
+          (m - 30) * 0.35,
+          Math.sin(m * 0.5) * 2.6,
+          Math.cos(m * 0.5) * 2.6
         );
         const isCristae = m % 2 === 0;
         atoms.push({
           z: isCristae ? 8 : 15,
           pos: center.clone().add(offset),
           col: isCristae ? 0xFF0033 : 0x00F0FF, // Crimson Outer Membrane & Cyan Cristae ATP Synthase
-          scale: isCristae ? 1.5 : 1.25
+          scale: isCristae ? 1.4 : 1.15
         });
       }
     });
 
-    // 7. LYSOSOMES & PEROXISOMES (Enzymatic Hydrolytic Vesicles)
+    // 7. LYSOSOMES & PEROXISOMES (Digestive Hydrolytic Vesicles, 96 Particles)
     const lysocenters = [
       new THREE.Vector3(-23.0, -7.0, -11.0),
       new THREE.Vector3(9.0, -25.0, -7.0),
       new THREE.Vector3(-9.0, 23.0, 9.0),
-      new THREE.Vector3(12.0, 26.0, -8.0)
+      new THREE.Vector3(12.0, 26.0, -8.0),
+      new THREE.Vector3(-25.0, 18.0, 2.0),
+      new THREE.Vector3(24.0, -18.0, -5.0)
     ];
     lysocenters.forEach(lPos => {
-      for (let ly = 0; ly < 8; ly++) {
+      for (let ly = 0; ly < 16; ly++) {
         atoms.push({
           z: 16,
-          pos: lPos.clone().add(new THREE.Vector3((Math.random()-0.5)*3.8, (Math.random()-0.5)*3.8, (Math.random()-0.5)*3.8)),
+          pos: lPos.clone().add(new THREE.Vector3((Math.random()-0.5)*4.2, (Math.random()-0.5)*4.2, (Math.random()-0.5)*4.2)),
           col: 0xCCFF00, // Yellow-Green Digestive Peroxisome
-          scale: 1.4
+          scale: 1.35
         });
       }
     });
 
-    // 8. CENTROSOME & CENTRIOLES (Microtubule Organizing Center)
+    // 8. CENTROSOME & CENTRIOLES (Microtubule Organizing Center, 36 Particles)
     const centriolePos = new THREE.Vector3(-8.0, -14.0, -10.0);
-    for (let c = 0; c < 18; c++) {
-      const angle = (c / 18) * Math.PI * 2;
-      const cx = centriolePos.x + Math.cos(angle) * 3.2;
-      const cy = centriolePos.y + Math.sin(angle) * 3.2;
-      const cz = centriolePos.z + (c % 2 === 0 ? 1.8 : -1.8);
+    for (let c = 0; c < 36; c++) {
+      const angle = (c / 36) * Math.PI * 2;
+      const cx = centriolePos.x + Math.cos(angle) * 3.6;
+      const cy = centriolePos.y + Math.sin(angle) * 3.6;
+      const cz = centriolePos.z + (c % 2 === 0 ? 2.2 : -2.2);
       atoms.push({
         z: 7,
         pos: new THREE.Vector3(cx, cy, cz),
         col: 0x00F0FF, // Bright Cyan Centriole Triplets
-        scale: 1.4
+        scale: 1.35
       });
     }
 
-    // 9. CYTOSKELETON MICROTUBULES & CYTOSOL IONIC MATRIX (Na+, K+, Cl-, Ca2+)
-    const electrolytes = [11, 19, 17, 20];
-    const eleCol = { 11: 0xFFD700, 19: 0x8A2BE2, 17: 0x00FF9D, 20: 0xFF7700 };
-    for (let e = 0; e < 70; e++) {
-      const r = 11 + Math.random() * 20;
+    // 9. CYTOSKELETON MICROTUBULE MESHWORK & CYTOSOL IONIC MATRIX (500 Particles)
+    const electrolytes = [11, 19, 17, 20, 8];
+    const eleCol = { 11: 0xFFD700, 19: 0x8A2BE2, 17: 0x00FF9D, 20: 0xFF7700, 8: 0x00F0FF };
+    for (let e = 0; e < 500; e++) {
+      const r = 8 + Math.random() * 23;
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
       const zEl = electrolytes[e % electrolytes.length];
@@ -1143,7 +1151,7 @@ window.addEventListener('DOMContentLoaded', function() {
         z: zEl,
         pos: new THREE.Vector3(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta)),
         col: eleCol[zEl],
-        scale: 1.2
+        scale: 1.15
       });
     }
 
@@ -1151,8 +1159,8 @@ window.addEventListener('DOMContentLoaded', function() {
     if (organelleNavPanel) organelleNavPanel.style.display = 'flex';
     updateTelemetry(
       '3D Eukaryotic Animal Cell (Photorealistic Organelle Cutaway)',
-      'Membrane Bilayer + Nucleolus + Nuclear Pores + RER + SER + Golgi + Mitochondria + Centrioles',
-      'High-Fidelity 3D Biological Cell Architecture (9 Organelles)',
+      'High-Density Lipid Bilayer + Nucleolus + Nuclear Pores + RER + SER + Golgi + 6 Mitochondria + Centrioles',
+      'High-Fidelity 3D Biological Cell Architecture (~3,500 Particles)',
       'Bilayer Phospholipids, Ribosomes, ATP Cristae & Cytosol Ionic Matrix',
       'State: [COMPLETE 3D EUKARYOTIC CELL SYNTHESIS]'
     );
