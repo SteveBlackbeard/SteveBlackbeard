@@ -6,21 +6,21 @@
   <br/><br/>
 
   <p align="center">
-    <code>[AI TOOLS]</code> &nbsp;•&nbsp;
-    <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
-    <code>[OPEN SOURCE]</code>
+    <code>[AI TOOLS]</code> &nbsp;•&nbsp; 
+    <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp; 
+    <code>[SOVEREIGN SYSTEMS]</code>
   </p>
 
   <p align="center">
-    <a href="#main-projects">
-      <img src="badge-clearance.svg?v=504" alt="AI Tools" width="230" />
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+      <img src="badge-launch.svg?v=504" alt="Launch Live Demo" width="420" />
     </a>
-    <a href="#tech-stack">
-      <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
-    </a>
-    <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" />
-    </a>
+  </p>
+
+  <p align="center">
+    <a href="#main-projects"><img src="badge-clearance.svg?v=504" alt="AI Tools" width="230" /></a>
+    <a href="#nulla-corp--rd"><img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" /></a>
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank"><img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" /></a>
   </p>
 
 </div>
