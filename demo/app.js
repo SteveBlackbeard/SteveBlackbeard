@@ -930,53 +930,56 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // BUILD 100% FULLY FORMED 3D EUKARYOTIC CELL CUTAWAY MODEL (8 Organelles)
+  // BUILD 100% PHOTOREALISTIC 3D ANIMAL EUKARYOTIC CELL CUTAWAY (9 Organelles)
   // ═══════════════════════════════════════════════════════════════
   function buildEukaryoticCell() {
     isDnaMode = true;
     const atoms = [];
 
-    // 1. PLASMA MEMBRANE & TRANSMEMBRANE CHANNEL PROTEINS (Cutaway Hemisphere R=32.0)
-    const memRadius = 32.0;
-    const numMemAtoms = 220;
+    // 1. PLASMA MEMBRANE BILAYER & TRANSMEMBRANE ION CHANNELS (Cutaway Hemisphere R=34.0)
+    const memRadiusOuter = 34.0;
+    const memRadiusInner = 30.5;
+    const numMemAtoms = 300;
     for (let i = 0; i < numMemAtoms; i++) {
       const phi = Math.random() * Math.PI * 0.88; 
       const theta = Math.random() * Math.PI;
-      // Cutaway front quadrant view so interior organelles are 100% visible
-      if (phi > Math.PI * 0.35 && theta > Math.PI * 0.20 && theta < Math.PI * 0.80) continue;
+      // Front 120° cutaway window so internal organelles are 100% visible
+      if (phi > Math.PI * 0.30 && theta > Math.PI * 0.18 && theta < Math.PI * 0.82) continue;
 
-      const x = memRadius * Math.sin(phi) * Math.cos(theta);
-      const y = memRadius * Math.sin(phi) * Math.sin(theta);
-      const z = memRadius * Math.cos(phi);
+      const isOuter = i % 2 === 0;
+      const r = isOuter ? memRadiusOuter : memRadiusInner;
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
 
-      const isProtein = i % 12 === 0;
-      const isPhosphorusHead = i % 3 === 0;
+      const isProtein = i % 14 === 0;
+      const isPhosphorusHead = isOuter;
 
       atoms.push({
         z: isProtein ? 7 : (isPhosphorusHead ? 15 : 6),
         pos: new THREE.Vector3(x, y, z),
         col: isProtein ? 0x00F0FF : (isPhosphorusHead ? 0x00FF9D : 0xFFD700),
-        scale: isProtein ? 2.2 : (isPhosphorusHead ? 1.6 : 1.1)
+        scale: isProtein ? 2.4 : (isPhosphorusHead ? 1.75 : 1.15)
       });
     }
 
-    // 2. CENTRAL NUCLEUS: DENSE NUCLEOLUS CORE + CHROMATIN DNA + NUCLEAR PORES
-    const nucRadius = 12.0;
-    // Nucleolus Core (Ribosome Factory)
-    for (let i = 0; i < 25; i++) {
-      const r = Math.random() * 4.5;
+    // 2. NUCLEUS: NUCLEOLUS CORE + DOUBLE ENVELOPE + CHROMATIN HELICES + NUCLEAR PORES
+    const nucRadius = 12.5;
+    // Nucleolus Core (Ribosomal RNA Assembly Center)
+    for (let i = 0; i < 35; i++) {
+      const r = Math.random() * 5.0;
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
       atoms.push({
         z: 7, // Nitrogen / RNA
         pos: new THREE.Vector3(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta)),
-        col: 0xBF00FF, // Deep Purple
-        scale: 1.6
+        col: 0xBF00FF, // Deep Purple Nucleolus
+        scale: 1.7
       });
     }
-    // Chromatin DNA Strands inside Nucleus
-    for (let i = 0; i < 70; i++) {
-      const r = 4.5 + Math.random() * (nucRadius - 4.5);
+    // Chromatin DNA Double-Helices inside Nucleoplasm
+    for (let i = 0; i < 85; i++) {
+      const r = 5.0 + Math.random() * (nucRadius - 5.0);
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
       const zElem = i % 3 === 0 ? 15 : (i % 3 === 1 ? 7 : 6);
@@ -984,121 +987,153 @@ window.addEventListener('DOMContentLoaded', function() {
         z: zElem,
         pos: new THREE.Vector3(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta)),
         col: zElem === 15 ? 0xFF5500 : (zElem === 7 ? 0x00FF9D : 0xFFD700),
-        scale: 1.3
+        scale: 1.35
+      });
+    }
+    // Nuclear Envelope Pores (Pore Complexes)
+    for (let p = 0; p < 14; p++) {
+      const phi = (p / 14) * Math.PI;
+      const theta = (p * 2.4) % (Math.PI * 2);
+      const px = nucRadius * Math.sin(phi) * Math.cos(theta);
+      const py = nucRadius * Math.sin(phi) * Math.sin(theta);
+      const pz = nucRadius * Math.cos(phi);
+      atoms.push({
+        z: 15,
+        pos: new THREE.Vector3(px, py, pz),
+        col: 0xFFD700, // Gold Nuclear Pore Ring
+        scale: 1.85
       });
     }
 
-    // 3. ROUGH ENDOPLASMIC RETICULUM (RER) & RIBOSOME CISTERNAE (Layered Around Nucleus)
-    const rerRings = [14.5, 17.0, 19.5];
+    // 3. ROUGH ENDOPLASMIC RETICULUM (RER) & STUDDED RIBOSOMES (4 Concentric Folded Sheets)
+    const rerRings = [15.0, 17.5, 20.0, 22.5];
     rerRings.forEach((rRing, rIdx) => {
-      const numPts = 35;
+      const numPts = 40;
       for (let i = 0; i < numPts; i++) {
-        const angle = (i / numPts) * Math.PI * 1.5 - Math.PI * 0.75;
+        const angle = (i / numPts) * Math.PI * 1.55 - Math.PI * 0.78;
         const x = Math.cos(angle) * rRing;
-        const y = Math.sin(angle) * rRing + (Math.sin(i * 0.5) * 1.5);
-        const z = (rIdx - 1) * 3.5;
+        const y = Math.sin(angle) * rRing + (Math.sin(i * 0.6) * 1.6);
+        const z = (rIdx - 1.5) * 3.8;
 
         const hasRibosome = i % 2 === 0;
         atoms.push({
-          z: hasRibosome ? 7 : 6, // Ribosome RNA (7) or ER Membrane Carbon (6)
+          z: hasRibosome ? 7 : 6,
           pos: new THREE.Vector3(x, y, z),
           col: hasRibosome ? 0xFF0055 : 0x9D00FF, // Magenta Ribosomes on Violet ER Sheets
-          scale: hasRibosome ? 1.4 : 1.1
+          scale: hasRibosome ? 1.45 : 1.15
         });
       }
     });
 
-    // 4. SMOOTH ENDOPLASMIC RETICULUM (SER) (Lipid Synthesis Tubes)
-    for (let s = 0; s < 25; s++) {
-      const angle = (s / 25) * Math.PI * 1.2;
-      const x = -Math.cos(angle) * 22.0;
-      const y = -Math.sin(angle) * 18.0 + (Math.cos(s * 0.8) * 2.0);
-      const z = (Math.sin(s * 0.4) - 0.5) * 8.0;
+    // 4. SMOOTH ENDOPLASMIC RETICULUM (SER) (Tubular Lipid Synthesis Network)
+    for (let s = 0; s < 30; s++) {
+      const angle = (s / 30) * Math.PI * 1.3;
+      const x = -Math.cos(angle) * 23.5;
+      const y = -Math.sin(angle) * 19.5 + (Math.cos(s * 0.8) * 2.2);
+      const z = (Math.sin(s * 0.5) - 0.5) * 9.0;
       atoms.push({
         z: 6,
         pos: new THREE.Vector3(x, y, z),
         col: 0x77FF00, // Lime Green SER
-        scale: 1.25
+        scale: 1.3
       });
     }
 
-    // 5. GOLGI APPARATUS & SECRETORY VESICLE TRANSPORT NETWORK
-    const golgiCenter = new THREE.Vector3(17.0, 14.0, -2.0);
-    for (let layer = 0; layer < 5; layer++) {
-      const arcLen = 12;
+    // 5. GOLGI APPARATUS & SECRETORY VESICLE TRANSPORT NETWORK (6 Cisternae Stacks)
+    const golgiCenter = new THREE.Vector3(18.5, 15.0, -2.5);
+    for (let layer = 0; layer < 6; layer++) {
+      const arcLen = 14;
       for (let g = 0; g < arcLen; g++) {
         const t = (g / arcLen) - 0.5;
-        const gx = golgiCenter.x + t * 12.0;
-        const gy = golgiCenter.y + (layer * 2.2) - (t * t * 6.0);
-        const gz = golgiCenter.z + (layer * 1.2);
+        const gx = golgiCenter.x + t * 13.0;
+        const gy = golgiCenter.y + (layer * 2.2) - (t * t * 6.5);
+        const gz = golgiCenter.z + (layer * 1.25);
         atoms.push({
           z: 6,
           pos: new THREE.Vector3(gx, gy, gz),
-          col: 0xFFAA00, // Amber Golgi Stacks
-          scale: 1.3
+          col: 0xFFAA00, // Amber Golgi Cisternae
+          scale: 1.35
         });
       }
     }
     // Secretory Vesicles budding from Golgi towards Plasma Membrane
     const vesicles = [
-      new THREE.Vector3(25.0, 18.0, 2.0),
-      new THREE.Vector3(27.0, 22.0, -4.0),
-      new THREE.Vector3(22.0, 24.0, 6.0)
+      new THREE.Vector3(26.0, 19.0, 2.0),
+      new THREE.Vector3(28.0, 23.0, -4.0),
+      new THREE.Vector3(23.0, 25.0, 6.0),
+      new THREE.Vector3(30.0, 15.0, 0.0)
     ];
     vesicles.forEach(vPos => {
       atoms.push({
         z: 15,
         pos: vPos,
         col: 0xFFD700,
-        scale: 1.8
+        scale: 1.85
       });
     });
 
-    // 6. MITOCHONDRIA ENERGY POWERHOUSES (3 Elongated Capsules with Interior Cristae)
+    // 6. MITOCHONDRIA ATP POWERHOUSES (4 Elongated Double-Membrane Capsules)
     const mitocenters = [
-      new THREE.Vector3(-18.0, 14.0, -8.0),
-      new THREE.Vector3(16.0, -16.0, 6.0),
-      new THREE.Vector3(-14.0, -18.0, 4.0)
+      new THREE.Vector3(-19.0, 15.0, -8.5),
+      new THREE.Vector3(17.0, -17.0, 6.5),
+      new THREE.Vector3(-15.0, -19.0, 4.5),
+      new THREE.Vector3(20.0, -6.0, -12.0)
     ];
     mitocenters.forEach((center, idx) => {
-      for (let m = 0; m < 20; m++) {
+      for (let m = 0; m < 22; m++) {
         const offset = new THREE.Vector3(
-          (m - 10) * 0.7,
-          Math.sin(m * 0.6) * 2.2,
-          Math.cos(m * 0.6) * 2.2
+          (m - 11) * 0.75,
+          Math.sin(m * 0.6) * 2.4,
+          Math.cos(m * 0.6) * 2.4
         );
         const isCristae = m % 2 === 0;
         atoms.push({
-          z: isCristae ? 8 : 15, // Oxygen (8) or Phosphorus ATP (15)
+          z: isCristae ? 8 : 15,
           pos: center.clone().add(offset),
-          col: isCristae ? 0xFF0033 : 0x00F0FF, // Crimson Outer Membrane & Cyan Cristae ATP
-          scale: isCristae ? 1.45 : 1.2
+          col: isCristae ? 0xFF0033 : 0x00F0FF, // Crimson Outer Membrane & Cyan Cristae ATP Synthase
+          scale: isCristae ? 1.5 : 1.25
         });
       }
     });
 
-    // 7. LYSOSOMES & PEROXISOMES (Enzymatic Digestive Vesicles)
+    // 7. LYSOSOMES & PEROXISOMES (Enzymatic Hydrolytic Vesicles)
     const lysocenters = [
-      new THREE.Vector3(-22.0, -6.0, -10.0),
-      new THREE.Vector3(8.0, -24.0, -6.0),
-      new THREE.Vector3(-8.0, 22.0, 8.0)
+      new THREE.Vector3(-23.0, -7.0, -11.0),
+      new THREE.Vector3(9.0, -25.0, -7.0),
+      new THREE.Vector3(-9.0, 23.0, 9.0),
+      new THREE.Vector3(12.0, 26.0, -8.0)
     ];
     lysocenters.forEach(lPos => {
-      for (let ly = 0; ly < 7; ly++) {
+      for (let ly = 0; ly < 8; ly++) {
         atoms.push({
-          z: 16, // Sulfur / Hydrolytic Enzymes
-          pos: lPos.clone().add(new THREE.Vector3((Math.random()-0.5)*3.5, (Math.random()-0.5)*3.5, (Math.random()-0.5)*3.5)),
-          col: 0xCCFF00, // Yellow-Green Peroxisome
-          scale: 1.35
+          z: 16,
+          pos: lPos.clone().add(new THREE.Vector3((Math.random()-0.5)*3.8, (Math.random()-0.5)*3.8, (Math.random()-0.5)*3.8)),
+          col: 0xCCFF00, // Yellow-Green Digestive Peroxisome
+          scale: 1.4
         });
       }
     });
 
-    // 8. CYTOSKELETON MICROTUBULES & CYTOSOL IONIC MATRIX (Na+, K+, Cl-, Ca2+)
+    // 8. CENTROSOME & CENTRIOLES (Microtubule Organizing Center)
+    const centriolePos = new THREE.Vector3(-8.0, -14.0, -10.0);
+    for (let c = 0; c < 18; c++) {
+      const angle = (c / 18) * Math.PI * 2;
+      const cx = centriolePos.x + Math.cos(angle) * 3.2;
+      const cy = centriolePos.y + Math.sin(angle) * 3.2;
+      const cz = centriolePos.z + (c % 2 === 0 ? 1.8 : -1.8);
+      atoms.push({
+        z: 7,
+        pos: new THREE.Vector3(cx, cy, cz),
+        col: 0x00F0FF, // Bright Cyan Centriole Triplets
+        scale: 1.4
+      });
+    }
+
+    // 9. CYTOSKELETON MICROTUBULES & CYTOSOL IONIC MATRIX (Na+, K+, Cl-, Ca2+)
     const electrolytes = [11, 19, 17, 20];
     const eleCol = { 11: 0xFFD700, 19: 0x8A2BE2, 17: 0x00FF9D, 20: 0xFF7700 };
-    for (let e = 0; e < 60; e++) {
-      const r = 10 + Math.random() * 19;
+    for (let e = 0; e < 70; e++) {
+      const r = 11 + Math.random() * 20;
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
       const zEl = electrolytes[e % electrolytes.length];
@@ -1106,16 +1141,16 @@ window.addEventListener('DOMContentLoaded', function() {
         z: zEl,
         pos: new THREE.Vector3(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta)),
         col: eleCol[zEl],
-        scale: 1.15
+        scale: 1.2
       });
     }
 
     spawnAtoms(atoms);
     if (organelleNavPanel) organelleNavPanel.style.display = 'flex';
     updateTelemetry(
-      '3D Eukaryotic Animal Cell (Full Organelle Cutaway)',
-      'Membrane Lipids + Nucleolus + RER + SER + Golgi + Mitochondria + Lysosomes',
-      'High-Fidelity 3D Biological Cell Architecture (8 Organelles)',
+      '3D Eukaryotic Animal Cell (Photorealistic Organelle Cutaway)',
+      'Membrane Bilayer + Nucleolus + Nuclear Pores + RER + SER + Golgi + Mitochondria + Centrioles',
+      'High-Fidelity 3D Biological Cell Architecture (9 Organelles)',
       'Bilayer Phospholipids, Ribosomes, ATP Cristae & Cytosol Ionic Matrix',
       'State: [COMPLETE 3D EUKARYOTIC CELL SYNTHESIS]'
     );
@@ -2446,11 +2481,6 @@ window.addEventListener('DOMContentLoaded', function() {
   function selectElementForTray(z) {
     playTone(400 + selectedReactants.length * 80, 'sine', 0.12);
 
-    // Auto-clear single element selection so clicking a new element displays it fresh
-    if (selectedReactants.length === 1) {
-      selectedReactants = [];
-    }
-
     if (selectedReactants.length >= MAX_REACTANTS) {
       updateTelemetry(
         `Tray Maximum Reached (5/5)`,
@@ -3235,37 +3265,37 @@ window.addEventListener('DOMContentLoaded', function() {
       // Real Thermal Phase Behavior (Solid < 273K, Liquid 273K - 373K, Gas >= 373K)
       if (fusionState === 'idle' && !a.removing && !a.isElectron) {
         if (temperatureK < 273) {
-          // SOLID LATTICE: rigid crystal structure with tight harmonic oscillation
-          const solidScale = temperatureK / 273.0;
-          if (a.basePos) a.targetPos.copy(a.basePos);
-          const vibX = Math.sin(t * 8.0 + a.instIdx) * (0.04 * solidScale);
-          const vibY = Math.cos(t * 9.5 + a.instIdx) * (0.04 * solidScale);
-          const vibZ = Math.sin(t * 7.2 + a.instIdx) * (0.04 * solidScale);
-          a.currentPos.add(new THREE.Vector3(vibX, vibY, vibZ));
-          if (hudEpi && i === 0) hudEpi.textContent = `SOLID CRYSTAL LATTICE (${temperatureK}K)`;
+          // SOLID CRYSTAL LATTICE (0K - 272K): Rigid harmonic oscillation around equilibrium lattice points
+          const solidVibScale = (temperatureK / 273.0);
+          const vibX = Math.sin(t * 12.0 + a.instIdx) * (0.35 * solidVibScale);
+          const vibY = Math.cos(t * 14.0 + a.instIdx) * (0.35 * solidVibScale);
+          const vibZ = Math.sin(t * 10.0 + a.instIdx) * (0.35 * solidVibScale);
+          if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(vibX, vibY, vibZ));
+          if (hudEpi && i === 0) hudEpi.textContent = `SOLID CRYSTAL LATTICE (${temperatureK}K // ${temperatureK - 273}°C)`;
         } else if (temperatureK < 373) {
-          // LIQUID FLUID: amorphous fluid cohesion with smooth wave motion
-          const liqWobbleX = Math.sin(t * 3.5 + (a.basePos ? a.basePos.y : a.instIdx) * 0.4) * 0.7;
-          const liqWobbleY = Math.cos(t * 4.2 + (a.basePos ? a.basePos.x : a.instIdx) * 0.4) * 0.7;
-          const liqWobbleZ = Math.sin(t * 2.8 + (a.basePos ? a.basePos.z : a.instIdx) * 0.4) * 0.7;
+          // LIQUID COHESIVE FLUID (273K - 372K): Cohesive surface-tension undulation
+          const liqScale = ((temperatureK - 273) / 100.0) * 0.8 + 0.4;
+          const liqWobbleX = Math.sin(t * 3.5 + (a.basePos ? a.basePos.y : a.instIdx) * 0.4) * liqScale;
+          const liqWobbleY = Math.cos(t * 4.2 + (a.basePos ? a.basePos.x : a.instIdx) * 0.4) * liqScale;
+          const liqWobbleZ = Math.sin(t * 2.8 + (a.basePos ? a.basePos.z : a.instIdx) * 0.4) * liqScale;
           if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(liqWobbleX, liqWobbleY, liqWobbleZ));
-          if (hudEpi && i === 0) hudEpi.textContent = `LIQUID COHESIVE FLUID (${temperatureK}K)`;
+          if (hudEpi && i === 0) hudEpi.textContent = `LIQUID COHESIVE FLUID (${temperatureK}K // ${temperatureK - 273}°C)`;
         } else {
-          // GAS BROWNIAN EXPANSION: high kinetic dispersion with bouncing boundaries
-          const gasScale = (temperatureK - 373.0) * 0.005 + 1.0;
+          // GAS BROWNIAN KINETIC EXPANSION (>= 373K): Maxwell-Boltzmann kinetic dispersion
+          const thermalVelocity = Math.sqrt(temperatureK / 373.0) * 2.2;
           if (!a.velocity) {
             a.velocity = new THREE.Vector3(
-              (Math.random() - 0.5) * 8.0 * gasScale,
-              (Math.random() - 0.5) * 8.0 * gasScale,
-              (Math.random() - 0.5) * 8.0 * gasScale
+              (Math.random() - 0.5) * thermalVelocity,
+              (Math.random() - 0.5) * thermalVelocity,
+              (Math.random() - 0.5) * thermalVelocity
             );
           }
-          a.targetPos.addScaledVector(a.velocity, 0.016 * gasScale);
-          const limit = 26.0;
+          a.targetPos.addScaledVector(a.velocity, 0.02 * thermalVelocity);
+          const limit = 32.0;
           if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -1; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
           if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -1; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
           if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -1; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
-          if (hudEpi && i === 0) hudEpi.textContent = `GAS BROWNIAN EXPANSION (${temperatureK}K)`;
+          if (hudEpi && i === 0) hudEpi.textContent = `GAS KINETIC DISPERSION (${temperatureK}K // ${temperatureK - 273}°C)`;
         }
       }
 
