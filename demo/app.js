@@ -363,6 +363,8 @@ window.addEventListener('DOMContentLoaded', function() {
   let explosionVelocities = [];
   let explosionTimer = 0;
   let shockwaveRing = null;
+  let shockwaveRing2 = null;
+  let fusionFlashSphere = null;
   let shockwaveScale = 0.1;
   let shockwaveOpacity = 1.0;
 
@@ -1920,14 +1922,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function createExplosion(pos, color1, color2) {
     playCollisionSound();
-    const particleCount = 200;
+    const particleCount = 600;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     explosionVelocities = [];
 
-    const c1 = new THREE.Color(color1);
-    const c2 = new THREE.Color(color2);
+    const c1 = new THREE.Color(color1 || 0x00FFFF);
+    const c2 = new THREE.Color(color2 || 0xFF00AA);
+    const whiteHot = new THREE.Color(0xFFFFFF);
 
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3] = pos.x;
@@ -1936,15 +1939,25 @@ window.addEventListener('DOMContentLoaded', function() {
 
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const speed = 0.5 + Math.random() * 1.5;
+      const speed = 0.8 + Math.random() * 2.5;
+      
+      // Kinetic particle velocity with subtle tangential swirl (vortex)
+      const vx = Math.sin(phi) * Math.cos(theta) * speed;
+      const vy = Math.sin(phi) * Math.sin(theta) * speed;
+      const vz = Math.cos(phi) * speed;
       
       explosionVelocities.push(new THREE.Vector3(
-        Math.sin(phi) * Math.cos(theta) * speed,
-        Math.sin(phi) * Math.sin(theta) * speed,
-        Math.cos(phi) * speed
+        vx + (Math.random() - 0.5) * 0.4,
+        vy + (Math.random() - 0.5) * 0.4,
+        vz + (Math.random() - 0.5) * 0.4
       ));
 
-      const mixedColor = c1.clone().lerp(c2, Math.random());
+      // Core particles are white-hot, outer particles transition c1 -> c2
+      const isCore = Math.random() < 0.25;
+      const mixedColor = isCore 
+        ? whiteHot.clone().lerp(c1, Math.random() * 0.5)
+        : c1.clone().lerp(c2, Math.random());
+        
       colors[i * 3] = mixedColor.r;
       colors[i * 3 + 1] = mixedColor.g;
       colors[i * 3 + 2] = mixedColor.b;
@@ -1954,7 +1967,7 @@ window.addEventListener('DOMContentLoaded', function() {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 1.2,
+      size: 1.6,
       vertexColors: true,
       transparent: true,
       opacity: 1.0,
@@ -1964,12 +1977,16 @@ window.addEventListener('DOMContentLoaded', function() {
 
     explosionParticles = new THREE.Points(geometry, material);
     scene.add(explosionParticles);
-    explosionTimer = 35;
+    explosionTimer = 45;
 
-    // Shockwave expansion ring
-    if (shockwaveRing) scene.remove(shockwaveRing);
-    const ringGeo = new THREE.RingGeometry(0.5, 3.0, 32);
-    const ringMat = new THREE.MeshBasicMaterial({
+    // --- Dual Shockwave Rings & Core Volumetric Flash ---
+    if (shockwaveRing) { scene.remove(shockwaveRing); shockwaveRing.geometry.dispose(); shockwaveRing.material.dispose(); }
+    if (shockwaveRing2) { scene.remove(shockwaveRing2); shockwaveRing2.geometry.dispose(); shockwaveRing2.material.dispose(); }
+    if (fusionFlashSphere) { scene.remove(fusionFlashSphere); fusionFlashSphere.geometry.dispose(); fusionFlashSphere.material.dispose(); }
+
+    // 1. Primary Equatorial Ring
+    const ringGeo1 = new THREE.RingGeometry(0.5, 3.5, 64);
+    const ringMat1 = new THREE.MeshBasicMaterial({
       color: color1 || 0x00FFFF,
       side: THREE.DoubleSide,
       transparent: true,
@@ -1977,10 +1994,39 @@ window.addEventListener('DOMContentLoaded', function() {
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
-    shockwaveRing = new THREE.Mesh(ringGeo, ringMat);
+    shockwaveRing = new THREE.Mesh(ringGeo1, ringMat1);
     shockwaveRing.position.copy(pos);
     shockwaveRing.rotation.x = Math.PI * 0.5;
     scene.add(shockwaveRing);
+
+    // 2. Secondary Polar Ring (90 deg offset)
+    const ringGeo2 = new THREE.RingGeometry(0.3, 2.8, 64);
+    const ringMat2 = new THREE.MeshBasicMaterial({
+      color: color2 || 0xFF00AA,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    shockwaveRing2 = new THREE.Mesh(ringGeo2, ringMat2);
+    shockwaveRing2.position.copy(pos);
+    shockwaveRing2.rotation.y = Math.PI * 0.5;
+    scene.add(shockwaveRing2);
+
+    // 3. Volumetric Plasma Flash Core Sphere
+    const flashGeo = new THREE.SphereGeometry(4.0, 32, 32);
+    const flashMat = new THREE.MeshBasicMaterial({
+      color: 0xFFFFFF,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    fusionFlashSphere = new THREE.Mesh(flashGeo, flashMat);
+    fusionFlashSphere.position.copy(pos);
+    scene.add(fusionFlashSphere);
+
     shockwaveScale = 0.1;
     shockwaveOpacity = 1.0;
   }
@@ -3467,17 +3513,29 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    // Animate shockwave expansion ring
-    if (shockwaveRing && shockwaveOpacity > 0.01) {
-      shockwaveScale += 1.8;
-      shockwaveOpacity *= 0.88;
-      shockwaveRing.scale.set(shockwaveScale, shockwaveScale, shockwaveScale);
-      shockwaveRing.material.opacity = shockwaveOpacity;
+    // Animate shockwave expansion rings & core flash
+    if (shockwaveOpacity > 0.01) {
+      shockwaveScale += 2.2;
+      shockwaveOpacity *= 0.86;
+
+      if (shockwaveRing) {
+        shockwaveRing.scale.set(shockwaveScale, shockwaveScale, shockwaveScale);
+        shockwaveRing.material.opacity = shockwaveOpacity;
+      }
+      if (shockwaveRing2) {
+        shockwaveRing2.scale.set(shockwaveScale * 0.8, shockwaveScale * 0.8, shockwaveScale * 0.8);
+        shockwaveRing2.material.opacity = shockwaveOpacity * 0.85;
+      }
+      if (fusionFlashSphere) {
+        const flashScale = 1.0 + (1.0 - shockwaveOpacity) * 3.5;
+        fusionFlashSphere.scale.set(flashScale, flashScale, flashScale);
+        fusionFlashSphere.material.opacity = shockwaveOpacity * 0.9;
+      }
+
       if (shockwaveOpacity <= 0.01) {
-        scene.remove(shockwaveRing);
-        shockwaveRing.geometry.dispose();
-        shockwaveRing.material.dispose();
-        shockwaveRing = null;
+        if (shockwaveRing) { scene.remove(shockwaveRing); shockwaveRing.geometry.dispose(); shockwaveRing.material.dispose(); shockwaveRing = null; }
+        if (shockwaveRing2) { scene.remove(shockwaveRing2); shockwaveRing2.geometry.dispose(); shockwaveRing2.material.dispose(); shockwaveRing2 = null; }
+        if (fusionFlashSphere) { scene.remove(fusionFlashSphere); fusionFlashSphere.geometry.dispose(); fusionFlashSphere.material.dispose(); fusionFlashSphere = null; }
       }
     }
 
