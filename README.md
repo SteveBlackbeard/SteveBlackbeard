@@ -2,9 +2,7 @@
 <div align="center">
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
-
   <br/><br/>
-
   <p align="center">
     <code>[AI TOOLS]</code> &nbsp;•&nbsp;
     <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
