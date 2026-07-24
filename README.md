@@ -91,7 +91,16 @@ Raster → TTF / WOFF / WOFF2 with Bézier fitting and forensic watermarking.
 
 Visual engines and experimental interfaces:
 
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-dna-console-v16-helix.gif?v=504" alt="Real B-DNA Double Helix — TP53 Gene" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
+  </p>
+</div>
 
+<div align="center">
 
 ---
 
@@ -123,20 +132,6 @@ Visual engines and experimental interfaces:
   <br/>
   <sub>R&D by <strong>Nemeth Corp</strong></sub>
 </div>
-
-
-### Scientific Visualization
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-dna-console-v16-helix.gif?v=504" alt="Real B-DNA Double Helix — TP53 Gene" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
-  </p>
-</div>
-
-<div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
     <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
   </a>
