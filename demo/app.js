@@ -40,6 +40,22 @@ window.addEventListener('DOMContentLoaded', function() {
   const hudEpi = document.getElementById('hud-epi');
   const tempSlider = document.getElementById('temp-slider');
   const tempVal = document.getElementById('temp-val');
+  
+  // MATERIALS TOOLBAR LISTENERS
+  const btnMatNacl = document.getElementById('btn-mat-nacl');
+  const btnMatDiamond = document.getElementById('btn-mat-diamond');
+  const btnMatC60 = document.getElementById('btn-mat-c60');
+  const btnMatCnt = document.getElementById('btn-mat-cnt');
+  const btnMatGraphene = document.getElementById('btn-mat-graphene');
+  const btnMatSolvation = document.getElementById('btn-mat-solvation');
+
+  if (btnMatNacl) btnMatNacl.addEventListener('click', () => { clearReactantTray(); buildNaclCrystal(); });
+  if (btnMatDiamond) btnMatDiamond.addEventListener('click', () => { clearReactantTray(); buildDiamondLattice(); });
+  if (btnMatC60) btnMatC60.addEventListener('click', () => { clearReactantTray(); buildFullereneC60(); });
+  if (btnMatCnt) btnMatCnt.addEventListener('click', () => { clearReactantTray(); buildCarbonNanotube(); });
+  if (btnMatGraphene) btnMatGraphene.addEventListener('click', () => { clearReactantTray(); buildGrapheneSheet(); });
+  if (btnMatSolvation) btnMatSolvation.addEventListener('click', () => { clearReactantTray(); buildSolvationShell(); });
+
   const btnReassemble = document.getElementById('btn-reassemble');
   const btnOrbitals = document.getElementById('btn-orbitals');
   const btnMeasure = document.getElementById('btn-measure');
@@ -937,7 +953,6 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // BUILD 100% PHOTOREALISTIC DENSE 3D ANIMAL EUKARYOTIC CELL CUTAWAY (9 Organelles, ~3,300+ Particles)
   // ═══════════════════════════════════════════════════════════════
-  function buildEukaryoticCell() {
     isDnaMode = true;
     const atoms = [];
 
@@ -1169,6 +1184,340 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // FORM SINGLE ELEMENT (Real Crystal Lattices & Molecular States)
   // ═══════════════════════════════════════════════════════════════
+  
+  // ═══════════════════════════════════════════════════════════════
+  // ADVANCED CHEMICAL MATERIALS & CRYSTAL LATTICES
+  // ═══════════════════════════════════════════════════════════════
+  function buildNaclCrystal() {
+    isDnaMode = false;
+    const atoms = [];
+    const bonds = [];
+    const spacing = 2.4;
+    const n = 4;
+    let idCounter = 1;
+    const ionGrid = [];
+
+    for (let x = 0; x < n; x++) {
+      ionGrid[x] = [];
+      for (let y = 0; y < n; y++) {
+        ionGrid[x][y] = [];
+        for (let z = 0; z < n; z++) {
+          const isNa = (x + y + z) % 2 === 0;
+          const atomicNum = isNa ? 11 : 17;
+          const pos = new THREE.Vector3(
+            (x - (n - 1) / 2) * spacing,
+            (y - (n - 1) / 2) * spacing,
+            (z - (n - 1) / 2) * spacing
+          );
+          atoms.push({
+            id: idCounter++,
+            z: atomicNum,
+            symbol: isNa ? 'Na⁺' : 'Cl⁻',
+            currentPos: pos.clone(),
+            targetPos: pos.clone(),
+            basePos: pos.clone(),
+            scale: 0.01,
+            targetScale: isNa ? 0.95 : 1.25,
+            phase: 'solid'
+          });
+          ionGrid[x][y][z] = atoms.length - 1;
+        }
+      }
+    }
+
+    for (let x = 0; x < n; x++) {
+      for (let y = 0; y < n; y++) {
+        for (let z = 0; z < n; z++) {
+          const idx1 = ionGrid[x][y][z];
+          if (x + 1 < n) bonds.push({ aIdx: idx1, bIdx: ionGrid[x + 1][y][z], order: 1 });
+          if (y + 1 < n) bonds.push({ aIdx: idx1, bIdx: ionGrid[x][y + 1][z], order: 1 });
+          if (z + 1 < n) bonds.push({ aIdx: idx1, bIdx: ionGrid[x][y][z + 1], order: 1 });
+        }
+      }
+    }
+
+    spawnAtoms(atoms);
+    spawnBonds(bonds);
+    updateTelemetry(
+      'Cristal Cúbico de Cloruro de Sodio (NaCl 3D)',
+      'Na₃₂Cl₃₂',
+      'Red Iónica Cristalina FCC',
+      'Enlace Iónico (Electrostático)',
+      'Sólido Cristalino (Punto Fusión 1074 K)'
+    );
+  }
+
+  function buildDiamondLattice() {
+    isDnaMode = false;
+    const atoms = [];
+    const bonds = [];
+    const scale = 2.0;
+    let idCounter = 1;
+
+    const baseUnits = [
+      [0, 0, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1],
+      [2, 0, 0], [2, 2, 0], [2, 0, 2], [0, 2, 2],
+      [0, 2, 0], [0, 0, 2], [2, 2, 2],
+      [0.5, 0.5, 0.5], [1.5, 1.5, 0.5], [1.5, 0.5, 1.5], [0.5, 1.5, 1.5],
+      [0.5, 0.5, 1.5], [1.5, 1.5, 1.5], [1.5, 0.5, 0.5], [0.5, 1.5, 0.5]
+    ];
+
+    baseUnits.forEach(pt => {
+      const pos = new THREE.Vector3((pt[0] - 1) * scale, (pt[1] - 1) * scale, (pt[2] - 1) * scale);
+      atoms.push({
+        id: idCounter++,
+        z: 6,
+        symbol: 'C',
+        currentPos: pos.clone(),
+        targetPos: pos.clone(),
+        basePos: pos.clone(),
+        scale: 0.01,
+        targetScale: 0.85,
+        phase: 'solid'
+      });
+    });
+
+    const cutoff = scale * 1.1;
+    for (let i = 0; i < atoms.length; i++) {
+      for (let j = i + 1; j < atoms.length; j++) {
+        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
+          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        }
+      }
+    }
+
+    spawnAtoms(atoms);
+    spawnBonds(bonds);
+    updateTelemetry(
+      'Diamante Covalente (Red Tetraédrica sp³)',
+      'C₆₄',
+      'Sólido Covalente Gigante',
+      'Covalente sp³ (Dureza Mohs 10)',
+      'Sólido Cristalino'
+    );
+  }
+
+  function buildFullereneC60() {
+    isDnaMode = false;
+    const atoms = [];
+    const bonds = [];
+    const r = 4.2;
+    let idCounter = 1;
+
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const rawVerts = [];
+    const addPerms = (a, b, c) => {
+      rawVerts.push([a, b, c], [-a, b, c], [a, -b, c], [-a, -b, c]);
+      rawVerts.push([a, c, b], [-a, c, b], [a, -c, b], [-a, -c, b]);
+    };
+    addPerms(0, 1, 3 * phi);
+    addPerms(1, 2 + phi, 2 * phi);
+    addPerms(1 / phi, 2, 2 * phi + 1);
+
+    rawVerts.slice(0, 60).forEach(v => {
+      const vec = new THREE.Vector3(v[0], v[1], v[2]).normalize().multiplyScalar(r);
+      atoms.push({
+        id: idCounter++,
+        z: 6,
+        symbol: 'C',
+        currentPos: vec.clone(),
+        targetPos: vec.clone(),
+        basePos: vec.clone(),
+        scale: 0.01,
+        targetScale: 0.75,
+        phase: 'solid'
+      });
+    });
+
+    const cutoff = r * 0.7;
+    for (let i = 0; i < atoms.length; i++) {
+      for (let j = i + 1; j < atoms.length; j++) {
+        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
+          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        }
+      }
+    }
+
+    spawnAtoms(atoms);
+    spawnBonds(bonds);
+    updateTelemetry(
+      'Fullereno Buckyball (C₆₀)',
+      'C₆₀',
+      'Nanomaterial de Carbono',
+      'Covalente sp² (Icosaedro Truncado)',
+      'Sólido Molecular'
+    );
+  }
+
+  function buildCarbonNanotube() {
+    isDnaMode = false;
+    const atoms = [];
+    const bonds = [];
+    const r = 3.2;
+    const length = 16.0;
+    const rings = 12;
+    const atomsPerRing = 10;
+    let idCounter = 1;
+
+    for (let i = 0; i < rings; i++) {
+      const zPos = (i - (rings - 1) / 2) * (length / rings);
+      const angleOffset = (i % 2) * (Math.PI / atomsPerRing);
+      for (let j = 0; j < atomsPerRing; j++) {
+        const theta = (j / atomsPerRing) * Math.PI * 2 + angleOffset;
+        const pos = new THREE.Vector3(r * Math.cos(theta), zPos, r * Math.sin(theta));
+        atoms.push({
+          id: idCounter++,
+          z: 6,
+          symbol: 'C',
+          currentPos: pos.clone(),
+          targetPos: pos.clone(),
+          basePos: pos.clone(),
+          scale: 0.01,
+          targetScale: 0.75,
+          phase: 'solid'
+        });
+      }
+    }
+
+    const cutoff = 1.9;
+    for (let i = 0; i < atoms.length; i++) {
+      for (let j = i + 1; j < atoms.length; j++) {
+        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
+          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        }
+      }
+    }
+
+    spawnAtoms(atoms);
+    spawnBonds(bonds);
+    updateTelemetry(
+      'Nanotubo de Carbono Monocapa (SWCNT)',
+      'C₁₂₀',
+      'Nanotubo de Grafeno Cilíndrico',
+      'Covalente sp² (Resistencia a Tracción Ultra-Alta)',
+      'Sólido Estructurado'
+    );
+  }
+
+  function buildGrapheneSheet() {
+    isDnaMode = false;
+    const atoms = [];
+    const bonds = [];
+    const rowCount = 8;
+    const colCount = 10;
+    const a = 1.42;
+    let idCounter = 1;
+
+    for (let r = 0; r < rowCount; r++) {
+      for (let c = 0; c < colCount; c++) {
+        const x = c * Math.sqrt(3) * a + (r % 2) * (Math.sqrt(3) / 2) * a - 6.0;
+        const z = r * 1.5 * a - 5.0;
+        const pos = new THREE.Vector3(x, 0, z);
+        atoms.push({
+          id: idCounter++,
+          z: 6,
+          symbol: 'C',
+          currentPos: pos.clone(),
+          targetPos: pos.clone(),
+          basePos: pos.clone(),
+          scale: 0.01,
+          targetScale: 0.75,
+          phase: 'solid'
+        });
+      }
+    }
+
+    const cutoff = a * 1.2;
+    for (let i = 0; i < atoms.length; i++) {
+      for (let j = i + 1; j < atoms.length; j++) {
+        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
+          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        }
+      }
+    }
+
+    spawnAtoms(atoms);
+    spawnBonds(bonds);
+    updateTelemetry(
+      'Lámina Monocapa de Grafeno 2D',
+      'C₈₀',
+      'Material 2D (Red Hexagonal)',
+      'Covalente sp² (Alta Conductividad)',
+      'Sólido 2D Monocapa'
+    );
+  }
+
+  function buildSolvationShell() {
+    isDnaMode = false;
+    const atoms = [];
+    const bonds = [];
+    let idCounter = 1;
+
+    const naPos = new THREE.Vector3(0, 0, 0);
+    atoms.push({
+      id: idCounter++,
+      z: 11,
+      symbol: 'Na⁺',
+      currentPos: naPos.clone(),
+      targetPos: naPos.clone(),
+      basePos: naPos.clone(),
+      scale: 0.01,
+      targetScale: 1.1,
+      phase: 'liquid'
+    });
+
+    const shellRadius = 4.2;
+    const numWaters = 12;
+
+    for (let i = 0; i < numWaters; i++) {
+      const phi = Math.acos(-1 + (2 * i) / numWaters);
+      const theta = Math.sqrt(numWaters * Math.PI) * phi;
+      const oDir = new THREE.Vector3(
+        Math.cos(theta) * Math.sin(phi),
+        Math.sin(theta) * Math.sin(phi),
+        Math.cos(phi)
+      ).normalize();
+
+      const oPos = oDir.clone().multiplyScalar(shellRadius);
+      const oIdx = atoms.length;
+      atoms.push({
+        id: idCounter++,
+        z: 8,
+        symbol: 'O',
+        currentPos: oPos.clone(),
+        targetPos: oPos.clone(),
+        basePos: oPos.clone(),
+        scale: 0.01,
+        targetScale: 0.85,
+        phase: 'liquid'
+      });
+
+      const hDist = 1.0;
+      const side1 = new THREE.Vector3(-oDir.y, oDir.x, 0).normalize().multiplyScalar(0.7);
+      const h1Pos = oPos.clone().add(oDir.clone().multiplyScalar(hDist)).add(side1);
+      const h2Pos = oPos.clone().add(oDir.clone().multiplyScalar(hDist)).sub(side1);
+
+      const h1Idx = atoms.length;
+      atoms.push({ id: idCounter++, z: 1, symbol: 'H', currentPos: h1Pos.clone(), targetPos: h1Pos.clone(), basePos: h1Pos.clone(), scale: 0.01, targetScale: 0.55, phase: 'liquid' });
+      const h2Idx = atoms.length;
+      atoms.push({ id: idCounter++, z: 1, symbol: 'H', currentPos: h2Pos.clone(), targetPos: h2Pos.clone(), basePos: h2Pos.clone(), scale: 0.01, targetScale: 0.55, phase: 'liquid' });
+
+      bonds.push({ aIdx: oIdx, bIdx: h1Idx, order: 1 });
+      bonds.push({ aIdx: oIdx, bIdx: h2Idx, order: 1 });
+    }
+
+    spawnAtoms(atoms);
+    spawnBonds(bonds);
+    updateTelemetry(
+      'Esfera de Solvatación de Ion Sodio (Na⁺ en H₂O)',
+      'Na⁺(H₂O)₁₂',
+      'Complejo de Solvatación Acuosa',
+      'Interacción Ion-Dipolo Electroestática',
+      'Solución Acuosa Líquida'
+    );
+  }
+
+
   function formElement(z, fromCenter) {
     isDnaMode = false;
     const el = EL[z] || EL[1];
@@ -2756,7 +3105,6 @@ window.addEventListener('DOMContentLoaded', function() {
     btnCell.addEventListener('click', () => {
       playTone(550, 'triangle', 0.15);
       clearReactantTray();
-      buildEukaryoticCell();
     });
   }
 
