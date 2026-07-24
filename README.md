@@ -100,15 +100,9 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 ---
 
-### Autonomous Systems
+### Interactive Lab
 
-<div align="center">
-  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
-</div>
-
----
-
-### Scientific Visualization
+Visual engines and experimental interfaces live here:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
@@ -128,6 +122,14 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
   <p align="center">
     <sub><i>Complete 118-element IUPAC periodic table with Gold (Au) electron shell orbital view — Click to explore</i></sub>
   </p>
+</div>
+
+---
+
+### Autonomous Systems
+
+<div align="center">
+  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
 </div>
 
 ---
