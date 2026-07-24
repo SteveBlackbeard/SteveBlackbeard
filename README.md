@@ -226,5 +226,5 @@ It develops the software architectures, GPU rendering engines, autonomous system
   <br/>
   <sub><strong>Ethernium</strong> — Practical AI tools with a local-first approach</sub>
   <br/>
-  <sub>Powered by <strong>Nulla Corp</strong></sub>
+  <sub>Powered by <strong>Nemeth Corp</strong></sub>
 </div>
