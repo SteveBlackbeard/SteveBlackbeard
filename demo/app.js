@@ -953,6 +953,10 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // ADVANCED CHEMICAL MATERIALS & CRYSTAL LATTICES
   // ═══════════════════════════════════════════════════════════════
+  
+  // ═══════════════════════════════════════════════════════════════
+  // ADVANCED CHEMICAL MATERIALS & CRYSTAL LATTICES
+  // ═══════════════════════════════════════════════════════════════
   function buildNaclCrystal() {
     isDnaMode = false;
     const atoms = [];
@@ -969,21 +973,16 @@ window.addEventListener('DOMContentLoaded', function() {
         for (let z = 0; z < n; z++) {
           const isNa = (x + y + z) % 2 === 0;
           const atomicNum = isNa ? 11 : 17;
-          const pos = new THREE.Vector3(
+          const posVec = new THREE.Vector3(
             (x - (n - 1) / 2) * spacing,
             (y - (n - 1) / 2) * spacing,
             (z - (n - 1) / 2) * spacing
           );
           atoms.push({
-            id: idCounter++,
             z: atomicNum,
-            symbol: isNa ? 'Na⁺' : 'Cl⁻',
-            currentPos: pos.clone(),
-            targetPos: pos.clone(),
-            basePos: pos.clone(),
-            scale: 0.01,
-            targetScale: isNa ? 0.95 : 1.25,
-            phase: 'solid'
+            pos: posVec.clone(),
+            col: isNa ? 0xFFD700 : 0x00FF9D,
+            scale: isNa ? 1.2 : 1.6
           });
           ionGrid[x][y][z] = atoms.length - 1;
         }
@@ -994,9 +993,9 @@ window.addEventListener('DOMContentLoaded', function() {
       for (let y = 0; y < n; y++) {
         for (let z = 0; z < n; z++) {
           const idx1 = ionGrid[x][y][z];
-          if (x + 1 < n) bonds.push({ aIdx: idx1, bIdx: ionGrid[x + 1][y][z], order: 1 });
-          if (y + 1 < n) bonds.push({ aIdx: idx1, bIdx: ionGrid[x][y + 1][z], order: 1 });
-          if (z + 1 < n) bonds.push({ aIdx: idx1, bIdx: ionGrid[x][y][z + 1], order: 1 });
+          if (x + 1 < n) bonds.push({ a: idx1, b: ionGrid[x + 1][y][z] });
+          if (y + 1 < n) bonds.push({ a: idx1, b: ionGrid[x][y + 1][z] });
+          if (z + 1 < n) bonds.push({ a: idx1, b: ionGrid[x][y][z + 1] });
         }
       }
     }
@@ -1017,7 +1016,6 @@ window.addEventListener('DOMContentLoaded', function() {
     const atoms = [];
     const bonds = [];
     const scale = 2.0;
-    let idCounter = 1;
 
     const baseUnits = [
       [0, 0, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1],
@@ -1028,25 +1026,20 @@ window.addEventListener('DOMContentLoaded', function() {
     ];
 
     baseUnits.forEach(pt => {
-      const pos = new THREE.Vector3((pt[0] - 1) * scale, (pt[1] - 1) * scale, (pt[2] - 1) * scale);
+      const posVec = new THREE.Vector3((pt[0] - 1) * scale, (pt[1] - 1) * scale, (pt[2] - 1) * scale);
       atoms.push({
-        id: idCounter++,
         z: 6,
-        symbol: 'C',
-        currentPos: pos.clone(),
-        targetPos: pos.clone(),
-        basePos: pos.clone(),
-        scale: 0.01,
-        targetScale: 0.85,
-        phase: 'solid'
+        pos: posVec.clone(),
+        col: 0x00F0FF,
+        scale: 1.15
       });
     });
 
     const cutoff = scale * 1.1;
     for (let i = 0; i < atoms.length; i++) {
       for (let j = i + 1; j < atoms.length; j++) {
-        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
-          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        if (atoms[i].pos.distanceTo(atoms[j].pos) <= cutoff) {
+          bonds.push({ a: i, b: j });
         }
       }
     }
@@ -1067,7 +1060,6 @@ window.addEventListener('DOMContentLoaded', function() {
     const atoms = [];
     const bonds = [];
     const r = 4.2;
-    let idCounter = 1;
 
     const phi = (1 + Math.sqrt(5)) / 2;
     const rawVerts = [];
@@ -1082,23 +1074,18 @@ window.addEventListener('DOMContentLoaded', function() {
     rawVerts.slice(0, 60).forEach(v => {
       const vec = new THREE.Vector3(v[0], v[1], v[2]).normalize().multiplyScalar(r);
       atoms.push({
-        id: idCounter++,
         z: 6,
-        symbol: 'C',
-        currentPos: vec.clone(),
-        targetPos: vec.clone(),
-        basePos: vec.clone(),
-        scale: 0.01,
-        targetScale: 0.75,
-        phase: 'solid'
+        pos: vec.clone(),
+        col: 0x8A2BE2,
+        scale: 1.1
       });
     });
 
     const cutoff = r * 0.7;
     for (let i = 0; i < atoms.length; i++) {
       for (let j = i + 1; j < atoms.length; j++) {
-        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
-          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        if (atoms[i].pos.distanceTo(atoms[j].pos) <= cutoff) {
+          bonds.push({ a: i, b: j });
         }
       }
     }
@@ -1122,24 +1109,18 @@ window.addEventListener('DOMContentLoaded', function() {
     const length = 16.0;
     const rings = 12;
     const atomsPerRing = 10;
-    let idCounter = 1;
 
     for (let i = 0; i < rings; i++) {
       const zPos = (i - (rings - 1) / 2) * (length / rings);
       const angleOffset = (i % 2) * (Math.PI / atomsPerRing);
       for (let j = 0; j < atomsPerRing; j++) {
         const theta = (j / atomsPerRing) * Math.PI * 2 + angleOffset;
-        const pos = new THREE.Vector3(r * Math.cos(theta), zPos, r * Math.sin(theta));
+        const posVec = new THREE.Vector3(r * Math.cos(theta), zPos, r * Math.sin(theta));
         atoms.push({
-          id: idCounter++,
           z: 6,
-          symbol: 'C',
-          currentPos: pos.clone(),
-          targetPos: pos.clone(),
-          basePos: pos.clone(),
-          scale: 0.01,
-          targetScale: 0.75,
-          phase: 'solid'
+          pos: posVec.clone(),
+          col: 0x00FF9D,
+          scale: 1.1
         });
       }
     }
@@ -1147,8 +1128,8 @@ window.addEventListener('DOMContentLoaded', function() {
     const cutoff = 1.9;
     for (let i = 0; i < atoms.length; i++) {
       for (let j = i + 1; j < atoms.length; j++) {
-        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
-          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        if (atoms[i].pos.distanceTo(atoms[j].pos) <= cutoff) {
+          bonds.push({ a: i, b: j });
         }
       }
     }
@@ -1171,23 +1152,17 @@ window.addEventListener('DOMContentLoaded', function() {
     const rowCount = 8;
     const colCount = 10;
     const a = 1.42;
-    let idCounter = 1;
 
     for (let r = 0; r < rowCount; r++) {
       for (let c = 0; c < colCount; c++) {
         const x = c * Math.sqrt(3) * a + (r % 2) * (Math.sqrt(3) / 2) * a - 6.0;
         const z = r * 1.5 * a - 5.0;
-        const pos = new THREE.Vector3(x, 0, z);
+        const posVec = new THREE.Vector3(x, 0, z);
         atoms.push({
-          id: idCounter++,
           z: 6,
-          symbol: 'C',
-          currentPos: pos.clone(),
-          targetPos: pos.clone(),
-          basePos: pos.clone(),
-          scale: 0.01,
-          targetScale: 0.75,
-          phase: 'solid'
+          pos: posVec.clone(),
+          col: 0x00F0FF,
+          scale: 1.1
         });
       }
     }
@@ -1195,8 +1170,8 @@ window.addEventListener('DOMContentLoaded', function() {
     const cutoff = a * 1.2;
     for (let i = 0; i < atoms.length; i++) {
       for (let j = i + 1; j < atoms.length; j++) {
-        if (atoms[i].basePos.distanceTo(atoms[j].basePos) <= cutoff) {
-          bonds.push({ aIdx: i, bIdx: j, order: 1 });
+        if (atoms[i].pos.distanceTo(atoms[j].pos) <= cutoff) {
+          bonds.push({ a: i, b: j });
         }
       }
     }
@@ -1216,19 +1191,13 @@ window.addEventListener('DOMContentLoaded', function() {
     isDnaMode = false;
     const atoms = [];
     const bonds = [];
-    let idCounter = 1;
 
     const naPos = new THREE.Vector3(0, 0, 0);
     atoms.push({
-      id: idCounter++,
       z: 11,
-      symbol: 'Na⁺',
-      currentPos: naPos.clone(),
-      targetPos: naPos.clone(),
-      basePos: naPos.clone(),
-      scale: 0.01,
-      targetScale: 1.1,
-      phase: 'liquid'
+      pos: naPos.clone(),
+      col: 0xFFD700,
+      scale: 1.8
     });
 
     const shellRadius = 4.2;
@@ -1246,15 +1215,10 @@ window.addEventListener('DOMContentLoaded', function() {
       const oPos = oDir.clone().multiplyScalar(shellRadius);
       const oIdx = atoms.length;
       atoms.push({
-        id: idCounter++,
         z: 8,
-        symbol: 'O',
-        currentPos: oPos.clone(),
-        targetPos: oPos.clone(),
-        basePos: oPos.clone(),
-        scale: 0.01,
-        targetScale: 0.85,
-        phase: 'liquid'
+        pos: oPos.clone(),
+        col: 0xFF0055,
+        scale: 1.3
       });
 
       const hDist = 1.0;
@@ -1263,12 +1227,12 @@ window.addEventListener('DOMContentLoaded', function() {
       const h2Pos = oPos.clone().add(oDir.clone().multiplyScalar(hDist)).sub(side1);
 
       const h1Idx = atoms.length;
-      atoms.push({ id: idCounter++, z: 1, symbol: 'H', currentPos: h1Pos.clone(), targetPos: h1Pos.clone(), basePos: h1Pos.clone(), scale: 0.01, targetScale: 0.55, phase: 'liquid' });
+      atoms.push({ z: 1, pos: h1Pos.clone(), col: 0xFFFFFF, scale: 0.8 });
       const h2Idx = atoms.length;
-      atoms.push({ id: idCounter++, z: 1, symbol: 'H', currentPos: h2Pos.clone(), targetPos: h2Pos.clone(), basePos: h2Pos.clone(), scale: 0.01, targetScale: 0.55, phase: 'liquid' });
+      atoms.push({ z: 1, pos: h2Pos.clone(), col: 0xFFFFFF, scale: 0.8 });
 
-      bonds.push({ aIdx: oIdx, bIdx: h1Idx, order: 1 });
-      bonds.push({ aIdx: oIdx, bIdx: h2Idx, order: 1 });
+      bonds.push({ a: oIdx, b: h1Idx });
+      bonds.push({ a: oIdx, b: h2Idx });
     }
 
     spawnAtoms(atoms);
