@@ -2,7 +2,9 @@
 <div align="center">
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
+
   <br/><br/>
+
   <p align="center">
     <code>[AI TOOLS]</code> &nbsp;•&nbsp;
     <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
@@ -33,7 +35,7 @@
 
 ### Ethernium
 
-**Ethernium** builds practical AI tools for people who work heavily with language models and ecosystems.
+**Ethernium** builds practical AI tools for people who work heavily with language models.
 
 Focus:
 - reduce cost
@@ -41,6 +43,47 @@ Focus:
 - stay **local-first**
 
 R&D by **Nemeth Corp**.
+
+---
+
+### Main Projects
+
+#### Chronolith
+**Cryptographic integrity for long-running AI projects**
+
+Merkle Trees + Ed25519 + Bitcoin anchoring (OpenTimestamps).  
+Prevents semantic drift and proves the real project state over time.
+
+- Verifiable project baselines  
+- Continuity across human–AI sessions  
+- Editions: Lite · Pro · Omega  
+
+[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
+
+---
+
+#### Seneschal
+**Efficiency and security layer for AI workflows**
+
+Local-first context selection, token reduction, and prompt/secret scanning.
+
+- Up to **88–92% token reduction** on real repositories  
+- Security scanning + intelligent model routing  
+- Signed capability grants  
+
+[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
+
+---
+
+#### Fonts Forge
+**Premium toolkit for designing and generating vector fonts**
+
+Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, symmetry engine, and forensic watermarking.
+
+- Complete raster → vector pipeline  
+- Focused on branding and custom typography  
+
+[Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
 
 ---
 
@@ -57,48 +100,7 @@ R&D by **Nemeth Corp**.
 
 ---
 
-### Main Projects
-
-#### Chronolith
-**Cryptographic integrity for long-running AI projects**
-
-Merkle Trees + Ed25519 + Bitcoin anchoring (OpenTimestamps).  
-Prevents semantic drift and proves the real project state over time.
-
-- Verifiable project baselines  
-- Continuity across human–AI sessions  
-- Editions: Lite · Pro · Omega  
-
-[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) 
-
----
-
-#### Seneschal
-**Efficiency and security layer for AI workflows**
-
-Local-first context selection, token reduction, and prompt/secret scanning.
-
-- Up to **88–92% token reduction** on real repositories  
-- Security scanning + intelligent model routing  
-- Signed capability grants  
-
-[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) 
-
----
-
-#### Fonts Forge
-**Premium toolkit for designing and generating vector fonts**
-
-Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, symmetry engine, and forensic watermarking.
-
-- Complete raster → vector pipeline  
-- Focused on branding and custom typography  
-
-[Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
-
----
-
-### Autonomous Interface
+### Autonomous Systems
 
 <div align="center">
   <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
@@ -137,6 +139,14 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 <div align="center">
   <img src="seneschal-chronolith.svg?v=504" alt="Nemeth Corp Architecture" width="100%" />
+</div>
+
+---
+
+### Sovereign Compute Matrix
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg?v=3" alt="Sovereign Compute Matrix" width="100%" />
 </div>
 
 ---
