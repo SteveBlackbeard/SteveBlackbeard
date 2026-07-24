@@ -56,7 +56,7 @@ Prevents semantic drift and proves the real project state over time.
 - Continuity across human–AI sessions  
 - Editions: Lite · Pro · Omega  
 
-[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
+[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) 
 
 ---
 
@@ -69,7 +69,7 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 - Security scanning + intelligent model routing  
 - Signed capability grants  
 
-[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
+[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) 
 
 ---
 
