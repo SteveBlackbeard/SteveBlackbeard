@@ -2,11 +2,13 @@
 <div align="center">
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
+
   <br/><br/>
+
   <p align="center">
-    <code>[AI TOOLS]</code> &nbsp;•&nbsp; 
-    <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp; 
-    <code>[SOVEREIGN SYSTEMS]</code>
+    <code>[AI TOOLS]</code> &nbsp;•&nbsp;
+    <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
+    <code>[OPEN SOURCE]</code>
   </p>
 
   <p align="center">
@@ -16,25 +18,20 @@
   </p>
 
   <p align="center">
-    <a href="#main-projects"><img src="badge-clearance.svg?v=504" alt="AI Tools" width="230" /></a>
-    <a href="#nulla-corp--rd"><img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" /></a>
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank"><img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" /></a>
+    <a href="#main-projects">
+      <img src="badge-clearance.svg?v=504" alt="AI Tools" width="230" />
+    </a>
+    <a href="#nemeth-corp--rd">
+      <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
+    </a>
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+      <img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" />
+    </a>
   </p>
 
 </div>
 
 ---
-
-### Public Portfolio
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
-  </p>
-</div>
 
 ### Ethernium
 
@@ -61,7 +58,7 @@ Prevents semantic drift and proves the real project state over time.
 - Continuity across human–AI sessions  
 - Editions: Lite · Pro · Omega  
 
-[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
+[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
 
 ---
 
@@ -70,26 +67,48 @@ Prevents semantic drift and proves the real project state over time.
 
 Local-first context selection, token reduction, and prompt/secret scanning.
 
-- Up to **88–92% token reduction** on real repos  
-- Security scanning + model routing  
+- Up to **88–92% token reduction** on real repositories  
+- Security scanning + intelligent model routing  
 - Signed capability grants  
 
-[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
+[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
 
 ---
 
 #### Fonts Forge
-**Vector font toolkit**
+**Premium toolkit for designing and generating vector fonts**
 
-Raster → TTF / WOFF / WOFF2 with Bézier fitting and forensic watermarking.
+Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, symmetry engine, and forensic watermarking.
+
+- Complete raster → vector pipeline  
+- Focused on branding and custom typography  
 
 [Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
 
 ---
 
-### Interactive Lab
+### Public Portfolio
 
-Visual engines and experimental interfaces:
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
+  </p>
+</div>
+
+---
+
+### Autonomous Systems
+
+<div align="center">
+  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
+</div>
+
+---
+
+### Scientific Visualization
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
@@ -99,6 +118,8 @@ Visual engines and experimental interfaces:
     <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
+
+<br/>
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
@@ -111,24 +132,83 @@ Visual engines and experimental interfaces:
 
 ---
 
-### Tech Stack
+### Nemeth Corp — R&D
+
+**Nemeth Corp** is the R&D brand behind Ethernium.  
+It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
+
+<div align="center">
+  <img src="seneschal-chronolith.svg?v=504" alt="Nemeth Corp Architecture" width="100%" />
+</div>
+
+---
+
+### Sovereign Compute Matrix
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg?v=3" alt="Sovereign Compute Matrix" width="100%" />
+</div>
+
+---
+
+### Technical Stack
 
 <div align="center">
 
+  <!-- Languages & Compute -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-c.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-cpp.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-python.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rust.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-cpp.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-c.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-docker.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vscode.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-android.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-markdown.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-yolov5.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-openmpi.svg" />
 
   <br/><br/>
 
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-git.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-github.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-bash.svg" />
+  <!-- Hardware & Embedded -->
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-raspberrypi.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arduino.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-esp32.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-stm32.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rk3568.svg" />
 
+  <br/><br/>
+
+  <!-- Git & Ops -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-git.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitlab.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-github.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitea.svg" />
+
+  <br/><br/>
+
+  <!-- Tools & IDEs -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vscode.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-pycharm.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-clion.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vim.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-docker.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-bash.svg" />
+
+  <br/><br/>
+
+  <!-- OS & Platforms -->
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arch.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-debian.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-ubuntu.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-windows.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-quest3.svg" />
+
+</div>
+
+---
+
+### Vision
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Vision" width="100%" />
 </div>
 
 ---
@@ -139,4 +219,3 @@ Visual engines and experimental interfaces:
   <br/>
   <sub>R&D by <strong>Nemeth Corp</strong></sub>
 </div>
-
