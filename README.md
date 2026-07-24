@@ -27,6 +27,12 @@
 
 ---
 
+### Autonomous Systems
+
+<div align="center">
+  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
+</div>
+
 ### Ethernium
 
 **Ethernium** builds practical AI tools for people who work heavily with language models.
@@ -85,7 +91,7 @@ Visual engines and experimental interfaces:
 **[Launch Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)**
 
 <div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/CHRONOLITH-by-Ethernium/" target="_blank">
     <img src="particle-public-projects.gif?v=504" alt="Interactive Lab" width="100%" />
   </a>
 </div>
