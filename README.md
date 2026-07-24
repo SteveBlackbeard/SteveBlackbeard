@@ -2,54 +2,41 @@
 <div align="center">
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
+
   <br/><br/>
+
   <p align="center">
     <code>[AI TOOLS]</code> &nbsp;•&nbsp;
     <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
-    <code>[SOVEREIGN SYSTEMS]</code>
-  </p>
-
-  <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="badge-launch.svg?v=504" alt="Launch Live Demo" width="420" />
-    </a>
+    <code>[OPEN SOURCE]</code>
   </p>
 
   <p align="center">
     <a href="#main-projects">
       <img src="badge-clearance.svg?v=504" alt="AI Tools" width="230" />
     </a>
-    <a href="#nulla-corp--rd">
+    <a href="#tech-stack">
       <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
     </a>
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" />
     </a>
   </p>
 
-  <br/>
+</div>
 
 ---
 
 ### Ethernium
 
-**Ethernium** is a platform focused on practical AI tools for people who work intensively with language models.  
-It helps reduce costs, maintain control over long-running projects, and build with a **local-first** approach.
+**Ethernium** builds practical AI tools for people who work heavily with language models.
 
-Behind Ethernium operates **Nemeth Corp**, the R&D brand responsible for the core architecture and development of the ecosystem.
+Focus:
+- reduce cost
+- keep control of long-running projects
+- stay **local-first**
 
----
-
-### Public Portfolio
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
-  </p>
-</div>
+R&D by **Nemeth Corp**.
 
 ---
 
@@ -58,153 +45,78 @@ Behind Ethernium operates **Nemeth Corp**, the R&D brand responsible for the cor
 #### Chronolith
 **Cryptographic integrity for long-running AI projects**
 
-Cognitive governance system using Merkle Trees, Ed25519 signatures, and Bitcoin anchoring via OpenTimestamps.  
-Prevents semantic drift and allows verification of the real project state over time.
+Merkle Trees + Ed25519 + Bitcoin anchoring (OpenTimestamps).  
+Prevents semantic drift and proves the real project state over time.
 
-- Reduces context loss in human-AI workflows  
-- Verifiable proof of project state  
+- Verifiable project baselines  
+- Continuity across human–AI sessions  
 - Editions: Lite · Pro · Omega  
 
-[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
+[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
 
 ---
 
 #### Seneschal
 **Efficiency and security layer for AI workflows**
 
-Local-first tool that selects only relevant context, drastically reduces token usage, and protects against prompt injection and secret leaks.
+Local-first context selection, token reduction, and prompt/secret scanning.
 
-- Up to **88–92% token reduction** on real repositories  
-- Security scanning + intelligent model routing  
+- Up to **88–92% token reduction** on real repos  
+- Security scanning + model routing  
 - Signed capability grants  
 
-[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) · [Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)
+[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
 
 ---
 
 #### Fonts Forge
-**Premium toolkit for designing and generating vector fonts**
+**Vector font toolkit**
 
-Converts raster specimens into TTF / WOFF / WOFF2 fonts with Bézier curve fitting, symmetry engine, and forensic watermarking.
-
-- Complete raster → vector pipeline  
-- Focused on branding and custom typography  
+Raster → TTF / WOFF / WOFF2 with Bézier fitting and forensic watermarking.
 
 [Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
 
 ---
 
-### Autonomous Systems
+### Interactive Lab
 
-<div align="center">
-  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
-</div>
+Visual engines and experimental interfaces:
 
----
-
-### Scientific Visualization
+**[Launch Demo](https://steveblackbeard.github.io/SteveBlackbeard/demo/)**
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-dna-console-v16-helix.gif?v=504" alt="Real B-DNA Double Helix — TP53 Gene" width="100%" />
+    <img src="particle-public-projects.gif?v=504" alt="Interactive Lab" width="100%" />
   </a>
-  <p align="center">
-    <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
-  </p>
-</div>
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Complete 118-element IUPAC periodic table with Gold (Au) electron shell orbital view — Click to explore</i></sub>
-  </p>
 </div>
 
 ---
 
-### Nulla Corp — R&D
-
-**Nulla Corp** is the corporate R&D brand behind Ethernium.  
-It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the entire ecosystem.
-
-<div align="center">
-  <img src="seneschal-chronolith.svg?v=504" alt="Nulla Corp Architecture" width="100%" />
-</div>
-
----
-
-### Sovereign Compute Matrix
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/sovereign-matrix.svg?v=3" alt="Sovereign Compute Matrix" width="100%" />
-</div>
-
----
-
-### Technical Stack
+### Tech Stack
 
 <div align="center">
 
-  <!-- Languages & Compute -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-c.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-cpp.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-python.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rust.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-android.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-markdown.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-yolov5.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-openmpi.svg" />
-
-  <br/><br/>
-
-  <!-- Hardware & Embedded -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-raspberrypi.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arduino.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-esp32.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-stm32.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-rk3568.svg" />
-
-  <br/><br/>
-
-  <!-- Git & Ops -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-git.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitlab.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-github.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-gitea.svg" />
-
-  <br/><br/>
-
-  <!-- Tools & IDEs -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vscode.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-pycharm.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-clion.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vim.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-cpp.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-c.svg" />
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-docker.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-bash.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-vscode.svg" />
 
   <br/><br/>
 
-  <!-- OS & Platforms -->
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-arch.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-debian.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-ubuntu.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-windows.svg" />
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-quest3.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-git.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-github.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-bash.svg" />
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-raspberrypi.svg" />
 
 </div>
 
 ---
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Vision" width="100%" />
-</div>
-
----
 <div align="center">
   <br/>
   <sub><strong>Ethernium</strong> — Practical AI tools with a local-first approach</sub>
   <br/>
-  <sub>Powered by <strong>Nemeth Corp</strong></sub>
+  <sub>R&D by <strong>Nemeth Corp</strong></sub>
 </div>
