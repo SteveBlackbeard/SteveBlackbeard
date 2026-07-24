@@ -202,7 +202,6 @@ It develops the software architectures, GPU rendering engines, autonomous system
 </div>
 
 ---
-
 <div align="center">
   <br/>
   <sub><strong>Ethernium</strong> — Practical AI tools with a local-first approach</sub>
