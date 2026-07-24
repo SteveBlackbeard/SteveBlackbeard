@@ -214,11 +214,11 @@ It develops the software architectures, GPU rendering engines, autonomous system
 ---
 
 <div align="center">
-  <img src="Nemeth-mark.png" alt="Ethernium" width="32" />
-  <br/><br/>
   <sub>
     <strong>Ethernium</strong> — Practical AI tools with a local-first approach
     <br/>
     R&amp;D by <strong>Nemeth Corp</strong>
   </sub>
+    <img src="Nemeth-mark.png" alt="Ethernium" width="32" />
+  <br/><br/>
 </div>
