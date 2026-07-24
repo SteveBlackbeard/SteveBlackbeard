@@ -2,9 +2,7 @@
 <div align="center">
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
-
   <br/><br/>
-
   <p align="center">
     <code>[AI TOOLS]</code> &nbsp;•&nbsp;
     <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
@@ -100,7 +98,7 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 ---
 
-### Autonomous Systems
+### Autonomous Interface
 
 <div align="center">
   <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
