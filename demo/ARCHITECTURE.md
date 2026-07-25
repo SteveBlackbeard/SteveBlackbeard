@@ -9,6 +9,7 @@ The deployed demo remains a static, dependency-free GitHub Pages application. Mo
 | `src/nuclear/nuclear-data.js` | Evaluated isotope/reaction catalogue and A/Z conservation validator | Exposes immutable `NULLA_NUCLEAR` |
 | `src/chemistry/verified-reactions.js` | Catalogued binary compounds with explicit evidence level | Exposes immutable `NULLA_VERIFIED_REACTIONS` |
 | `src/analysis/compatibility-engine.js` | Chemical compatibility, nuclear Q-value and Coulomb-barrier estimates | Exposes immutable `NULLA_COMPATIBILITY` |
+| `src/physics/thermodynamics.js` | Pure phase-boundary and Lennard-Jones functions | Exposes immutable `NULLA_THERMODYNAMICS` |
 | `src/i18n/i18n.js` | Eleven-locale static UI catalogue and locale lifecycle | Updates translated DOM bindings |
 | `src/i18n/runtime-i18n.js` | Runtime status translations and interpolation | Extends the i18n façade |
 | `src/education/quiz-data.js` | Three equivalent scientific questions in every supported locale | Exposes immutable `NULLA_QUIZ` |

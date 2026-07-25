@@ -3494,24 +3494,13 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function phaseAtTemperature(profile, tempK) {
-    if (!profile) return { key:'unknown', label:tr('phaseUnknown') };
-    const tm = Number(profile.melt);
-    const tb = Number(profile.boil);
-    if (profile.transition === 'sublimation') {
-      return Number.isFinite(tb) && tempK >= tb
-        ? { key:'gas', label:tr('phaseGas') }
-        : { key:'solid', label:tr('phaseSolid') };
-    }
-    if (!Number.isFinite(tm) || !Number.isFinite(tb)) return { key:'unknown', label:tr('phaseUnavailable') };
-    if (tempK < tm) return { key:'solid', label:tr('phaseSolid') };
-    if (tempK < tb) return { key:'liquid', label:tr('phaseLiquid') };
-    return { key:'gas', label:tr('phaseGas') };
+    const key = window.NULLA_THERMODYNAMICS?.phaseAtTemperature(profile,tempK) || 'unknown';
+    const labelKey = key === 'unknown' ? (profile ? 'phaseUnavailable' : 'phaseUnknown') : `phase${key[0].toUpperCase()}${key.slice(1)}`;
+    return {key,label:tr(labelKey)};
   }
 
   function lennardJonesForceMagnitude(distance, epsilon = 0.003, sigma = 3.0) {
-    if (!Number.isFinite(distance) || distance <= 0.01 || distance > sigma * 2.5) return 0;
-    const sr6 = Math.pow(sigma / distance, 6);
-    return (24 * epsilon / distance) * (2 * sr6 * sr6 - sr6);
+    return window.NULLA_THERMODYNAMICS?.lennardJonesForceMagnitude(distance,epsilon,sigma) || 0;
   }
 
   function applyLennardJonesStep(atoms, dt) {

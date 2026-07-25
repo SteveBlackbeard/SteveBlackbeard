@@ -11,6 +11,7 @@ const quizSource = readFileSync(new URL('../src/education/quiz-data.js', import.
 const educationSource = readFileSync(new URL('../src/education/education-content.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
+const thermodynamicsSource = readFileSync(new URL('../src/physics/thermodynamics.js', import.meta.url), 'utf8');
 
 for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
   const sourcePath = match[1].split('?')[0];
@@ -135,5 +136,24 @@ assert.ok(knownCompatibility.factors.some(item => item.includes('Δχ=')));
 const dtCompatibility = compatibility.nuclear({reaction:nuclear.fusion['H+H'][0],isotopes:nuclear.isotopes});
 assert.equal(dtCompatibility.status, 'EXOENERGETIC_EVALUATED_CHANNEL');
 assert.ok(dtCompatibility.barrierMeV > 0);
+
+const physicsSandbox = {};
+physicsSandbox.globalThis = physicsSandbox;
+vm.runInNewContext(thermodynamicsSource, physicsSandbox);
+const physics = physicsSandbox.NULLA_THERMODYNAMICS;
+const waterProfile = {melt:273.15,boil:373.15};
+assert.equal(physics.phaseAtTemperature(waterProfile,273.14),'solid');
+assert.equal(physics.phaseAtTemperature(waterProfile,273.15),'liquid');
+assert.equal(physics.phaseAtTemperature(waterProfile,373.15),'gas');
+assert.equal(physics.phaseAtTemperature({boil:3915,transition:'sublimation'},3914),'solid');
+assert.equal(physics.phaseAtTemperature({boil:3915,transition:'sublimation'},3915),'gas');
+assert.equal(physics.phaseAtTemperature({melt:null,boil:null},298),'unknown');
+const sigma = 3;
+const epsilon = 0.003;
+const equilibrium = Math.pow(2,1/6) * sigma;
+assert.ok(Math.abs(physics.lennardJonesForceMagnitude(equilibrium,epsilon,sigma)) < 1e-12, 'LJ force must vanish at its equilibrium distance');
+assert.ok(Math.abs(physics.reducedLennardJonesPotential(equilibrium,epsilon,sigma) + epsilon) < 1e-12, 'LJ potential minimum must equal -epsilon');
+assert.ok(physics.lennardJonesForceMagnitude(sigma,epsilon,sigma) > 0, 'LJ short-range force must be repulsive');
+assert.ok(physics.lennardJonesForceMagnitude(2*sigma,epsilon,sigma) < 0, 'LJ long-range force must be attractive');
 
 console.log('Smoke contracts passed.');
