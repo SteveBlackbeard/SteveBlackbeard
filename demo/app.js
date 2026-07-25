@@ -1472,7 +1472,7 @@ window.addEventListener('DOMContentLoaded', function() {
     spawnAtoms(atoms);
     activeStructureId = `compound-${reaction.formula}`;
     updateTelemetry(
-      reaction.name + ' (' + reaction.formula + ')',
+      `${reaction.formula} · ${tr('cataloguedCompound')}`,
       'Formula: ' + reaction.formula + ' | ' + reaction.atoms.map(g => EL[g.z].s + '×' + g.c).join(' + '),
       'Type: ' + reaction.type + ' | Geometry: ' + reaction.geom,
       'Bonding: ' + reaction.bonds,
@@ -1480,7 +1480,7 @@ window.addEventListener('DOMContentLoaded', function() {
       reaction.enthalpy ? (reaction.enthalpy < 0 ? `${reaction.enthalpy} kJ/mol (EXOTHERMIC)` : `${reaction.enthalpy} kJ/mol (ENDOTHERMIC)`) : '—',
       reaction.dipole !== undefined ? `${reaction.dipole} Debye (${reaction.dipole > 0 ? 'POLAR' : 'NON-POLAR'})` : '0.00 Debye (NON-POLAR)',
       reaction.stabilityScore ? `${reaction.stabilityScore}% (HIGH STABILITY)` : '95.0%',
-      reaction.note || 'Stable synthesized compound.'
+      reaction.note || tr('cataloguedCompound')
     );
   }
 
@@ -2010,11 +2010,11 @@ window.addEventListener('DOMContentLoaded', function() {
     fusionTargetReaction = reaction;
 
     updateTelemetry(
-      `Chemical combination: ${EL[zA].s} + ${EL[zB].s}`,
-      `Bringing reactants together...`,
-      'CHEMICAL VISUALIZATION MODE',
-      'Bonding model: catalogued or valence estimate',
-      'Catalogued compound path'
+      `${tr('chemicalCombination')}: ${EL[zA].s} + ${EL[zB].s}`,
+      tr('bringingReactants'),
+      tr('chemicalVisualization'),
+      tr('cataloguedBonding'),
+      tr('cataloguedPath')
     );
   }
 
@@ -2066,7 +2066,7 @@ window.addEventListener('DOMContentLoaded', function() {
   function startNuclearCollision(reaction, mode) {
     const nuclear = window.NULLA_NUCLEAR;
     if (!nuclear || !reaction || !nuclear.validateReaction(reaction).valid) {
-      updateTelemetry('Nuclear dataset error', 'Reaction rejected', 'A/Z conservation failed', 'No animation executed', 'BLOCKED');
+      updateTelemetry(tr('datasetError'), tr('reactionRejected'), 'A/Z', tr('noAnimation'), 'BLOCKED');
       return;
     }
     activeCollisionMode = mode;
@@ -2091,13 +2091,13 @@ window.addEventListener('DOMContentLoaded', function() {
     const validation = nuclear.validateReaction(reaction);
     showCompatibility(window.NULLA_COMPATIBILITY?.nuclear({ reaction, isotopes:nuclear.isotopes }));
     updateTelemetry(
-      `${mode === 'fusion' ? 'FUSIÓN' : 'FISIÓN'} NUCLEAR · ${reaction.label}`,
+      `${tr(mode === 'fusion' ? 'fusion' : 'fission')} · ${reaction.label}`,
       `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
-      `Nuclear reaction · A ${validation.left.A}→${validation.right.A} · Z ${validation.left.Z}→${validation.right.Z}`,
+      `${tr('nuclearReaction')} · A ${validation.left.A}→${validation.right.A} · Z ${validation.left.Z}→${validation.right.Z}`,
       `Q ≈ ${reaction.qMeV} MeV · ${reaction.branch || reaction.note || ''}`,
       mode === 'fusion' ? 'Coulomb barrier approach · plasma confinement visualization' : 'Nuclear deformation · scission visualization',
-      `${reaction.qMeV} MeV`, 0, 'A/Z CONSERVED',
-      'Evaluated educational channel. Visual timing and scale are illustrative, not a reactor simulation.'
+      `${reaction.qMeV} MeV`, 0, tr('conservationVerified'),
+      tr('visualDisclaimer')
     );
   }
 
@@ -2157,13 +2157,13 @@ window.addEventListener('DOMContentLoaded', function() {
     activeStructureId = `nuclear-${reaction.id}`;
     const validation = nuclear.validateReaction(reaction);
     updateTelemetry(
-      `${target.nuclearMode === 'fusion' ? 'FUSIÓN' : 'FISIÓN'} NUCLEAR COMPLETADA`,
+      `${tr(target.nuclearMode === 'fusion' ? 'fusion' : 'fission')} · ${tr('completed')}`,
       `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
-      `${reaction.label} · CANAL EDUCATIVO EVALUADO`,
+      `${reaction.label} · ${tr('evaluatedChannel')}`,
       `Conservación: A ${validation.left.A}=${validation.right.A} · Z ${validation.left.Z}=${validation.right.Z}`,
-      `Energy release Q ≈ ${reaction.qMeV} MeV`,
-      `${reaction.qMeV} MeV`, 0, 'CONSERVATION VERIFIED',
-      reaction.note || reaction.branch || 'Product momenta are visual, not quantitatively simulated.'
+      `${tr('energyRelease')} Q ≈ ${reaction.qMeV} MeV`,
+      `${reaction.qMeV} MeV`, 0, tr('conservationVerified'),
+      reaction.note || reaction.branch || tr('visualDisclaimer')
     );
   }
 

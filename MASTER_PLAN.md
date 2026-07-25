@@ -1,5 +1,32 @@
 # NULLA-LABS Platform Completion Master Plan
 
+## Execution status
+
+| Gate | Current state | Required evidence |
+|---|---|---|
+| Reversible baseline | PASS | Backup `backups/2026-07-25_1553_45d9fe0` and branch `codex/system-completion` |
+| Startup / white canvas | PASS | Default B-DNA plus guarded URL parameters |
+| Materials bar | PASS | Six connected builders and smoke contracts |
+| Chemical catalogue | PASS | Unknown routes rejected; catalogued formulas validated |
+| Chemical geometry | PASS | Nearest-neighbour bond cutoff; rock-salt family visual test |
+| Nuclear separation | PASS | Independent fusion/fission controls and A/Z validation |
+| Nuclear runtime | PASS | FPS-independent timing, visible products, zero chemical nucleon bonds |
+| Thermodynamics | PASS WITH MODEL LIMIT | Entity profiles; educational motion explicitly labelled non-predictive |
+| Measurement | PASS | Å/pm distance and angle calculation contracts |
+| Recording / sharing / XR | PASS | MediaRecorder, state URL, and real immersive-session request |
+| Eleven-language static UI | PASS | Identical locale keys, tutorial, guide, quiz, RTL Arabic |
+| Eleven-language dynamic telemetry | IN PROGRESS | Runtime state/result matrix in every locale |
+| Responsive / accessibility | PASS WITH FINAL MATRIX PENDING | Mobile panel separation, keyboard elements, dialog semantics |
+| Soak / performance | PENDING | Repeated transitions with bounded memory and stable renderer resources |
+| Release | BLOCKED BY FINAL GATES | No public deployment before every pending gate passes |
+
+### Regression rule
+
+Any user-visible break in combination, fusion, fission, startup, or the default
+composition is a release blocker. The affected gate returns to `IN PROGRESS`,
+is reproduced in the local browser, receives a regression contract, and must pass
+again before work continues downstream.
+
 ## Non-negotiable invariants
 
 1. Preserve the current visual identity and default B-DNA opening scene.
