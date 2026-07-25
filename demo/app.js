@@ -2611,6 +2611,18 @@ window.addEventListener('DOMContentLoaded', function() {
   const ptTooltip = document.getElementById('pt-tooltip');
 
   document.querySelectorAll('.pt-el').forEach(cell => {
+    const cellZ = parseInt(cell.dataset.z);
+    const cellElement = EL[cellZ];
+    cell.setAttribute('role', 'button');
+    cell.setAttribute('tabindex', '0');
+    if (cellElement) cell.setAttribute('aria-label', `${cellElement.n}, ${cellElement.s}, atomic number ${cellZ}`);
+
+    const activateCell = () => {
+      if (ptTooltip) ptTooltip.style.display = 'none';
+      const z = parseInt(cell.dataset.z);
+      if (z) selectElementForTray(z);
+    };
+
     cell.addEventListener('mousemove', e => {
       const z = parseInt(cell.dataset.z);
       if (!z) return;
@@ -2637,11 +2649,11 @@ window.addEventListener('DOMContentLoaded', function() {
       if (ptTooltip) ptTooltip.style.display = 'none';
     });
 
-    cell.addEventListener('click', () => {
-      if (ptTooltip) ptTooltip.style.display = 'none';
-      const z = parseInt(cell.dataset.z);
-      if (!z) return;
-      selectElementForTray(z);
+    cell.addEventListener('click', activateCell);
+    cell.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      activateCell();
     });
   });
 
