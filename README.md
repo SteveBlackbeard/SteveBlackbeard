@@ -97,7 +97,7 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 ---
 
-### Interactive Lab
+### Interactive Lab // Educative Tool
 
 Visual engines and experimental interfaces live here:
 
