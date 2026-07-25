@@ -2285,6 +2285,17 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   function exportGLTFFile() {
     playTone(750, 'sine', 0.2);
     if (activeAtoms.length === 0) return;
@@ -2295,15 +2306,12 @@ window.addEventListener('DOMContentLoaded', function() {
       nodes: activeAtoms.map((a, idx) => ({
         name: a.elData?.n || `Atom_${idx}`,
         translation: [a.currentPos.x, a.currentPos.y, a.currentPos.z],
-        scale: [a.scale, a.scale, a.scale]
+        scale: [a.currentScale || 1, a.currentScale || 1, a.currentScale || 1]
       }))
     };
 
     const blob = new Blob([JSON.stringify(gltfStructure, null, 2)], { type: 'model/gltf+json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'molecule_structure_ar.gltf';
-    link.click();
+    downloadBlob(blob, 'molecule_structure_ar.gltf');
   }
 
   function exportUSDZFile() {
@@ -2317,10 +2325,7 @@ window.addEventListener('DOMContentLoaded', function() {
     usdaContent += `}\n`;
 
     const blob = new Blob([usdaContent], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'molecule_structure.usda';
-    link.click();
+    downloadBlob(blob, 'molecule_structure.usda');
   }
 
   function exportXYZFile() {
@@ -2339,10 +2344,7 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
     const blob = new Blob([xyzText], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'molecule_structure_3d.xyz';
-    link.click();
+    downloadBlob(blob, 'molecule_structure_3d.xyz');
   }
 
   function showVerifiedSuggestions() {
@@ -3245,9 +3247,10 @@ window.addEventListener('DOMContentLoaded', function() {
           if (selectedMeasureAtoms.length >= 2) {
             const posA = selectedMeasureAtoms[0].currentPos;
             const posB = selectedMeasureAtoms[1].currentPos;
-            const distWorld = posA.distanceTo(posB);
-            const distAngstrom = (distWorld * angstromPerWorldUnit).toFixed(2);
-            const distPicometer = (distWorld * angstromPerWorldUnit * 100).toFixed(0);
+            const measurement = window.NULLA_MEASUREMENT?.distance(posA,posB,angstromPerWorldUnit);
+            if (!measurement) return;
+            const distAngstrom = measurement.angstrom.toFixed(2);
+            const distPicometer = measurement.picometer.toFixed(0);
 
             const points = [posA, posB];
             let angleStr = '';
@@ -3255,11 +3258,8 @@ window.addEventListener('DOMContentLoaded', function() {
             if (selectedMeasureAtoms.length === 3) {
               const posC = selectedMeasureAtoms[2].currentPos;
               points.push(posC, posA);
-              const vAB = new THREE.Vector3().subVectors(posA, posB);
-              const vCB = new THREE.Vector3().subVectors(posC, posB);
-              const angleRad = vAB.angleTo(vCB);
-              const angleDeg = (angleRad * 180 / Math.PI).toFixed(1);
-              angleStr = ` | Bond Angle: ${angleDeg}°`;
+              const angleDeg = window.NULLA_MEASUREMENT?.angleDegrees(posA,posB,posC);
+              if (Number.isFinite(angleDeg)) angleStr = ` | Bond Angle: ${angleDeg.toFixed(1)}°`;
             }
 
             const lineGeo = new THREE.BufferGeometry().setFromPoints(points);

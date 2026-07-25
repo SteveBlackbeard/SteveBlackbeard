@@ -12,6 +12,7 @@ const educationSource = readFileSync(new URL('../src/education/education-content
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
 const thermodynamicsSource = readFileSync(new URL('../src/physics/thermodynamics.js', import.meta.url), 'utf8');
+const measurementSource = readFileSync(new URL('../src/physics/measurement.js', import.meta.url), 'utf8');
 
 for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
   const sourcePath = match[1].split('?')[0];
@@ -38,6 +39,8 @@ assert.doesNotMatch(html, /id="btn-cell"|organelle-nav-panel/, 'cell UI must sta
 assert.doesNotMatch(app, /buildEukaryoticCell/, 'cell builder must stay removed');
 assert.doesNotMatch(app, /removedLegacyCellRenderer|Eukaryotic Animal Cell|Organelle Cutaway/i, 'legacy cell renderer must not remain in the runtime');
 assert.match(app, /new MediaRecorder\(/, 'video recorder is not connected');
+assert.match(app, /function downloadBlob\(/, 'export downloads are not centralized');
+assert.match(app, /URL\.revokeObjectURL\(url\)/, 'export object URLs are not released');
 assert.match(app, /requestSession\('immersive-vr'/, 'WebXR button must request a real immersive session');
 assert.match(app, /renderer\.xr\.setSession\(session\)/, 'WebXR session is not connected to the renderer');
 assert.doesNotMatch(app, /WebXR Polyfill Enabled|Virtual Reality Session Active[\s\S]{0,100}isSessionSupported/, 'WebXR capability checks must not claim a session is active');
@@ -161,5 +164,17 @@ assert.ok(Math.abs(physics.lennardJonesForceMagnitude(equilibrium,epsilon,sigma)
 assert.ok(Math.abs(physics.reducedLennardJonesPotential(equilibrium,epsilon,sigma) + epsilon) < 1e-12, 'LJ potential minimum must equal -epsilon');
 assert.ok(physics.lennardJonesForceMagnitude(sigma,epsilon,sigma) > 0, 'LJ short-range force must be repulsive');
 assert.ok(physics.lennardJonesForceMagnitude(2*sigma,epsilon,sigma) < 0, 'LJ long-range force must be attractive');
+
+const measurementSandbox = {};
+measurementSandbox.globalThis = measurementSandbox;
+vm.runInNewContext(measurementSource, measurementSandbox);
+const measurement = measurementSandbox.NULLA_MEASUREMENT;
+const unitDistance = measurement.distance({x:0,y:0,z:0},{x:3,y:4,z:0},0.2);
+assert.equal(unitDistance.world,5);
+assert.equal(unitDistance.angstrom,1);
+assert.equal(unitDistance.picometer,100);
+assert.ok(Math.abs(measurement.angleDegrees({x:1,y:0,z:0},{x:0,y:0,z:0},{x:0,y:1,z:0})-90) < 1e-12);
+assert.ok(Math.abs(measurement.angleDegrees({x:1,y:0,z:0},{x:0,y:0,z:0},{x:-1,y:0,z:0})-180) < 1e-12);
+assert.equal(measurement.angleDegrees({x:0,y:0,z:0},{x:0,y:0,z:0},{x:1,y:0,z:0}),null);
 
 console.log('Smoke contracts passed.');
