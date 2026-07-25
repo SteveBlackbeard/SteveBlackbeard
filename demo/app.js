@@ -367,6 +367,16 @@ window.addEventListener('DOMContentLoaded', function() {
   let fusionFlashSphere = null;
   let shockwaveScale = 0.1;
   let shockwaveOpacity = 1.0;
+  let activeStructureId = 'dna';
+  let angstromPerWorldUnit = 0.42;
+  let activeThermalProfile = {
+    label: 'B-DNA in aqueous environment',
+    melt: 363,
+    boil: 373.15,
+    pressure: '1 atm',
+    model: 'educational'
+  };
+  let activeBondCutoffWorld = null;
 
   // Selection Ring
   const selectRingGeo = new THREE.TorusGeometry(2.8, 0.3, 16, 32);
@@ -532,7 +542,6 @@ window.addEventListener('DOMContentLoaded', function() {
     let roughness = 0.08;
     let clearcoat = 1.0;
     let clearcoatRoughness = 0.02;
-    let reflectance = 0.9;
 
     if (cat.includes('alkali') || cat.includes('transition') || cat.includes('lanthanide') || cat.includes('actinide')) {
       metalness = 0.45;
@@ -561,8 +570,7 @@ window.addEventListener('DOMContentLoaded', function() {
       metalness,
       roughness,
       clearcoat,
-      clearcoatRoughness,
-      reflectance
+      clearcoatRoughness
     });
     return materialCache[key];
   }
@@ -771,7 +779,7 @@ window.addEventListener('DOMContentLoaded', function() {
             const dist = start.distanceTo(end);
             const r1 = activeAtoms[i].elData.r || 1.0;
             const r2 = activeAtoms[j].elData.r || 1.0;
-            let maxBondDist = Math.max(9.5, (r1 + r2) * 3.5);
+            let maxBondDist = activeBondCutoffWorld || Math.max(9.5, (r1 + r2) * 3.5);
             
             const sym1 = activeAtoms[i].elData.s;
             const sym2 = activeAtoms[j].elData.s;
@@ -860,6 +868,10 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   function buildDNA() {
     isDnaMode = true;
+    activeStructureId = 'dna';
+    activeThermalProfile = { label:'B-DNA in aqueous environment', melt:363, boil:373.15, pressure:'1 atm', model:'educational' };
+    angstromPerWorldUnit = 0.42;
+    activeBondCutoffWorld = null;
     const atoms = [];
     const BP = 130; // High density
     const HR = 15.0; // Helix Radius
@@ -921,7 +933,6 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     spawnAtoms(atoms);
-    if (organelleNavPanel) organelleNavPanel.style.display = 'none';
     updateTelemetry(
       'B-DNA Double Helix (TP53 Gene Locus)',
       'A-T (2 H-Bonds) // G-C (3 H-Bonds) Pairs',
@@ -937,7 +948,142 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // BUILD 100% PHOTOREALISTIC DENSE 3D ANIMAL EUKARYOTIC CELL CUTAWAY (9 Organelles, ~3,300+ Particles)
   // ═══════════════════════════════════════════════════════════════
-  function buildEukaryoticCell() {
+  function activateMaterial(id, atoms, profile, telemetry, scale, bondCutoff) {
+    isDnaMode = false;
+    activeStructureId = id;
+    activeThermalProfile = profile;
+    angstromPerWorldUnit = scale;
+    activeBondCutoffWorld = bondCutoff || null;
+    selectedMeasureAtoms = [];
+    spawnAtoms(atoms);
+    updateTelemetry(
+      telemetry.name,
+      telemetry.formula,
+      `${telemetry.cls} · MODELO EDUCATIVO`,
+      telemetry.bonds,
+      `Fase calculada a ${activeThermalProfile.pressure || '1 atm'}`,
+      telemetry.enthalpy,
+      telemetry.dipole,
+      telemetry.stability,
+      `${telemetry.note} Escala geométrica calibrada; dinámica visual aproximada, no ab initio.`
+    );
+  }
+
+  function buildNaclCrystal() {
+    const atoms = [];
+    const spacing = 4.0;
+    for (let x = -2; x <= 2; x++) {
+      for (let y = -2; y <= 2; y++) {
+        for (let z = -2; z <= 2; z++) {
+          atoms.push({
+            z: ((x + y + z) & 1) === 0 ? 11 : 17,
+            pos: new THREE.Vector3(x * spacing, y * spacing, z * spacing),
+            scale: 1.25,
+            noLabel: true
+          });
+        }
+      }
+    }
+    activateMaterial('nacl', atoms,
+      { label:'NaCl', melt:1074, boil:1738, pressure:'1 atm', model:'educational' },
+      { name:'NaCl Rock-Salt Crystal', formula:'Na⁺Cl⁻', cls:'Ionic rock-salt lattice (interpenetrating FCC)', bonds:'6-fold Na–Cl coordination', enthalpy:-411, dipole:0, stability:98, note:'Nearest-neighbour distance referenced to 2.82 Å at 298 K.' },
+      2.82 / spacing, spacing * 1.08);
+  }
+
+  function buildDiamondLattice() {
+    const atoms = [];
+    const a = 8.0;
+    const basis = [
+      [0,0,0],[0,.5,.5],[.5,0,.5],[.5,.5,0],
+      [.25,.25,.25],[.25,.75,.75],[.75,.25,.75],[.75,.75,.25]
+    ];
+    for (let ix = -1; ix <= 1; ix++) for (let iy = -1; iy <= 1; iy++) for (let iz = -1; iz <= 1; iz++) {
+      basis.forEach(([x,y,z]) => atoms.push({
+        z:6, pos:new THREE.Vector3((ix+x-.5)*a,(iy+y-.5)*a,(iz+z-.5)*a),
+        scale:1.15, noLabel:true
+      }));
+    }
+    const nn = a * Math.sqrt(3) / 4;
+    activateMaterial('diamond', atoms,
+      { label:'Diamond', melt:null, boil:3915, transition:'sublimation', pressure:'1 atm', model:'educational' },
+      { name:'Diamond Covalent Lattice', formula:'Cₙ', cls:'sp³ tetrahedral network', bonds:'C–C covalent · 109.47°', enthalpy:1.9, dipole:0, stability:99, note:'Diamond sublimes near 3915 K at 1 atm; a conventional melting point is not used.' },
+      1.544 / nn, nn * 1.08);
+  }
+
+  function icosahedronVertices() {
+    const p = (1 + Math.sqrt(5)) / 2;
+    return [
+      [0,-1,-p],[0,-1,p],[0,1,-p],[0,1,p],
+      [-1,-p,0],[-1,p,0],[1,-p,0],[1,p,0],
+      [-p,0,-1],[p,0,-1],[-p,0,1],[p,0,1]
+    ].map(v => new THREE.Vector3(v[0],v[1],v[2]));
+  }
+
+  function buildFullereneC60() {
+    const vertices = icosahedronVertices();
+    let edge = Infinity;
+    for (let i=0;i<vertices.length;i++) for (let j=i+1;j<vertices.length;j++) {
+      const d=vertices[i].distanceTo(vertices[j]); if (d>0.01 && d<edge) edge=d;
+    }
+    const atoms=[];
+    for (let i=0;i<vertices.length;i++) for (let j=0;j<vertices.length;j++) {
+      if (i !== j && Math.abs(vertices[i].distanceTo(vertices[j])-edge)<0.01) {
+        atoms.push({z:6,pos:vertices[i].clone().multiplyScalar(2).add(vertices[j]).multiplyScalar(3.15),scale:1.05,noLabel:true});
+      }
+    }
+    const nn = atoms[0].pos.distanceTo(atoms.find((a,idx)=>idx>0 && atoms[0].pos.distanceTo(a.pos)>0.1 && atoms[0].pos.distanceTo(a.pos)<8).pos);
+    activateMaterial('c60', atoms,
+      { label:'C₆₀', melt:null, boil:800, transition:'sublimation', pressure:'vacuum/1 atm', model:'educational' },
+      { name:'Buckminsterfullerene C₆₀', formula:'C₆₀', cls:'Truncated icosahedral fullerene', bonds:'60 vertices · 90 sp² C–C edges', enthalpy:null, dipole:0, stability:96, note:'Constructed by truncating every directed edge of an icosahedron.' },
+      1.43 / nn, nn * 1.13);
+  }
+
+  function buildGrapheneSheet() {
+    const atoms=[]; const dx=3.4; const dy=Math.sqrt(3)*dx;
+    for(let row=-4;row<=4;row++) for(let col=-5;col<=5;col++) {
+      const x=col*3*dx+(row&1)*1.5*dx;
+      const y=row*dy;
+      atoms.push({z:6,pos:new THREE.Vector3(x,y,0),scale:1.0,noLabel:true});
+      atoms.push({z:6,pos:new THREE.Vector3(x+dx,y,0),scale:1.0,noLabel:true});
+    }
+    activateMaterial('graphene', atoms,
+      { label:'Graphene', melt:null, boil:4510, transition:'sublimation', pressure:'1 atm', model:'educational' },
+      { name:'Graphene Monolayer', formula:'Cₙ', cls:'2D hexagonal sp² sheet', bonds:'C–C network · 120°', enthalpy:0, dipole:0, stability:99, note:'Finite monolayer patch with open boundary.' },
+      1.42/dx, dx*1.12);
+  }
+
+  function buildCarbonNanotube() {
+    const atoms=[]; const n=12, rings=16, radius=10, dz=2.95;
+    for(let r=0;r<rings;r++) for(let i=0;i<n;i++) {
+      const angle=(i/n)*Math.PI*2+(r&1)*Math.PI/n;
+      atoms.push({z:6,pos:new THREE.Vector3(Math.cos(angle)*radius,(r-(rings-1)/2)*dz,Math.sin(angle)*radius),scale:1.0,noLabel:true});
+    }
+    const circumferenceStep=2*radius*Math.sin(Math.PI/n);
+    activateMaterial('nanotube', atoms,
+      { label:'SWCNT (12,0)', melt:null, boil:4510, transition:'sublimation', pressure:'1 atm', model:'educational' },
+      { name:'Single-Wall Carbon Nanotube', formula:'Cₙ · SWCNT (12,0)', cls:'Zig-zag rolled graphene cylinder', bonds:'sp² carbon network', enthalpy:null, dipole:0, stability:97, note:'Finite open-ended educational (12,0) nanotube.' },
+      1.42/circumferenceStep, Math.max(circumferenceStep,dz)*1.13);
+  }
+
+  function buildSolvationShell() {
+    const atoms=[{z:11,pos:new THREE.Vector3(0,0,0),scale:1.5}];
+    const count=12, r=10, golden=Math.PI*(3-Math.sqrt(5));
+    for(let i=0;i<count;i++) {
+      const y=1-(i/(count-1))*2, rr=Math.sqrt(1-y*y), theta=golden*i;
+      const dir=new THREE.Vector3(Math.cos(theta)*rr,y,Math.sin(theta)*rr);
+      const oxygen=dir.clone().multiplyScalar(r);
+      atoms.push({z:8,pos:oxygen,scale:1.1,noLabel:true});
+      const tangent=new THREE.Vector3(-dir.z,0,dir.x).normalize();
+      atoms.push({z:1,pos:oxygen.clone().add(dir.clone().multiplyScalar(2.1)).add(tangent.clone().multiplyScalar(1.35)),scale:.72,noLabel:true});
+      atoms.push({z:1,pos:oxygen.clone().add(dir.clone().multiplyScalar(2.1)).add(tangent.clone().multiplyScalar(-1.35)),scale:.72,noLabel:true});
+    }
+    activateMaterial('solvation', atoms,
+      { label:'Na⁺(aq)', melt:273.15, boil:373.15, pressure:'1 atm', model:'illustrative' },
+      { name:'Na⁺ Solvation Shell', formula:'[Na(H₂O)₁₂]⁺', cls:'Illustrative hydration environment', bonds:'Ion–dipole · O atoms oriented toward Na⁺', enthalpy:null, dipole:'H₂O 1.85 D', stability:'ILLUSTRATION', note:'Twelve waters show orientation, not a claim of fixed first-shell coordination; real coordination is dynamic and commonly lower.' },
+      2.40/r, 3.2);
+  }
+
+  function removedLegacyCellRenderer() {
     isDnaMode = true;
     const atoms = [];
 
@@ -1156,7 +1302,6 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     spawnAtoms(atoms);
-    if (organelleNavPanel) organelleNavPanel.style.display = 'flex';
     updateTelemetry(
       '3D Eukaryotic Animal Cell (Photorealistic Organelle Cutaway)',
       'High-Density Lipid Bilayer + Nucleolus + Nuclear Pores + RER + SER + Golgi + 6 Mitochondria + Centrioles',
@@ -1172,6 +1317,15 @@ window.addEventListener('DOMContentLoaded', function() {
   function formElement(z, fromCenter) {
     isDnaMode = false;
     const el = EL[z] || EL[1];
+    activeStructureId = `element-${z}`;
+    activeThermalProfile = {
+      label: el.s,
+      melt: Number.isFinite(Number(el.melt)) && Number(el.melt) > 0 ? Number(el.melt) : null,
+      boil: Number.isFinite(Number(el.boil)) && Number(el.boil) > 0 ? Number(el.boil) : null,
+      pressure: '1 atm',
+      model: 'educational'
+    };
+    activeBondCutoffWorld = null;
     const atoms = getElementAtoms(z, new THREE.Vector3(0, 0, 0), fromCenter);
     
     spawnAtoms(atoms);
@@ -2395,10 +2549,10 @@ window.addEventListener('DOMContentLoaded', function() {
     });
     usdaContent += `}\n`;
 
-    const blob = new Blob([usdaContent], { type: 'model/vnd.usdz+zip' });
+    const blob = new Blob([usdaContent], { type: 'text/plain;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'molecule_structure_apple_ar.usdz';
+    link.download = 'molecule_structure.usda';
     link.click();
   }
 
@@ -2750,47 +2904,24 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 3D CELL MODEL Button
-  const btnCell = document.getElementById('btn-cell');
-  if (btnCell) {
-    btnCell.addEventListener('click', () => {
-      playTone(550, 'triangle', 0.15);
+  const materialBuilders = {
+    'btn-nacl': buildNaclCrystal,
+    'btn-diamond': buildDiamondLattice,
+    'btn-c60': buildFullereneC60,
+    'btn-nanotube': buildCarbonNanotube,
+    'btn-graphene': buildGrapheneSheet,
+    'btn-solvation': buildSolvationShell
+  };
+  Object.entries(materialBuilders).forEach(([id, builder]) => {
+    const button = document.getElementById(id);
+    if (!button) return;
+    button.addEventListener('click', () => {
+      playTone(620, 'triangle', 0.15);
       clearReactantTray();
-      buildEukaryoticCell();
+      document.querySelectorAll('.material-grid .shader-btn').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      builder();
     });
-  }
-
-  const organelleNavPanel = document.getElementById('organelle-nav-panel');
-
-  function focusOrganelle(key) {
-    playTone(650, 'sine', 0.15);
-    const data = {
-      nuc: { name: 'Núcleo y Nucléolo (Cromatina TP53)', formula: 'DNA + RNA + Histonas H1-H4', cls: 'Organela de Control Genético', bonds: 'Puentes H (Nucleobases A-T / G-C)', note: 'Depósito de información genética y síntesis de ARN ribosomal.' },
-      mito: { name: 'Mitocondria (Síntesis ATP)', formula: 'C₁₀H₁₆N₅O₁₃P₃ (ATP)', cls: 'Central de Energía Oxidativa', bonds: 'Enlaces Éster de Alta Energía P~O', note: 'Generación de ATP celular mediante la cadena transportadora de electrones.' },
-      golgi: { name: 'Aparato de Golgi (Dictiosomas)', formula: 'Glicoproteínas y Glicolípidos', cls: 'Organela Secreta & Empaquetamiento', bonds: 'Enlaces Glicosídicos', note: 'Glicosilación, empaquetamiento vesicular y distribución proteica.' },
-      er: { name: 'Retículo Endoplásmico Rugoso y Liso', formula: 'Lípidos + Ribosomas 80S', cls: 'Síntesis Proteica y Lipídica', bonds: 'Enlaces Peptídicos & Lipídicos', note: 'Plegamiento proteico chaperona y detoxificación lipídica.' },
-      mem: { name: 'Membrana Plasmática', formula: '(C₃₆H₇₂O₈PR)₂', cls: 'Bicapa Semipermeable', bonds: 'Fuerzas de Van der Waals & Hidrofóbicas', note: 'Regulación del gradiente electroquímico y señalización.' },
-      cyto: { name: 'Citosol y Matriz de Electrolitos', formula: 'Na⁺, K⁺, Cl⁻, Ca²⁺, H₂O', cls: 'Matriz Hidroelectrolítica', bonds: 'Iónicos / Solvatación Acuosa', note: 'Mantenimiento de la presión osmótica y velocidad de difusión.' }
-    }[key];
-
-    if (data) {
-      updateTelemetry(data.name, data.formula, data.cls, data.bonds, 'State: [ORGANELLE 3D ZOOM ACTIVE]', -210, 3.2, '99.5%', data.note);
-    }
-  }
-
-  const btnOrgNuc = document.getElementById('btn-org-nuc');
-  const btnOrgMito = document.getElementById('btn-org-mito');
-  const btnOrgGolgi = document.getElementById('btn-org-golgi');
-  const btnOrgEr = document.getElementById('btn-org-er');
-  const btnOrgMem = document.getElementById('btn-org-mem');
-  const btnOrgCyto = document.getElementById('btn-org-cyto');
-
-  if (btnOrgNuc) btnOrgNuc.addEventListener('click', () => focusOrganelle('nuc'));
-  if (btnOrgMito) btnOrgMito.addEventListener('click', () => focusOrganelle('mito'));
-  if (btnOrgGolgi) btnOrgGolgi.addEventListener('click', () => focusOrganelle('golgi'));
-  if (btnOrgEr) btnOrgEr.addEventListener('click', () => focusOrganelle('er'));
-  if (btnOrgMem) btnOrgMem.addEventListener('click', () => focusOrganelle('mem'));
-  if (btnOrgCyto) btnOrgCyto.addEventListener('click', () => focusOrganelle('cyto'));
+  });
 
   // RANDOM SYNTHESIS Button (2 to 4 Elements)
   if (btnRandom) {
@@ -2842,6 +2973,10 @@ window.addEventListener('DOMContentLoaded', function() {
     if (level === 'LOW' && btnQualLow) { btnQualLow.style.borderColor = '#00F0FF'; btnQualLow.style.background = 'rgba(0,240,255,0.2)'; }
     if (level === 'MEDIUM' && btnQualMed) { btnQualMed.style.borderColor = '#00F0FF'; btnQualMed.style.background = 'rgba(0,240,255,0.2)'; }
     if (level === 'ULTRA' && btnQualUltra) { btnQualUltra.style.borderColor = '#00F0FF'; btnQualUltra.style.background = 'rgba(0,240,255,0.2)'; }
+    const ratio = level === 'LOW' ? 0.75 : level === 'MEDIUM' ? Math.min(window.devicePixelRatio, 1.25) : Math.min(window.devicePixelRatio, 2);
+    renderer.setPixelRatio(ratio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    updateTelemetry('Graphics Quality Applied', level, `Pixel ratio: ${ratio.toFixed(2)}`, 'Renderer resolution updated', 'ACTIVE');
   }
 
   if (btnQualLow) btnQualLow.addEventListener('click', () => setQualityPreset('LOW'));
@@ -2912,20 +3047,34 @@ window.addEventListener('DOMContentLoaded', function() {
   // URL STATE SHARING (#reactants=11,17)
   const btnShareUrl = document.getElementById('btn-share-url');
   if (btnShareUrl) {
-    btnShareUrl.addEventListener('click', () => {
+    btnShareUrl.addEventListener('click', async () => {
       playTone(700, 'sine', 0.15);
-      if (selectedReactants.length === 0) return;
       const zList = selectedReactants.map(r => r.z).join(',');
-      const shareUrl = `${location.origin}${location.pathname}#reactants=${zList}`;
-      navigator.clipboard.writeText(shareUrl);
-      updateTelemetry('URL Direct Share Copied!', shareUrl, 'State Hash Loaded', 'Link copied to clipboard', 'Shareable Quantum Hash');
+      const params = new URLSearchParams();
+      if (zList) params.set('reactants', zList);
+      params.set('structure', activeStructureId);
+      params.set('temp', String(temperatureK));
+      const shareUrl = `${location.origin}${location.pathname}#${params.toString()}`;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title:'NULLA-LABS 3D structure', url:shareUrl });
+          updateTelemetry('Share Sheet Opened', shareUrl, 'State URL', 'Structure + temperature + reactants', 'SHARED');
+        } else if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(shareUrl);
+          updateTelemetry('Share URL Copied', shareUrl, 'State URL', 'Structure + temperature + reactants', 'COPIED');
+        } else {
+          window.prompt('Copy this share URL:', shareUrl);
+        }
+      } catch (error) {
+        if (error?.name !== 'AbortError') window.prompt('Copy this share URL:', shareUrl);
+      }
     });
   }
 
   // Read URL Hash on init
   if (location.hash && location.hash.includes('reactants=')) {
     try {
-      const zStr = location.hash.split('reactants=')[1];
+      const zStr = location.hash.split('reactants=')[1].split('&')[0];
       const zs = zStr.split(',').map(n => parseInt(n)).filter(n => !isNaN(n));
       if (zs.length > 0) {
         setTimeout(() => {
@@ -2934,6 +3083,22 @@ window.addEventListener('DOMContentLoaded', function() {
         }, 800);
       }
     } catch (e) { console.warn('Hash parse error:', e); }
+  }
+
+  if (location.hash) {
+    const shared = new URLSearchParams(location.hash.slice(1));
+    const sharedTemp = Number(shared.get('temp'));
+    if (Number.isFinite(sharedTemp) && sharedTemp >= 0 && sharedTemp <= 5000) {
+      temperatureK = sharedTemp;
+      if (tempSlider) tempSlider.value = String(sharedTemp);
+      if (tempVal) tempVal.textContent = `${sharedTemp} K (${Math.round(sharedTemp - 273.15)}°C)`;
+    }
+    const sharedBuilders = {
+      nacl: buildNaclCrystal, diamond: buildDiamondLattice, c60: buildFullereneC60,
+      nanotube: buildCarbonNanotube, graphene: buildGrapheneSheet, solvation: buildSolvationShell
+    };
+    const sharedBuilder = sharedBuilders[shared.get('structure')];
+    if (sharedBuilder && !shared.get('reactants')) setTimeout(sharedBuilder, 500);
   }
 
   if (btnExportGltf) {
@@ -3094,6 +3259,44 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  const btnRecord = document.getElementById('btn-record');
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  if (btnRecord) {
+    if (!window.MediaRecorder || !renderer.domElement.captureStream) {
+      btnRecord.disabled = true;
+      btnRecord.textContent = '🎥 NO DISPONIBLE';
+    } else {
+      btnRecord.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          return;
+        }
+        const mimeCandidates = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+        const mimeType = mimeCandidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
+        const stream = renderer.domElement.captureStream(60);
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType, videoBitsPerSecond: 8_000_000 } : undefined);
+        mediaRecorder.ondataavailable = event => { if (event.data.size) recordedChunks.push(event.data); };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type:mediaRecorder.mimeType || 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `nulla-labs-${activeStructureId}-${Date.now()}.webm`;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          stream.getTracks().forEach(track => track.stop());
+          btnRecord.textContent = '🎥 GRABAR HD';
+          btnRecord.style.color = '#FFFFFF';
+        };
+        mediaRecorder.start(1000);
+        btnRecord.textContent = '⏹ DETENER';
+        btnRecord.style.color = '#FF0055';
+      });
+    }
+  }
+
 
 
   // ═══════════════════════════════════════════════════════════════
@@ -3200,8 +3403,8 @@ window.addEventListener('DOMContentLoaded', function() {
             const posA = selectedMeasureAtoms[0].currentPos;
             const posB = selectedMeasureAtoms[1].currentPos;
             const distWorld = posA.distanceTo(posB);
-            const distAngstrom = (distWorld * 0.42).toFixed(2);
-            const distPicometer = (distWorld * 42.0).toFixed(0);
+            const distAngstrom = (distWorld * angstromPerWorldUnit).toFixed(2);
+            const distPicometer = (distWorld * angstromPerWorldUnit * 100).toFixed(0);
 
             const points = [posA, posB];
             let angleStr = '';
@@ -3282,6 +3485,47 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isNaN(v.z) || !isFinite(v.z)) v.z = 0;
   }
 
+  function phaseAtTemperature(profile, tempK) {
+    if (!profile) return { key:'unknown', label:'PHASE NOT MODELED' };
+    const tm = Number(profile.melt);
+    const tb = Number(profile.boil);
+    if (profile.transition === 'sublimation') {
+      return Number.isFinite(tb) && tempK >= tb
+        ? { key:'gas', label:'SUBLIMED / GAS-PHASE CARBON' }
+        : { key:'solid', label:'SOLID COVALENT NETWORK' };
+    }
+    if (!Number.isFinite(tm) || !Number.isFinite(tb)) return { key:'unknown', label:'PHASE DATA UNAVAILABLE' };
+    if (tempK < tm) return { key:'solid', label:'SOLID' };
+    if (tempK < tb) return { key:'liquid', label:'LIQUID' };
+    return { key:'gas', label:'GAS' };
+  }
+
+  function lennardJonesForceMagnitude(distance, epsilon = 0.003, sigma = 3.0) {
+    if (!Number.isFinite(distance) || distance <= 0.01 || distance > sigma * 2.5) return 0;
+    const sr6 = Math.pow(sigma / distance, 6);
+    return (24 * epsilon / distance) * (2 * sr6 * sr6 - sr6);
+  }
+
+  function applyLennardJonesStep(atoms, dt) {
+    const particles = atoms.filter(a => !a.isElectron && !a.removing);
+    if (particles.length > 220) return;
+    for (let i = 0; i < particles.length; i++) {
+      const a = particles[i];
+      if (!a.velocity) a.velocity = new THREE.Vector3();
+      for (let j = i + 1; j < particles.length; j++) {
+        const b = particles[j];
+        if (!b.velocity) b.velocity = new THREE.Vector3();
+        const delta = new THREE.Vector3().subVectors(b.targetPos, a.targetPos);
+        const distance = delta.length();
+        const force = THREE.MathUtils.clamp(lennardJonesForceMagnitude(distance), -0.08, 0.08);
+        if (!force || distance <= 0.01) continue;
+        delta.multiplyScalar(force * dt / distance);
+        a.velocity.sub(delta);
+        b.velocity.add(delta);
+      }
+    }
+  }
+
   function animate(now) {
     requestAnimationFrame(animate);
 
@@ -3298,6 +3542,10 @@ window.addEventListener('DOMContentLoaded', function() {
       // Superfluid atom morphing & dynamic behaviors
     const dummy = new THREE.Object3D();
     const instUpdateList = new Set();
+    const activePhase = phaseAtTemperature(activeThermalProfile, temperatureK);
+    if ((activePhase.key === 'liquid' || activePhase.key === 'gas') && frameCount % 2 === 0) {
+      applyLennardJonesStep(activeAtoms, 0.016);
+    }
 
     // Real-time 3D laser measurement vector line update
     if (isMeasuringMode && selectedMeasureAtoms.length >= 2) {
@@ -3316,27 +3564,31 @@ window.addEventListener('DOMContentLoaded', function() {
     for (let i = activeAtoms.length - 1; i >= 0; i--) {
       const a = activeAtoms[i];
       
-      // Real Thermal Phase Behavior (Solid < 273K, Liquid 273K - 373K, Gas >= 373K)
+      // Educational thermal motion using structure-specific transition data.
       if (fusionState === 'idle' && !a.removing && !a.isElectron) {
-        if (temperatureK < 273) {
-          // SOLID CRYSTAL LATTICE (0K - 272K): Rigid harmonic oscillation around equilibrium lattice points
-          const solidVibScale = (temperatureK / 273.0);
+        const phase = phaseAtTemperature(activeThermalProfile, temperatureK);
+        if (phase.key === 'solid' || phase.key === 'unknown') {
+          const referenceTm = Number(activeThermalProfile?.melt) || Number(activeThermalProfile?.boil) || 1000;
+          const solidVibScale = Math.min(1.5, temperatureK / Math.max(1, referenceTm));
           const vibX = Math.sin(t * 12.0 + a.instIdx) * (0.35 * solidVibScale);
           const vibY = Math.cos(t * 14.0 + a.instIdx) * (0.35 * solidVibScale);
           const vibZ = Math.sin(t * 10.0 + a.instIdx) * (0.35 * solidVibScale);
           if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(vibX, vibY, vibZ));
-          if (hudEpi && i === 0) hudEpi.textContent = `SOLID CRYSTAL LATTICE (${temperatureK}K // ${temperatureK - 273}°C)`;
-        } else if (temperatureK < 373) {
-          // LIQUID COHESIVE FLUID (273K - 372K): Cohesive surface-tension undulation
-          const liqScale = ((temperatureK - 273) / 100.0) * 0.8 + 0.4;
+          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} · HARMONIC LATTICE (${temperatureK} K // ${temperatureK - 273}°C)`;
+        } else if (phase.key === 'liquid') {
+          const range = Math.max(1, activeThermalProfile.boil - activeThermalProfile.melt);
+          const liqScale = ((temperatureK - activeThermalProfile.melt) / range) * 0.8 + 0.4;
           const liqWobbleX = Math.sin(t * 3.5 + (a.basePos ? a.basePos.y : a.instIdx) * 0.4) * liqScale;
           const liqWobbleY = Math.cos(t * 4.2 + (a.basePos ? a.basePos.x : a.instIdx) * 0.4) * liqScale;
           const liqWobbleZ = Math.sin(t * 2.8 + (a.basePos ? a.basePos.z : a.instIdx) * 0.4) * liqScale;
           if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(liqWobbleX, liqWobbleY, liqWobbleZ));
-          if (hudEpi && i === 0) hudEpi.textContent = `LIQUID COHESIVE FLUID (${temperatureK}K // ${temperatureK - 273}°C)`;
+          if (a.velocity) {
+            a.targetPos.addScaledVector(a.velocity, 0.02);
+            a.velocity.multiplyScalar(0.985);
+          }
+          if (hudEpi && i === 0) hudEpi.textContent = `LIQUID · COHESIVE VISUAL MODEL (${temperatureK} K // ${temperatureK - 273}°C)`;
         } else {
-          // GAS BROWNIAN KINETIC EXPANSION (>= 373K): Maxwell-Boltzmann kinetic dispersion
-          const thermalVelocity = Math.sqrt(temperatureK / 373.0) * 2.2;
+          const thermalVelocity = Math.sqrt(temperatureK / Math.max(1, activeThermalProfile.boil || 373.15)) * 2.2;
           if (!a.velocity) {
             a.velocity = new THREE.Vector3(
               (Math.random() - 0.5) * thermalVelocity,
@@ -3345,11 +3597,11 @@ window.addEventListener('DOMContentLoaded', function() {
             );
           }
           a.targetPos.addScaledVector(a.velocity, 0.02 * thermalVelocity);
-          const limit = 32.0;
-          if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -1; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
-          if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -1; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
-          if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -1; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
-          if (hudEpi && i === 0) hudEpi.textContent = `GAS KINETIC DISPERSION (${temperatureK}K // ${temperatureK - 273}°C)`;
+          const limit = 30.0;
+          if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -0.95; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
+          if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -0.95; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
+          if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -0.95; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
+          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} · KINETIC VISUAL MODEL (${temperatureK} K // ${temperatureK - 273}°C)`;
         }
       }
 

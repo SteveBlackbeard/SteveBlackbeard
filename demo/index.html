@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,6 +161,45 @@
     .tt-header { font-family:'Orbitron',sans-serif; font-size:11px; font-weight:700; color:#FFFFFF; margin-bottom:5px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:3px; text-shadow:0 0 6px rgba(255,255,255,0.5); }
     .tt-row { font-size:10px; color:#FFFFFF; margin-bottom:3px; display:flex; justify-content:space-between; gap:14px; }
     .tt-label { color:rgba(255,255,255,0.65); }
+
+    /* MATERIALS LAB — same shader/glass language as the existing HUD */
+    .material-lab {
+      margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,240,255,0.25);
+    }
+    .material-lab-title {
+      margin-bottom:6px; color:#00F0FF; font:900 8.5px 'Orbitron',sans-serif;
+      letter-spacing:1.4px; text-shadow:0 0 10px rgba(0,240,255,0.65);
+    }
+    .material-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+    .shader-btn {
+      position:relative; overflow:hidden; padding:6px 4px; border-radius:8px;
+      border:1px solid rgba(0,240,255,0.42);
+      background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(18,24,36,.92));
+      color:#fff; font:800 8px 'Orbitron',sans-serif; cursor:pointer;
+      box-shadow:inset 0 1px rgba(255,255,255,.32),0 4px 12px rgba(0,0,0,.35);
+      text-shadow:0 0 7px rgba(0,240,255,.65); transition:.2s ease;
+    }
+    .shader-btn::before {
+      content:""; position:absolute; inset:-60% auto -60% -45%; width:35%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+      transform:rotate(18deg); transition:left .45s ease;
+    }
+    .shader-btn:hover,.shader-btn:focus-visible {
+      transform:translateY(-1px); border-color:#00F0FF;
+      box-shadow:0 0 15px rgba(0,240,255,.24),inset 0 1px rgba(255,255,255,.42);
+    }
+    .shader-btn:hover::before,.shader-btn:focus-visible::before { left:120%; }
+    .shader-btn[aria-pressed="true"] { border-color:#00FF9D; color:#00FF9D; }
+    @media (max-width: 900px) {
+      .hud-header { flex-wrap:wrap; height:auto; min-height:42px; gap:4px; }
+      #active-synthesis-banner { display:none; }
+      #molecular-hud { width:min(320px,calc(100vw - 24px)) !important; max-height:52vh !important; }
+      #pt-hud-panel { width:calc(100vw - 24px) !important; right:12px !important; bottom:10px !important; transform:scale(.82); transform-origin:bottom right; }
+      .hud-stats { transform:scale(.86); transform-origin:bottom left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; }
+    }
   </style>
 </head>
 <body>
@@ -210,35 +249,33 @@
         <span>THERMAL TEMP (T):</span>
         <span id="temp-val" style="color:#00F0FF;">298 K (25°C)</span>
       </div>
-      <input type="range" id="temp-slider" min="0" max="1000" value="298" style="width:100%; accent-color:#00F0FF; cursor:pointer; height:4px;">
+      <input type="range" id="temp-slider" min="0" max="5000" value="298" aria-label="Temperatura de la estructura en kelvin" style="width:100%; accent-color:#00F0FF; cursor:pointer; height:4px;">
     </div>
 
     <div class="hud-row" style="flex-direction:column; margin-top:4px;"><span class="hud-label" style="width:100%;">EXPLANATION NOTE:</span><span class="hud-val" id="hud-note" style="font-size:9px; color:rgba(255,255,255,0.85); font-style:italic; margin-top:2px;">Canonical genomic DNA helix structure.</span></div>
     
-    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-top:8px;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-top:8px;">
       <button id="btn-reassemble">🧬 ADN</button>
-      <button id="btn-cell" style="padding:6px 0; border:1px solid rgba(0,255,157,0.5); border-radius:8px; background:linear-gradient(180deg, rgba(0,255,157,0.3) 0%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:900; cursor:pointer; text-shadow:0 0 8px rgba(0,255,157,0.8);">🧫 CÉLULA</button>
       <button id="btn-orbitals" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">⚛️ ORBITALES</button>
     </div>
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-top:4px;">
       <button id="btn-measure" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📏 MEDIR 3D</button>
-      <button id="btn-export-gltf" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📱 AR (.GLTF)</button>
-      <button id="btn-export-usdz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;"> USDZ (iOS)</button>
+      <button id="btn-export-gltf" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📱 GLTF COORDS</button>
+      <button id="btn-export-usdz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;"> USDA SOURCE</button>
     </div>
     <div style="display:grid; grid-template-columns: 1fr; gap:4px; margin-top:4px;">
       <button id="btn-export-xyz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">💾 EXPORTAR COORDENADAS .XYZ</button>
     </div>
 
-    <!-- ORGANELLE 3D ZOOM NAVIGATOR (Visible when Cell Mode Active) -->
-    <div id="organelle-nav-panel" style="display:none; flex-direction:column; gap:4px; margin-top:8px; border-top:1px solid rgba(255,255,255,0.2); padding-top:8px;">
-      <div style="font-size:8.5px; font-weight:700; color:#00FF9D; letter-spacing:1.5px;">🔍 NAVEGADOR DE ORGANELAS 3D:</div>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:3px;">
-        <button id="btn-org-nuc" style="padding:4px 0; border:1px solid rgba(191,0,255,0.4); border-radius:6px; background:rgba(191,0,255,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:7.5px; font-weight:700; cursor:pointer;">🔬 NÚCLEO</button>
-        <button id="btn-org-mito" style="padding:4px 0; border:1px solid rgba(255,0,85,0.4); border-radius:6px; background:rgba(255,0,85,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:7.5px; font-weight:700; cursor:pointer;">⚡ MITOCONDRIA</button>
-        <button id="btn-org-golgi" style="padding:4px 0; border:1px solid rgba(255,215,0,0.4); border-radius:6px; background:rgba(255,215,0,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:7.5px; font-weight:700; cursor:pointer;">📦 GOLGI</button>
-        <button id="btn-org-er" style="padding:4px 0; border:1px solid rgba(0,240,255,0.4); border-radius:6px; background:rgba(0,240,255,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:7.5px; font-weight:700; cursor:pointer;">🧬 RETÍCULO</button>
-        <button id="btn-org-mem" style="padding:4px 0; border:1px solid rgba(0,255,157,0.4); border-radius:6px; background:rgba(0,255,157,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:7.5px; font-weight:700; cursor:pointer;">🌐 MEMBRANA</button>
-        <button id="btn-org-cyto" style="padding:4px 0; border:1px solid rgba(255,119,0,0.4); border-radius:6px; background:rgba(255,119,0,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:7.5px; font-weight:700; cursor:pointer;">🕸️ CITOSOL</button>
+    <div class="material-lab" aria-label="Barra de materiales">
+      <div class="material-lab-title">◆ MATERIALS LAB</div>
+      <div class="material-grid">
+        <button class="shader-btn" id="btn-nacl">🧂 NaCl FCC</button>
+        <button class="shader-btn" id="btn-diamond">💎 DIAMANTE</button>
+        <button class="shader-btn" id="btn-c60">⚽ C60</button>
+        <button class="shader-btn" id="btn-nanotube">🧬 NANOTUBO</button>
+        <button class="shader-btn" id="btn-graphene">🧊 GRAFENO</button>
+        <button class="shader-btn" id="btn-solvation">💧 SOLVATACIÓN</button>
       </div>
     </div>
   </div>
@@ -249,6 +286,7 @@
     <div class="stat-chip"><span id="atom-count">0 ATOMS</span></div>
     <button class="stat-chip" id="btn-audio" style="cursor:pointer; color:#FFFFFF;">🔊 AUDIO: ON</button>
     <button class="stat-chip" id="btn-export" style="cursor:pointer; color:#FFFFFF;">📸 CAPTURA HD</button>
+    <button class="stat-chip" id="btn-record" style="cursor:pointer; color:#FFFFFF;">🎥 GRABAR HD</button>
   </div>
  
   <!-- ═══════════════════════════════════════════════════════════════

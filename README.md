@@ -10,7 +10,7 @@
   </p>
 
   <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/" target="_blank">
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-launch.svg?v=504" alt="Launch Live Demo" width="420" />
     </a>
   </p>
@@ -22,7 +22,7 @@
     <a href="#nemeth-corp--rd">
       <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
     </a>
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/" target="_blank">
+    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" />
     </a>
   </p>
@@ -63,7 +63,7 @@ R&D by **Nemeth Corp**.
 **Cryptographic integrity for long-running AI projects**
 
 Merkle Trees + Ed25519 + Bitcoin anchoring (OpenTimestamps).  
-Prevents semantic drift and proves the real project state over time.
+Detects semantic drift and provides verifiable evidence of project state over time.
 
 - Verifiable project baselines  
 - Continuity across human–AI sessions  
@@ -78,7 +78,7 @@ Prevents semantic drift and proves the real project state over time.
 
 Local-first context selection, token reduction, and prompt/secret scanning.
 
-- Up to **88–92% token reduction** on real repositories  
+- **88–92% token reduction observed in internal repository tests** (public benchmark methodology pending)
 - Security scanning + intelligent model routing  
 - Signed capability grants  
 
@@ -106,7 +106,7 @@ Visual engines and experimental interfaces live here:
     <img src="particle-dna-console-v16-helix.gif?v=504" alt="Real B-DNA Double Helix — TP53 Gene" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
+    <sub><i>Educational B-DNA visualization inspired by the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
 <br/>
@@ -196,7 +196,7 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 ### Vision
 
-**???**
+Build practical, local-first systems whose claims can be inspected, reproduced, and improved over time.
 <div align="center">
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Vision" width="100%" />
 </div>
@@ -210,5 +210,5 @@ It develops the software architectures, GPU rendering engines, autonomous system
     R&amp;D by <strong>Nemeth Corp</strong>
   </sub>
   <br/><br/>
-  <img src="Nemeth-mark.png" alt="Ethernium" width="48" />
+  <img src="ethernium-emblem-circle.png" alt="Ethernium" width="48" />
 </div>
