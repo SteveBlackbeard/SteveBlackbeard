@@ -3074,7 +3074,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnAudio) {
     btnAudio.addEventListener('click', () => {
       audioEnabled = !audioEnabled;
-      btnAudio.textContent = audioEnabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
+      btnAudio.textContent = tr(audioEnabled ? 'audioOn' : 'audioOff');
       btnAudio.style.color = audioEnabled ? '#FFFFFF' : 'rgba(255,255,255,0.4)';
     });
   }
@@ -3095,6 +3095,7 @@ window.addEventListener('DOMContentLoaded', function() {
   renderEducationContent();
   window.addEventListener('nulla:locale', () => {
     renderEducationContent();
+    if (btnAudio) btnAudio.textContent = tr(audioEnabled ? 'audioOn' : 'audioOff');
     if (onboardingOverlay?.style.display === 'block') showTutorialStep(currentTutorialStep);
     if (quizModal?.style.display === 'block') loadQuizQuestion(currentQuizIdx);
   });

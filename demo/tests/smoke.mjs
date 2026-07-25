@@ -7,6 +7,7 @@ const app = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 const nuclearSource = readFileSync(new URL('../src/nuclear/nuclear-data.js', import.meta.url), 'utf8');
 const i18nSource = readFileSync(new URL('../src/i18n/i18n.js', import.meta.url), 'utf8');
 const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', import.meta.url), 'utf8');
+const uiLabelsSource = readFileSync(new URL('../src/i18n/ui-labels.js', import.meta.url), 'utf8');
 const quizSource = readFileSync(new URL('../src/education/quiz-data.js', import.meta.url), 'utf8');
 const educationSource = readFileSync(new URL('../src/education/education-content.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
@@ -78,6 +79,7 @@ const i18nSandbox = {
 i18nSandbox.globalThis = i18nSandbox;
 vm.runInNewContext(i18nSource, i18nSandbox);
 vm.runInNewContext(runtimeI18nSource, i18nSandbox);
+vm.runInNewContext(uiLabelsSource, i18nSandbox);
 const catalogs = i18nSandbox.NULLA_I18N.messages;
 assert.equal(Object.keys(catalogs).length, 11, 'exactly 11 Chronolith locales are required');
 const canonicalKeys = Object.keys(catalogs.es).sort();
@@ -89,6 +91,9 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
   }
 }
 assert.match(i18nSandbox.NULLA_I18N.t('atoms',{count:3}), /3/, 'runtime interpolation failed');
+for (const match of html.matchAll(/data-i18n="([^"]+)"/g)) {
+  assert.ok(catalogs.es[match[1]], `HTML references unknown translation key ${match[1]}`);
+}
 vm.runInNewContext(quizSource, i18nSandbox);
 assert.deepEqual([...i18nSandbox.NULLA_QUIZ.locales].sort(), Object.keys(catalogs).sort(), 'quiz locales diverge from platform locales');
 for (const locale of Object.keys(catalogs)) {

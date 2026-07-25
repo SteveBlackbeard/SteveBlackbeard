@@ -13,6 +13,7 @@ The deployed demo remains a static, dependency-free GitHub Pages application. Mo
 | `src/physics/measurement.js` | Pure distance, Å/pm conversion and three-point angle functions | Exposes immutable `NULLA_MEASUREMENT` |
 | `src/i18n/i18n.js` | Eleven-locale static UI catalogue and locale lifecycle | Updates translated DOM bindings |
 | `src/i18n/runtime-i18n.js` | Runtime status translations and interpolation | Extends the i18n façade |
+| `src/i18n/ui-labels.js` | HUD, export, material and media labels in every locale | Extends the i18n catalogue |
 | `src/education/quiz-data.js` | Three equivalent scientific questions in every supported locale | Exposes immutable `NULLA_QUIZ` |
 | `src/education/education-content.js` | Equivalent tutorial and technical documentation in every locale | Exposes immutable `NULLA_EDUCATION` |
 | `app.js` | Three.js rendering, interactions, media capture and compatibility façade | Owns the scene and DOM event wiring |
