@@ -38,6 +38,9 @@ assert.doesNotMatch(html, /id="btn-cell"|organelle-nav-panel/, 'cell UI must sta
 assert.doesNotMatch(app, /buildEukaryoticCell/, 'cell builder must stay removed');
 assert.doesNotMatch(app, /removedLegacyCellRenderer|Eukaryotic Animal Cell|Organelle Cutaway/i, 'legacy cell renderer must not remain in the runtime');
 assert.match(app, /new MediaRecorder\(/, 'video recorder is not connected');
+assert.match(app, /requestSession\('immersive-vr'/, 'WebXR button must request a real immersive session');
+assert.match(app, /renderer\.xr\.setSession\(session\)/, 'WebXR session is not connected to the renderer');
+assert.doesNotMatch(app, /WebXR Polyfill Enabled|Virtual Reality Session Active[\s\S]{0,100}isSessionSupported/, 'WebXR capability checks must not claim a session is active');
 assert.match(app, /lennardJonesForceMagnitude/, 'Lennard-Jones model is absent');
 assert.match(app, /activeThermalProfile/, 'material-specific phase profile is absent');
 assert.match(app, /angstromPerWorldUnit/, 'physical measurement scale is absent');

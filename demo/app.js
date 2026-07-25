@@ -3031,18 +3031,30 @@ window.addEventListener('DOMContentLoaded', function() {
   // WEBXR / VR VIRTUAL REALITY SESSION BUTTON
   const btnWebxr = document.getElementById('btn-webxr');
   if (btnWebxr) {
-    btnWebxr.addEventListener('click', () => {
+    btnWebxr.addEventListener('click', async () => {
       playTone(720, 'sine', 0.2);
-      if (navigator.xr) {
-        navigator.xr.isSessionSupported('immersive-vr').then(supported => {
-          if (supported) {
-            updateTelemetry('WebXR VR Mode', 'Virtual Reality Session Active', 'VR Stereo Hardware Enabled', 'Headset Connected', 'Immersive Quantum Laboratory');
-          } else {
-            updateTelemetry('WebXR Ready', 'Stereo 3D Simulation Ready', 'Connect VR Headset (Meta Quest / HTC Vive)', 'Device Check Complete', 'WebXR Polyfill Enabled');
-          }
-        });
-      } else {
-        updateTelemetry('WebXR Stereo Mode', 'Stereoscopic 3D Render', 'WebXR API standard active', 'Viewable in 3D / VR browsers', 'WebGL2 High-Perf Pipeline');
+      if (!navigator.xr || !renderer.xr) {
+        updateTelemetry('WebXR unavailable', 'No immersive-vr API', 'Use a compatible HTTPS browser and headset', 'No session was started', 'UNAVAILABLE');
+        return;
+      }
+      try {
+        const supported = await navigator.xr.isSessionSupported('immersive-vr');
+        if (!supported) {
+          updateTelemetry('WebXR unavailable', 'immersive-vr is not supported', 'Compatible headset not detected', 'No session was started', 'UNAVAILABLE');
+          return;
+        }
+        const session = await navigator.xr.requestSession('immersive-vr', {optionalFeatures:['local-floor']});
+        renderer.xr.enabled = true;
+        await renderer.xr.setSession(session);
+        renderer.setAnimationLoop(animate);
+        updateTelemetry('WebXR VR Mode', 'Immersive session started', 'VR stereo rendering enabled', 'Headset session connected', 'ACTIVE XR SESSION');
+        session.addEventListener('end', () => {
+          renderer.setAnimationLoop(null);
+          requestAnimationFrame(animate);
+          updateTelemetry('WebXR VR Mode', 'Immersive session ended', 'Desktop rendering restored', 'Headset disconnected', 'SESSION ENDED');
+        }, {once:true});
+      } catch (error) {
+        updateTelemetry('WebXR not started', error?.name || 'Session request failed', 'Permission, HTTPS, or device requirement not met', 'No active VR session', 'UNAVAILABLE');
       }
     });
   }
@@ -3365,7 +3377,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function animate(now) {
-    requestAnimationFrame(animate);
+    if (!renderer.xr?.isPresenting) requestAnimationFrame(animate);
 
     try {
       frameCount++;
