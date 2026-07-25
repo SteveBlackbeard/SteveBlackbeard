@@ -1,0 +1,26 @@
+(function extendNullaI18n(root) {
+  'use strict';
+  const base = root.NULLA_I18N;
+  if (!base) throw new Error('NULLA_I18N must load before runtime-i18n.js');
+  const runtime = {
+    es:{atoms:'{count} ÁTOMOS',waiting:'EN ESPERA',selectFusion:'Selecciona exactamente 2 elementos',selectFission:'Selecciona U, Pu o Cf',noSuggestion:'Selecciona elementos en la bandeja para ver sugerencias verificadas.',recordUnavailable:'🎥 NO DISPONIBLE',recordStop:'⏹ DETENER',phaseUnknown:'FASE NO MODELADA',phaseUnavailable:'DATOS DE FASE NO DISPONIBLES',phaseSolid:'SÓLIDO',phaseLiquid:'LÍQUIDO',phaseGas:'GAS',favorable:'FAVORABLE',unfavorable:'DESFAVORABLE'},
+    en:{atoms:'{count} ATOMS',waiting:'WAITING',selectFusion:'Select exactly 2 elements',selectFission:'Select U, Pu, or Cf',noSuggestion:'Select tray elements to see verified suggestions.',recordUnavailable:'🎥 UNAVAILABLE',recordStop:'⏹ STOP',phaseUnknown:'PHASE NOT MODELED',phaseUnavailable:'PHASE DATA UNAVAILABLE',phaseSolid:'SOLID',phaseLiquid:'LIQUID',phaseGas:'GAS',favorable:'FAVORABLE',unfavorable:'UNFAVORABLE'},
+    ja:{atoms:'原子 {count} 個',waiting:'待機中',selectFusion:'元素を2つ選択してください',selectFission:'U、Pu、Cfを選択してください',noSuggestion:'検証済み候補を見るにはトレイの元素を選択してください。',recordUnavailable:'🎥 利用不可',recordStop:'⏹ 停止',phaseUnknown:'未モデル化の相',phaseUnavailable:'相データなし',phaseSolid:'固体',phaseLiquid:'液体',phaseGas:'気体',favorable:'有利',unfavorable:'不利'},
+    ru:{atoms:'АТОМОВ: {count}',waiting:'ОЖИДАНИЕ',selectFusion:'Выберите ровно 2 элемента',selectFission:'Выберите U, Pu или Cf',noSuggestion:'Выберите элементы в лотке для проверенных вариантов.',recordUnavailable:'🎥 НЕДОСТУПНО',recordStop:'⏹ ОСТАНОВИТЬ',phaseUnknown:'ФАЗА НЕ СМОДЕЛИРОВАНА',phaseUnavailable:'НЕТ ДАННЫХ О ФАЗЕ',phaseSolid:'ТВЁРДОЕ',phaseLiquid:'ЖИДКОСТЬ',phaseGas:'ГАЗ',favorable:'БЛАГОПРИЯТНО',unfavorable:'НЕБЛАГОПРИЯТНО'},
+    zh:{atoms:'{count} 个原子',waiting:'等待中',selectFusion:'请选择恰好两个元素',selectFission:'请选择 U、Pu 或 Cf',noSuggestion:'请选择托盘中的元素以查看已验证建议。',recordUnavailable:'🎥 不可用',recordStop:'⏹ 停止',phaseUnknown:'未建模相态',phaseUnavailable:'无相态数据',phaseSolid:'固态',phaseLiquid:'液态',phaseGas:'气态',favorable:'有利',unfavorable:'不利'},
+    fr:{atoms:'{count} ATOMES',waiting:'EN ATTENTE',selectFusion:'Sélectionnez exactement 2 éléments',selectFission:'Sélectionnez U, Pu ou Cf',noSuggestion:'Sélectionnez des éléments pour voir les suggestions vérifiées.',recordUnavailable:'🎥 INDISPONIBLE',recordStop:'⏹ ARRÊTER',phaseUnknown:'PHASE NON MODÉLISÉE',phaseUnavailable:'DONNÉES DE PHASE INDISPONIBLES',phaseSolid:'SOLIDE',phaseLiquid:'LIQUIDE',phaseGas:'GAZ',favorable:'FAVORABLE',unfavorable:'DÉFAVORABLE'},
+    it:{atoms:'{count} ATOMI',waiting:'IN ATTESA',selectFusion:'Seleziona esattamente 2 elementi',selectFission:'Seleziona U, Pu o Cf',noSuggestion:'Seleziona elementi nel vassoio per suggerimenti verificati.',recordUnavailable:'🎥 NON DISPONIBILE',recordStop:'⏹ ARRESTA',phaseUnknown:'FASE NON MODELLATA',phaseUnavailable:'DATI DI FASE NON DISPONIBILI',phaseSolid:'SOLIDO',phaseLiquid:'LIQUIDO',phaseGas:'GAS',favorable:'FAVOREVOLE',unfavorable:'SFAVOREVOLE'},
+    de:{atoms:'{count} ATOME',waiting:'WARTEN',selectFusion:'Genau 2 Elemente auswählen',selectFission:'U, Pu oder Cf auswählen',noSuggestion:'Elemente in der Ablage für geprüfte Vorschläge auswählen.',recordUnavailable:'🎥 NICHT VERFÜGBAR',recordStop:'⏹ STOPP',phaseUnknown:'PHASE NICHT MODELLIERT',phaseUnavailable:'KEINE PHASENDATEN',phaseSolid:'FEST',phaseLiquid:'FLÜSSIG',phaseGas:'GAS',favorable:'GÜNSTIG',unfavorable:'UNGÜNSTIG'},
+    pt:{atoms:'{count} ÁTOMOS',waiting:'AGUARDANDO',selectFusion:'Selecione exatamente 2 elementos',selectFission:'Selecione U, Pu ou Cf',noSuggestion:'Selecione elementos na bandeja para sugestões verificadas.',recordUnavailable:'🎥 INDISPONÍVEL',recordStop:'⏹ PARAR',phaseUnknown:'FASE NÃO MODELADA',phaseUnavailable:'DADOS DE FASE INDISPONÍVEIS',phaseSolid:'SÓLIDO',phaseLiquid:'LÍQUIDO',phaseGas:'GÁS',favorable:'FAVORÁVEL',unfavorable:'DESFAVORÁVEL'},
+    ko:{atoms:'원자 {count}개',waiting:'대기 중',selectFusion:'원소를 정확히 2개 선택하세요',selectFission:'U, Pu 또는 Cf를 선택하세요',noSuggestion:'검증된 제안을 보려면 트레이 원소를 선택하세요.',recordUnavailable:'🎥 사용 불가',recordStop:'⏹ 중지',phaseUnknown:'모델링되지 않은 상',phaseUnavailable:'상 데이터 없음',phaseSolid:'고체',phaseLiquid:'액체',phaseGas:'기체',favorable:'유리함',unfavorable:'불리함'},
+    ar:{atoms:'{count} ذرة',waiting:'في الانتظار',selectFusion:'اختر عنصرين بالضبط',selectFission:'اختر U أو Pu أو Cf',noSuggestion:'اختر عناصر من الصينية لرؤية اقتراحات موثقة.',recordUnavailable:'🎥 غير متاح',recordStop:'⏹ إيقاف',phaseUnknown:'طور غير ممثل',phaseUnavailable:'بيانات الطور غير متاحة',phaseSolid:'صلب',phaseLiquid:'سائل',phaseGas:'غاز',favorable:'ملائم',unfavorable:'غير ملائم'}
+  };
+  Object.entries(runtime).forEach(([locale, catalog]) => Object.assign(base.messages[locale], catalog));
+  let currentLocale = 'es';
+  root.addEventListener('nulla:locale', event => { currentLocale = base.normalize(event.detail.locale); });
+  const t = (key, variables = {}) => {
+    const template = base.messages[currentLocale]?.[key] ?? base.messages.en[key] ?? key;
+    return String(template).replace(/\{(\w+)\}/g, (_, name) => variables[name] ?? `{${name}}`);
+  };
+  root.NULLA_I18N = Object.freeze({languages:base.languages,messages:base.messages,apply:base.apply,normalize:base.normalize,t,get locale(){return currentLocale;}});
+})(globalThis);

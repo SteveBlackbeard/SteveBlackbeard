@@ -25,6 +25,7 @@ window.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('webgl-canvas');
   const fpsVal = document.getElementById('fps-val');
   const runtimeDiagnostics = document.getElementById('runtime-diagnostics');
+  const tr = (key, variables) => window.NULLA_I18N?.t(key, variables) ?? key;
 
   const topBanner = document.getElementById('active-synthesis-banner');
   const hudPanel = document.getElementById('molecular-hud');
@@ -821,7 +822,7 @@ window.addEventListener('DOMContentLoaded', function() {
         spawnBonds(newBonds);
       }
 
-      if (atomCountEl) atomCountEl.textContent = activeAtoms.length + ' ATOMS';
+      if (atomCountEl) atomCountEl.textContent = tr('atoms', {count:activeAtoms.length});
     };
 
     if (spawnDelay === 0) {
@@ -2478,7 +2479,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function attemptNuclearFusion() {
     if (selectedReactants.length !== 2) {
-      updateTelemetry('FUSIÓN NUCLEAR', 'Selecciona exactamente 2 elementos', 'Rutas: H+H, H+B, He+He, C+C', 'Los isótopos se muestran antes de iniciar', 'WAITING');
+      updateTelemetry('FUSIÓN NUCLEAR', tr('selectFusion'), 'Rutas: H+H, H+B, He+He, C+C', 'Los isótopos se muestran antes de iniciar', tr('waiting'));
       return;
     }
     const key = selectedReactants.map(r => r.sym).sort().join('+');
@@ -2495,7 +2496,7 @@ window.addEventListener('DOMContentLoaded', function() {
   function attemptNuclearFission() {
     const heavy = selectedReactants.find(r => ['U','Pu','Cf'].includes(r.sym));
     if (!heavy) {
-      updateTelemetry('FISIÓN NUCLEAR', 'Selecciona U, Pu o Cf', 'Canales representativos con balance A/Z', 'U-235+n · Pu-239+n · Cf-252 espontánea', 'WAITING');
+      updateTelemetry('FISIÓN NUCLEAR', tr('selectFission'), 'Canales representativos con balance A/Z', 'U-235+n · Pu-239+n · Cf-252 espontánea', tr('waiting'));
       return;
     }
     startNuclearCollision(window.NULLA_NUCLEAR?.fission[heavy.sym], 'fission');
@@ -2655,7 +2656,7 @@ window.addEventListener('DOMContentLoaded', function() {
       } else {
       const isNum = typeof stability === 'number';
       const stabVal = isNum ? `${stability}%` : (stability || '95.0%');
-      hudStability.textContent = `${stabVal} | ΔG: ${gibbs.deltaG} kJ/mol [${gibbs.isSpontaneous ? 'FAVORABLE' : 'UNFAVORABLE'}]`;
+      hudStability.textContent = `${stabVal} | ΔG: ${gibbs.deltaG} kJ/mol [${tr(gibbs.isSpontaneous ? 'favorable' : 'unfavorable')}]`;
       hudStability.style.color = gibbs.colorHex;
       }
     }
@@ -2746,7 +2747,7 @@ window.addEventListener('DOMContentLoaded', function() {
     suggestionList.innerHTML = '';
 
     if (suggestions.length === 0) {
-      suggestionList.innerHTML = '<div style="font-size:9.5px; color:rgba(255,255,255,0.7); text-align:center; padding:8px;">Selecciona elementos en la bandeja para ver sugerencias generativas.</div>';
+      suggestionList.innerHTML = `<div style="font-size:9.5px; color:rgba(255,255,255,0.7); text-align:center; padding:8px;">${tr('noSuggestion')}</div>`;
     } else {
       suggestions.forEach((s) => {
         const itemDiv = document.createElement('div');
@@ -3467,7 +3468,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnRecord) {
     if (!window.MediaRecorder || !renderer.domElement.captureStream) {
       btnRecord.disabled = true;
-      btnRecord.textContent = '🎥 NO DISPONIBLE';
+      btnRecord.textContent = tr('recordUnavailable');
     } else {
       btnRecord.addEventListener('click', () => {
         if (mediaRecorder && mediaRecorder.state === 'recording') {
@@ -3493,7 +3494,7 @@ window.addEventListener('DOMContentLoaded', function() {
           btnRecord.style.color = '#FFFFFF';
         };
         mediaRecorder.start(1000);
-        btnRecord.textContent = '⏹ DETENER';
+        btnRecord.textContent = tr('recordStop');
         btnRecord.style.color = '#FF0055';
       });
     }
@@ -3711,18 +3712,18 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function phaseAtTemperature(profile, tempK) {
-    if (!profile) return { key:'unknown', label:'PHASE NOT MODELED' };
+    if (!profile) return { key:'unknown', label:tr('phaseUnknown') };
     const tm = Number(profile.melt);
     const tb = Number(profile.boil);
     if (profile.transition === 'sublimation') {
       return Number.isFinite(tb) && tempK >= tb
-        ? { key:'gas', label:'SUBLIMED / GAS-PHASE CARBON' }
-        : { key:'solid', label:'SOLID COVALENT NETWORK' };
+        ? { key:'gas', label:tr('phaseGas') }
+        : { key:'solid', label:tr('phaseSolid') };
     }
-    if (!Number.isFinite(tm) || !Number.isFinite(tb)) return { key:'unknown', label:'PHASE DATA UNAVAILABLE' };
-    if (tempK < tm) return { key:'solid', label:'SOLID' };
-    if (tempK < tb) return { key:'liquid', label:'LIQUID' };
-    return { key:'gas', label:'GAS' };
+    if (!Number.isFinite(tm) || !Number.isFinite(tb)) return { key:'unknown', label:tr('phaseUnavailable') };
+    if (tempK < tm) return { key:'solid', label:tr('phaseSolid') };
+    if (tempK < tb) return { key:'liquid', label:tr('phaseLiquid') };
+    return { key:'gas', label:tr('phaseGas') };
   }
 
   function lennardJonesForceMagnitude(distance, epsilon = 0.003, sigma = 3.0) {
@@ -3800,7 +3801,7 @@ window.addEventListener('DOMContentLoaded', function() {
           const vibY = Math.cos(t * 14.0 + a.instIdx) * (0.35 * solidVibScale);
           const vibZ = Math.sin(t * 10.0 + a.instIdx) * (0.35 * solidVibScale);
           if (a.basePos) a.targetPos.copy(a.basePos).add(new THREE.Vector3(vibX, vibY, vibZ));
-          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} · HARMONIC LATTICE (${temperatureK} K // ${temperatureK - 273}°C)`;
+          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} (${temperatureK} K // ${temperatureK - 273}°C)`;
         } else if (phase.key === 'liquid') {
           const range = Math.max(1, activeThermalProfile.boil - activeThermalProfile.melt);
           const liqScale = ((temperatureK - activeThermalProfile.melt) / range) * 0.8 + 0.4;
@@ -3812,7 +3813,7 @@ window.addEventListener('DOMContentLoaded', function() {
             a.targetPos.addScaledVector(a.velocity, 0.02);
             a.velocity.multiplyScalar(0.985);
           }
-          if (hudEpi && i === 0) hudEpi.textContent = `LIQUID · COHESIVE VISUAL MODEL (${temperatureK} K // ${temperatureK - 273}°C)`;
+          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} (${temperatureK} K // ${temperatureK - 273}°C)`;
         } else {
           const thermalVelocity = Math.sqrt(temperatureK / Math.max(1, activeThermalProfile.boil || 373.15)) * 2.2;
           if (!a.velocity) {
@@ -3827,7 +3828,7 @@ window.addEventListener('DOMContentLoaded', function() {
           if (Math.abs(a.targetPos.x) > limit) { a.velocity.x *= -0.95; a.targetPos.x = Math.sign(a.targetPos.x) * limit; }
           if (Math.abs(a.targetPos.y) > limit) { a.velocity.y *= -0.95; a.targetPos.y = Math.sign(a.targetPos.y) * limit; }
           if (Math.abs(a.targetPos.z) > limit) { a.velocity.z *= -0.95; a.targetPos.z = Math.sign(a.targetPos.z) * limit; }
-          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} · KINETIC VISUAL MODEL (${temperatureK} K // ${temperatureK - 273}°C)`;
+          if (hudEpi && i === 0) hudEpi.textContent = `${phase.label} (${temperatureK} K // ${temperatureK - 273}°C)`;
         }
       }
 

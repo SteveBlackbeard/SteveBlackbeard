@@ -6,6 +6,7 @@ const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 const nuclearSource = readFileSync(new URL('../src/nuclear/nuclear-data.js', import.meta.url), 'utf8');
 const i18nSource = readFileSync(new URL('../src/i18n/i18n.js', import.meta.url), 'utf8');
+const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
 
@@ -52,17 +53,23 @@ for (const reaction of Object.values(nuclear.fission)) {
 const i18nSandbox = {
   document:{ addEventListener(){} },
   CustomEvent:class {},
+  addEventListener(){},
   globalThis:null
 };
 i18nSandbox.globalThis = i18nSandbox;
 vm.runInNewContext(i18nSource, i18nSandbox);
+vm.runInNewContext(runtimeI18nSource, i18nSandbox);
 const catalogs = i18nSandbox.NULLA_I18N.messages;
 assert.equal(Object.keys(catalogs).length, 11, 'exactly 11 Chronolith locales are required');
 const canonicalKeys = Object.keys(catalogs.es).sort();
 for (const [locale, catalog] of Object.entries(catalogs)) {
   assert.deepEqual(Object.keys(catalog).sort(), canonicalKeys, `${locale} translation keys diverge`);
   assert.ok(Object.values(catalog).every(value => String(value).trim()), `${locale} contains an empty translation`);
+  for (const key of ['atoms','waiting','selectFusion','selectFission','noSuggestion','phaseUnknown','phaseSolid','phaseLiquid','phaseGas']) {
+    assert.ok(catalog[key], `${locale} is missing runtime key ${key}`);
+  }
 }
+assert.match(i18nSandbox.NULLA_I18N.t('atoms',{count:3}), /3/, 'runtime interpolation failed');
 
 const chemistrySandbox = {};
 chemistrySandbox.globalThis = chemistrySandbox;
