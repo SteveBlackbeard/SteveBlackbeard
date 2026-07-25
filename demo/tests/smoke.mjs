@@ -8,6 +8,7 @@ const nuclearSource = readFileSync(new URL('../src/nuclear/nuclear-data.js', imp
 const i18nSource = readFileSync(new URL('../src/i18n/i18n.js', import.meta.url), 'utf8');
 const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', import.meta.url), 'utf8');
 const quizSource = readFileSync(new URL('../src/education/quiz-data.js', import.meta.url), 'utf8');
+const educationSource = readFileSync(new URL('../src/education/education-content.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
 
@@ -88,6 +89,15 @@ for (const locale of Object.keys(catalogs)) {
     assert.ok(Number.isInteger(question.correct) && question.correct >= 0 && question.correct < 4, `${locale} quiz answer is invalid`);
     assert.ok(question.question && question.explanation, `${locale} quiz content is incomplete`);
   }
+}
+vm.runInNewContext(educationSource, i18nSandbox);
+assert.deepEqual([...i18nSandbox.NULLA_EDUCATION.locales].sort(), Object.keys(catalogs).sort(), 'education locales diverge from platform locales');
+for (const locale of Object.keys(catalogs)) {
+  const education = i18nSandbox.NULLA_EDUCATION.get(locale);
+  assert.equal(education.tutorial.length, 3, `${locale} tutorial step count diverges`);
+  assert.equal(education.docs.length, 4, `${locale} documentation section count diverges`);
+  assert.ok(education.tutorial.every(step => step.title && step.instruction && step.targetId), `${locale} tutorial is incomplete`);
+  assert.ok(education.docs.every(section => section.length === 2 && section.every(Boolean)), `${locale} documentation is incomplete`);
 }
 
 const chemistrySandbox = {};

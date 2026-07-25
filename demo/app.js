@@ -3102,38 +3102,48 @@ window.addEventListener('DOMContentLoaded', function() {
   const btnNextOnboarding = document.getElementById('btn-next-onboarding');
   const btnCloseOnboarding = document.getElementById('btn-close-onboarding');
 
-  const TUTORIAL_STEPS = [
-    {
-      step: 1,
-      title: "🚀 PASO 1/3: SELECCIÓN EN LA TABLA PERIÓDICA",
-      instruction: "Haz clic en 2 elementos de la tabla inferior (por ejemplo, Sodio Na (11) y Cloro Cl (17)) para colocarlos en la bandeja de síntesis.",
-      targetId: "pt-hud-panel"
-    },
-    {
-      step: 2,
-      title: "💥 PASO 2/3: FUSIÓN Y SÍNTESIS QUÍMICA",
-      instruction: "Una vez seleccionados tus reactantes, pulsa el botón brillante [FUSE] para simular la colisión termodinámica a alta energía cinética.",
-      targetId: "btn-fuse"
-    },
-    {
-      step: 3,
-      title: "🔬 PASO 3/3: TELEMETRÍA 3D, MEDICIÓN Y TÉRRMICA",
-      instruction: "¡Enhorabuena! Observa la energía libre de Gibbs ΔG en la telemetría, mueve el slider de temperatura (0-1000 K) o pulsa 📏 MEDIR 3D para conectar átomos y medir ángulos VSEPR.",
-      targetId: "molecular-hud"
+  const getEducationContent = () => window.NULLA_EDUCATION?.get(window.NULLA_I18N?.locale);
+
+  function renderEducationContent() {
+    const education = getEducationContent();
+    if (!education) return;
+    const docsTitle = document.getElementById('docs-modal-title');
+    const quizTitle = document.getElementById('quiz-modal-title');
+    const suggestionTitle = document.getElementById('suggestion-modal-title');
+    const docsContent = document.getElementById('docs-modal-content');
+    if (docsTitle) docsTitle.textContent = education.ui.docs;
+    if (quizTitle) quizTitle.textContent = education.ui.quiz;
+    if (suggestionTitle) suggestionTitle.textContent = education.ui.suggest;
+    if (btnCloseOnboarding) btnCloseOnboarding.textContent = education.ui.skip;
+    if (docsContent) {
+      docsContent.replaceChildren(...education.docs.map(([title,body], index) => {
+        const section = document.createElement('div');
+        const heading = document.createElement('h4');
+        const paragraph = document.createElement('p');
+        const colors = ['#FFD700','#00FF9D','#BF00FF','#FF0055'];
+        heading.style.cssText = `color:${colors[index % colors.length]}; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;`;
+        heading.textContent = title;
+        paragraph.textContent = body;
+        section.append(heading, paragraph);
+        return section;
+      }));
     }
-  ];
+  }
 
   function showTutorialStep(idx) {
     if (!onboardingOverlay) return;
-    currentTutorialStep = idx % TUTORIAL_STEPS.length;
-    const s = TUTORIAL_STEPS[currentTutorialStep];
+    const education = getEducationContent();
+    const steps = education?.tutorial || [];
+    if (!steps.length) return;
+    currentTutorialStep = idx % steps.length;
+    const s = steps[currentTutorialStep];
 
     if (onboardingTitle) onboardingTitle.textContent = s.title;
     if (onboardingInstruction) onboardingInstruction.textContent = s.instruction;
-    if (onboardingStepIndicator) onboardingStepIndicator.textContent = `PASO ${s.step} / 3`;
+    if (onboardingStepIndicator) onboardingStepIndicator.textContent = education.ui.step.replace('{n}', s.step);
 
     if (btnNextOnboarding) {
-      btnNextOnboarding.textContent = s.step === 3 ? "¡ENTENDIDO! ✓" : "SIGUIENTE ➔";
+      btnNextOnboarding.textContent = s.step === 3 ? education.ui.done : education.ui.next;
     }
 
     onboardingOverlay.style.display = 'block';
@@ -3226,6 +3236,13 @@ window.addEventListener('DOMContentLoaded', function() {
       link.click();
     });
   }
+
+  renderEducationContent();
+  window.addEventListener('nulla:locale', () => {
+    renderEducationContent();
+    if (onboardingOverlay?.style.display === 'block') showTutorialStep(currentTutorialStep);
+    if (quizModal?.style.display === 'block') loadQuizQuestion(currentQuizIdx);
+  });
 
   const btnRecord = document.getElementById('btn-record');
   let mediaRecorder = null;
