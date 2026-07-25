@@ -11,6 +11,7 @@ The deployed demo remains a static, dependency-free GitHub Pages application. Mo
 | `src/analysis/compatibility-engine.js` | Chemical compatibility, nuclear Q-value and Coulomb-barrier estimates | Exposes immutable `NULLA_COMPATIBILITY` |
 | `src/i18n/i18n.js` | Eleven-locale static UI catalogue and locale lifecycle | Updates translated DOM bindings |
 | `src/i18n/runtime-i18n.js` | Runtime status translations and interpolation | Extends the i18n façade |
+| `src/education/quiz-data.js` | Three equivalent scientific questions in every supported locale | Exposes immutable `NULLA_QUIZ` |
 | `app.js` | Three.js rendering, interactions, media capture and compatibility façade | Owns the scene and DOM event wiring |
 
 ## Safety rules

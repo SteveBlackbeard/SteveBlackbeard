@@ -7,6 +7,7 @@ const app = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 const nuclearSource = readFileSync(new URL('../src/nuclear/nuclear-data.js', import.meta.url), 'utf8');
 const i18nSource = readFileSync(new URL('../src/i18n/i18n.js', import.meta.url), 'utf8');
 const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', import.meta.url), 'utf8');
+const quizSource = readFileSync(new URL('../src/education/quiz-data.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
 
@@ -77,6 +78,17 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
   }
 }
 assert.match(i18nSandbox.NULLA_I18N.t('atoms',{count:3}), /3/, 'runtime interpolation failed');
+vm.runInNewContext(quizSource, i18nSandbox);
+assert.deepEqual([...i18nSandbox.NULLA_QUIZ.locales].sort(), Object.keys(catalogs).sort(), 'quiz locales diverge from platform locales');
+for (const locale of Object.keys(catalogs)) {
+  const questions = i18nSandbox.NULLA_QUIZ.get(locale);
+  assert.equal(questions.length, 3, `${locale} must expose the same three quiz questions`);
+  for (const question of questions) {
+    assert.equal(question.options.length, 4, `${locale} quiz option count diverges`);
+    assert.ok(Number.isInteger(question.correct) && question.correct >= 0 && question.correct < 4, `${locale} quiz answer is invalid`);
+    assert.ok(question.question && question.explanation, `${locale} quiz content is incomplete`);
+  }
+}
 
 const chemistrySandbox = {};
 chemistrySandbox.globalThis = chemistrySandbox;

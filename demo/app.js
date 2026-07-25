@@ -2961,8 +2961,9 @@ window.addEventListener('DOMContentLoaded', function() {
   let currentQuizIdx = 0;
 
   function loadQuizQuestion(idx) {
-    if (typeof QUIZ_QUESTIONS === 'undefined' || !QUIZ_QUESTIONS || QUIZ_QUESTIONS.length === 0) return;
-    const q = QUIZ_QUESTIONS[idx % QUIZ_QUESTIONS.length];
+    const questions = window.NULLA_QUIZ?.get(window.NULLA_I18N?.locale);
+    if (!questions?.length) return;
+    const q = questions[idx % questions.length];
     if (quizQuestion) quizQuestion.textContent = q.question;
     if (quizExplanation) quizExplanation.style.display = 'none';
 
