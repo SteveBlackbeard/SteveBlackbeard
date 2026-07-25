@@ -44,6 +44,9 @@ assert.match(app, /angstromPerWorldUnit/, 'physical measurement scale is absent'
 assert.match(html, /btn-nuclear-fusion/, 'nuclear fusion control is absent');
 assert.match(html, /btn-nuclear-fission/, 'nuclear fission control is absent');
 assert.doesNotMatch(app, /zSum\s*>\s*118/, 'atomic-number addition must never fabricate fission');
+assert.doesNotMatch(app, /Predicted \$\{|isVsepr|isEstimate|\(Est\)/, 'estimated compounds must not enter the product or suggestion paths');
+assert.doesNotMatch(app, /predictCompoundFormula|buildVseprCompound|formVseprCompound/, 'legacy compound fabrication engine must stay removed');
+assert.match(app, /if \(!reaction\)[\s\S]{0,500}COMBINACIÓN QUÍMICA NO CATALOGADA/, 'direct chemical collision must reject unknown reactions');
 assert.match(app, /formNuclearProducts/, 'nuclear products are not rendered');
 assert.match(html, /id="runtime-diagnostics"/, 'runtime diagnostics output is absent');
 assert.match(app, /getDiagnosticsSnapshot/, 'runtime diagnostics are not connected');

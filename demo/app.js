@@ -198,6 +198,7 @@ window.addEventListener('DOMContentLoaded', function() {
       const z = el.number;
       const visual = EL_VISUALS[z] || { col: 0x888888, r: 1.0 };
       EL[z] = {
+        z,
         s: el.symbol,
         n: el.name,
         m: el.mass,
@@ -220,6 +221,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (Object.keys(EL).length === 0) {
     for (let z in EL_VISUALS) {
       EL[z] = {
+        z:Number(z),
         s: z == 1 ? 'H' : z == 2 ? 'He' : 'El',
         n: 'Element ' + z,
         m: z * 2,
@@ -1998,136 +2000,19 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
 
-  function predictCompoundFormula(zA, zB) {
-    const elA = EL[zA] || EL[1];
-    const elB = EL[zB] || EL[1];
-
-    const enA = typeof elA.electronegativity === 'number' ? elA.electronegativity : 2.0;
-    const enB = typeof elB.electronegativity === 'number' ? elB.electronegativity : 2.0;
-
-    let cation = zA, anion = zB;
-    if (enA > enB) { cation = zB; anion = zA; }
-
-    const vCat = Math.abs(VALENCE_MAP[cation] || 1);
-    const vAni = Math.abs(VALENCE_MAP[anion] || 1);
-
-    const g = gcd(vCat, vAni);
-    let countCat = vAni / g;
-    let countAni = vCat / g;
-
-    if (countCat + countAni > 8) {
-      countCat = Math.min(countCat, 2);
-      countAni = Math.min(countAni, 4);
-    }
-
-    const symCat = EL[cation].s;
-    const symAni = EL[anion].s;
-    const formulaStr = (countCat === 1 ? symCat : `${symCat}${countCat}`) +
-                       (countAni === 1 ? symAni : `${symAni}${countAni}`);
-
-    return { cation, anion, countCat, countAni, formulaStr };
-  }
-
-  function buildVseprCompound(pred) {
-    const atoms = [];
-    const { cation, anion, countCat, countAni } = pred;
-    const d = 6.5;
-
-    if (countCat === 1) {
-      atoms.push({ z: cation, pos: new THREE.Vector3(0, 0, 0), scale: 2.2 });
-      const n = countAni;
-
-      if (n === 1) {
-        atoms.push({ z: anion, pos: new THREE.Vector3(d, 0, 0), scale: 1.8 });
-      } else if (n === 2) {
-        const isBent = anion === 8 || anion === 16;
-        if (isBent) {
-          const angle = (104.5 / 180) * Math.PI;
-          atoms.push({ z: anion, pos: new THREE.Vector3(Math.sin(angle*0.5)*d, -Math.cos(angle*0.5)*d, 0), scale: 1.8 });
-          atoms.push({ z: anion, pos: new THREE.Vector3(-Math.sin(angle*0.5)*d, -Math.cos(angle*0.5)*d, 0), scale: 1.8 });
-        } else {
-          atoms.push({ z: anion, pos: new THREE.Vector3(d, 0, 0), scale: 1.8 });
-          atoms.push({ z: anion, pos: new THREE.Vector3(-d, 0, 0), scale: 1.8 });
-        }
-      } else if (n === 3) {
-        for (let i = 0; i < 3; i++) {
-          const theta = (i / 3) * Math.PI * 2;
-          atoms.push({ z: anion, pos: new THREE.Vector3(d * Math.cos(theta), d * Math.sin(theta), 0), scale: 1.8 });
-        }
-      } else if (n === 4) {
-        const vertices = [
-          new THREE.Vector3(0, d, 0),
-          new THREE.Vector3((Math.sqrt(8)/3)*d, (-1/3)*d, 0),
-          new THREE.Vector3((-Math.sqrt(2)/3)*d, (-1/3)*d, (Math.sqrt(2/3))*d),
-          new THREE.Vector3((-Math.sqrt(2)/3)*d, (-1/3)*d, (-Math.sqrt(2/3))*d)
-        ];
-        vertices.forEach(v => atoms.push({ z: anion, pos: v, scale: 1.8 }));
-      } else if (n === 5) {
-        atoms.push({ z: anion, pos: new THREE.Vector3(0, d*1.1, 0), scale: 1.7 });
-        atoms.push({ z: anion, pos: new THREE.Vector3(0, -d*1.1, 0), scale: 1.7 });
-        for (let i = 0; i < 3; i++) {
-          const theta = (i / 3) * Math.PI * 2;
-          atoms.push({ z: anion, pos: new THREE.Vector3(d * Math.cos(theta), 0, d * Math.sin(theta)), scale: 1.7 });
-        }
-      } else {
-        const dirs = [
-          new THREE.Vector3(d, 0, 0), new THREE.Vector3(-d, 0, 0),
-          new THREE.Vector3(0, d, 0), new THREE.Vector3(0, -d, 0),
-          new THREE.Vector3(0, 0, d), new THREE.Vector3(0, 0, -d)
-        ];
-        dirs.forEach(dir => atoms.push({ z: anion, pos: dir, scale: 1.7 }));
-      }
-    } else {
-      const spacing = 8.0;
-      for (let c = 0; c < countCat; c++) {
-        const cPos = new THREE.Vector3((c - (countCat-1)*0.5) * spacing * 1.5, 0, 0);
-        atoms.push({ z: cation, pos: cPos, scale: 2.0 });
-      }
-      for (let a = 0; a < countAni; a++) {
-        const theta = (a / countAni) * Math.PI * 2;
-        const aPos = new THREE.Vector3(
-          Math.cos(theta) * spacing * 1.2,
-          Math.sin(theta) * spacing * 1.2,
-          (a % 2 === 0 ? 1 : -1) * 3.0
-        );
-        atoms.push({ z: anion, pos: aPos, scale: 1.7 });
-      }
-    }
-
-    return atoms;
-  }
-
-  function formVseprCompound(vseprData) {
-    isDnaMode = false;
-    spawnAtoms(vseprData.atoms);
-    
-    const pred = vseprData.pred;
-    const nameCat = EL[pred.cation].n;
-    const nameAni = EL[pred.anion].n;
-    
-    let shapeName = 'Linear (AX)';
-    if (pred.countCat === 1) {
-      if (pred.countAni === 2) shapeName = (pred.anion === 8 || pred.anion === 16) ? 'Bent (AX2E2)' : 'Linear (AX2)';
-      else if (pred.countAni === 3) shapeName = 'Trigonal Planar (AX3)';
-      else if (pred.countAni === 4) shapeName = 'Tetrahedral (AX4)';
-      else if (pred.countAni === 5) shapeName = 'Trigonal Bipyramidal (AX5)';
-      else if (pred.countAni >= 6) shapeName = 'Octahedral (AX6)';
-    } else {
-      shapeName = 'Stoichiometric Network / Chain';
-    }
-
-    updateTelemetry(
-      `${nameCat} ${nameAni} (${pred.formulaStr})`,
-      `${nameCat} + ${nameAni} Stoichiometry`,
-      `Geometry: ${shapeName}`,
-      `Valence Engine Bond Arrangement`,
-      `State: [SYNTHESIZED: ${pred.formulaStr}]`
-    );
-  }
-
   function triggerFusionCollision(zA, zB, reaction) {
     isDnaMode = false;
     activeCollisionMode = 'chemical';
+    if (!reaction) {
+      updateTelemetry(
+        'COMBINACIÓN QUÍMICA NO CATALOGADA',
+        `${EL[zA]?.s || zA} + ${EL[zB]?.s || zB}`,
+        'Sin ecuación balanceada verificada',
+        'No se generará un compuesto inventado',
+        'BLOCKED · SELECT A CATALOGUED PATH'
+      );
+      return;
+    }
     
     const posA = new THREE.Vector3(-25, 0, 0);
     const posB = new THREE.Vector3(25, 0, 0);
@@ -2142,20 +2027,14 @@ window.addEventListener('DOMContentLoaded', function() {
     fusionReactantA = zA;
     fusionReactantB = zB;
 
-    if (reaction) {
-      fusionTargetReaction = reaction;
-    } else {
-      const pred = predictCompoundFormula(zA, zB);
-      const vseprAtoms = buildVseprCompound(pred);
-      fusionTargetReaction = { isVsepr:true, pred, atoms:vseprAtoms, isEstimate:true };
-    }
+    fusionTargetReaction = reaction;
 
     updateTelemetry(
       `Chemical combination: ${EL[zA].s} + ${EL[zB].s}`,
       `Bringing reactants together...`,
       'CHEMICAL VISUALIZATION MODE',
       'Bonding model: catalogued or valence estimate',
-      reaction ? 'Catalogued compound path' : 'Estimated stoichiometry · not an experimental prediction'
+      'Catalogued compound path'
     );
   }
 
@@ -2330,61 +2209,27 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function generateTopCompoundSuggestions(reactantsArray) {
-    if (!reactantsArray || reactantsArray.length === 0) return [];
-
-    const presentZ = Array.from(new Set(reactantsArray.map(r => r.z)));
-    const sortedSyms = reactantsArray.map(r => r.sym).sort().join('+');
-    const directSyms = reactantsArray.map(r => r.sym).join('+');
-
+    if (!reactantsArray?.length) return [];
+    const selected = new Set(reactantsArray.map(reactant => reactant.sym));
+    const seenFormulas = new Set();
     const suggestions = [];
-
-    const exactMatch = REACTIONS[sortedSyms] || REACTIONS[directSyms];
-    if (exactMatch) {
+    for (const [path, reaction] of Object.entries(REACTIONS)) {
+      const reactantSymbols = new Set(path.split('+'));
+      if (![...selected].every(symbol => reactantSymbols.has(symbol))) continue;
+      if (!reaction?.formula || seenFormulas.has(reaction.formula)) continue;
+      seenFormulas.add(reaction.formula);
       suggestions.push({
-        name: exactMatch.name,
-        formula: exactMatch.formula,
-        type: exactMatch.type,
-        stability: (exactMatch.stabilityScore || 95.0) + '%',
-        enthalpy: exactMatch.enthalpy ? `${exactMatch.enthalpy} kJ/mol` : '-250.0 kJ/mol (Calculated)',
-        isExact: true
+        path,
+        name:reaction.name,
+        formula:reaction.formula,
+        type:reaction.type,
+        stability:reaction.stabilityScore ? `${reaction.stabilityScore}%` : 'CATALOGUED',
+        enthalpy:Number.isFinite(reaction.enthalpy) ? `${reaction.enthalpy} kJ/mol` : 'DATA UNAVAILABLE',
+        isExact:true,
+        evidenceLevel:reaction.evidenceLevel || 'CATALOGUED'
       });
     }
-
-    if (presentZ.length >= 2) {
-      const zA = presentZ[0];
-      const zB = presentZ[1];
-      const pred = predictCompoundFormula(zA, zB);
-      const thermo = calculateThermodynamicStability(zA, zB);
-
-      const isAlreadyAdded = suggestions.some(s => s.formula === pred.formulaStr);
-      if (!isAlreadyAdded) {
-        suggestions.push({
-          name: `Predicted ${pred.formulaStr} (${thermo.bondType})`,
-          formula: pred.formulaStr,
-          type: thermo.bondType,
-          stability: thermo.stabilityScore,
-          enthalpy: thermo.bondType.includes('Ionic') ? '-450.0 kJ/mol (Est)' : '-210.0 kJ/mol (Est)',
-          isExact: false
-        });
-      }
-    }
-
-    if (suggestions.length < 3 && presentZ.length >= 1) {
-      const z = presentZ[0];
-      const el = (typeof PERIODIC_DATA !== 'undefined' ? PERIODIC_DATA[z] : null) || { s:'El', n:'Element' };
-      
-      if (z === 8 || presentZ.includes(8)) {
-        suggestions.push({ name: 'Oxide Complex', formula: `${el.s}₂O₃`, type: 'Oxide Lattice', stability: '89.4%', enthalpy: '-520 kJ/mol', isExact: false });
-      }
-      if (z === 1 || presentZ.includes(1)) {
-        suggestions.push({ name: 'Hydride Unit', formula: `H${el.s}`, type: 'Polar Hydride', stability: '86.2%', enthalpy: '-140 kJ/mol', isExact: false });
-      }
-      if (suggestions.length < 3) {
-        suggestions.push({ name: `${el.n} Monatomic Lattice`, formula: `${el.s}₁`, type: 'Pure Element', stability: '99.0%', enthalpy: '0.0 kJ/mol', isExact: false });
-      }
-    }
-
-    return suggestions.slice(0, 5);
+    return suggestions.slice(0,5);
   }
 
   function calculateGibbsFreeEnergy(deltaH, deltaS, tempK) {
@@ -2500,7 +2345,7 @@ window.addEventListener('DOMContentLoaded', function() {
     link.click();
   }
 
-  function showGenerativeSuggestions() {
+  function showVerifiedSuggestions() {
     playTone(550, 'triangle', 0.15);
     const suggestionModal = document.getElementById('suggestion-modal');
     const suggestionList = document.getElementById('suggestion-list');
@@ -2524,12 +2369,21 @@ window.addEventListener('DOMContentLoaded', function() {
         itemDiv.innerHTML = `
           <div>
             <div style="font-size:10px; font-weight:700; color:#FFFFFF;">${s.name} (${s.formula})</div>
-            <div style="font-size:8px; color:rgba(255,255,255,0.65);">${s.type} · Estabilidad: ${s.stability}</div>
+            <div style="font-size:8px; color:rgba(255,255,255,0.65);">${s.type} · ${s.stability}</div>
           </div>
-          <button style="padding:4px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.4); background:rgba(255,255,255,0.15); color:#FFFFFF; font-size:8px; font-weight:700; cursor:pointer;">⚡ FUSION</button>
+          <button style="padding:4px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.4); background:rgba(255,255,255,0.15); color:#FFFFFF; font-size:8px; font-weight:700; cursor:pointer;">${tr('combine')}</button>
         `;
         itemDiv.addEventListener('click', () => {
           suggestionModal.style.display = 'none';
+          const suggestedReactants = s.path.split('+').map(symbol => {
+            const element = Object.values(EL).find(candidate => candidate.s === symbol);
+            return element ? {z:element.z,sym:element.s} : null;
+          }).filter(Boolean);
+          if (suggestedReactants.length >= 2 && suggestedReactants.length <= MAX_REACTANTS) {
+            selectedReactants = suggestedReactants;
+            updateReactantsTrayHUD();
+            renderSideBySidePreviewAtoms();
+          }
           attemptMultiFusion();
         });
         suggestionList.appendChild(itemDiv);
@@ -2740,20 +2594,7 @@ window.addEventListener('DOMContentLoaded', function() {
       fusionReactantA = selectedReactants[0].z;
       fusionReactantB = selectedReactants[1].z;
 
-      if (reaction) {
-        fusionTargetReaction = reaction;
-      } else {
-        const cationR = selectedReactants.find(r => !['O','F','Cl','Br','I','S','N'].includes(r.sym)) || selectedReactants[0];
-        const anionR = selectedReactants.find(r => ['O','F','Cl','Br','I','S','N'].includes(r.sym)) || selectedReactants[selectedReactants.length-1];
-        
-        const pred = predictCompoundFormula(cationR.z, anionR.z);
-        const vseprAtoms = buildVseprCompound(pred);
-        fusionTargetReaction = {
-          isVsepr: true,
-          pred,
-          atoms: vseprAtoms
-        };
-      }
+      fusionTargetReaction = reaction;
 
       updateTelemetry(
         `Multi-Fusion Acceleration (${selectedReactants.length} Elements)`,
@@ -2813,7 +2654,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // SUGGEST Button
   if (btnSuggest) {
-    btnSuggest.addEventListener('click', showGenerativeSuggestions);
+    btnSuggest.addEventListener('click', showVerifiedSuggestions);
   }
 
   const btnCloseSuggest = document.getElementById('btn-close-suggest');
@@ -3766,9 +3607,7 @@ window.addEventListener('DOMContentLoaded', function() {
         camShakeTimer = 25;
         
         if (fusionTargetReaction) {
-          if (fusionTargetReaction.isVsepr) {
-            formVseprCompound(fusionTargetReaction);
-          } else if (fusionTargetReaction.isFission) {
+          if (fusionTargetReaction.isFission) {
             formFissionDecay(fusionTargetReaction.zA, fusionTargetReaction.zB, fusionTargetReaction.zResult);
           } else if (fusionTargetReaction.isNuclear) {
             formNuclearProducts(fusionTargetReaction);
