@@ -45,6 +45,9 @@ assert.match(app, /function downloadBlob\(/, 'export downloads are not centraliz
 assert.match(app, /URL\.revokeObjectURL\(url\)/, 'export object URLs are not released');
 assert.match(app, /requestSession\('immersive-vr'/, 'WebXR button must request a real immersive session');
 assert.match(app, /renderer\.xr\.setSession\(session\)/, 'WebXR session is not connected to the renderer');
+assert.match(app, /structure\.startsWith\('nuclear-'\)/, 'shared nuclear URLs are not routed to the nuclear engine');
+assert.match(app, /startNuclearCollision\(fusionReaction, 'fusion'\)/, 'shared fusion URLs cannot restore fusion');
+assert.match(app, /startNuclearCollision\(fissionReaction, 'fission'\)/, 'shared fission URLs cannot restore fission');
 assert.doesNotMatch(app, /WebXR Polyfill Enabled|Virtual Reality Session Active[\s\S]{0,100}isSessionSupported/, 'WebXR capability checks must not claim a session is active');
 assert.match(app, /lennardJonesForceMagnitude/, 'Lennard-Jones model is absent');
 assert.match(app, /activeThermalProfile/, 'material-specific phase profile is absent');

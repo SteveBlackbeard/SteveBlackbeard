@@ -2897,7 +2897,19 @@ window.addEventListener('DOMContentLoaded', function() {
       if (zs.length > 0) {
         setTimeout(() => {
           zs.forEach(z => selectElementForTray(z));
-          attemptMultiFusion();
+          const shared = new URLSearchParams(location.hash.slice(1));
+          const structure = shared.get('structure') || '';
+          if (structure.startsWith('nuclear-')) {
+            const reactionId = structure.slice('nuclear-'.length);
+            const nuclear = window.NULLA_NUCLEAR;
+            const fusionReaction = Object.values(nuclear?.fusion || {}).flat().find(reaction => reaction.id === reactionId);
+            const fissionReaction = Object.values(nuclear?.fission || {}).find(reaction => reaction.id === reactionId);
+            if (fusionReaction) startNuclearCollision(fusionReaction, 'fusion');
+            else if (fissionReaction) startNuclearCollision(fissionReaction, 'fission');
+            else updateTelemetry(tr('datasetError'), reactionId, tr('reactionRejected'), tr('noAnimation'), 'BLOCKED');
+          } else {
+            attemptMultiFusion();
+          }
         }, 800);
       }
     } catch (e) { console.warn('Hash parse error:', e); }
