@@ -205,6 +205,37 @@
       #pt-hud-panel { width:calc(100vw - 24px) !important; right:12px !important; bottom:10px !important; transform:scale(.82); transform-origin:bottom right; }
       .hud-stats { transform:scale(.86); transform-origin:bottom left; }
     }
+    @media (max-width: 600px) {
+      .hud-header {
+        min-height:44px; height:44px; padding:6px 8px; flex-wrap:nowrap;
+        justify-content:flex-start; gap:12px; overflow-x:auto; overflow-y:hidden;
+        scrollbar-width:thin; scrollbar-color:rgba(0,240,255,.45) transparent;
+      }
+      .hud-header > div { flex:0 0 auto; }
+      .hud-title { font-size:8.5px; letter-spacing:1.4px; white-space:nowrap; }
+      .hud-badge { display:none; }
+      #language-selector { max-width:72px; }
+      #molecular-hud {
+        top:88px; left:8px; width:calc(100vw - 16px) !important;
+        max-height:32vh !important; padding:12px;
+      }
+      #pt-hud-panel {
+        right:8px !important; bottom:8px !important; width:calc(100vw - 16px) !important;
+        max-height:44vh; padding:9px; transform:none; overflow-y:auto;
+      }
+      .hud-stats {
+        top:50px; bottom:auto; left:8px; right:8px; transform:none;
+        gap:6px; overflow-x:auto; overflow-y:hidden; scrollbar-width:none;
+      }
+      .hud-stats::-webkit-scrollbar { display:none; }
+      .stat-chip { flex:0 0 auto; padding:4px 8px; font-size:7.5px; }
+      .pt-el { min-height:22px; padding:2px 0; }
+      .pt-el-sym { font-size:8px; }
+      .pt-el-num { font-size:5.5px; }
+      .pt-legend { gap:4px; }
+      .fusion-bar { padding:5px 6px; overflow-x:auto; justify-content:flex-start; }
+      .fusion-btn, .fusion-btn-undo, .fusion-btn-clear { padding:5px 7px; font-size:7.5px; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; }
     }
