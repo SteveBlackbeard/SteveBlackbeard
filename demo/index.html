@@ -139,6 +139,14 @@
       box-shadow:0 8px 20px rgba(255,255,255,0.22), inset 0 1px 2px rgba(255,255,255,0.7);
       border-color:rgba(255,255,255,0.65);
     }
+    .nuclear-mode-bar {
+      display:flex; gap:5px; margin-top:4px; padding:5px 8px; border-radius:10px;
+      background:rgba(8,12,20,.84); border:1px solid rgba(255,110,0,.26);
+    }
+    .nuclear-btn { flex:1; }
+    #btn-nuclear-fusion { border-color:rgba(0,240,255,.55); text-shadow:0 0 8px #00F0FF; }
+    #btn-nuclear-fission { border-color:rgba(255,80,0,.65); text-shadow:0 0 8px #FF5500; }
+    #language-selector { max-width:92px; padding:3px 5px; border-radius:6px; color:#fff; border:1px solid rgba(0,240,255,.4); background:#0A101A; font:700 8px 'Orbitron',sans-serif; }
     .fusion-label { font-size:8.5px; color:#FFFFFF; letter-spacing:1px; font-weight:bold; flex-shrink:0; }
     .fusion-label { font-size:8px; color:#FFFFFF; letter-spacing:1px; font-weight:bold; flex-shrink:0; }
 
@@ -212,6 +220,7 @@
   <div class="hud-header">
     <div style="display:flex; align-items:center; gap:8px;">
       <span class="hud-title">NULLA-LABS // IUPAC 3D SYNTHESIS</span>
+      <select id="language-selector" aria-label="Language"></select>
       <div style="display:flex; gap:3px; margin-left:6px;">
         <button id="btn-quality-low" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(255,255,255,0.25); background:rgba(18,24,36,0.8); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">LOW</button>
         <button id="btn-quality-med" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(0,240,255,0.6); background:rgba(0,240,255,0.2); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">MED</button>
@@ -466,11 +475,15 @@
         <div class="fusion-slot" id="slot-3">—</div>
         <div class="fusion-slot" id="slot-4">—</div>
       </div>
-      <button class="fusion-btn" id="btn-fuse">⚡ FUSE ALL</button>
+      <button class="fusion-btn" id="btn-fuse">🧪 COMBINAR</button>
       <button class="fusion-btn" id="btn-suggest">💡 SUGGEST</button>
       <button class="fusion-btn" id="btn-random">🔀 RANDOM</button>
       <button class="fusion-btn-undo" id="btn-undo">↩ UNDO</button>
       <button class="fusion-btn-clear" id="btn-clear">✕ CLEAR</button>
+    </div>
+    <div class="nuclear-mode-bar" aria-label="Reacciones nucleares">
+      <button class="fusion-btn nuclear-btn" id="btn-nuclear-fusion">☀ FUSIÓN NUCLEAR</button>
+      <button class="fusion-btn nuclear-btn" id="btn-nuclear-fission">☢ FISIÓN NUCLEAR</button>
     </div>
   </div>
 
@@ -550,6 +563,8 @@
   <!-- THREE.JS -->
   <script src="vendor/three.min.js?v=70.0"></script>
   <script src="periodic-table-data.js?v=70.0"></script>
-  <script src="app.js?v=70.0"></script>
+  <script src="src/i18n/i18n.js?v=71.0"></script>
+  <script src="src/nuclear/nuclear-data.js?v=71.0"></script>
+  <script src="app.js?v=71.0"></script>
 </body>
 </html>

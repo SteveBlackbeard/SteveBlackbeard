@@ -367,6 +367,9 @@ window.addEventListener('DOMContentLoaded', function() {
   let fusionFlashSphere = null;
   let shockwaveScale = 0.1;
   let shockwaveOpacity = 1.0;
+  let activeCollisionMode = 'chemical';
+  let nuclearChargeField = null;
+  const nuclearRouteCursor = {};
   let activeStructureId = 'dna';
   let angstromPerWorldUnit = 0.42;
   let activeThermalProfile = {
@@ -868,6 +871,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   function buildDNA() {
     isDnaMode = true;
+    activeCollisionMode = 'chemical';
     activeStructureId = 'dna';
     activeThermalProfile = { label:'B-DNA in aqueous environment', melt:363, boil:373.15, pressure:'1 atm', model:'educational' };
     angstromPerWorldUnit = 0.42;
@@ -950,6 +954,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   function activateMaterial(id, atoms, profile, telemetry, scale, bondCutoff) {
     isDnaMode = false;
+    activeCollisionMode = 'chemical';
     activeStructureId = id;
     activeThermalProfile = profile;
     angstromPerWorldUnit = scale;
@@ -1316,6 +1321,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   function formElement(z, fromCenter) {
     isDnaMode = false;
+    activeCollisionMode = 'chemical';
     const el = EL[z] || EL[1];
     activeStructureId = `element-${z}`;
     activeThermalProfile = {
@@ -2084,7 +2090,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function createExplosion(pos, color1, color2) {
     playCollisionSound();
-    const particleCount = 600;
+    const particleCount = activeCollisionMode === 'chemical' ? 600 : activeCollisionMode === 'fusion' ? 1500 : 1800;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -2101,7 +2107,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const speed = 0.8 + Math.random() * 2.5;
+      const nuclearBoost = activeCollisionMode === 'chemical' ? 1 : activeCollisionMode === 'fusion' ? 1.7 : 2.2;
+      const speed = (0.8 + Math.random() * 2.5) * nuclearBoost;
       
       // Kinetic particle velocity with subtle tangential swirl (vortex)
       const vx = Math.sin(phi) * Math.cos(theta) * speed;
@@ -2129,7 +2136,7 @@ window.addEventListener('DOMContentLoaded', function() {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 1.6,
+      size: activeCollisionMode === 'chemical' ? 1.6 : 1.25,
       vertexColors: true,
       transparent: true,
       opacity: 1.0,
@@ -2338,6 +2345,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function triggerFusionCollision(zA, zB, reaction) {
     isDnaMode = false;
+    activeCollisionMode = 'chemical';
     
     const posA = new THREE.Vector3(-25, 0, 0);
     const posB = new THREE.Vector3(25, 0, 0);
@@ -2355,26 +2363,151 @@ window.addEventListener('DOMContentLoaded', function() {
     if (reaction) {
       fusionTargetReaction = reaction;
     } else {
-      const zSum = zA + zB;
-      if (zSum > 118) {
-        fusionTargetReaction = { isFission: true, zA, zB, zResult: zSum };
-      } else {
-        const pred = predictCompoundFormula(zA, zB);
-        const vseprAtoms = buildVseprCompound(pred);
-        fusionTargetReaction = {
-          isVsepr: true,
-          pred,
-          atoms: vseprAtoms
-        };
-      }
+      const pred = predictCompoundFormula(zA, zB);
+      const vseprAtoms = buildVseprCompound(pred);
+      fusionTargetReaction = { isVsepr:true, pred, atoms:vseprAtoms, isEstimate:true };
     }
 
     updateTelemetry(
-      `Fusing: ${EL[zA].s} + ${EL[zB].s}`,
-      `Accelerating lattices for collision...`,
-      'Reaction State: ACTIVE INJECTION',
-      'Bonding: Preparing atomic collision',
-      'Engaging GPU Particle Fusion Shockwave'
+      `Chemical combination: ${EL[zA].s} + ${EL[zB].s}`,
+      `Bringing reactants together...`,
+      'CHEMICAL VISUALIZATION MODE',
+      'Bonding model: catalogued or valence estimate',
+      reaction ? 'Catalogued compound path' : 'Estimated stoichiometry · not an experimental prediction'
+    );
+  }
+
+  function buildNucleusVisual(isotope, center, startCenter) {
+    const atoms = [];
+    const visualCount = Math.min(isotope.A, 96);
+    const protonCount = Math.round(visualCount * isotope.Z / isotope.A);
+    const radius = Math.max(1.8, Math.cbrt(isotope.A) * 1.25);
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < visualCount; i++) {
+      const y = 1 - (i / Math.max(1, visualCount - 1)) * 2;
+      const ring = Math.sqrt(Math.max(0, 1 - y * y));
+      const theta = golden * i;
+      const shell = radius * Math.cbrt((i + 1) / visualCount);
+      const local = new THREE.Vector3(Math.cos(theta) * ring, y, Math.sin(theta) * ring).multiplyScalar(shell);
+      atoms.push({
+        z:1, col:i < protonCount ? 0xFF315F : 0xB9D2E8,
+        pos:center.clone().add(local),
+        startPos:(startCenter || center).clone().add(local.clone().multiplyScalar(0.3)),
+        scale:0.62, noLabel:true
+      });
+    }
+    return atoms;
+  }
+
+  function createNuclearChargeField(mode) {
+    if (nuclearChargeField) {
+      scene.remove(nuclearChargeField);
+      nuclearChargeField.traverse(obj => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) obj.material.dispose();
+      });
+    }
+    nuclearChargeField = new THREE.Group();
+    const color = mode === 'fission' ? 0xFF5500 : 0x00F0FF;
+    for (let i = 0; i < 4; i++) {
+      const geometry = new THREE.TorusGeometry(7 + i * 2.4, 0.10 + i * 0.025, 10, 96);
+      const material = new THREE.MeshBasicMaterial({
+        color, transparent:true, opacity:0.48 - i * 0.07,
+        blending:THREE.AdditiveBlending, depthWrite:false
+      });
+      const ring = new THREE.Mesh(geometry, material);
+      ring.rotation.set(i * 0.61, i * 0.83, i * 0.37);
+      nuclearChargeField.add(ring);
+    }
+    scene.add(nuclearChargeField);
+  }
+
+  function startNuclearCollision(reaction, mode) {
+    const nuclear = window.NULLA_NUCLEAR;
+    if (!nuclear || !reaction || !nuclear.validateReaction(reaction).valid) {
+      updateTelemetry('Nuclear dataset error', 'Reaction rejected', 'A/Z conservation failed', 'No animation executed', 'BLOCKED');
+      return;
+    }
+    activeCollisionMode = mode;
+    isDnaMode = false;
+    activeBondCutoffWorld = 1.9;
+    const centers = mode === 'fusion'
+      ? [new THREE.Vector3(-28,0,0), new THREE.Vector3(28,0,0)]
+      : [new THREE.Vector3(0,0,0), new THREE.Vector3(34,0,0)];
+    const atoms = [];
+    reaction.reactants.forEach((id, index) => {
+      const isotope = nuclear.isotopes[id];
+      if (isotope) atoms.push(...buildNucleusVisual(isotope, centers[index] || centers[0], centers[index] || centers[0]));
+    });
+    spawnAtoms(atoms);
+    fusionState = 'charging';
+    fusionTimer = mode === 'fusion' ? 95 : 75;
+    fusionReactantA = nuclear.isotopes[reaction.reactants[0]]?.Z || 1;
+    fusionReactantB = nuclear.isotopes[reaction.reactants[1]]?.Z || 1;
+    fusionTargetReaction = { isNuclear:true, nuclearMode:mode, nuclearReaction:reaction };
+    createNuclearChargeField(mode);
+    const validation = nuclear.validateReaction(reaction);
+    updateTelemetry(
+      `${mode === 'fusion' ? 'FUSIÓN' : 'FISIÓN'} NUCLEAR · ${reaction.label}`,
+      `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
+      `Nuclear reaction · A ${validation.left.A}→${validation.right.A} · Z ${validation.left.Z}→${validation.right.Z}`,
+      `Q ≈ ${reaction.qMeV} MeV · ${reaction.branch || reaction.note || ''}`,
+      mode === 'fusion' ? 'Coulomb barrier approach · plasma confinement visualization' : 'Nuclear deformation · scission visualization',
+      `${reaction.qMeV} MeV`, 0, 'A/Z CONSERVED',
+      'Evaluated educational channel. Visual timing and scale are illustrative, not a reactor simulation.'
+    );
+  }
+
+  function attemptNuclearFusion() {
+    if (selectedReactants.length !== 2) {
+      updateTelemetry('FUSIÓN NUCLEAR', 'Selecciona exactamente 2 elementos', 'Rutas: H+H, H+B, He+He, C+C', 'Los isótopos se muestran antes de iniciar', 'WAITING');
+      return;
+    }
+    const key = selectedReactants.map(r => r.sym).sort().join('+');
+    const routes = window.NULLA_NUCLEAR?.fusion[key];
+    if (!routes?.length) {
+      updateTelemetry('FUSIÓN NUCLEAR NO CATALOGADA', key, 'No se inventará un producto nuclear', 'Prueba H+H, H+B, He+He o C+C', 'BLOCKED · NO EVALUATED CHANNEL');
+      return;
+    }
+    const cursor = nuclearRouteCursor[key] || 0;
+    nuclearRouteCursor[key] = (cursor + 1) % routes.length;
+    startNuclearCollision(routes[cursor], 'fusion');
+  }
+
+  function attemptNuclearFission() {
+    const heavy = selectedReactants.find(r => ['U','Pu','Cf'].includes(r.sym));
+    if (!heavy) {
+      updateTelemetry('FISIÓN NUCLEAR', 'Selecciona U, Pu o Cf', 'Canales representativos con balance A/Z', 'U-235+n · Pu-239+n · Cf-252 espontánea', 'WAITING');
+      return;
+    }
+    startNuclearCollision(window.NULLA_NUCLEAR?.fission[heavy.sym], 'fission');
+  }
+
+  function formNuclearProducts(target) {
+    const nuclear = window.NULLA_NUCLEAR;
+    const reaction = target.nuclearReaction;
+    const atoms = [];
+    const products = [];
+    reaction.products.forEach(([id, count]) => {
+      for (let i = 0; i < count; i++) products.push(nuclear.isotopes[id]);
+    });
+    products.forEach((isotope, index) => {
+      const angle = (index / Math.max(1, products.length)) * Math.PI * 2;
+      const distance = isotope.Z === 0 ? 42 : 24 + index * 3;
+      const center = new THREE.Vector3(Math.cos(angle) * distance, Math.sin(angle) * distance, (index % 3 - 1) * 7);
+      atoms.push(...buildNucleusVisual(isotope, center, new THREE.Vector3()));
+    });
+    spawnAtoms(atoms);
+    activeStructureId = `nuclear-${reaction.id}`;
+    const validation = nuclear.validateReaction(reaction);
+    updateTelemetry(
+      `${target.nuclearMode === 'fusion' ? 'FUSIÓN' : 'FISIÓN'} NUCLEAR COMPLETADA`,
+      `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
+      `${reaction.label} · CANAL EDUCATIVO EVALUADO`,
+      `Conservación: A ${validation.left.A}=${validation.right.A} · Z ${validation.left.Z}=${validation.right.Z}`,
+      `Energy release Q ≈ ${reaction.qMeV} MeV`,
+      `${reaction.qMeV} MeV`, 0, 'CONSERVATION VERIFIED',
+      reaction.note || reaction.branch || 'Product momenta are visual, not quantitatively simulated.'
     );
   }
 
@@ -2497,10 +2630,16 @@ window.addEventListener('DOMContentLoaded', function() {
     // Calculate Gibbs Free Energy Spontaneity (ΔG = ΔH - TΔS)
     const gibbs = calculateGibbsFreeEnergy(enthalpy, -110.0, temperatureK);
     if (hudStability) {
+      const isNuclearTelemetry = typeof enthalpy === 'string' && enthalpy.includes('MeV');
+      if (isNuclearTelemetry) {
+        hudStability.textContent = String(stability || 'A/Z CONSERVED');
+        hudStability.style.color = '#00FF9D';
+      } else {
       const isNum = typeof stability === 'number';
       const stabVal = isNum ? `${stability}%` : (stability || '95.0%');
       hudStability.textContent = `${stabVal} | ΔG: ${gibbs.deltaG} kJ/mol [${gibbs.isSpontaneous ? 'FAVORABLE' : 'UNFAVORABLE'}]`;
       hudStability.style.color = gibbs.colorHex;
+      }
     }
 
     if (hudNote) hudNote.textContent = note || `Thermodynamic State: ${gibbs.statusLabel}`;
@@ -2845,6 +2984,10 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnFuse) {
     btnFuse.addEventListener('click', attemptMultiFusion);
   }
+  const btnNuclearFusion = document.getElementById('btn-nuclear-fusion');
+  const btnNuclearFission = document.getElementById('btn-nuclear-fission');
+  if (btnNuclearFusion) btnNuclearFusion.addEventListener('click', attemptNuclearFusion);
+  if (btnNuclearFission) btnNuclearFission.addEventListener('click', attemptNuclearFission);
 
   // SUGGEST Button
   if (btnSuggest) {
@@ -3565,7 +3708,7 @@ window.addEventListener('DOMContentLoaded', function() {
       const a = activeAtoms[i];
       
       // Educational thermal motion using structure-specific transition data.
-      if (fusionState === 'idle' && !a.removing && !a.isElectron) {
+      if (activeCollisionMode === 'chemical' && fusionState === 'idle' && !a.removing && !a.isElectron) {
         const phase = phaseAtTemperature(activeThermalProfile, temperatureK);
         if (phase.key === 'solid' || phase.key === 'unknown') {
           const referenceTm = Number(activeThermalProfile?.melt) || Number(activeThermalProfile?.boil) || 1000;
@@ -3725,6 +3868,24 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
 
+    if (nuclearChargeField) {
+      const chargeProgress = fusionState === 'charging' ? Math.max(0, fusionTimer / 95) : 0;
+      nuclearChargeField.children.forEach((ring, index) => {
+        ring.rotation.x += 0.012 + index * 0.003;
+        ring.rotation.y -= 0.009 + index * 0.002;
+        ring.scale.setScalar(0.72 + chargeProgress * 0.5 + Math.sin(t * 5 + index) * 0.04);
+        ring.material.opacity = fusionState === 'idle' ? ring.material.opacity * 0.86 : 0.22 + (1 - chargeProgress) * 0.5;
+      });
+      if (fusionState === 'idle' && nuclearChargeField.children[0].material.opacity < 0.01) {
+        scene.remove(nuclearChargeField);
+        nuclearChargeField.traverse(obj => {
+          if (obj.geometry) obj.geometry.dispose();
+          if (obj.material) obj.material.dispose();
+        });
+        nuclearChargeField = null;
+      }
+    }
+
     // Fusion state machine
     if (fusionState === 'charging') {
       fusionTimer--;
@@ -3740,9 +3901,10 @@ window.addEventListener('DOMContentLoaded', function() {
       if (fusionTimer === 0) {
         fusionState = 'idle';
         
-        const isFiss = fusionTargetReaction && fusionTargetReaction.isFission;
-        const col1 = isFiss ? 0xFF3300 : EL[fusionReactantA].col;
-        const col2 = isFiss ? 0xFFCC00 : EL[fusionReactantB].col;
+        const isFiss = activeCollisionMode === 'fission';
+        const isNuclearFusion = activeCollisionMode === 'fusion';
+        const col1 = isFiss ? 0xFF3300 : isNuclearFusion ? 0x00F0FF : EL[fusionReactantA].col;
+        const col2 = isFiss ? 0xFFCC00 : isNuclearFusion ? 0xBF00FF : EL[fusionReactantB].col;
         
         createExplosion(new THREE.Vector3(0,0,0), col1, col2);
         camShakeTimer = 25;
@@ -3753,7 +3915,7 @@ window.addEventListener('DOMContentLoaded', function() {
           } else if (fusionTargetReaction.isFission) {
             formFissionDecay(fusionTargetReaction.zA, fusionTargetReaction.zB, fusionTargetReaction.zResult);
           } else if (fusionTargetReaction.isNuclear) {
-            formElement(fusionTargetReaction.z, true);
+            formNuclearProducts(fusionTargetReaction);
           } else if (fusionTargetReaction.isInert) {
             formInertMixture(fusionTargetReaction.zA, fusionTargetReaction.zB);
           } else {
