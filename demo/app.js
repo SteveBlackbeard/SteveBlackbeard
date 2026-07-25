@@ -1207,7 +1207,10 @@ window.addEventListener('DOMContentLoaded', function() {
       ];
       vertices.forEach(v => atoms.push({ z: outerZ, pos: v, scale: 1.3 }));
     }
-    else if (['Sodium Chloride', 'Potassium Chloride', 'Sodium Fluoride', 'Calcium Oxide', 'Magnesium Oxide'].includes(name)) {
+    else if (
+      ['Sodium Chloride', 'Potassium Chloride', 'Sodium Fluoride', 'Calcium Oxide', 'Magnesium Oxide'].includes(name)
+      || /rock[- ]salt|cubic fcc lattice/i.test(reaction.geom || '')
+    ) {
       const zA = reaction.atoms[0].z;
       const zB = reaction.atoms[1].z;
       const d = 6.0;
@@ -1467,6 +1470,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     activeBondCutoffWorld = Number.isFinite(nearestDistance) ? nearestDistance * 1.18 : null;
     spawnAtoms(atoms);
+    activeStructureId = `compound-${reaction.formula}`;
     updateTelemetry(
       reaction.name + ' (' + reaction.formula + ')',
       'Formula: ' + reaction.formula + ' | ' + reaction.atoms.map(g => EL[g.z].s + '×' + g.c).join(' + '),
