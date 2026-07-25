@@ -1,5 +1,5 @@
 // NULLA-LABS COMPLETE IUPAC 3D MOLECULAR SYNTHESIS PLATFORM v60.0
-// 118 Real Elements + Chemical Reactions Database + Superfluid Morphing
+// 118 elements + catalogued chemistry + explicit educational motion models
 window.addEventListener('DOMContentLoaded', function() {
   'use strict';
 
@@ -344,7 +344,7 @@ window.addEventListener('DOMContentLoaded', function() {
   scene.add(new THREE.AmbientLight(0xFFFFFF, 0.75));
 
   // ═══════════════════════════════════════════════════════════════
-  // DYNAMIC ATOM POOL - Spawn/Despawn with Superfluid Transitions
+  // DYNAMIC ATOM POOL - Spawn/despawn with smooth educational transitions
   // ═══════════════════════════════════════════════════════════════
   const sphereGeo = new THREE.SphereGeometry(1.0, 32, 32);
   const cylinderGeo = new THREE.CylinderGeometry(0.2, 0.2, 1.0, 12);
@@ -3343,7 +3343,7 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   // ═══════════════════════════════════════════════════════════════
-  // RENDER LOOP — Superfluid Transitions & Fail-Safe Guard Engine
+  // RENDER LOOP — Educational phase motion and fail-safe guard engine
   // ═══════════════════════════════════════════════════════════════
   let frameCount = 0, lastTime = performance.now(), lastAnimationTime = performance.now();
 
@@ -3420,7 +3420,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
       const t = now * 0.001;
 
-      // Superfluid atom morphing & dynamic behaviors
+      // Smooth atom morphing and modelled phase-dependent motion
     const dummy = new THREE.Object3D();
     const instUpdateList = new Set();
     const activePhase = phaseAtTemperature(activeThermalProfile, temperatureK);
