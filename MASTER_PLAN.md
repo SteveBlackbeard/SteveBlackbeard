@@ -38,6 +38,94 @@ reproducible test matrix proving that the change is neutral.
 - **ILLUSTRATION**: visual behavior that is not quantitatively predictive.
 - **HYPOTHESIS**: explicitly speculative route; never presented as an observed element.
 
+## Synergistic discipline matrix
+
+### Mathematics
+
+- Graph theory validates molecular/lattice topology, coordination, connected components,
+  C60 degree/edge counts, and reaction-network reachability.
+- Linear algebra drives transforms, calibrated measurements, angles, inertia tensors,
+  principal axes, and camera-independent geometry tests.
+- Numerical analysis defines fixed timesteps, error tolerances, convergence, stability,
+  energy drift, cutoffs, and deterministic seeded tests.
+- Probability represents branching ratios, isotope yields, uncertainty intervals,
+  competing pathways, and confidence without disguising uncertainty as certainty.
+- Dimensional analysis prevents mixing world units, Å, pm, kelvin, kJ/mol, eV, and MeV.
+
+### Physics and materials science
+
+- Classical mechanics: momentum, elastic/inelastic collisions, constraints, and boundaries.
+- Statistical mechanics: Maxwell-Boltzmann sampling, thermostats, phase limitations.
+- Electromagnetism: Coulomb interactions, ionic lattices, dipoles, and plasma visuals.
+- Solid-state physics: unit cells, coordination, phonon-like illustration, defects,
+  polymorphs, thermal expansion, and lattice compatibility.
+- Materials compatibility: thermal, electrochemical, structural, and mechanical axes.
+
+### Nuclear physics
+
+- Isotope identity `(A,Z)`, mass/charge conservation, Q-values, half-lives, and decay modes.
+- Coulomb barrier and Gamow tunnelling as explicit approximations.
+- Cross sections and branching ratios conditioned on projectile energy.
+- Two-/three-body product kinematics and momentum conservation.
+- Fission yield distributions rather than a single universal fragment pair.
+- Superheavy synthesis only in a separate hypothesis workspace with observed/unobserved status.
+
+### Chemistry
+
+- Balanced equations, oxidation states, valence, formal charge, electronegativity,
+  molecular geometry, phase, solvent, temperature, and pressure.
+- Thermodynamics (`ΔH`, `ΔS`, `ΔG`) separated from kinetics and activation energy.
+- Competing products, catalysts, passivation, decomposition, toxicity, and hazards.
+- Provenance and conditions attached to every empirical datum.
+
+### Historical alchemy
+
+- Optional educational timeline: symbols, apparatus, metallurgy, pigments, distillation,
+  and the historical transition toward experimental chemistry.
+- Alchemical correspondence may guide storytelling and visual nomenclature only.
+- It never contributes numerical predictions, compatibility scores, or scientific claims.
+
+## Compatibility and instability contract
+
+Compatibility is a vector, not a decorative universal percentage.
+
+### Chemical compatibility
+
+- `catalogue`: balanced and known route or unknown.
+- `thermodynamic`: sign/range of `ΔG` under documented conditions.
+- `kinetic`: activation barrier, catalyst, rate regime.
+- `electronic`: oxidation-state and electronegativity compatibility.
+- `phase`: contact/mixing feasibility at selected `T/P`.
+- `selectivity`: competing products and branching.
+- `stability`: decomposition, hydrolysis, oxidation, photolysis, and metastability.
+- `safety`: corrosive, toxic, explosive, radioactive, or unknown.
+
+### Nuclear compatibility
+
+- exact isotope channel;
+- `A`, `Z`, and charge conservation;
+- Q-value and threshold;
+- Coulomb barrier/contact estimate;
+- cross section at incident energy;
+- tunnelling probability where applicable;
+- competing branches;
+- product half-lives and decay chains;
+- neutron balance and delayed radiation.
+
+### Materials compatibility
+
+- lattice mismatch and interface strain;
+- thermal-expansion mismatch and melting/decomposition limits;
+- galvanic/electrochemical compatibility;
+- diffusion and intermetallic formation;
+- mechanical modulus, brittleness, and fatigue;
+- environmental compatibility with solvent, humidity, oxygen, and radiation.
+
+Every result exposes:
+
+`status`, `evidence level`, `confidence`, `factors`, `required conditions`,
+`instabilities`, `competing paths`, `units`, and `provenance`.
+
 ## Nuclear engine
 
 ### Implemented baseline

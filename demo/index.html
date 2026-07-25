@@ -212,6 +212,7 @@
 </head>
 <body>
   <canvas id="webgl-canvas"></canvas>
+  <output id="runtime-diagnostics" hidden aria-hidden="true"></output>
 
   <!-- TOOLTIP -->
   <div id="pt-tooltip"></div>
@@ -251,6 +252,8 @@
     <div class="hud-row"><span class="hud-label">SPECTRUM</span><span class="hud-val" id="hud-spectrum" style="color:#00F0FF; font-weight:700;">220 nm (UV)</span></div>
     <div class="hud-row"><span class="hud-label">IR STRETCH</span><span class="hud-val" id="hud-ir" style="font-size:8.5px;">3000 cm⁻¹</span></div>
     <div class="hud-row"><span class="hud-label">STATE</span><span class="hud-val" id="hud-epi">—</span></div>
+    <div class="hud-row"><span class="hud-label">COMPATIBILITY</span><span class="hud-val" id="hud-compatibility">—</span></div>
+    <div class="hud-row"><span class="hud-label">CONDITIONS</span><span class="hud-val" id="hud-conditions">—</span></div>
     
     <!-- THERMAL KINETIC CONTROLLER (0-1000 K) -->
     <div class="hud-row" style="flex-direction:column; margin-top:4px; gap:2px;">
@@ -565,6 +568,8 @@
   <script src="periodic-table-data.js?v=70.0"></script>
   <script src="src/i18n/i18n.js?v=71.0"></script>
   <script src="src/nuclear/nuclear-data.js?v=71.0"></script>
-  <script src="app.js?v=71.0"></script>
+  <script src="src/chemistry/verified-reactions.js?v=71.0"></script>
+  <script src="src/analysis/compatibility-engine.js?v=71.0"></script>
+  <script src="app.js?v=72.0"></script>
 </body>
 </html>

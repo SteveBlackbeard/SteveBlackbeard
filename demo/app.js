@@ -24,6 +24,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   const canvas = document.getElementById('webgl-canvas');
   const fpsVal = document.getElementById('fps-val');
+  const runtimeDiagnostics = document.getElementById('runtime-diagnostics');
 
   const topBanner = document.getElementById('active-synthesis-banner');
   const hudPanel = document.getElementById('molecular-hud');
@@ -38,6 +39,8 @@ window.addEventListener('DOMContentLoaded', function() {
   const hudIr = document.getElementById('hud-ir');
   const hudNote = document.getElementById('hud-note');
   const hudEpi = document.getElementById('hud-epi');
+  const hudCompatibility = document.getElementById('hud-compatibility');
+  const hudConditions = document.getElementById('hud-conditions');
   const tempSlider = document.getElementById('temp-slider');
   const tempVal = document.getElementById('temp-val');
   const btnReassemble = document.getElementById('btn-reassemble');
@@ -294,6 +297,7 @@ window.addEventListener('DOMContentLoaded', function() {
     'P+P':   { name:'White Phosphorus',     formula:'P₄',    atoms:[{z:15,c:4}],              type:'Covalent Molecule', bonds:'P-P Covalent Bonds (×6)', state:'Solid (25°C)', geom:'Tetrahedral' },
     'C+C':   { name:'Graphite',             formula:'C_n',   atoms:[{z:6,c:14}],              type:'Covalent Network', bonds:'C-C Hexagonal Sheet Bonds', state:'Solid (25°C)', geom:'Hexagonal Sheets' },
   };
+  Object.assign(REACTIONS, window.NULLA_VERIFIED_REACTIONS || {});
 
 
   // ═══════════════════════════════════════════════════════════════
@@ -601,9 +605,17 @@ window.addEventListener('DOMContentLoaded', function() {
     return sprite;
   }
 
+  function disposeLabelSprite(sprite) {
+    if (!sprite) return;
+    moleculeGroup.remove(sprite);
+    if (sprite.material?.map) sprite.material.map.dispose();
+    if (sprite.material) sprite.material.dispose();
+  }
+
   // Smoothly spawn atoms at positions with scale-up animation
   function spawnAtoms(atomList) {
     // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
+    atomList = (atomList || []).filter(item => item && item.pos && typeof item.pos.clone === 'function');
     const isInitial = activeAtoms.length === 0;
     const spawnDelay = isInitial ? 0 : 300;
 
@@ -622,7 +634,8 @@ window.addEventListener('DOMContentLoaded', function() {
     const doSpawn = () => {
       // Remove old atoms and their labels
       activeAtoms.filter(a => a.removing).forEach(a => {
-        if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
+        disposeLabelSprite(a.labelSprite);
+        a.labelSprite = null;
       });
       activeAtoms = activeAtoms.filter(a => !a.removing);
       activeBonds = activeBonds.filter(b => !b.removing);
@@ -634,7 +647,11 @@ window.addEventListener('DOMContentLoaded', function() {
         moleculeGroup.remove(activeBondInstancedMesh);
         activeBondInstancedMesh = null;
       }
-      activeOrbitLines.forEach(line => moleculeGroup.remove(line));
+      activeOrbitLines.forEach(line => {
+        moleculeGroup.remove(line);
+        if (line.geometry) line.geometry.dispose();
+        if (line.material) line.material.dispose();
+      });
       activeOrbitLines = [];
 
       // Group new atoms by `z` and `col`
@@ -2447,6 +2464,7 @@ window.addEventListener('DOMContentLoaded', function() {
     fusionTargetReaction = { isNuclear:true, nuclearMode:mode, nuclearReaction:reaction };
     createNuclearChargeField(mode);
     const validation = nuclear.validateReaction(reaction);
+    showCompatibility(window.NULLA_COMPATIBILITY?.nuclear({ reaction, isotopes:nuclear.isotopes }));
     updateTelemetry(
       `${mode === 'fusion' ? 'FUSIÓN' : 'FISIÓN'} NUCLEAR · ${reaction.label}`,
       `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
@@ -2762,6 +2780,29 @@ window.addEventListener('DOMContentLoaded', function() {
   let selectedReactants = [];
   const MAX_REACTANTS = 5;
 
+  function showCompatibility(result) {
+    if (!result) return;
+    if (hudCompatibility) {
+      const score = typeof result.score === 'number' ? ` · ${Math.round(result.score * 100)}% model confidence` : '';
+      hudCompatibility.textContent = `${result.status}${score}`;
+      hudCompatibility.style.color = result.status.includes('NO_') ? '#FF6B4A' : result.status.includes('FAVORABLE') || result.status.includes('EXOENERGETIC') ? '#00FF9D' : '#FFD166';
+    }
+    if (hudConditions) {
+      const requirements = result.requirements?.length ? result.requirements.join(' · ') : 'No additional model conditions';
+      const risks = result.instability?.length ? ` | Instability: ${result.instability.join(' · ')}` : '';
+      hudConditions.textContent = `${requirements}${risks}`;
+    }
+  }
+
+  function evaluateChemicalCompatibility(reaction) {
+    const reactants = selectedReactants.map(item => ({
+      z:item.z, symbol:item.sym, electronegativity:EL[item.z]?.electronegativity
+    }));
+    const result = window.NULLA_COMPATIBILITY?.chemical({ reactants, reaction, temperatureK });
+    showCompatibility(result);
+    return result;
+  }
+
   function updateReactantsTrayHUD() {
     for (let i = 0; i < 5; i++) {
       if (slots[i]) {
@@ -2823,6 +2864,9 @@ window.addEventListener('DOMContentLoaded', function() {
       `Ready for Collision (Click ⚡ FUSE ALL)`,
       `Wide Horizontal 3D Quantum Separation`
     );
+    const sortedKey = selectedReactants.map(r => r.sym).sort().join('+');
+    const directKey = selectedReactants.map(r => r.sym).join('+');
+    evaluateChemicalCompatibility(REACTIONS[sortedKey] || REACTIONS[directKey]);
   }
 
   function selectElementForTray(z) {
@@ -2879,6 +2923,19 @@ window.addEventListener('DOMContentLoaded', function() {
     const directSymbols = selectedReactants.map(r => r.sym).join('+');
 
     const reaction = REACTIONS[sortedSymbols] || REACTIONS[directSymbols];
+    evaluateChemicalCompatibility(reaction);
+    if (!reaction) {
+      updateTelemetry(
+        'COMBINACIÓN QUÍMICA NO CATALOGADA',
+        selectedReactants.map(r => r.sym).join(' + '),
+        'Sin ecuación balanceada verificada',
+        'No se generará un compuesto inventado',
+        'BLOCKED · SELECT A CATALOGUED PATH',
+        undefined, undefined, 'NO DATA',
+        'Usa SUGERIR para ver combinaciones disponibles para los elementos seleccionados.'
+      );
+      return;
+    }
 
     if (selectedReactants.length === 2) {
       triggerFusionCollision(selectedReactants[0].z, selectedReactants[1].z, reaction);
@@ -3096,6 +3153,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
       if (!isMeasuringMode && laserLineMesh) {
         scene.remove(laserLineMesh);
+        laserLineMesh.geometry.dispose();
+        laserLineMesh.material.dispose();
         laserLineMesh = null;
       }
     });
@@ -3540,7 +3599,12 @@ window.addEventListener('DOMContentLoaded', function() {
           if (selectedMeasureAtoms.length >= 3) selectedMeasureAtoms = [];
           selectedMeasureAtoms.push(hit);
 
-          if (laserLineMesh) scene.remove(laserLineMesh);
+          if (laserLineMesh) {
+            scene.remove(laserLineMesh);
+            laserLineMesh.geometry.dispose();
+            laserLineMesh.material.dispose();
+            laserLineMesh = null;
+          }
 
           if (selectedMeasureAtoms.length >= 2) {
             const posA = selectedMeasureAtoms[0].currentPos;
@@ -3621,6 +3685,24 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   let frameCount = 0, lastTime = performance.now();
 
+  function getDiagnosticsSnapshot() {
+    return {
+      structure:activeStructureId,
+      collisionMode:activeCollisionMode,
+      fusionState,
+      atomCount:activeAtoms.filter(atom => !atom.removing).length,
+      bondCount:activeBonds.filter(bond => !bond.removing).length,
+      instancedMeshes:activeInstancedMeshes.length,
+      orbitLines:activeOrbitLines.length,
+      renderer:{
+        geometries:renderer.info.memory.geometries,
+        textures:renderer.info.memory.textures,
+        calls:renderer.info.render.calls,
+        triangles:renderer.info.render.triangles
+      }
+    };
+  }
+
   function sanitizeVector(v) {
     if (!v) return;
     if (isNaN(v.x) || !isFinite(v.x)) v.x = 0;
@@ -3676,6 +3758,7 @@ window.addEventListener('DOMContentLoaded', function() {
       frameCount++;
       if (now - lastTime >= 1000) {
         if (fpsVal) fpsVal.textContent = frameCount + ' FPS';
+        if (runtimeDiagnostics) runtimeDiagnostics.textContent = JSON.stringify(getDiagnosticsSnapshot());
         frameCount = 0;
         lastTime = now;
       }
@@ -3781,7 +3864,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
       // Remove fully shrunk atoms
       if (a.removing && a.currentScale < 0.05) {
-        if (a.labelSprite) moleculeGroup.remove(a.labelSprite);
+        disposeLabelSprite(a.labelSprite);
+        a.labelSprite = null;
         activeAtoms.splice(i, 1);
       }
     }
@@ -4023,6 +4107,10 @@ window.addEventListener('DOMContentLoaded', function() {
   } else {
     buildDNA();
   }
+
+  window.NULLA_DIAGNOSTICS = Object.freeze({
+    snapshot:getDiagnosticsSnapshot
+  });
 
   requestAnimationFrame(animate);
 });
