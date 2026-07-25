@@ -356,12 +356,14 @@ window.addEventListener('DOMContentLoaded', function() {
   // Active Atom Objects
   let activeAtoms = [];
   let activeBonds = [];
+  let spawnGeneration = 0;
   let activeInstancedMeshes = [];
   let activeBondInstancedMesh = null;
   let activeOrbitLines = [];
   let isDnaMode = false;
   let fusionState = 'idle';
   let fusionTimer = 0;
+  let fusionChargeDuration = 1;
   let camShakeTimer = 0;
   let fusionReactantA = 0;
   let fusionReactantB = 0;
@@ -619,6 +621,7 @@ window.addEventListener('DOMContentLoaded', function() {
   function spawnAtoms(atomList) {
     // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
     atomList = (atomList || []).filter(item => item && item.pos && typeof item.pos.clone === 'function');
+    const generation = ++spawnGeneration;
     const isInitial = activeAtoms.length === 0;
     const spawnDelay = isInitial ? 0 : 300;
 
@@ -635,6 +638,7 @@ window.addEventListener('DOMContentLoaded', function() {
     activeBonds.forEach(b => { b.removing = true; });
 
     const doSpawn = () => {
+      if (generation !== spawnGeneration) return;
       // Remove old atoms and their labels
       activeAtoms.filter(a => a.removing).forEach(a => {
         disposeLabelSprite(a.labelSprite);
@@ -740,6 +744,7 @@ window.addEventListener('DOMContentLoaded', function() {
             elData,
             isElectron: item.isElectron || false,
             noLabel: item.noLabel || false,
+            noBond: item.noBond || false,
             labelSprite,
             instancedMesh: instMesh,
             instIdx: idx,
@@ -796,7 +801,7 @@ window.addEventListener('DOMContentLoaded', function() {
         const newBonds = [];
         for (let i = 0; i < activeAtoms.length; i++) {
           for (let j = i + 1; j < activeAtoms.length; j++) {
-            if (activeAtoms[i].isElectron || activeAtoms[j].isElectron) continue;
+            if (activeAtoms[i].isElectron || activeAtoms[j].isElectron || activeAtoms[i].noBond || activeAtoms[j].noBond) continue;
             const start = activeAtoms[i].targetPos;
             const end = activeAtoms[j].targetPos;
             const dist = start.distanceTo(end);
@@ -806,7 +811,7 @@ window.addEventListener('DOMContentLoaded', function() {
             
             const sym1 = activeAtoms[i].elData.s;
             const sym2 = activeAtoms[j].elData.s;
-            if (sym1 === sym2) {
+            if (sym1 === sym2 && !activeBondCutoffWorld) {
               if (sym1 === 'Po') maxBondDist = 12.0;
               else if (['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(sym1)) maxBondDist = 13.0;
               else if (['Si', 'Ge', 'Sn'].includes(sym1)) maxBondDist = 11.0;
@@ -1453,6 +1458,14 @@ window.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    let nearestDistance = Infinity;
+    for (let i = 0; i < atoms.length; i++) {
+      for (let j = i + 1; j < atoms.length; j++) {
+        const distance = atoms[i].pos.distanceTo(atoms[j].pos);
+        if (distance > 0.1 && distance < nearestDistance) nearestDistance = distance;
+      }
+    }
+    activeBondCutoffWorld = Number.isFinite(nearestDistance) ? nearestDistance * 1.18 : null;
     spawnAtoms(atoms);
     updateTelemetry(
       reaction.name + ' (' + reaction.formula + ')',
@@ -1834,44 +1847,6 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // UNSTABLE SUPERHEAVY FISSION DECAY EVENT (Z > 118)
   // ═══════════════════════════════════════════════════════════════
-  function formFissionDecay(zA, zB, zResult) {
-    isDnaMode = false;
-    const atoms = [];
-
-    // Og (118) in the center
-    const ogAtoms = getElementAtoms(118, new THREE.Vector3(0, 0, 0), true);
-    atoms.push(...ogAtoms);
-
-    // Helium (Z=2) flying away
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    const dir = new THREE.Vector3(
-      Math.sin(phi) * Math.cos(theta),
-      Math.sin(phi) * Math.sin(theta),
-      Math.cos(phi)
-    );
-    const heTarget = dir.clone().multiplyScalar(95);
-
-    atoms.push({
-      z: 2,
-      pos: heTarget,
-      startPos: new THREE.Vector3(0, 0, 0),
-      scale: 2.3
-    });
-
-    spawnAtoms(atoms);
-    
-    const symA = EL[zA]?.s || 'X';
-    const symB = EL[zB]?.s || 'Y';
-    updateTelemetry(
-      `Unstable Fission Decay (Z = ${zResult})`,
-      `${symA} + ${symB} ➔ Og (118) + He (2) [α-Decay]`,
-      'Radionuclide Disintegration / Superheavy Fission',
-      'Instantaneous Alpha Decay (Exoenergetic)',
-      'Decayed (Half-life < 10⁻¹⁸ s) — Helium nuclei ejected'
-    );
-  }
-
   function createExplosion(pos, color1, color2) {
     playCollisionSound();
     const particleCount = activeCollisionMode === 'chemical' ? 600 : activeCollisionMode === 'fusion' ? 1500 : 1800;
@@ -1930,7 +1905,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     explosionParticles = new THREE.Points(geometry, material);
     scene.add(explosionParticles);
-    explosionTimer = 45;
+    explosionTimer = 0.75;
 
     // --- Dual Shockwave Rings & Core Volumetric Flash ---
     if (shockwaveRing) { scene.remove(shockwaveRing); shockwaveRing.geometry.dispose(); shockwaveRing.material.dispose(); }
@@ -2023,7 +1998,8 @@ window.addEventListener('DOMContentLoaded', function() {
     spawnAtoms(combinedList);
 
     fusionState = 'charging';
-    fusionTimer = 55;
+    fusionTimer = 0.9;
+    fusionChargeDuration = fusionTimer;
     fusionReactantA = zA;
     fusionReactantB = zB;
 
@@ -2054,7 +2030,7 @@ window.addEventListener('DOMContentLoaded', function() {
         z:1, col:i < protonCount ? 0xFF315F : 0xB9D2E8,
         pos:center.clone().add(local),
         startPos:(startCenter || center).clone().add(local.clone().multiplyScalar(0.3)),
-        scale:0.62, noLabel:true
+        scale:0.78, noLabel:true, noBond:true
       });
     }
     return atoms;
@@ -2102,7 +2078,8 @@ window.addEventListener('DOMContentLoaded', function() {
     });
     spawnAtoms(atoms);
     fusionState = 'charging';
-    fusionTimer = mode === 'fusion' ? 95 : 75;
+    fusionTimer = mode === 'fusion' ? 1.6 : 1.25;
+    fusionChargeDuration = fusionTimer;
     fusionReactantA = nuclear.isotopes[reaction.reactants[0]]?.Z || 1;
     fusionReactantB = nuclear.isotopes[reaction.reactants[1]]?.Z || 1;
     fusionTargetReaction = { isNuclear:true, nuclearMode:mode, nuclearReaction:reaction };
@@ -2153,10 +2130,23 @@ window.addEventListener('DOMContentLoaded', function() {
     reaction.products.forEach(([id, count]) => {
       for (let i = 0; i < count; i++) products.push(nuclear.isotopes[id]);
     });
-    products.forEach((isotope, index) => {
-      const angle = (index / Math.max(1, products.length)) * Math.PI * 2;
-      const distance = isotope.Z === 0 ? 42 : 24 + index * 3;
-      const center = new THREE.Vector3(Math.cos(angle) * distance, Math.sin(angle) * distance, (index % 3 - 1) * 7);
+    const heavyProducts = products.filter(isotope => isotope.Z > 0);
+    let heavyIndex = 0;
+    let lightIndex = 0;
+    products.forEach(isotope => {
+      let center;
+      if (isotope.Z > 0) {
+        if (heavyProducts.length === 1) {
+          center = new THREE.Vector3(-5, 0, 0);
+        } else {
+          center = new THREE.Vector3(heavyIndex === 0 ? -14 : 2, heavyIndex === 0 ? 4 : -4, (heavyIndex - 0.5) * 3);
+        }
+        heavyIndex++;
+      } else {
+        const angle = (lightIndex / Math.max(1, products.length - heavyProducts.length)) * Math.PI * 2;
+        center = new THREE.Vector3(-6 + Math.cos(angle) * 12, Math.sin(angle) * 10, (lightIndex % 3 - 1) * 4);
+        lightIndex++;
+      }
       atoms.push(...buildNucleusVisual(isotope, center, new THREE.Vector3()));
     });
     spawnAtoms(atoms);
@@ -2592,18 +2582,19 @@ window.addEventListener('DOMContentLoaded', function() {
       spawnAtoms(atoms);
 
       fusionState = 'charging';
-      fusionTimer = 55;
+      fusionTimer = 0.9;
+      fusionChargeDuration = fusionTimer;
       fusionReactantA = selectedReactants[0].z;
       fusionReactantB = selectedReactants[1].z;
 
       fusionTargetReaction = reaction;
 
       updateTelemetry(
-        `Multi-Fusion Acceleration (${selectedReactants.length} Elements)`,
+        `Multi-Reactant Collision (${selectedReactants.length} Elements)`,
         selectedReactants.map(r => r.sym).join(' + '),
         `Collision State: CONVERGING RADIANTS TO CENTROID`,
-        `Engaging Quantum Shockwave Generator`,
-        `Synthesizing Multi-Element Complex`
+        `Preparing catalogued chemical pathway`,
+        `Educational collision visualization`
       );
     }
   }
@@ -2949,6 +2940,8 @@ window.addEventListener('DOMContentLoaded', function() {
   // INTERACTIVE GUIDED ONBOARDING TUTORIAL ENGINE
   // ═══════════════════════════════════════════════════════════════
   let currentTutorialStep = 0;
+  let onboardingDismissed = false;
+  let onboardingTimer = null;
   const btnTutorial = document.getElementById('btn-tutorial');
   const onboardingOverlay = document.getElementById('onboarding-overlay');
   const onboardingTitle = document.getElementById('onboarding-title');
@@ -2986,7 +2979,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function showTutorialStep(idx) {
-    if (!onboardingOverlay) return;
+    if (!onboardingOverlay || onboardingDismissed) return;
     const education = getEducationContent();
     const steps = education?.tutorial || [];
     if (!steps.length) return;
@@ -3015,6 +3008,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnTutorial) {
     btnTutorial.addEventListener('click', () => {
       playTone(700, 'sine', 0.15);
+      onboardingDismissed = false;
       showTutorialStep(0);
     });
   }
@@ -3023,6 +3017,7 @@ window.addEventListener('DOMContentLoaded', function() {
     btnNextOnboarding.addEventListener('click', () => {
       playTone(600, 'sine', 0.1);
       if (currentTutorialStep >= 2) {
+        onboardingDismissed = true;
         if (onboardingOverlay) onboardingOverlay.style.display = 'none';
       } else {
         showTutorialStep(currentTutorialStep + 1);
@@ -3032,12 +3027,14 @@ window.addEventListener('DOMContentLoaded', function() {
 
   if (btnCloseOnboarding) {
     btnCloseOnboarding.addEventListener('click', () => {
+      onboardingDismissed = true;
+      if (onboardingTimer) clearTimeout(onboardingTimer);
       if (onboardingOverlay) onboardingOverlay.style.display = 'none';
     });
   }
 
   if (!location.hash && !paramZ && !paramFuse) {
-    setTimeout(() => {
+    onboardingTimer = setTimeout(() => {
       showTutorialStep(0);
     }, 1200);
   }
@@ -3332,7 +3329,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // RENDER LOOP — Superfluid Transitions & Fail-Safe Guard Engine
   // ═══════════════════════════════════════════════════════════════
-  let frameCount = 0, lastTime = performance.now();
+  let frameCount = 0, lastTime = performance.now(), lastAnimationTime = performance.now();
 
   function getDiagnosticsSnapshot() {
     return {
@@ -3341,6 +3338,8 @@ window.addEventListener('DOMContentLoaded', function() {
       fusionState,
       atomCount:activeAtoms.filter(atom => !atom.removing).length,
       bondCount:activeBonds.filter(bond => !bond.removing).length,
+      bondCutoffWorld:activeBondCutoffWorld,
+      spawnGeneration,
       instancedMeshes:activeInstancedMeshes.length,
       orbitLines:activeOrbitLines.length,
       renderer:{
@@ -3393,6 +3392,8 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!renderer.xr?.isPresenting) requestAnimationFrame(animate);
 
     try {
+      const elapsedSeconds = Math.min(1, Math.max(0.001, (now - lastAnimationTime) / 1000));
+      lastAnimationTime = now;
       frameCount++;
       if (now - lastTime >= 1000) {
         if (fpsVal) fpsVal.textContent = frameCount + ' FPS';
@@ -3591,12 +3592,12 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     if (nuclearChargeField) {
-      const chargeProgress = fusionState === 'charging' ? Math.max(0, fusionTimer / 95) : 0;
+      const chargeProgress = fusionState === 'charging' ? Math.max(0, fusionTimer / Math.max(0.001, fusionChargeDuration)) : 0;
       nuclearChargeField.children.forEach((ring, index) => {
-        ring.rotation.x += 0.012 + index * 0.003;
-        ring.rotation.y -= 0.009 + index * 0.002;
+        ring.rotation.x += (0.012 + index * 0.003) * elapsedSeconds * 60;
+        ring.rotation.y -= (0.009 + index * 0.002) * elapsedSeconds * 60;
         ring.scale.setScalar(0.72 + chargeProgress * 0.5 + Math.sin(t * 5 + index) * 0.04);
-        ring.material.opacity = fusionState === 'idle' ? ring.material.opacity * 0.86 : 0.22 + (1 - chargeProgress) * 0.5;
+        ring.material.opacity = fusionState === 'idle' ? ring.material.opacity * Math.pow(0.86, elapsedSeconds * 60) : 0.22 + (1 - chargeProgress) * 0.5;
       });
       if (fusionState === 'idle' && nuclearChargeField.children[0].material.opacity < 0.01) {
         scene.remove(nuclearChargeField);
@@ -3610,17 +3611,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Fusion state machine
     if (fusionState === 'charging') {
-      fusionTimer--;
-      if (fusionTimer === 0) {
+      fusionTimer = Math.max(0, fusionTimer - elapsedSeconds);
+      if (fusionTimer <= 0) {
         fusionState = 'colliding';
-        fusionTimer = 22;
+        fusionTimer = 0.36;
         activeAtoms.forEach(a => {
           a.targetPos.set(0, 0, 0);
         });
       }
     } else if (fusionState === 'colliding') {
-      fusionTimer--;
-      if (fusionTimer === 0) {
+      fusionTimer = Math.max(0, fusionTimer - elapsedSeconds);
+      if (fusionTimer <= 0) {
         fusionState = 'idle';
         
         const isFiss = activeCollisionMode === 'fission';
@@ -3632,9 +3633,7 @@ window.addEventListener('DOMContentLoaded', function() {
         camShakeTimer = 25;
         
         if (fusionTargetReaction) {
-          if (fusionTargetReaction.isFission) {
-            formFissionDecay(fusionTargetReaction.zA, fusionTargetReaction.zB, fusionTargetReaction.zResult);
-          } else if (fusionTargetReaction.isNuclear) {
+          if (fusionTargetReaction.isNuclear) {
             formNuclearProducts(fusionTargetReaction);
           } else if (fusionTargetReaction.isInert) {
             formInertMixture(fusionTargetReaction.zA, fusionTargetReaction.zB);
@@ -3647,7 +3646,7 @@ window.addEventListener('DOMContentLoaded', function() {
           updateTelemetry(
             `No Stable Reaction: ${EL[fusionReactantA].s} + ${EL[fusionReactantB].s}`,
             `${EL[fusionReactantA].s} + ${EL[fusionReactantB].s} collided at high kinetic energy`,
-            'Fusion State: DECAY / DISSOCIATED',
+            'Chemical collision: DISSOCIATED',
             'No standard stable bond arrangement formed',
             'Try elements with stable reaction paths in the periodic table!'
           );
@@ -3657,8 +3656,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Animate shockwave expansion rings & core flash
     if (shockwaveOpacity > 0.01) {
-      shockwaveScale += 2.2;
-      shockwaveOpacity *= 0.86;
+      const effectFrames = elapsedSeconds * 60;
+      shockwaveScale += 2.2 * effectFrames;
+      shockwaveOpacity *= Math.pow(0.86, effectFrames);
 
       if (shockwaveRing) {
         shockwaveRing.scale.set(shockwaveScale, shockwaveScale, shockwaveScale);
@@ -3684,18 +3684,19 @@ window.addEventListener('DOMContentLoaded', function() {
     // Animate explosion particles
     if (explosionParticles && explosionTimer > 0) {
       const positions = explosionParticles.geometry.attributes.position.array;
+      const particleFrames = elapsedSeconds * 60;
       for (let i = 0; i < explosionVelocities.length; i++) {
         const vel = explosionVelocities[i];
-        positions[i * 3] += vel.x;
-        positions[i * 3 + 1] += vel.y;
-        positions[i * 3 + 2] += vel.z;
-        vel.multiplyScalar(0.95);
+        positions[i * 3] += vel.x * particleFrames;
+        positions[i * 3 + 1] += vel.y * particleFrames;
+        positions[i * 3 + 2] += vel.z * particleFrames;
+        vel.multiplyScalar(Math.pow(0.95, particleFrames));
       }
       explosionParticles.geometry.attributes.position.needsUpdate = true;
-      explosionParticles.material.opacity = explosionTimer / 35;
-      explosionTimer--;
+      explosionParticles.material.opacity = Math.min(1, explosionTimer / 0.75);
+      explosionTimer = Math.max(0, explosionTimer - elapsedSeconds);
       
-      if (explosionTimer === 0) {
+      if (explosionTimer <= 0) {
         scene.remove(explosionParticles);
         explosionParticles.geometry.dispose();
         explosionParticles.material.dispose();
