@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
@@ -9,6 +9,12 @@ const i18nSource = readFileSync(new URL('../src/i18n/i18n.js', import.meta.url),
 const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
+
+for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
+  const sourcePath = match[1].split('?')[0];
+  if (/^https?:/.test(sourcePath)) continue;
+  assert.ok(existsSync(new URL(`../${sourcePath}`, import.meta.url)), `missing local script ${sourcePath}`);
+}
 
 const materials = [
   ['btn-nacl', 'buildNaclCrystal'],
@@ -27,6 +33,7 @@ for (const [buttonId, builder] of materials) {
 
 assert.doesNotMatch(html, /id="btn-cell"|organelle-nav-panel/, 'cell UI must stay removed');
 assert.doesNotMatch(app, /buildEukaryoticCell/, 'cell builder must stay removed');
+assert.doesNotMatch(app, /removedLegacyCellRenderer|Eukaryotic Animal Cell|Organelle Cutaway/i, 'legacy cell renderer must not remain in the runtime');
 assert.match(app, /new MediaRecorder\(/, 'video recorder is not connected');
 assert.match(app, /lennardJonesForceMagnitude/, 'Lennard-Jones model is absent');
 assert.match(app, /activeThermalProfile/, 'material-specific phase profile is absent');
