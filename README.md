@@ -43,7 +43,7 @@ Focus:
 - keep control of long-running projects
 - stay **local-first**
 
-R&D by **Nemeth Corp**.
+R&D by **Nulla-Labs// by Nemeth Corp.**.
 
 ---
 
@@ -254,9 +254,9 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 <div align="center">
   <sub>
-    <strong>Ethernium</strong> — Practical AI tools with a local-first approach
+    <strong>Ethernium Ecosystem</strong> — Practical AI tools with a local-first approach
     <br/>
-    R&amp;D by <strong>Nemeth Corp</strong>
+    R&amp;D by <strong>Nulla-Labs R&D</strong>
   </sub>
   <br/><br/>
   <img src="Nemeth-mark.png" alt="Ethernium" width="48" />
