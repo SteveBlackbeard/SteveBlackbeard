@@ -34,9 +34,9 @@
 
 ---
 
-### Ethernium
+### Ethernium 
 
-**Ethernium Ecosystem** builds practical AI tools for people who work heavily with language models.
+**Nulla-Labs** builds practical AI tools for people who work heavily with language models from **Ethernium**
 
 Focus:
 - reduce cost
