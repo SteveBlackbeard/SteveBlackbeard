@@ -181,7 +181,7 @@ Visual engines and experimental interfaces:
 
 ### Nemeth Corp — R&D
 
-**Nemeth Corp** is the R&D brand behind Ethernium.  
+**Nilla-Labs** is the R&D brand behind Ethernium. Both under Nemeth Corp. 
 It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
 
 <div align="center">
