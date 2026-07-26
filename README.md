@@ -2,7 +2,9 @@
 <div align="center">
 
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
+
   <br/><br/>
+
   <p align="center">
     <code>[AI TOOLS]</code> &nbsp;•&nbsp;
     <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
@@ -10,7 +12,7 @@
   </p>
 
   <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/" target="_blank">
+    <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-launch.svg?v=504" alt="Launch Live Demo" width="420" />
     </a>
   </p>
@@ -22,7 +24,7 @@
     <a href="#nemeth-corp--rd">
       <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
     </a>
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/" target="_blank">
+    <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" />
     </a>
   </p>
@@ -44,19 +46,6 @@ R&D by **Nemeth Corp**.
 
 ---
 
-### Public Portfolio
-
-<div align="center">
-  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
-  </a>
-  <p align="center">
-    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
-  </p>
-</div>
-
----
-
 ### Main Projects
 
 #### Chronolith
@@ -69,7 +58,7 @@ Prevents semantic drift and proves the real project state over time.
 - Continuity across human–AI sessions  
 - Editions: Lite · Pro · Omega  
 
-[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) 
+[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
 
 ---
 
@@ -82,7 +71,8 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 - Security scanning + intelligent model routing  
 - Signed capability grants  
 
-[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) 
+[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
+
 ---
 
 #### Fonts Forge
@@ -97,9 +87,22 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 ---
 
-### Interactive Lab // Educative Tool
+### Public Portfolio
 
-Visual engines and experimental interfaces live here:
+<div align="center">
+  <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
+  </a>
+  <p align="center">
+    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
+  </p>
+</div>
+
+---
+
+### Interactive Lab
+
+Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
@@ -109,7 +112,9 @@ Visual engines and experimental interfaces live here:
     <sub><i>Real B-DNA double helix of the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
+
 <br/>
+
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
     <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
@@ -196,7 +201,6 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 ### Vision
 
-**???**
 <div align="center">
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-hologram.png" alt="Ethernium Vision" width="100%" />
 </div>
@@ -210,5 +214,5 @@ It develops the software architectures, GPU rendering engines, autonomous system
     R&amp;D by <strong>Nemeth Corp</strong>
   </sub>
   <br/><br/>
-  <img src="Nemeth-mark.png" alt="Ethernium" width="48" />
+  <img src="ethernium-mark.png" alt="Ethernium" width="48" />
 </div>
