@@ -179,9 +179,9 @@ Visual engines and experimental interfaces:
 
 ---
 
-### Nemeth Corp — R&D
+### Nulla-Labs — R&D
 
-**Nilla-Labs** is the R&D brand behind Ethernium. Both under Nemeth Corp. 
+**Nulla-Labs** is the R&D brand behind Ethernium. Both under Nemeth Corp. 
 It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
 
 <div align="center">
@@ -256,7 +256,7 @@ It develops the software architectures, GPU rendering engines, autonomous system
   <sub>
     <strong>Ethernium Ecosystem</strong> — Practical AI tools with a local-first approach
     <br/>
-    R&amp;D by <strong>Nulla-Labs</strong>
+    <strong>Nemeth Corp.</strong>
   </sub>
   <br/><br/>
   <img src="Nemeth-mark.png" alt="Ethernium" width="48" />
