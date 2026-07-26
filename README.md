@@ -256,7 +256,7 @@ It develops the software architectures, GPU rendering engines, autonomous system
   <sub>
     <strong>Ethernium Ecosystem</strong> — Practical AI tools with a local-first approach
     <br/>
-    R&amp;D by <strong>Nulla-Labs R&D</strong>
+    R&amp;D by <strong>Nulla-Labs</strong>
   </sub>
   <br/><br/>
   <img src="Nemeth-mark.png" alt="Ethernium" width="48" />
