@@ -126,7 +126,7 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 <table>
 <tr>
 <td width="42%" valign="middle">
-  <img src="logo-fonts-forge.png" alt="Fonts Forge by Ethernium" width="100%" />
+  <img src="logo-fontforge.png" alt="Fonts Forge by Ethernium" width="100%" />
 </td>
 <td width="58%" valign="middle">
 
