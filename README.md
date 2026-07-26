@@ -36,7 +36,7 @@
 
 ### Ethernium
 
-**Ethernium** builds practical AI tools for people who work heavily with language models.
+**Ethernium Ecosystem** builds practical AI tools for people who work heavily with language models.
 
 Focus:
 - reduce cost
