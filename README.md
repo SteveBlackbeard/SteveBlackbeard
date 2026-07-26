@@ -34,9 +34,9 @@
 
 ---
 
-### Ethernium 
+### Ethernium
 
-**Nulla-Labs** builds practical AI tools for people who work heavily with language models from **Ethernium**
+**Ethernium** builds practical AI tools for people who work heavily with language models.
 
 Focus:
 - reduce cost
@@ -71,6 +71,10 @@ R&D by **Nemeth Corp**.
 ### Main Projects
 
 #### Chronolith
+<div align="center">
+  <img src="logo-chronolith-card.svg" alt="Chronolith by Ethernium" width="100%" />
+</div>
+
 **Cryptographic integrity for long-running AI projects**
 
 Merkle Trees + Ed25519 + Bitcoin anchoring (OpenTimestamps).  
@@ -85,6 +89,10 @@ Prevents semantic drift and proves the real project state over time.
 ---
 
 #### Seneschal
+<div align="center">
+  <img src="logo-seneschal-card.svg" alt="Seneschal by Ethernium" width="100%" />
+</div>
+
 **Efficiency and security layer for AI workflows**
 
 Local-first context selection, token reduction, and prompt/secret scanning.
