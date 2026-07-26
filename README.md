@@ -71,9 +71,13 @@ R&D by **Nemeth Corp**.
 ### Main Projects
 
 #### Chronolith
-<div align="center">
-  <img src="logo-chronolith-card.svg" alt="Chronolith by Ethernium" width="100%" />
-</div>
+
+<table>
+<tr>
+<td width="42%" valign="middle">
+  <img src="logo-chronolith.png" alt="Chronolith by Ethernium" width="100%" />
+</td>
+<td width="58%" valign="middle">
 
 **Cryptographic integrity for long-running AI projects**
 
@@ -86,12 +90,17 @@ Prevents semantic drift and proves the real project state over time.
 
 [Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
 
+</td>
+</tr>
+</table>
+
 ---
 
 #### Seneschal
-<div align="center">
-  <img src="logo-seneschal-card.svg" alt="Seneschal by Ethernium" width="100%" />
-</div>
+
+<table>
+<tr>
+<td width="58%" valign="middle">
 
 **Efficiency and security layer for AI workflows**
 
@@ -103,9 +112,24 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 
 [Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
 
+</td>
+<td width="42%" valign="middle">
+  <img src="logo-seneschal.png" alt="Seneschal by Ethernium" width="100%" />
+</td>
+</tr>
+</table>
+
 ---
 
 #### Fonts Forge
+
+<table>
+<tr>
+<td width="42%" valign="middle">
+  <img src="logo-fonts-forge.png" alt="Fonts Forge by Ethernium" width="100%" />
+</td>
+<td width="58%" valign="middle">
+
 **Premium toolkit for designing and generating vector fonts**
 
 Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, symmetry engine, and forensic watermarking.
@@ -114,6 +138,10 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 - Focused on branding and custom typography  
 
 [Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
+
+</td>
+</tr>
+</table>
 
 ---
 
