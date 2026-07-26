@@ -46,6 +46,17 @@ R&D by **Nemeth Corp**.
 
 ---
 
+### Core Initiatives
+
+| Initiative | Focus | Core |
+|------------|--------|------|
+| **[Chronolith](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)** | Long-running AI integrity | Merkle · Ed25519 · Bitcoin anchor |
+| **[Seneschal](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)** | AI cost & security | Token reduction · Prompt scanning |
+| **[Fonts Forge](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)** | Custom typography | Raster → TTF/WOFF · Watermarking |
+| **[Interactive Lab](https://steveblackbeard.github.io/SteveBlackbeard/demo/)** | Scientific visualization | WebGL · B-DNA · IUPAC |
+
+---
+
 ### Main Projects
 
 #### Chronolith
