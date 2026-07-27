@@ -43,7 +43,7 @@ Focus:
 - keep control of long-running projects
 - stay **local-first**
 
-R&D by **Nulla-Labs// by Nemeth Corp.**.
+R&D by **Nulla-Labs// Nemeth Corp.**.
 
 ---
 
