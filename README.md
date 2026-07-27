@@ -4,13 +4,16 @@
   <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
   <br/><br/>
   <p align="center">
+  <code>[ECOSYSTEM]</code> &nbsp;  &nbsp;
+  </p>
+  <p align="center">
     <code>[AI TOOLS]</code> &nbsp;•&nbsp;
     <code>[LOCAL-FIRST]</code> &nbsp;•&nbsp;
     <code>[OPEN SOURCE]</code>
   </p>
 
   <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-launch.svg?v=504" alt="Launch Live Demo" width="420" />
     </a>
   </p>
@@ -22,7 +25,7 @@
     <a href="#nemeth-corp--rd">
       <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
     </a>
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
+    <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
       <img src="badge-telemetry.svg?v=504" alt="Live Demo" width="230" />
     </a>
   </p>
@@ -40,7 +43,7 @@ Focus:
 - keep control of long-running projects
 - stay **local-first**
 
-R&D by **Nemeth Corp**.
+R&D by **Nulla-Labs**, part of **Nemeth Corp.**
 
 ---
 
@@ -57,9 +60,25 @@ R&D by **Nemeth Corp**.
 
 ---
 
-### Main Projects
+### Core Initiatives
+
+<div align="center">
+  <img src="core-initiatives.svg" alt="Ethernium Core Initiatives" width="100%" />
+</div>
+
+---
+
+### ***Main Projects***
 
 #### Chronolith
+
+<table>
+<tr>
+<td width="42%" valign="middle">
+  <img src="logo-chronolith.png" alt="Chronolith by Ethernium" width="100%" />
+</td>
+<td width="58%" valign="middle">
+
 **Cryptographic integrity for long-running AI projects**
 
 Merkle Trees + Ed25519 + Bitcoin anchoring (OpenTimestamps).  
@@ -69,11 +88,20 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 - Continuity across human–AI sessions  
 - Editions: Lite · Pro · Omega  
 
-[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium) 
+[Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
+
+</td>
+</tr>
+</table>
 
 ---
 
 #### Seneschal
+
+<table>
+<tr>
+<td width="58%" valign="middle">
+
 **Efficiency and security layer for AI workflows**
 
 Local-first context selection, token reduction, and prompt/secret scanning.
@@ -82,10 +110,26 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 - Security scanning + intelligent model routing  
 - Signed capability grants  
 
-[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium) 
+[Repo](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
+
+</td>
+<td width="42%" valign="middle">
+  <img src="logo-seneschal.png" alt="Seneschal by Ethernium" width="100%" />
+</td>
+</tr>
+</table>
+
 ---
 
 #### Fonts Forge
+
+<table>
+<tr>
+<td width="42%" valign="middle">
+  <img src="logo-fontforge.png" alt="Fonts Forge by Ethernium" width="100%" />
+</td>
+<td width="58%" valign="middle">
+
 **Premium toolkit for designing and generating vector fonts**
 
 Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, symmetry engine, and forensic watermarking.
@@ -95,11 +139,15 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 [Repo](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium)
 
+</td>
+</tr>
+</table>
+
 ---
 
-### Interactive Lab // Educative Tool
+### Interactive Lab
 
-Visual engines and experimental interfaces live here:
+Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
@@ -109,7 +157,9 @@ Visual engines and experimental interfaces live here:
     <sub><i>Educational B-DNA visualization inspired by the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
+
 <br/>
+
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
     <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
@@ -129,9 +179,9 @@ Visual engines and experimental interfaces live here:
 
 ---
 
-### Nemeth Corp — R&D
+### Nulla-Labs — R&D
 
-**Nemeth Corp** is the R&D brand behind Ethernium.  
+**Nulla-Labs** is the R&D brand behind Ethernium, within Nemeth Corp.
 It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
 
 <div align="center">
@@ -205,9 +255,9 @@ Build practical, local-first systems whose claims can be inspected, reproduced, 
 
 <div align="center">
   <sub>
-    <strong>Ethernium</strong> — Practical AI tools with a local-first approach
+    <strong>Ethernium Ecosystem</strong> — Practical AI tools with a local-first approach
     <br/>
-    R&amp;D by <strong>Nemeth Corp</strong>
+    <strong>Nemeth Corp.</strong>
   </sub>
   <br/><br/>
   <img src="ethernium-emblem-circle.png" alt="Ethernium" width="48" />
