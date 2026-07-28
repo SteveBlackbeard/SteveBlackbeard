@@ -2,7 +2,8 @@
   "release": "2026-07-28-v101",
   "algorithm": "portable-sha256-lf-text",
   "files": {
-    ".gitattributes": "ad426f35d50947dcfb5403f0e480c48998f577ff8de5aa4b6fc41002b70f3f03",
+    ".gitattributes": "1d286c41100db83c55ca0d74d91b327190aedb29e467c958120c694f4bac06f7",
+    ".github/workflows/companion-telemetry.yml": "cb13f4b74eaa7bb1a3816d12fedf7b3312561179ead58a41225a400353ed85a7",
     ".github/workflows/static.yml": "15e8169c9063c0dec391fe08f7b3130882f3987a32038f5c145854c651f5933b",
     "MASTER_PLAN.md": "9d263809135d94e563013348f9abea5820ce46463c229a64d6911971e7d543ee",
     "VERIFICATION.md": "798bd27e0922de97c7ea21669e808c812e1cf2d43a3bd4bff4fe0242adb9bd5f",
