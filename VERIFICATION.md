@@ -56,7 +56,13 @@ git diff --check
 
 ## Release state
 
-All release gates pass on `codex/system-completion`. The user explicitly authorized
-commit and push. The release files are frozen by the SHA-256 manifest in
-`demo/tests/release-baseline.json`; the physical backup remains available at
-`backups/2026-07-25_1553_45d9fe0`.
+The v101 automated gates pass on `codex/system-completion` and GitHub Pages. The
+release files are frozen by the portable SHA-256 manifest in
+`demo/tests/release-baseline.json`. The v100 rollback is preserved by tag
+`demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, and physical archive
+`backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip`.
+
+The in-app browser automation transport failed before page attachment with an
+environment asset-path error. This is recorded as unavailable rather than reported
+as a v101 visual pass. Local/public HTTP checks and prior v100 visual evidence passed;
+final human visual comparison remains a manual release review.

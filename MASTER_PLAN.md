@@ -19,7 +19,7 @@
 | Progressive disclosure | PASS | Basic default, Laboratory and Scientific Data share one stateful engine |
 | Responsive / accessibility | PASS | Mobile panel separation, keyboard controls, focus-return and dialog semantics |
 | Soak / performance | PASS | 60 rapid transitions; geometries ≤3, textures ≤1, no runtime errors |
-| Release v101 | IN VERIFICATION | Static, scientific, local-server and portable SHA-256 gates required before promotion |
+| Release v101 | PASS (AUTOMATED) | Static, scientific, local/public-server, CI and portable SHA-256 gates passed; integrated-browser visual automation unavailable |
 
 ### Regression rule
 
