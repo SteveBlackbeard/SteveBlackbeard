@@ -6,10 +6,17 @@ import { fileURLToPath } from 'node:url';
 const root = new URL('../../', import.meta.url);
 const baseline = JSON.parse(readFileSync(new URL('./release-baseline.json', import.meta.url), 'utf8'));
 const actual = {};
+const portableTextExtensions = new Set(['.html','.js','.mjs','.json','.md','.yml','.yaml','.css','.svg','.txt']);
+
+function portableBytes(relativePath, bytes) {
+  const extension = relativePath.slice(relativePath.lastIndexOf('.')).toLowerCase();
+  if (!portableTextExtensions.has(extension)) return bytes;
+  return Buffer.from(bytes.toString('utf8').replace(/\r\n?/g,'\n'),'utf8');
+}
 
 for (const relativePath of Object.keys(baseline.files)) {
   const bytes = readFileSync(new URL(relativePath, root));
-  actual[relativePath] = createHash('sha256').update(bytes).digest('hex');
+  actual[relativePath] = createHash('sha256').update(portableBytes(relativePath,bytes)).digest('hex');
 }
 
 if (process.argv.includes('--print')) {

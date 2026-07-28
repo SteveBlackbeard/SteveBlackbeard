@@ -4,21 +4,22 @@
 
 | Gate | Current state | Required evidence |
 |---|---|---|
-| Reversible baseline | PASS | Backup `backups/2026-07-25_1553_45d9fe0` and branch `codex/system-completion` |
+| Reversible baseline | PASS | Tag `demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, physical ZIP `backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip` |
 | Startup / white canvas | PASS | Default B-DNA plus guarded URL parameters |
 | Materials bar | PASS | Six connected builders and smoke contracts |
 | Chemical catalogue | PASS | Unknown routes rejected; catalogued formulas validated |
 | Chemical geometry | PASS | Nearest-neighbour bond cutoff; rock-salt family visual test |
 | Nuclear separation | PASS | Independent fusion/fission controls and A/Z validation |
-| Nuclear runtime | PASS | FPS-independent timing, visible products, zero chemical nucleon bonds |
+| Nuclear runtime | PASS | FPS-independent timing, A-weighted balanced product layout, no overlapping three-body products |
 | Thermodynamics | PASS WITH MODEL LIMIT | Entity profiles; educational motion explicitly labelled non-predictive |
 | Measurement | PASS | Å/pm distance and angle calculation contracts |
 | Recording / sharing / XR | PASS | MediaRecorder, state URL, and real immersive-session request |
 | Eleven-language static UI | PASS | Identical locale keys, tutorial, guide, quiz, RTL Arabic |
-| Eleven-language dynamic telemetry | PASS | 11-key parity, live locale remap, Arabic RTL, tutorial and quiz |
+| Eleven-language dynamic telemetry | PASS | 11-key parity, live locale remap, Arabic RTL, seven-mission tutorial and quiz |
+| Progressive disclosure | PASS | Basic default, Laboratory and Scientific Data share one stateful engine |
 | Responsive / accessibility | PASS | Mobile panel separation, keyboard controls, focus-return and dialog semantics |
 | Soak / performance | PASS | 60 rapid transitions; geometries ≤3, textures ≤1, no runtime errors |
-| Release | PASS | Static, scientific, browser, responsive and SHA-256 gates completed |
+| Release v101 | IN VERIFICATION | Static, scientific, local-server and portable SHA-256 gates required before promotion |
 
 ### Regression rule
 

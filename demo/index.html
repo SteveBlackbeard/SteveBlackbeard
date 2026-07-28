@@ -10,6 +10,21 @@
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html, body { width:100%; height:100%; overflow:hidden; background:#020306; font-family:'Fira Code', monospace; color:#d0e0ff; }
+    body[data-experience="basic"] .experience-lab,
+    body[data-experience="basic"] .experience-science,
+    body[data-experience="lab"] .experience-science { display:none !important; }
+    .experience-mode-bar { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; margin:-2px 0 8px; padding:4px; border:1px solid rgba(0,240,255,.22); border-radius:11px; background:rgba(3,8,16,.72); }
+    .experience-mode-btn { min-height:28px; padding:5px 4px; border-radius:8px; border:1px solid rgba(255,255,255,.2); color:#fff; background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(10,15,25,.88)); font:800 7.5px 'Orbitron',sans-serif; letter-spacing:.4px; cursor:pointer; }
+    .experience-mode-btn[aria-selected="true"] { color:#00FFCF; border-color:#00F0FF; background:linear-gradient(180deg,rgba(0,240,255,.24),rgba(8,18,28,.95)); box-shadow:0 0 14px rgba(0,240,255,.2),inset 0 1px rgba(255,255,255,.3); }
+    #experience-mode-description { min-height:25px; margin:0 0 8px; color:rgba(255,255,255,.8); font-size:8.5px; line-height:1.4; }
+    .thermal-status { width:100%; margin-top:4px; }
+    .thermal-meter { height:4px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.12); }
+    #phase-progress-fill { display:block; height:100%; width:0; border-radius:inherit; background:linear-gradient(90deg,#00A8FF,#00FF9D,#FFB000,#FF325F); transition:width .25s ease; }
+    #phase-transition-status { display:block; margin-top:3px; color:rgba(255,255,255,.72); font-size:7.5px; line-height:1.35; }
+    .tutorial-objective { margin:8px 0 12px; padding:7px 9px; border-radius:8px; font-size:8.5px; line-height:1.35; border:1px solid rgba(255,215,0,.35); background:rgba(255,215,0,.08); color:#FFE38B; }
+    .tutorial-objective[data-complete="true"] { border-color:rgba(0,255,157,.5); background:rgba(0,255,157,.1); color:#8CFFD4; }
+    .tutorial-highlight { outline:2px solid #00FF9D !important; outline-offset:4px; animation:tutorialPulse 1.2s ease-in-out infinite alternate; }
+    @keyframes tutorialPulse { from { filter:drop-shadow(0 0 4px rgba(0,255,157,.35)); } to { filter:drop-shadow(0 0 14px rgba(0,255,157,.85)); } }
 
     #webgl-canvas { position:fixed; top:0; left:0; width:100vw; height:100vh; display:block; z-index:0; touch-action:none; }
 
@@ -148,6 +163,7 @@
       box-shadow:0 8px 20px rgba(255,255,255,0.22), inset 0 1px 2px rgba(255,255,255,0.7);
       border-color:rgba(255,255,255,0.65);
     }
+    #btn-mix { border-color:rgba(112,190,255,.55); text-shadow:0 0 8px rgba(112,190,255,.8); }
     .nuclear-mode-bar {
       display:flex; gap:5px; margin-top:4px; padding:5px 8px; border-radius:10px;
       background:rgba(8,12,20,.84); border:1px solid rgba(255,110,0,.26);
@@ -244,6 +260,7 @@
       .stat-chip { flex:0 0 auto; padding:4px 8px; font-size:7.5px; }
       .pt-el { min-height:22px; padding:2px 0; }
       .pt-el-sym { font-size:8px; }
+      #onboarding-overlay { bottom:10px !important; width:calc(100vw - 16px) !important; }
       .pt-el-num { font-size:5.5px; }
       .pt-legend { gap:4px; }
       .fusion-bar { padding:5px 6px; overflow-x:auto; justify-content:flex-start; }
@@ -254,7 +271,7 @@
     }
   </style>
 </head>
-<body>
+<body data-experience="basic">
   <canvas id="webgl-canvas"></canvas>
   <output id="runtime-diagnostics" hidden aria-hidden="true"></output>
 
@@ -266,7 +283,7 @@
     <div style="display:flex; align-items:center; gap:8px;">
       <span class="hud-title">NULLA-LABS // IUPAC 3D SYNTHESIS</span>
       <select id="language-selector" aria-label="Language"></select>
-      <div style="display:flex; gap:3px; margin-left:6px;">
+      <div class="experience-science" style="display:flex; gap:3px; margin-left:6px;">
         <button id="btn-quality-low" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(255,255,255,0.25); background:rgba(18,24,36,0.8); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">LOW</button>
         <button id="btn-quality-med" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(0,240,255,0.6); background:rgba(0,240,255,0.2); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">MED</button>
         <button id="btn-quality-ultra" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(255,255,255,0.25); background:rgba(18,24,36,0.8); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">ULTRA</button>
@@ -277,49 +294,59 @@
       <button id="btn-tutorial" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(0,255,157,0.5); background:rgba(0,255,157,0.25); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🚀 TUTORIAL</button>
       <button id="btn-docs" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(0,240,255,0.4); background:rgba(0,240,255,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">📖 DOCS</button>
       <button id="btn-quiz" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(255,215,0,0.4); background:rgba(255,215,0,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🎓 QUIZ EDUCATIVO</button>
-      <button id="btn-share-url" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(0,255,157,0.4); background:rgba(0,255,157,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🔗 SHARE</button>
-      <button id="btn-webxr" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(191,0,255,0.4); background:rgba(191,0,255,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🥽 VR / WEBXR</button>
-      <span class="hud-badge" id="gpu-status-badge">▸ WEBGPU / WEBGL2 · 118 ELEMENTS</span>
+      <button class="experience-lab" id="btn-share-url" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(0,255,157,0.4); background:rgba(0,255,157,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🔗 SHARE</button>
+      <button class="experience-science" id="btn-webxr" style="padding:4px 8px; border-radius:6px; border:1px solid rgba(191,0,255,0.4); background:rgba(191,0,255,0.15); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8px; font-weight:700; cursor:pointer;">🥽 VR / WEBXR</button>
+      <span class="hud-badge experience-science" id="gpu-status-badge">▸ WEBGPU / WEBGL2 · 118 ELEMENTS</span>
     </div>
   </div>
 
   <!-- TELEMETRY PANEL -->
   <div id="molecular-hud" aria-label="Scientific telemetry" style="width:320px; max-height:calc(100vh - 110px); overflow-y:auto; scrollbar-width:thin;">
     <h3>◆ MOLECULAR TELEMETRY</h3>
+    <div id="experience-mode-bar" class="experience-mode-bar" role="tablist" aria-label="Nivel de experiencia">
+      <button class="experience-mode-btn" id="mode-basic" role="tab" data-experience-mode="basic" aria-selected="true">MODO BÁSICO</button>
+      <button class="experience-mode-btn" id="mode-lab" role="tab" data-experience-mode="lab" aria-selected="false">LABORATORIO</button>
+      <button class="experience-mode-btn" id="mode-science" role="tab" data-experience-mode="science" aria-selected="false">DATOS</button>
+    </div>
+    <p id="experience-mode-description">Explora estructuras y reacciones con la información esencial visible.</p>
     <div class="hud-row"><span class="hud-label" data-i18n="assembly">ASSEMBLY</span><span class="hud-val" id="hud-name" aria-live="polite">B-DNA Double Helix</span></div>
     <div class="hud-row"><span class="hud-label" data-i18n="formulaLabel">FORMULA</span><span class="hud-val scientific-token" id="hud-formula">—</span></div>
     <div class="hud-row"><span class="hud-label" data-i18n="classLabel">CLASS</span><span class="hud-val" id="hud-class">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="bonding">BONDING</span><span class="hud-val" id="hud-bonds">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="enthalpy">ENTHALPY</span><span class="hud-val" id="hud-enthalpy">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="dipole">DIPOLE (μ)</span><span class="hud-val" id="hud-dipole">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="stabilityLabel">STABILITY</span><span class="hud-val" id="hud-stability">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="spectrum">SPECTRUM</span><span class="hud-val" id="hud-spectrum" style="color:#00F0FF; font-weight:700;">220 nm (UV)</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="irStretch">IR STRETCH</span><span class="hud-val" id="hud-ir" style="font-size:8.5px;">3000 cm⁻¹</span></div>
+    <div class="hud-row experience-lab"><span class="hud-label" data-i18n="bonding">BONDING</span><span class="hud-val" id="hud-bonds">—</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="enthalpy">ENTHALPY</span><span class="hud-val" id="hud-enthalpy">—</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="dipole">DIPOLE (μ)</span><span class="hud-val" id="hud-dipole">—</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="stabilityLabel">STABILITY</span><span class="hud-val" id="hud-stability">—</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="spectrum">SPECTRUM</span><span class="hud-val" id="hud-spectrum" style="color:#00F0FF; font-weight:700;">220 nm (UV)</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="irStretch">IR STRETCH</span><span class="hud-val" id="hud-ir" style="font-size:8.5px;">3000 cm⁻¹</span></div>
     <div class="hud-row"><span class="hud-label" data-i18n="stateLabel">STATE</span><span class="hud-val" id="hud-epi">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="compatibilityLabel">COMPATIBILITY</span><span class="hud-val" id="hud-compatibility">—</span></div>
-    <div class="hud-row"><span class="hud-label" data-i18n="conditions">CONDITIONS</span><span class="hud-val" id="hud-conditions">—</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="compatibilityLabel">COMPATIBILITY</span><span class="hud-val" id="hud-compatibility">—</span></div>
+    <div class="hud-row experience-science"><span class="hud-label" data-i18n="conditions">CONDITIONS</span><span class="hud-val" id="hud-conditions">—</span></div>
     
     <!-- THERMAL KINETIC CONTROLLER (0-1000 K) -->
-    <div class="hud-row" style="flex-direction:column; margin-top:4px; gap:2px;">
+    <div class="hud-row" id="thermal-controller" style="flex-direction:column; margin-top:4px; gap:2px;">
       <div style="display:flex; justify-content:space-between; width:100%; font-size:8px; color:#FFFFFF; font-weight:bold;">
         <span data-i18n="thermalTemp">THERMAL TEMP (T):</span>
         <span id="temp-val" class="scientific-token" style="color:#00F0FF;">298 K (25°C)</span>
       </div>
       <input type="range" id="temp-slider" min="0" max="5000" value="298" aria-label="Temperatura de la estructura en kelvin" style="width:100%; accent-color:#00F0FF; cursor:pointer; height:4px;">
+      <div class="thermal-status">
+        <div class="thermal-meter" aria-hidden="true"><span id="phase-progress-fill"></span></div>
+        <span id="phase-transition-status" aria-live="polite">Modelo educativo condicionado por los puntos de transición disponibles.</span>
+      </div>
     </div>
 
     <div class="hud-row" style="flex-direction:column; margin-top:4px;"><span class="hud-label" data-i18n="explanation" style="width:100%;">EXPLANATION NOTE:</span><span class="hud-val" id="hud-note" style="font-size:9px; color:rgba(255,255,255,0.85); font-style:italic; margin-top:2px;">Canonical genomic DNA helix structure.</span></div>
     
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-top:8px;">
+    <div class="experience-lab" style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-top:8px;">
       <button id="btn-reassemble">🧬 ADN</button>
       <button id="btn-orbitals" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">⚛️ ORBITALES</button>
     </div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-top:4px;">
+    <div class="experience-science" id="global-tools" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-top:4px;">
       <button id="btn-measure" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📏 MEDIR 3D</button>
       <button id="btn-export-gltf" data-i18n="exportGltf" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">📱 GLTF COORDS</button>
       <button id="btn-export-usdz" data-i18n="exportUsda" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;"> USDA SOURCE</button>
     </div>
-    <div style="display:grid; grid-template-columns: 1fr; gap:4px; margin-top:4px;">
+    <div class="experience-science" style="display:grid; grid-template-columns: 1fr; gap:4px; margin-top:4px;">
       <button id="btn-export-xyz" data-i18n="exportXyz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">💾 EXPORTAR COORDENADAS .XYZ</button>
     </div>
 
@@ -500,7 +527,7 @@
     </div>
 
     <!-- LEGEND -->
-    <div class="pt-legend">
+    <div class="pt-legend experience-lab">
       <div class="pt-legend-item"><div class="pt-legend-dot" style="background:#FFD700"></div><span data-i18n="alkali">Alkali</span></div>
       <div class="pt-legend-item"><div class="pt-legend-dot" style="background:#FF9900"></div><span data-i18n="alkalineEarth">Alkaline Earth</span></div>
       <div class="pt-legend-item"><div class="pt-legend-dot" style="background:#00D4FF"></div><span data-i18n="transition">Transition</span></div>
@@ -515,23 +542,22 @@
     </div>
 
     <!-- FUSION BAR -->
-    <div class="fusion-bar">
+    <div class="fusion-bar" id="reaction-actions">
       <span class="fusion-label">TRAY:</span>
       <div id="multi-tray-container" style="display:flex; gap:3px;">
         <div class="fusion-slot" id="slot-0">—</div>
         <div class="fusion-slot" id="slot-1">—</div>
         <div class="fusion-slot" id="slot-2">—</div>
-        <div class="fusion-slot" id="slot-3">—</div>
-        <div class="fusion-slot" id="slot-4">—</div>
       </div>
       <button class="fusion-btn" id="btn-fuse">🧪 COMBINAR</button>
-      <button class="fusion-btn" id="btn-suggest">💡 SUGGEST</button>
-      <button class="fusion-btn" id="btn-random">🔀 RANDOM</button>
+      <button class="fusion-btn" id="btn-mix" data-i18n="mixButton">◌ MEZCLAR</button>
+      <button class="fusion-btn experience-lab" id="btn-suggest">💡 SUGGEST</button>
+      <button class="fusion-btn experience-lab" id="btn-random">🔀 RANDOM</button>
       <button class="fusion-btn-undo" id="btn-undo">↩ UNDO</button>
       <button class="fusion-btn-clear" id="btn-clear">✕ CLEAR</button>
     </div>
     <div class="nuclear-mode-bar" id="nuclear-mode-bar" aria-label="Reacciones nucleares">
-      <select id="nuclear-route-selector" aria-label="Canal isotópico nuclear">
+      <select class="experience-lab" id="nuclear-route-selector" aria-label="Canal isotópico nuclear">
         <option value="auto">CANAL: AUTO / BANDEJA</option>
         <optgroup label="FUSIÓN">
           <option value="dt">²H + ³H → ⁴He + n</option>
@@ -563,15 +589,19 @@
   </div>
 
   <!-- INTERACTIVE GUIDED ONBOARDING TUTORIAL OVERLAY -->
-  <div id="onboarding-overlay" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" style="display:none; position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:200; width:460px; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:2px solid #00FF9D; border-radius:16px; padding:18px; box-shadow:0 0 35px rgba(0,255,157,0.4), 0 16px 50px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
+  <div id="onboarding-overlay" role="dialog" aria-modal="false" aria-labelledby="onboarding-title" style="display:none; position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:200; width:460px; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:2px solid #00FF9D; border-radius:16px; padding:18px; box-shadow:0 0 35px rgba(0,255,157,0.4), 0 16px 50px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:8px; margin-bottom:10px;">
       <span id="onboarding-title" style="font-size:11px; font-weight:900; color:#00FF9D; letter-spacing:1.5px;">🚀 TUTORIAL GUIADO INTERACTIVO</span>
       <button id="btn-close-onboarding" style="background:none; border:none; color:#FFFFFF; font-size:11px; font-weight:bold; cursor:pointer;">✕ OMITIR</button>
     </div>
     <div id="onboarding-instruction" style="font-family:'Fira Code',monospace; font-size:10px; color:#FFFFFF; line-height:1.5; margin-bottom:12px;">Paso 1: Selecciona 2 elementos de la tabla periódica.</div>
+    <div id="onboarding-objective" class="tutorial-objective" data-complete="false">OBJETIVO: explora el control resaltado.</div>
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <span id="onboarding-step-indicator" style="font-size:9px; color:#FFD700; font-weight:bold;">PASO 1 / 3</span>
-      <button id="btn-next-onboarding" style="padding:6px 16px; border-radius:8px; border:1px solid #00FF9D; background:rgba(0,255,157,0.25); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; cursor:pointer;">SIGUIENTE ➔</button>
+      <div style="display:flex; gap:6px;">
+        <button id="btn-prev-onboarding" style="padding:6px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; cursor:pointer;">← ANTERIOR</button>
+        <button id="btn-next-onboarding" style="padding:6px 16px; border-radius:8px; border:1px solid #00FF9D; background:rgba(0,255,157,0.25); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; cursor:pointer;">SIGUIENTE ➔</button>
+      </div>
     </div>
   </div>
 
@@ -631,20 +661,23 @@
   </div>
 
   <!-- THREE.JS -->
-  <script src="vendor/three.min.js?v=70.0"></script>
-  <script src="periodic-table-data.js?v=70.0"></script>
-  <script src="src/i18n/i18n.js?v=71.0"></script>
-  <script src="src/i18n/runtime-i18n.js?v=73.0"></script>
-  <script src="src/i18n/ui-labels.js?v=77.0"></script>
-  <script src="src/i18n/telemetry-i18n.js?v=78.0"></script>
-  <script src="src/i18n/scientific-i18n.js?v=96.0"></script>
-  <script src="src/education/quiz-data.js?v=74.0"></script>
-  <script src="src/education/education-content.js?v=88.0"></script>
-  <script src="src/nuclear/nuclear-data.js?v=89.0"></script>
-  <script src="src/chemistry/verified-reactions.js?v=81.0"></script>
-  <script src="src/analysis/compatibility-engine.js?v=97.0"></script>
-  <script src="src/physics/thermodynamics.js?v=75.0"></script>
-  <script src="src/physics/measurement.js?v=76.0"></script>
-  <script src="app.js?v=100.0"></script>
+  <script src="vendor/three.min.js?v=101.0"></script>
+  <script src="periodic-table-data.js?v=101.0"></script>
+  <script src="src/i18n/i18n.js?v=101.0"></script>
+  <script src="src/i18n/runtime-i18n.js?v=101.0"></script>
+  <script src="src/i18n/ui-labels.js?v=101.0"></script>
+  <script src="src/i18n/telemetry-i18n.js?v=101.0"></script>
+  <script src="src/i18n/scientific-i18n.js?v=101.0"></script>
+  <script src="src/i18n/experience-science-i18n.js?v=101.0"></script>
+  <script src="src/education/quiz-data.js?v=101.0"></script>
+  <script src="src/education/education-content.js?v=101.0"></script>
+  <script src="src/education/advanced-tutorial.js?v=101.0"></script>
+  <script src="src/experience/experience-mode.js?v=101.0"></script>
+  <script src="src/nuclear/nuclear-data.js?v=101.0"></script>
+  <script src="src/chemistry/verified-reactions.js?v=101.0"></script>
+  <script src="src/analysis/compatibility-engine.js?v=101.0"></script>
+  <script src="src/physics/thermodynamics.js?v=101.0"></script>
+  <script src="src/physics/measurement.js?v=101.0"></script>
+  <script src="app.js?v=101.0"></script>
 </body>
 </html>

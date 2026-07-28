@@ -34,6 +34,10 @@ shown as unavailable; they are never silently estimated.
 - A catalogue composition is not automatically a balanced synthesis equation.
   Enthalpy, activation energy, rate, pressure range, competing products and hazards
   remain `N/D` until sourced individually.
+- `COMBINAR` and `MEZCLAR` are separate operations. A physical mixture renders
+  coexisting species without inventing a product formula or inter-species bond.
+- Compatibility has no universal percentage. Composition evidence, thermodynamics,
+  kinetics, phase, instability and safety remain separate axes; missing axes are `N/D`.
 
 ## Nuclear scope
 
@@ -46,8 +50,13 @@ shown as unavailable; they are never silently estimated.
 - D–T, both D–D branches, p–B11, He3–He3 and two C12–C12 branches are selectable.
 - U-235, Pu-239 and Cf-252 fission scenes are representative mass-balanced channels;
   actual fission products follow yield distributions and are not deterministic.
+- The three fission Q-values are representative catalogue values. Their product
+  masses are incomplete locally, so the runtime reports `Q UNVERIFIED` while still
+  enforcing A/Z conservation. Fusion Q-values remain mass-derived.
 - The renderer shows one visual particle per physical nucleon. Plasma glow, Coulomb
   approach, deformation, scission, shockwaves, timing and scale are illustrations.
+- Product centers use an A-weighted zero-centre layout. Two products are antipodal,
+  three are separated by 120 degrees and larger sets use a Fibonacci sphere.
 
 ## Materials geometry contracts
 
@@ -67,6 +76,11 @@ liquid and gas motion are educational regimes. Lennard-Jones is a reduced pair
 potential with tested equilibrium behavior, not predictive ionic dynamics. Distance
 uses the active scene's declared Å/world-unit scale and also reports pm; angle uses
 three selected points. Nuclear scenes disable molecular length-scale verification.
+
+The opening B-DNA is explicitly a schematic repeating motif: it is not a TP53
+sequence reconstruction, has no predictive phase profile and has no calibrated Å
+scale. XYZ export is blocked for nuclear and uncalibrated scenes; calibrated XYZ
+coordinates are converted from world units to Å.
 
 ## Primary references
 

@@ -1,8 +1,6 @@
 (function exposeCompatibilityEngine(root) {
   'use strict';
 
-  function clamp01(value) { return Math.max(0, Math.min(1, value)); }
-
   function chemical({ reactants, reaction, temperatureK = 298 }) {
     const factors = [];
     const requirements = [];
@@ -25,15 +23,13 @@
     if (!reaction.pressure) requirements.push('p° ≈ 1 atm · SOURCE: N/D');
     if (!reaction.temperatureRange) requirements.push(`T=${temperatureK} K · RANGE: N/D`);
     if (/metastable|decompose|unstable/i.test(reaction.note || '')) instability.push(reaction.note);
-    const suppliedFields = ['enthalpy','activationEnergy','pressure','temperatureRange']
-      .filter(field => reaction[field] !== undefined && reaction[field] !== null).length;
-    const score = clamp01((reaction.evidenceLevel === 'CATALOGUED' ? 0.55 : 0.35) + suppliedFields * 0.1125);
     return {
       domain:'chemical',
       status:reaction.evidenceLevel === 'CATALOGUED'
-        ? (score >= 0.9 ? 'CATALOGUED_CONDITION_DEPENDENT' : 'CATALOGUED_INCOMPLETE_DATA')
+        ? 'COMPOSITION_CATALOGUED_ROUTE_UNEVALUATED'
         : 'REFERENCE_MODEL_INCOMPLETE_DATA',
-      score, confidence:reaction.evidenceLevel === 'CATALOGUED' ? 0.75 : 0.5,
+      score:null,
+      confidence:null,
       factors, requirements, instability
     };
   }
@@ -55,8 +51,8 @@
     if (reaction.note) instability.push('YIELDS = DISTRIBUTED · CHANNEL ≠ UNIQUE');
     if (reaction.branch) instability.push('BRANCH SET ≠ UNIQUE');
     return {
-      domain:'nuclear', status:qPositive ? 'EXOENERGETIC_EVALUATED_CHANNEL' : 'ENERGY_INPUT_REQUIRED',
-      score:null, confidence:0.85, barrierMeV, factors, requirements, instability
+      domain:'nuclear', status:qPositive ? 'EXOENERGETIC_CHANNEL_KINETICS_UNEVALUATED' : 'ENERGY_INPUT_REQUIRED',
+      score:null, confidence:null, barrierMeV, factors, requirements, instability
     };
   }
 

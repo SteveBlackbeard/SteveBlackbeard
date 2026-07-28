@@ -68,9 +68,55 @@
       ? (leftMass - rightMass) * 931.49410242 : null;
     const qDeltaMeV = Number.isFinite(qCalculatedMeV) ? Math.abs(qCalculatedMeV - reaction.qMeV) : null;
     const conservationValid = left.A === right.A && left.Z === right.Z;
-    const qValid = qDeltaMeV == null || qDeltaMeV <= 0.03;
-    return { valid:conservationValid && qValid, conservationValid, qValid, left, right, qCalculatedMeV, qDeltaMeV };
+    const qStatus = qDeltaMeV == null ? 'UNVERIFIED' : qDeltaMeV <= 0.03 ? 'VERIFIED' : 'INCONSISTENT';
+    const qValid = qStatus === 'VERIFIED';
+    const fullyValidated = conservationValid && qValid;
+    return {
+      valid:conservationValid && qStatus !== 'INCONSISTENT',
+      conservationValid,
+      qValid,
+      qStatus,
+      fullyValidated,
+      left,
+      right,
+      qCalculatedMeV,
+      qDeltaMeV
+    };
   }
 
-  root.NULLA_NUCLEAR = Object.freeze({ isotopes, fusion, fission, totals, validateReaction });
+  function balancedProductLayout(reaction, spread = 1) {
+    const products = reaction.products.flatMap(([id,count=1]) => Array.from({length:count},() => isotopes[id]));
+    const count = products.length;
+    const directions = products.map((_,index) => {
+      if (count === 1) return {x:0,y:0,z:0};
+      if (count === 2) return {x:index === 0 ? -1 : 1,y:0,z:0};
+      if (count === 3) {
+        const angle = index * Math.PI * 2 / 3;
+        return {x:Math.cos(angle),y:Math.sin(angle),z:0};
+      }
+      const y = 1 - (index / Math.max(1,count - 1)) * 2;
+      const ring = Math.sqrt(Math.max(0,1-y*y));
+      const theta = Math.PI * (3-Math.sqrt(5)) * index;
+      return {x:Math.cos(theta)*ring,y,z:Math.sin(theta)*ring};
+    });
+    const totalA = products.reduce((sum,isotope) => sum + isotope.A,0);
+    const center = directions.reduce((sum,direction,index) => ({
+      x:sum.x + direction.x * products[index].A,
+      y:sum.y + direction.y * products[index].A,
+      z:sum.z + direction.z * products[index].A
+    }),{x:0,y:0,z:0});
+    center.x /= Math.max(1,totalA);
+    center.y /= Math.max(1,totalA);
+    center.z /= Math.max(1,totalA);
+    return products.map((isotope,index) => ({
+      id:isotope.id,
+      A:isotope.A,
+      Z:isotope.Z,
+      x:(directions[index].x-center.x)*spread,
+      y:(directions[index].y-center.y)*spread,
+      z:(directions[index].z-center.z)*spread
+    }));
+  }
+
+  root.NULLA_NUCLEAR = Object.freeze({ isotopes, fusion, fission, totals, validateReaction, balancedProductLayout });
 })(globalThis);

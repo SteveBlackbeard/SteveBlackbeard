@@ -9,6 +9,25 @@ node demo/tests/release-baseline.mjs
 git diff --check
 ```
 
+## v101 progressive-science verification
+
+- `MODO BÁSICO` is the default disclosure layer; Laboratory and Scientific Data
+  toggle visibility and accessibility only, preserving one renderer and one state.
+- The seven tutorial missions have stable IDs, real DOM targets and equivalent
+  content in all eleven locales. Progress is checked against runtime state.
+- Chemical combination and physical mixing are separate controls.
+- Fusion Q is mass-derived and verified; fission Q is explicitly representative
+  and unverified when channel masses are incomplete. Every route still conserves A/Z.
+- Nuclear products use an A-weighted balanced layout; automated tests reject overlap
+  and non-zero mass-weighted centre for all seven fusion and three fission routes.
+- Partial phase profiles no longer enable the temperature controller. Solvation
+  reports when its fixed shell is outside liquid-phase applicability.
+- Schematic B-DNA no longer claims TP53, calibrated Å scale or predictive phase data.
+- XYZ export is blocked for nuclear or uncalibrated structures and converts calibrated
+  world coordinates to Å.
+- The local server returned HTTP 200 for the page and every one of its 18 runtime
+  scripts with the unified `v=101.0` cache key.
+
 ## Verified runtime scenarios
 
 | Scenario | Expected contract | Observed result |

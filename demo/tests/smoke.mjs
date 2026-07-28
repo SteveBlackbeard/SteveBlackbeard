@@ -11,8 +11,11 @@ const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', im
 const uiLabelsSource = readFileSync(new URL('../src/i18n/ui-labels.js', import.meta.url), 'utf8');
 const telemetryI18nSource = readFileSync(new URL('../src/i18n/telemetry-i18n.js', import.meta.url), 'utf8');
 const scientificI18nSource = readFileSync(new URL('../src/i18n/scientific-i18n.js', import.meta.url), 'utf8');
+const experienceScienceI18nSource = readFileSync(new URL('../src/i18n/experience-science-i18n.js', import.meta.url), 'utf8');
 const quizSource = readFileSync(new URL('../src/education/quiz-data.js', import.meta.url), 'utf8');
 const educationSource = readFileSync(new URL('../src/education/education-content.js', import.meta.url), 'utf8');
+const advancedTutorialSource = readFileSync(new URL('../src/education/advanced-tutorial.js', import.meta.url), 'utf8');
+const experienceModeSource = readFileSync(new URL('../src/experience/experience-mode.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
 const compatibilitySource = readFileSync(new URL('../src/analysis/compatibility-engine.js', import.meta.url), 'utf8');
 const thermodynamicsSource = readFileSync(new URL('../src/physics/thermodynamics.js', import.meta.url), 'utf8');
@@ -22,7 +25,10 @@ for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
   const sourcePath = match[1].split('?')[0];
   if (/^https?:/.test(sourcePath)) continue;
   assert.ok(existsSync(new URL(`../${sourcePath}`, import.meta.url)), `missing local script ${sourcePath}`);
+  assert.match(match[1],/\?v=101\.0$/,`runtime script ${sourcePath} lacks the unified v101 cache key`);
 }
+const htmlIds = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
+assert.equal(new Set(htmlIds).size,htmlIds.length,'HTML IDs must be unique');
 
 const materials = [
   ['btn-nacl', 'buildNaclCrystal'],
@@ -56,6 +62,9 @@ assert.match(app, /activeThermalProfile/, 'material-specific phase profile is ab
 assert.match(app, /angstromPerWorldUnit/, 'physical measurement scale is absent');
 assert.match(html, /btn-nuclear-fusion/, 'nuclear fusion control is absent');
 assert.match(html, /btn-nuclear-fission/, 'nuclear fission control is absent');
+assert.match(html, /id="btn-mix"/, 'physical mixture control is absent');
+assert.match(html, /data-experience="basic"/, 'basic experience must be the progressive-disclosure entry point');
+assert.match(app, /function attemptPhysicalMixture\(/, 'physical mixing is not separated from chemical combination');
 assert.doesNotMatch(app, /zSum\s*>\s*118/, 'atomic-number addition must never fabricate fission');
 assert.doesNotMatch(app, /Predicted \$\{|isVsepr|isEstimate|\(Est\)/, 'estimated compounds must not enter the product or suggestion paths');
 assert.doesNotMatch(app, /predictCompoundFormula|buildVseprCompound|formVseprCompound/, 'legacy compound fabrication engine must stay removed');
@@ -83,6 +92,9 @@ assert.match(app, /getExplicitCompoundBonds/, 'molecular products do not declare
 assert.match(app, /if \(phase\.key === 'unknown'\)[\s\S]{0,180}targetPos\.copy\(a\.basePos\)/, 'unknown phase data must not be animated as a solid');
 assert.match(app, /A=\$\{activePhysicalNucleonCount \|\| count\}/, 'nuclear counter must expose physical mass number A');
 assert.match(app, /z < 1 \|\| z > 118/, 'the runtime must reject speculative non-IUPAC elements');
+assert.doesNotMatch(app, /B-DNA · TP53/, 'schematic DNA must not claim a TP53 sequence');
+assert.match(app, /NO PREDICTIVE THERMAL PROFILE/, 'schematic DNA limitations are not explicit');
+assert.match(app, /tr\('xyzNuclearBlocked'\)[\s\S]{0,180}PROTON\/NEUTRON/, 'nuclear nucleons must not be exported as hydrogen XYZ records');
 
 const periodicSandbox = {window:{}};
 vm.runInNewContext(periodicSource, periodicSandbox);
@@ -104,10 +116,27 @@ for (const routes of Object.values(nuclear.fusion)) {
     assert.equal(validation.valid, true, `${reaction.id} violates conservation or Q consistency`);
     assert.ok(Number.isFinite(validation.qCalculatedMeV), `${reaction.id} must calculate Q from isotope masses`);
     assert.ok(validation.qDeltaMeV <= 0.03, `${reaction.id} Q differs from the mass-derived value`);
+    assert.equal(validation.qStatus,'VERIFIED',`${reaction.id} mass-derived Q must be verified`);
+    assert.equal(validation.fullyValidated,true,`${reaction.id} must be fully validated`);
   }
 }
 for (const reaction of Object.values(nuclear.fission)) {
-  assert.equal(nuclear.validateReaction(reaction).valid, true, `${reaction.id} violates A/Z conservation`);
+  const validation = nuclear.validateReaction(reaction);
+  assert.equal(validation.valid, true, `${reaction.id} violates A/Z conservation`);
+  assert.equal(validation.conservationValid, true, `${reaction.id} violates A/Z conservation`);
+  assert.equal(validation.qStatus, 'UNVERIFIED', `${reaction.id} must disclose incomplete product-mass Q validation`);
+  assert.equal(validation.fullyValidated, false, `${reaction.id} cannot be fully validated without channel masses`);
+}
+for (const reaction of [...Object.values(nuclear.fusion).flat(),...Object.values(nuclear.fission)]) {
+  const layout = nuclear.balancedProductLayout(reaction,20);
+  const expandedCount = reaction.products.reduce((sum,[,count=1]) => sum+count,0);
+  assert.equal(layout.length,expandedCount,`${reaction.id} product layout count diverges`);
+  const totalA = layout.reduce((sum,item) => sum+item.A,0);
+  const center = layout.reduce((sum,item) => ({x:sum.x+item.x*item.A,y:sum.y+item.y*item.A,z:sum.z+item.z*item.A}),{x:0,y:0,z:0});
+  assert.ok(Math.hypot(center.x,center.y,center.z)/Math.max(1,totalA) < 1e-9,`${reaction.id} product layout has non-zero mass-weighted centre`);
+  for (let i=0;i<layout.length;i++) for (let j=i+1;j<layout.length;j++) {
+    assert.ok(Math.hypot(layout[i].x-layout[j].x,layout[i].y-layout[j].y,layout[i].z-layout[j].z) > 1,`${reaction.id} products overlap at initialization`);
+  }
 }
 
 const i18nSandbox = {
@@ -122,6 +151,7 @@ vm.runInNewContext(runtimeI18nSource, i18nSandbox);
 vm.runInNewContext(uiLabelsSource, i18nSandbox);
 vm.runInNewContext(telemetryI18nSource, i18nSandbox);
 vm.runInNewContext(scientificI18nSource, i18nSandbox);
+vm.runInNewContext(experienceScienceI18nSource, i18nSandbox);
 const catalogs = i18nSandbox.NULLA_I18N.messages;
 assert.equal(Object.keys(catalogs).length, 11, 'exactly 11 Chronolith locales are required');
 const canonicalKeys = Object.keys(catalogs.es).sort();
@@ -159,6 +189,49 @@ for (const locale of Object.keys(catalogs)) {
   assert.ok(education.tutorial.every(step => step.title && step.instruction && step.targetId), `${locale} tutorial is incomplete`);
   assert.ok(education.docs.every(section => section.length === 2 && section.every(Boolean)), `${locale} documentation is incomplete`);
 }
+vm.runInNewContext(advancedTutorialSource, i18nSandbox);
+assert.deepEqual([...i18nSandbox.NULLA_ADVANCED_TUTORIAL.locales].sort(), Object.keys(catalogs).sort(), 'advanced tutorial locales diverge');
+for (const locale of Object.keys(catalogs)) {
+  const tutorial = i18nSandbox.NULLA_ADVANCED_TUTORIAL.get(locale);
+  assert.equal(tutorial.tutorial.length,7,`${locale} advanced tutorial step count diverges`);
+  assert.deepEqual(Array.from(tutorial.tutorial,step => step.id),Array.from(i18nSandbox.NULLA_ADVANCED_TUTORIAL.stepIds),`${locale} tutorial IDs diverge`);
+  assert.ok(tutorial.tutorial.every(step => step.title && step.instruction && step.objective && step.targetId && step.mode && step.verify),`${locale} advanced tutorial is incomplete`);
+  for (const step of tutorial.tutorial) assert.match(html,new RegExp(`id="${step.targetId}"`),`tutorial target ${step.targetId} is missing`);
+}
+vm.runInNewContext(experienceModeSource,i18nSandbox);
+assert.deepEqual([...i18nSandbox.NULLA_EXPERIENCE.locales].sort(),Object.keys(catalogs).sort(),'experience-mode locales diverge');
+const experienceCallbacks = {};
+const experienceButtons = ['basic','lab','science'].map(mode => ({
+  dataset:{experienceMode:mode},attributes:{},tabIndex:0,textContent:'',
+  setAttribute(key,value){this.attributes[key]=value;},addEventListener(){},focus(){}
+}));
+const experienceSections = [
+  {classList:{contains:key=>key==='experience-lab'},attributes:{},setAttribute(key,value){this.attributes[key]=value;},inert:false},
+  {classList:{contains:key=>key==='experience-science'},attributes:{},setAttribute(key,value){this.attributes[key]=value;},inert:false}
+];
+const experienceDescription = {textContent:''};
+const experienceSandbox = {
+  document:{
+    body:{dataset:{}},documentElement:{lang:'es'},
+    addEventListener(type,callback){experienceCallbacks[type]=callback;},
+    querySelectorAll(selector){return selector==='[data-experience-mode]'?experienceButtons:experienceSections;},
+    getElementById(id){return id==='experience-mode-description'?experienceDescription:null;}
+  },
+  localStorage:{getItem(){return null;},setItem(){}},
+  location:{hash:''},
+  URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail;}},
+  NULLA_I18N:{locale:'es'},
+  addEventListener(){},dispatchEvent(){},globalThis:null
+};
+experienceSandbox.globalThis=experienceSandbox;
+vm.runInNewContext(experienceModeSource,experienceSandbox);
+experienceCallbacks.DOMContentLoaded();
+assert.equal(experienceSandbox.document.body.dataset.experience,'basic');
+experienceSandbox.NULLA_EXPERIENCE.set('lab',{persist:false});
+assert.equal(experienceSections[0].inert,false,'lab controls must be interactive in laboratory mode');
+assert.equal(experienceSections[1].inert,true,'science controls must remain hidden in laboratory mode');
+experienceSandbox.NULLA_EXPERIENCE.set('science',{persist:false});
+assert.ok(experienceSections.every(section=>section.inert===false),'science mode must expose every tier');
 
 const chemistrySandbox = {};
 chemistrySandbox.globalThis = chemistrySandbox;
@@ -190,7 +263,8 @@ const knownCompatibility = compatibility.chemical({
   reaction:chemistrySandbox.NULLA_VERIFIED_REACTIONS['Br+K'],
   temperatureK:298
 });
-assert.match(knownCompatibility.status, /^CATALOGUED_/);
+assert.equal(knownCompatibility.status, 'COMPOSITION_CATALOGUED_ROUTE_UNEVALUATED');
+assert.equal(knownCompatibility.score, null, 'chemical compatibility must not expose an arbitrary percentage');
 assert.ok(knownCompatibility.factors.some(item => item.includes('Δχ=')));
 const legacyCompatibility = compatibility.chemical({
   reactants:[{electronegativity:2.2},{electronegativity:2.55},{electronegativity:3.04}],
@@ -198,7 +272,8 @@ const legacyCompatibility = compatibility.chemical({
 });
 assert.equal(legacyCompatibility.status, 'REFERENCE_MODEL_INCOMPLETE_DATA');
 const dtCompatibility = compatibility.nuclear({reaction:nuclear.fusion['H+H'][0],isotopes:nuclear.isotopes});
-assert.equal(dtCompatibility.status, 'EXOENERGETIC_EVALUATED_CHANNEL');
+assert.equal(dtCompatibility.status, 'EXOENERGETIC_CHANNEL_KINETICS_UNEVALUATED');
+assert.equal(dtCompatibility.confidence, null, 'Q and contact barrier do not justify a probability score');
 assert.ok(dtCompatibility.barrierMeV > 0);
 
 const physicsSandbox = {};
@@ -212,6 +287,13 @@ assert.equal(physics.phaseAtTemperature(waterProfile,373.15),'gas');
 assert.equal(physics.phaseAtTemperature({boil:3915,transition:'sublimation'},3914),'solid');
 assert.equal(physics.phaseAtTemperature({boil:3915,transition:'sublimation'},3915),'gas');
 assert.equal(physics.phaseAtTemperature({melt:null,boil:null},298),'unknown');
+assert.equal(physics.hasUsablePhaseProfile({melt:273.15,boil:373.15}),true);
+assert.equal(physics.hasUsablePhaseProfile({melt:300,boil:null}),false);
+assert.equal(physics.hasUsablePhaseProfile({boil:3915,transition:'sublimation'}),true);
+const waterStatus = physics.phaseStatus(waterProfile,300);
+assert.equal(waterStatus.key,'liquid');
+assert.ok(Math.abs(waterStatus.progress - 0.2685) < 1e-12);
+assert.equal(waterStatus.nextTransitionK,373.15);
 const sigma = 3;
 const epsilon = 0.003;
 const equilibrium = Math.pow(2,1/6) * sigma;
