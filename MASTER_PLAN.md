@@ -5,21 +5,21 @@
 | Gate | Current state | Required evidence |
 |---|---|---|
 | Reversible baseline | PASS | Tag `demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, physical ZIP `backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip` |
-| Startup / white canvas | PASS | Default B-DNA plus guarded URL parameters |
-| Materials bar | PASS | Six connected builders and smoke contracts |
+| Startup / white canvas | STATIC PASS / RUNTIME PENDING | Default B-DNA plus guarded URL parameters; current integrated-browser attachment unavailable |
+| Materials bar | STATIC PASS / RUNTIME PENDING | Six connected builders and smoke contracts; renderer clicks still require browser evidence |
 | Chemical catalogue | PASS | Unknown routes rejected; catalogued formulas validated |
-| Chemical geometry | PASS | Nearest-neighbour bond cutoff; rock-salt family visual test |
+| Chemical geometry | PURE/STATIC PASS / INTEGRATION PENDING | Formula, topology and cutoff contracts pass; renderer confirmation remains a browser gate |
 | Nuclear separation | PASS | Independent fusion/fission controls and A/Z validation |
-| Nuclear runtime | PASS | FPS-independent timing, A-weighted balanced product layout, no overlapping three-body products |
-| Thermodynamics | PASS WITH MODEL LIMIT | Entity profiles; educational motion explicitly labelled non-predictive |
-| Measurement | PASS | Å/pm distance and angle calculation contracts |
-| Recording / sharing / XR | PASS | MediaRecorder, state URL, and real immersive-session request |
+| Nuclear runtime | PURE PASS / INTEGRATION PENDING | FPS-independent timing and A-weighted layout contracts pass; WebGL animation remains a browser gate |
+| Thermodynamics | PURE PASS / INTEGRATION PENDING | Entity profiles and exact phase-boundary contracts pass; motion is explicitly non-predictive |
+| Measurement | PURE PASS / INTEGRATION PENDING | Å/pm and geometric-angle contracts pass; pointer/keyboard renderer flow remains a browser gate |
+| Recording / sharing / XR | STATIC PASS / RUNTIME PENDING | APIs and handlers are present; device/browser execution is not yet automated |
 | Eleven-language static UI | PASS | Identical locale keys, tutorial, guide, quiz, RTL Arabic |
-| Eleven-language dynamic telemetry | PASS | 11-key parity, live locale remap, Arabic RTL, seven-mission tutorial and quiz |
-| Progressive disclosure | PASS | Basic default, Laboratory and Scientific Data share one stateful engine |
-| Responsive / accessibility | PASS | Mobile panel separation, keyboard controls, focus-return and dialog semantics |
-| Soak / performance | PASS | 60 rapid transitions; geometries ≤3, textures ≤1, no runtime errors |
-| Release v101 | PASS (AUTOMATED) | Static, scientific, local/public-server, CI and portable SHA-256 gates passed; integrated-browser visual automation unavailable |
+| Eleven-language dynamic telemetry | CATALOG PASS / RUNTIME PENDING | 11-key parity, accessible labels, live remap, Arabic RTL, tutorial and quiz; integrated screen audit pending |
+| Progressive disclosure | STATIC PASS / RUNTIME PENDING | Basic default, Laboratory and Scientific Data share one stateful engine; visual flow pending |
+| Responsive / accessibility | PARTIAL PASS | Keyboard modes, modal isolation, focus return and live tutorial status pass statically; zoom/reflow/screen-reader review pending |
+| Soak / performance | UNPROVEN FOR v101.1 | No current reproducible WebGL soak artifact; prior observations are not promoted to release evidence |
+| Release v101.1 | RELEASE CANDIDATE | Static/scientific/CI/SHA gates must pass; visual, responsive and runtime interaction gates remain explicitly pending |
 
 ### Regression rule
 
@@ -201,7 +201,7 @@ Every result exposes:
 - Geometry: NaCl coordination, diamond angle, C60 V/E/degree, graphene/SWCNT degree.
 - Measurement: calibrated distances and angles with tolerances.
 - i18n: identical key sets for all 11 locales; Arabic RTL; no clipped controls.
-- Visual: desktop and 390×844 mobile layouts verified; responsive breakpoints keep controls separated.
+- Visual: desktop and 390×844 mobile layouts require approved current-release evidence; responsive breakpoints must keep controls separated.
 - Performance: renderer memory sampled across the six complete material structures.
 - Soak: 60 rapid transitions without unbounded geometry/texture growth or runtime errors.
 - Accessibility: keyboard access, focus visibility, dialog semantics, reduced motion.

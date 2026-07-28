@@ -29,14 +29,20 @@
     const tm = Number(profile.melt);
     const tb = Number(profile.boil);
     if (profile.transition === 'sublimation') {
+      const atTransition = Math.abs(temperatureK - tb) < 0.5;
       return {
         key,
         progress:Math.max(0,Math.min(1,temperatureK / tb)),
         nextTransitionK:key === 'solid' ? tb : null,
-        atTransition:Math.abs(temperatureK - tb) < 0.5,
-        transition:key === 'solid' ? 'sublimation' : 'gas'
+        atTransition,
+        transition:key === 'solid' ? 'sublimation' : 'gas',
+        boundaryTransition:atTransition ? 'sublimation' : null,
+        boundaryK:atTransition ? tb : null
       };
     }
+    const atMelting = Math.abs(temperatureK - tm) < 0.5;
+    const atBoiling = Math.abs(temperatureK - tb) < 0.5;
+    const boundaryTransition = atMelting ? 'melting' : atBoiling ? 'boiling' : null;
     const progress = key === 'solid'
       ? temperatureK / Math.max(1,tm)
       : key === 'liquid'
@@ -46,8 +52,10 @@
       key,
       progress:Math.max(0,Math.min(1,progress)),
       nextTransitionK:key === 'solid' ? tm : key === 'liquid' ? tb : null,
-      atTransition:Math.abs(temperatureK - tm) < 0.5 || Math.abs(temperatureK - tb) < 0.5,
-      transition:key === 'solid' ? 'melting' : key === 'liquid' ? 'boiling' : 'gas'
+      atTransition:atMelting || atBoiling,
+      transition:key === 'solid' ? 'melting' : key === 'liquid' ? 'boiling' : 'gas',
+      boundaryTransition,
+      boundaryK:boundaryTransition === 'melting' ? tm : boundaryTransition === 'boiling' ? tb : null
     };
   }
 

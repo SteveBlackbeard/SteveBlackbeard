@@ -9,7 +9,7 @@ node demo/tests/release-baseline.mjs
 git diff --check
 ```
 
-## v101 progressive-science verification
+## v101.1 progressive-science verification
 
 - `MODO BÁSICO` is the default disclosure layer; Laboratory and Scientific Data
   toggle visibility and accessibility only, preserving one renderer and one state.
@@ -18,32 +18,31 @@ git diff --check
 - Chemical combination and physical mixing are separate controls.
 - Fusion Q is mass-derived and verified; fission Q is explicitly representative
   and unverified when channel masses are incomplete. Every route still conserves A/Z.
+- A route selected from the opposite nuclear domain is rejected explicitly; fusion
+  can never substitute a selected fission channel (or vice versa) with a default.
 - Nuclear products use an A-weighted balanced layout; automated tests reject overlap
   and non-zero mass-weighted centre for all seven fusion and three fission routes.
 - Partial phase profiles no longer enable the temperature controller. Solvation
   reports when its fixed shell is outside liquid-phase applicability.
 - Schematic B-DNA no longer claims TP53, calibrated Å scale or predictive phase data.
-- XYZ export is blocked for nuclear or uncalibrated structures and converts calibrated
-  world coordinates to Å.
-- The local server returned HTTP 200 for the page and every one of its 18 runtime
-  scripts with the unified `v=101.0` cache key.
+- XYZ, glTF coordinate and USDA exports are blocked for nuclear or uncalibrated
+  structures. Calibrated glTF translations use metres; USDA declares `metersPerUnit`.
+- The local v101.1 candidate returned HTTP 200 for the page and all 18 runtime scripts.
+  Public HTTP and hash equality remain post-deployment gates.
 
-## Verified runtime scenarios
+## Evidence matrix
 
-| Scenario | Expected contract | Observed result |
+| Scenario | Automated evidence | State |
 |---|---|---|
-| Default startup | B-DNA, no blank canvas | Pass |
-| Na + Cl chemical combination | NaCl rock-salt display, nearest neighbours only | 216 ions (108/108), 540 bonds, interior CN=6 |
-| H + C + N combination | Explicit molecular graph and unavailable phase handling | HCN, 3 atoms, BO1×1 + BO3×1, thermal disabled |
-| D-T nuclear fusion | Isotope-selected, FPS-independent completion | `nuclear-dt`, A=5, 5 nucleons, 0 chemical bonds |
-| C-12 + C-12 fusion | Selectable alpha branch, A/Z conservation | `nuclear-c12c12a`, A=24, 24 nucleons |
-| U-235 fission | Two visible fragments plus three neutrons | `nuclear-u235-thermal`, A=236, 236 nucleons, 0 bonds |
-| Shared D-T URL | Restore through nuclear, not chemical, engine | Pass |
-| Six-material topology matrix | NaCl, diamond, C60, SWCNT, graphene, solvation | 216/216/60/384/218/37 atoms; all coordinates finite |
-| Material transition soak | 60 alternating material changes | Geometries ≤3; textures ≤1; runtime errors 0 |
-| Arabic dynamic telemetry | Korean→Arabic live remap, RTL, tutorial and quiz | Pass; no stale-language values |
-| Mobile 390×844 | Telemetry and periodic controller remain separate; nuclear controls visible | Pass |
-| Desktop 1440×900 | Existing composition remains intact | Pass |
+| 118 elements and phase thresholds | Pure/static contracts | PASS |
+| Curated compositions | Formula/composition audit plus catalogue contracts | PASS; P₄O₁₀ cage now exact |
+| Seven fusion + three fission routes | A/Z, Q status and balanced-layout contracts | PASS |
+| Opposite-domain nuclear selector | Static regression contract | PASS |
+| Eleven locales, tutorial and accessible labels | Exact key parity and stable target contracts | PASS |
+| Default startup and canvas rendering | No current executable browser attachment | PENDING |
+| Six material buttons and integrated temperature motion | No current executable browser attachment | PENDING |
+| Full tutorial interaction, recording, sharing, WebXR | No current executable browser attachment/device | PENDING |
+| Mobile/desktop visual comparison and WebGL soak | No current approved artifact | PENDING |
 
 ## Scientific boundaries
 
@@ -56,7 +55,8 @@ git diff --check
 
 ## Release state
 
-The v101 automated gates pass on `codex/system-completion` and GitHub Pages. The
+The v101.1 static and pure-science gates are the release-candidate gates on
+`codex/system-completion`. The
 release files are frozen by the portable SHA-256 manifest in
 `demo/tests/release-baseline.json`. The v100 rollback is preserved by tag
 `demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, and physical archive
@@ -64,5 +64,5 @@ release files are frozen by the portable SHA-256 manifest in
 
 The in-app browser automation transport failed before page attachment with an
 environment asset-path error. This is recorded as unavailable rather than reported
-as a v101 visual pass. Local/public HTTP checks and prior v100 visual evidence passed;
-final human visual comparison remains a manual release review.
+as a v101.1 visual pass. Prior v100 visual evidence exists, but v101.1 public checks
+remain pending deployment and final visual comparison remains a manual release review.

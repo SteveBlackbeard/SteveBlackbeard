@@ -15,7 +15,7 @@
     body[data-experience="lab"] .experience-science { display:none !important; }
     .experience-mode-bar { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; margin:-2px 0 8px; padding:4px; border:1px solid rgba(0,240,255,.22); border-radius:11px; background:rgba(3,8,16,.72); }
     .experience-mode-btn { min-height:28px; padding:5px 4px; border-radius:8px; border:1px solid rgba(255,255,255,.2); color:#fff; background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(10,15,25,.88)); font:800 7.5px 'Orbitron',sans-serif; letter-spacing:.4px; cursor:pointer; }
-    .experience-mode-btn[aria-selected="true"] { color:#00FFCF; border-color:#00F0FF; background:linear-gradient(180deg,rgba(0,240,255,.24),rgba(8,18,28,.95)); box-shadow:0 0 14px rgba(0,240,255,.2),inset 0 1px rgba(255,255,255,.3); }
+    .experience-mode-btn[aria-checked="true"] { color:#00FFCF; border-color:#00F0FF; background:linear-gradient(180deg,rgba(0,240,255,.24),rgba(8,18,28,.95)); box-shadow:0 0 14px rgba(0,240,255,.2),inset 0 1px rgba(255,255,255,.3); }
     #experience-mode-description { min-height:25px; margin:0 0 8px; color:rgba(255,255,255,.8); font-size:8.5px; line-height:1.4; }
     .thermal-status { width:100%; margin-top:4px; }
     .thermal-meter { height:4px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.12); }
@@ -272,7 +272,7 @@
   </style>
 </head>
 <body data-experience="basic">
-  <canvas id="webgl-canvas"></canvas>
+  <canvas id="webgl-canvas" tabindex="0" data-i18n-aria-label="sceneLabel" aria-label="Interactive three-dimensional scientific scene"></canvas>
   <output id="runtime-diagnostics" hidden aria-hidden="true"></output>
 
   <!-- TOOLTIP -->
@@ -282,7 +282,7 @@
   <div class="hud-header">
     <div style="display:flex; align-items:center; gap:8px;">
       <span class="hud-title">NULLA-LABS // IUPAC 3D SYNTHESIS</span>
-      <select id="language-selector" aria-label="Language"></select>
+      <select id="language-selector" data-i18n-aria-label="languageLabel" aria-label="Language"></select>
       <div class="experience-science" style="display:flex; gap:3px; margin-left:6px;">
         <button id="btn-quality-low" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(255,255,255,0.25); background:rgba(18,24,36,0.8); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">LOW</button>
         <button id="btn-quality-med" style="padding:2px 5px; border-radius:5px; border:1px solid rgba(0,240,255,0.6); background:rgba(0,240,255,0.2); color:#FFFFFF; font-size:7.5px; font-weight:700; cursor:pointer;">MED</button>
@@ -301,12 +301,12 @@
   </div>
 
   <!-- TELEMETRY PANEL -->
-  <div id="molecular-hud" aria-label="Scientific telemetry" style="width:320px; max-height:calc(100vh - 110px); overflow-y:auto; scrollbar-width:thin;">
+  <div id="molecular-hud" tabindex="0" data-i18n-aria-label="scientificTelemetryLabel" aria-label="Scientific telemetry" style="width:320px; max-height:calc(100vh - 110px); overflow-y:auto; scrollbar-width:thin;">
     <h3>◆ MOLECULAR TELEMETRY</h3>
-    <div id="experience-mode-bar" class="experience-mode-bar" role="tablist" aria-label="Nivel de experiencia">
-      <button class="experience-mode-btn" id="mode-basic" role="tab" data-experience-mode="basic" aria-selected="true">MODO BÁSICO</button>
-      <button class="experience-mode-btn" id="mode-lab" role="tab" data-experience-mode="lab" aria-selected="false">LABORATORIO</button>
-      <button class="experience-mode-btn" id="mode-science" role="tab" data-experience-mode="science" aria-selected="false">DATOS</button>
+    <div id="experience-mode-bar" class="experience-mode-bar" role="radiogroup" data-i18n-aria-label="experienceLevelLabel" aria-label="Nivel de experiencia">
+      <button class="experience-mode-btn" id="mode-basic" role="radio" data-experience-mode="basic" aria-checked="true">MODO BÁSICO</button>
+      <button class="experience-mode-btn" id="mode-lab" role="radio" data-experience-mode="lab" aria-checked="false">LABORATORIO</button>
+      <button class="experience-mode-btn" id="mode-science" role="radio" data-experience-mode="science" aria-checked="false">DATOS</button>
     </div>
     <p id="experience-mode-description">Explora estructuras y reacciones con la información esencial visible.</p>
     <div class="hud-row"><span class="hud-label" data-i18n="assembly">ASSEMBLY</span><span class="hud-val" id="hud-name" aria-live="polite">B-DNA Double Helix</span></div>
@@ -328,14 +328,14 @@
         <span data-i18n="thermalTemp">THERMAL TEMP (T):</span>
         <span id="temp-val" class="scientific-token" style="color:#00F0FF;">298 K (25°C)</span>
       </div>
-      <input type="range" id="temp-slider" min="0" max="5000" value="298" aria-label="Temperatura de la estructura en kelvin" style="width:100%; accent-color:#00F0FF; cursor:pointer; height:4px;">
+      <input type="range" id="temp-slider" min="0" max="5000" value="298" data-i18n-aria-label="temperatureControlLabel" aria-label="Temperatura de la estructura en kelvin" style="width:100%; accent-color:#00F0FF; cursor:pointer; height:4px;">
       <div class="thermal-status">
         <div class="thermal-meter" aria-hidden="true"><span id="phase-progress-fill"></span></div>
         <span id="phase-transition-status" aria-live="polite">Modelo educativo condicionado por los puntos de transición disponibles.</span>
       </div>
     </div>
 
-    <div class="hud-row" style="flex-direction:column; margin-top:4px;"><span class="hud-label" data-i18n="explanation" style="width:100%;">EXPLANATION NOTE:</span><span class="hud-val" id="hud-note" style="font-size:9px; color:rgba(255,255,255,0.85); font-style:italic; margin-top:2px;">Canonical genomic DNA helix structure.</span></div>
+    <div class="hud-row" style="flex-direction:column; margin-top:4px;"><span class="hud-label" data-i18n="explanation" style="width:100%;">EXPLANATION NOTE:</span><span class="hud-val" id="hud-note" style="font-size:9px; color:rgba(255,255,255,0.85); font-style:italic; margin-top:2px;">B-DNA teaching schema · repeating base-pair motif · not a TP53 sequence · scale not calibrated.</span></div>
     
     <div class="experience-lab" style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-top:8px;">
       <button id="btn-reassemble">🧬 ADN</button>
@@ -350,7 +350,7 @@
       <button id="btn-export-xyz" data-i18n="exportXyz" style="padding:6px 0; border:1px solid rgba(255,255,255,0.35); border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 45%, rgba(18,24,36,0.9) 100%); color:#FFFFFF; font-family:'Orbitron',sans-serif; font-size:8.5px; font-weight:700; cursor:pointer;">💾 EXPORTAR COORDENADAS .XYZ</button>
     </div>
 
-    <div class="material-lab" aria-label="Barra de materiales">
+    <div class="material-lab" data-i18n-aria-label="materialsBarLabel" aria-label="Barra de materiales">
       <div class="material-lab-title">◆ MATERIALS LAB</div>
       <div class="material-grid">
         <button class="shader-btn" id="btn-nacl">🧂 NaCl FCC</button>
@@ -556,10 +556,10 @@
       <button class="fusion-btn-undo" id="btn-undo">↩ UNDO</button>
       <button class="fusion-btn-clear" id="btn-clear">✕ CLEAR</button>
     </div>
-    <div class="nuclear-mode-bar" id="nuclear-mode-bar" aria-label="Reacciones nucleares">
-      <select class="experience-lab" id="nuclear-route-selector" aria-label="Canal isotópico nuclear">
-        <option value="auto">CANAL: AUTO / BANDEJA</option>
-        <optgroup label="FUSIÓN">
+    <div class="nuclear-mode-bar" id="nuclear-mode-bar" data-i18n-aria-label="nuclearReactionsLabel" aria-label="Reacciones nucleares">
+      <select class="experience-lab" id="nuclear-route-selector" data-i18n-aria-label="nuclearRouteLabel" aria-label="Canal isotópico nuclear">
+        <option value="auto" data-i18n="nuclearAutoRoute">CANAL: AUTO / BANDEJA</option>
+        <optgroup data-i18n-label="fusionGroup" label="FUSIÓN">
           <option value="dt">²H + ³H → ⁴He + n</option>
           <option value="ddn">²H + ²H → ³He + n</option>
           <option value="ddp">²H + ²H → ³H + ¹H</option>
@@ -568,10 +568,10 @@
           <option value="c12c12a">¹²C + ¹²C → ²⁰Ne + ⁴He</option>
           <option value="c12c12p">¹²C + ¹²C → ²³Na + ¹H</option>
         </optgroup>
-        <optgroup label="FISIÓN">
+        <optgroup data-i18n-label="fissionGroup" label="FISIÓN">
           <option value="u235-thermal">²³⁵U + nₜₕ</option>
           <option value="pu239-thermal">²³⁹Pu + nₜₕ</option>
-          <option value="cf252-spontaneous">²⁵²Cf espontánea</option>
+          <option value="cf252-spontaneous">²⁵²Cf → ¹¹⁰Ru + ¹⁴⁰Xe + 2n</option>
         </optgroup>
       </select>
       <button class="fusion-btn nuclear-btn" id="btn-nuclear-fusion">☀ FUSIÓN NUCLEAR</button>
@@ -583,7 +583,7 @@
   <div id="suggestion-modal" role="dialog" aria-modal="true" aria-labelledby="suggestion-modal-title" style="display:none; position:fixed; bottom:80px; right:20px; z-index:120; width:340px; background:linear-gradient(145deg, rgba(14,18,26,0.96) 0%, rgba(4,6,12,0.98) 100%); border:1px solid rgba(255,255,255,0.3); border-radius:14px; padding:14px; box-shadow:0 12px 40px rgba(0,0,0,0.9); backdrop-filter:blur(20px); font-family:'Orbitron',sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:6px; margin-bottom:10px;">
       <span id="suggestion-modal-title" style="font-size:10px; font-weight:700; color:#FFFFFF; letter-spacing:1.5px;">💡 SUGERENCIAS VERIFICADAS</span>
-      <button id="btn-close-suggest" aria-label="Close suggestions" style="background:none; border:none; color:#FFFFFF; font-size:12px; cursor:pointer;">✕</button>
+      <button id="btn-close-suggest" data-i18n-aria-label="closeSuggestionsLabel" aria-label="Close suggestions" style="background:none; border:none; color:#FFFFFF; font-size:12px; cursor:pointer;">✕</button>
     </div>
     <div id="suggestion-list" style="display:flex; flex-direction:column; gap:6px;"></div>
   </div>
@@ -591,11 +591,11 @@
   <!-- INTERACTIVE GUIDED ONBOARDING TUTORIAL OVERLAY -->
   <div id="onboarding-overlay" role="dialog" aria-modal="false" aria-labelledby="onboarding-title" style="display:none; position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:200; width:460px; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:2px solid #00FF9D; border-radius:16px; padding:18px; box-shadow:0 0 35px rgba(0,255,157,0.4), 0 16px 50px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:8px; margin-bottom:10px;">
-      <span id="onboarding-title" style="font-size:11px; font-weight:900; color:#00FF9D; letter-spacing:1.5px;">🚀 TUTORIAL GUIADO INTERACTIVO</span>
+      <span id="onboarding-title" tabindex="-1" style="font-size:11px; font-weight:900; color:#00FF9D; letter-spacing:1.5px;">🚀 TUTORIAL GUIADO INTERACTIVO</span>
       <button id="btn-close-onboarding" style="background:none; border:none; color:#FFFFFF; font-size:11px; font-weight:bold; cursor:pointer;">✕ OMITIR</button>
     </div>
-    <div id="onboarding-instruction" style="font-family:'Fira Code',monospace; font-size:10px; color:#FFFFFF; line-height:1.5; margin-bottom:12px;">Paso 1: Selecciona 2 elementos de la tabla periódica.</div>
-    <div id="onboarding-objective" class="tutorial-objective" data-complete="false">OBJETIVO: explora el control resaltado.</div>
+    <div id="onboarding-instruction" aria-live="polite" style="font-family:'Fira Code',monospace; font-size:10px; color:#FFFFFF; line-height:1.5; margin-bottom:12px;">Paso 1: Selecciona 2 elementos de la tabla periódica.</div>
+    <div id="onboarding-objective" class="tutorial-objective" role="status" aria-live="polite" data-complete="false">OBJETIVO: explora el control resaltado.</div>
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <span id="onboarding-step-indicator" style="font-size:9px; color:#FFD700; font-weight:bold;">PASO 1 / 3</span>
       <div style="display:flex; gap:6px;">
@@ -609,7 +609,7 @@
   <div id="docs-modal" role="dialog" aria-modal="true" aria-labelledby="docs-modal-title" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:160; width:520px; max-height:80vh; overflow-y:auto; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:1px solid rgba(0,240,255,0.5); border-radius:16px; padding:20px; box-shadow:0 16px 60px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px; margin-bottom:14px;">
       <span id="docs-modal-title" style="font-size:12px; font-weight:900; color:#00F0FF; letter-spacing:2px;">📖 GUÍA TÉCNICA Y DOCUMENTACIÓN IUPAC 3D</span>
-      <button id="btn-close-docs" aria-label="Close documentation" style="background:none; border:none; color:#FFFFFF; font-size:16px; cursor:pointer;">✕</button>
+      <button id="btn-close-docs" data-i18n-aria-label="closeDocsLabel" aria-label="Close documentation" style="background:none; border:none; color:#FFFFFF; font-size:16px; cursor:pointer;">✕</button>
     </div>
     <div id="docs-modal-content" style="font-family:'Fira Code',monospace; font-size:9.5px; color:rgba(255,255,255,0.9); line-height:1.6; display:flex; flex-direction:column; gap:12px;">
       <div>
@@ -626,8 +626,8 @@
         <h4 style="color:#00FF9D; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;">2. HERRAMIENTA DE MEDICIÓN LÁSER 3D</h4>
         <p>Activa <b>📏 MEDIR 3D</b> en la telemetría:</p>
         <ul style="padding-left:14px; margin-top:4px; color:rgba(255,255,255,0.85);">
-          <li><b>2 Átomos:</b> Distancia interatómica en Ångströms (Å) y Picómetros (pm).</li>
-          <li><b>3 Átomos:</b> Ángulo de enlace geométrico VSEPR en grados (°).</li>
+          <li><b>2 puntos:</b> Distancia en Å y pm sólo para geometrías con escala calibrada; en las demás se muestran unidades de modelo.</li>
+          <li><b>3 puntos:</b> Ángulo geométrico en grados (°); no implica un ángulo de enlace validado.</li>
         </ul>
       </div>
 
@@ -638,7 +638,7 @@
 
       <div>
         <h4 style="color:#FF0055; font-size:10.5px; font-family:'Orbitron',sans-serif; margin-bottom:4px;">4. EXPORTACIÓN &amp; COMPARTIR</h4>
-        <p>Descarga modelos tridimensionales para AR (<b>.GLTF</b>) o coordenadas computacionales (<b>.XYZ</b>). Pulsa <b>🔗 SHARE</b> para generar enlaces URL directos con el estado de tu molécula.</p>
+        <p>Descarga nodos de coordenadas calibradas (<b>.GLTF</b>), una escena USDA o coordenadas químicas (<b>.XYZ</b>). Las escenas nucleares o sin escala quedan bloqueadas. Pulsa <b>🔗 SHARE</b> para generar enlaces URL directos con el estado.</p>
       </div>
     </div>
   </div>
@@ -647,7 +647,7 @@
   <div id="quiz-modal" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:150; width:420px; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:1px solid rgba(255,215,0,0.5); border-radius:16px; padding:18px; box-shadow:0 16px 50px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:8px; margin-bottom:12px;">
       <span id="quiz-modal-title" style="font-size:11px; font-weight:700; color:#FFD700; letter-spacing:1.5px;">🎓 MODO EDUCATIVO // CHEMICAL QUIZ</span>
-      <button id="btn-close-quiz" aria-label="Close quiz" style="background:none; border:none; color:#FFFFFF; font-size:14px; cursor:pointer;">✕</button>
+      <button id="btn-close-quiz" data-i18n-aria-label="closeQuizLabel" aria-label="Close quiz" style="background:none; border:none; color:#FFFFFF; font-size:14px; cursor:pointer;">✕</button>
     </div>
     <div id="quiz-body">
       <div id="quiz-question" style="font-size:10.5px; color:#FFFFFF; line-height:1.4; margin-bottom:12px;">Cargando pregunta...</div>
@@ -661,23 +661,23 @@
   </div>
 
   <!-- THREE.JS -->
-  <script src="vendor/three.min.js?v=101.0"></script>
-  <script src="periodic-table-data.js?v=101.0"></script>
-  <script src="src/i18n/i18n.js?v=101.0"></script>
-  <script src="src/i18n/runtime-i18n.js?v=101.0"></script>
-  <script src="src/i18n/ui-labels.js?v=101.0"></script>
-  <script src="src/i18n/telemetry-i18n.js?v=101.0"></script>
-  <script src="src/i18n/scientific-i18n.js?v=101.0"></script>
-  <script src="src/i18n/experience-science-i18n.js?v=101.0"></script>
-  <script src="src/education/quiz-data.js?v=101.0"></script>
-  <script src="src/education/education-content.js?v=101.0"></script>
-  <script src="src/education/advanced-tutorial.js?v=101.0"></script>
-  <script src="src/experience/experience-mode.js?v=101.0"></script>
-  <script src="src/nuclear/nuclear-data.js?v=101.0"></script>
-  <script src="src/chemistry/verified-reactions.js?v=101.0"></script>
-  <script src="src/analysis/compatibility-engine.js?v=101.0"></script>
-  <script src="src/physics/thermodynamics.js?v=101.0"></script>
-  <script src="src/physics/measurement.js?v=101.0"></script>
-  <script src="app.js?v=101.0"></script>
+  <script src="vendor/three.min.js?v=101.1"></script>
+  <script src="periodic-table-data.js?v=101.1"></script>
+  <script src="src/i18n/i18n.js?v=101.1"></script>
+  <script src="src/i18n/runtime-i18n.js?v=101.1"></script>
+  <script src="src/i18n/ui-labels.js?v=101.1"></script>
+  <script src="src/i18n/telemetry-i18n.js?v=101.1"></script>
+  <script src="src/i18n/scientific-i18n.js?v=101.1"></script>
+  <script src="src/i18n/experience-science-i18n.js?v=101.1"></script>
+  <script src="src/education/quiz-data.js?v=101.1"></script>
+  <script src="src/education/education-content.js?v=101.1"></script>
+  <script src="src/education/advanced-tutorial.js?v=101.1"></script>
+  <script src="src/experience/experience-mode.js?v=101.1"></script>
+  <script src="src/nuclear/nuclear-data.js?v=101.1"></script>
+  <script src="src/chemistry/verified-reactions.js?v=101.1"></script>
+  <script src="src/analysis/compatibility-engine.js?v=101.1"></script>
+  <script src="src/physics/thermodynamics.js?v=101.1"></script>
+  <script src="src/physics/measurement.js?v=101.1"></script>
+  <script src="app.js?v=101.1"></script>
 </body>
 </html>

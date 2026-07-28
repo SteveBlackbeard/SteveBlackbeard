@@ -151,10 +151,10 @@ Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-dna-console-v16-helix.gif?v=504" alt="Real B-DNA Double Helix — TP53 Gene" width="100%" />
+    <img src="particle-dna-console-v16-helix.gif?v=504" alt="Educational B-DNA helix schema" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Educational B-DNA visualization inspired by the human TP53 tumor suppressor gene — Click to launch the interactive 3D engine</i></sub>
+    <sub><i>Educational B-DNA visualization with a repeating base-pair motif; not a genomic or TP53 sequence — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
 

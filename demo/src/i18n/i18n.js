@@ -26,6 +26,8 @@
     const code=normalize(locale);
     document.documentElement.lang=code; document.documentElement.dir=languages[code].dir;
     document.querySelectorAll('[data-i18n]').forEach(node=>{const value=messages[code][node.dataset.i18n];if(value)node.textContent=value;});
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(node=>{const value=messages[code][node.dataset.i18nAriaLabel];if(value)node.setAttribute('aria-label',value);});
+    document.querySelectorAll('[data-i18n-label]').forEach(node=>{const value=messages[code][node.dataset.i18nLabel];if(value)node.label=value;});
     Object.entries(bindings).forEach(([selector,key])=>{const node=document.querySelector(selector);if(node)node.textContent=messages[code][key];});
     const selector=document.getElementById('language-selector'); if(selector)selector.value=code;
     try{localStorage.setItem(storageKey,code);}catch(_){}

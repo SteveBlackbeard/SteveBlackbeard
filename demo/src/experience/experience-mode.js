@@ -48,7 +48,7 @@
     document.body.dataset.experience = mode;
     document.querySelectorAll('[data-experience-mode]').forEach(button => {
       const selected = button.dataset.experienceMode === mode;
-      button.setAttribute('aria-selected', String(selected));
+      button.setAttribute('aria-checked', String(selected));
       button.tabIndex = selected ? 0 : -1;
     });
     updateCopy();

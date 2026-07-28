@@ -25,7 +25,7 @@ for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
   const sourcePath = match[1].split('?')[0];
   if (/^https?:/.test(sourcePath)) continue;
   assert.ok(existsSync(new URL(`../${sourcePath}`, import.meta.url)), `missing local script ${sourcePath}`);
-  assert.match(match[1],/\?v=101\.0$/,`runtime script ${sourcePath} lacks the unified v101 cache key`);
+  assert.match(match[1],/\?v=101\.1$/,`runtime script ${sourcePath} lacks the unified v101.1 cache key`);
 }
 const htmlIds = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
 assert.equal(new Set(htmlIds).size,htmlIds.length,'HTML IDs must be unique');
@@ -64,6 +64,8 @@ assert.match(html, /btn-nuclear-fusion/, 'nuclear fusion control is absent');
 assert.match(html, /btn-nuclear-fission/, 'nuclear fission control is absent');
 assert.match(html, /id="btn-mix"/, 'physical mixture control is absent');
 assert.match(html, /data-experience="basic"/, 'basic experience must be the progressive-disclosure entry point');
+assert.match(html, /\.experience-mode-btn\[aria-checked="true"\]/, 'selected experience mode must retain its visual state');
+assert.doesNotMatch(html, /experience-mode-btn\[aria-selected=/, 'obsolete tab-state styling must stay removed');
 assert.match(app, /function attemptPhysicalMixture\(/, 'physical mixing is not separated from chemical combination');
 assert.doesNotMatch(app, /zSum\s*>\s*118/, 'atomic-number addition must never fabricate fission');
 assert.doesNotMatch(app, /Predicted \$\{|isVsepr|isEstimate|\(Est\)/, 'estimated compounds must not enter the product or suggestion paths');
@@ -95,6 +97,17 @@ assert.match(app, /z < 1 \|\| z > 118/, 'the runtime must reject speculative non
 assert.doesNotMatch(app, /B-DNA · TP53/, 'schematic DNA must not claim a TP53 sequence');
 assert.match(app, /NO PREDICTIVE THERMAL PROFILE/, 'schematic DNA limitations are not explicit');
 assert.match(app, /tr\('xyzNuclearBlocked'\)[\s\S]{0,180}PROTON\/NEUTRON/, 'nuclear nucleons must not be exported as hydrogen XYZ records');
+assert.match(app, /fusionRouteMismatch[\s\S]{0,220}DOMAIN MISMATCH/, 'fusion must reject a selected fission route instead of substituting a default');
+assert.match(app, /fissionRouteMismatch[\s\S]{0,220}DOMAIN MISMATCH/, 'fission must reject a selected fusion route instead of substituting a default');
+assert.match(app, /status\.atTransition \? tr\('phaseBoundary'\)/, 'phase thresholds must be presented as boundaries, not exact single phases');
+assert.match(app, /name:'Phosphorus\(V\) Oxide',[\s\S]{0,100}formula:'P₄O₁₀',[\s\S]{0,100}c:10/, 'P4O10 cage metadata must match rendered atom counts');
+assert.match(app, /name === 'Phosphorus\(V\) Oxide' && atomCount === 14[\s\S]{0,420}bridgeBonds[\s\S]{0,220}terminalBonds/, 'P4O10 cage must declare its 12 bridge and four terminal bonds');
+assert.doesNotMatch(html, /id="hud-note"[^>]+data-i18n=/, 'dynamic telemetry note must not be overwritten by a static DNA binding');
+assert.doesNotMatch(app, /Hydrochloric Acid|Iron Oxide \(Rust\)|Phosphorus Pentoxide|Iodine Gas|LIQUID MODEL/, 'known legacy scientific naming contradictions must stay removed');
+assert.match(app, /tutorialReviewedScientificPanel/, 'tutorial verification must require an explicit scientific-panel review');
+assert.match(app, /canvas\.addEventListener\('keydown'[\s\S]{0,420}measurementHit/, '3D measurement must expose a keyboard selection path');
+assert.match(app, /setDialogBackgroundInert\(dialog,true\)/, 'modal dialogs must isolate background semantics and focus');
+assert.match(app, /calibratedGeometryExportAllowed\(\)/, 'coordinate exporters must share the calibrated-geometry gate');
 
 const periodicSandbox = {window:{}};
 vm.runInNewContext(periodicSource, periodicSandbox);
@@ -164,10 +177,16 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
   for (const key of ['referenceModel','dataUnavailable','dataCoverage','instability','statusIncompleteData','statusExoenergetic']) {
     assert.ok(catalog[key], `${locale} is missing scientific key ${key}`);
   }
+  for (const key of ['phaseBoundary','fusionRouteMismatch','fissionRouteMismatch','geometricAngle','sceneLabel','experienceLevelLabel']) {
+    assert.ok(catalog[key], `${locale} is missing final science/UX key ${key}`);
+  }
 }
 assert.match(i18nSandbox.NULLA_I18N.t('atoms',{count:3}), /3/, 'runtime interpolation failed');
 for (const match of html.matchAll(/data-i18n="([^"]+)"/g)) {
   assert.ok(catalogs.es[match[1]], `HTML references unknown translation key ${match[1]}`);
+}
+for (const match of html.matchAll(/data-i18n-(?:aria-label|label)="([^"]+)"/g)) {
+  assert.ok(catalogs.es[match[1]], `HTML references unknown accessible translation key ${match[1]}`);
 }
 vm.runInNewContext(quizSource, i18nSandbox);
 assert.deepEqual([...i18nSandbox.NULLA_QUIZ.locales].sort(), Object.keys(catalogs).sort(), 'quiz locales diverge from platform locales');
@@ -294,6 +313,16 @@ const waterStatus = physics.phaseStatus(waterProfile,300);
 assert.equal(waterStatus.key,'liquid');
 assert.ok(Math.abs(waterStatus.progress - 0.2685) < 1e-12);
 assert.equal(waterStatus.nextTransitionK,373.15);
+const meltingBoundary = physics.phaseStatus(waterProfile,273.15);
+assert.equal(meltingBoundary.atTransition,true);
+assert.equal(meltingBoundary.boundaryTransition,'melting');
+assert.equal(meltingBoundary.boundaryK,273.15);
+const boilingBoundary = physics.phaseStatus(waterProfile,373.15);
+assert.equal(boilingBoundary.boundaryTransition,'boiling');
+assert.equal(boilingBoundary.boundaryK,373.15);
+const sublimationBoundary = physics.phaseStatus({boil:3915,transition:'sublimation'},3915);
+assert.equal(sublimationBoundary.boundaryTransition,'sublimation');
+assert.equal(sublimationBoundary.boundaryK,3915);
 const sigma = 3;
 const epsilon = 0.003;
 const equilibrium = Math.pow(2,1/6) * sigma;
