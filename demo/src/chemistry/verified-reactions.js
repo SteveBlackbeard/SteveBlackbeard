@@ -1,6 +1,7 @@
 (function exposeVerifiedChemistry(root) {
   'use strict';
   const reactions = {
+    'Cl+Na': {name:'Sodium Chloride',formula:'NaCl',atoms:[{z:11,c:1},{z:17,c:1}],type:'Ionic Crystal',bonds:'Na⁺ Cl⁻ ionic lattice',state:'Solid (25°C)',geom:'Rock-salt lattice',evidenceLevel:'CATALOGUED'},
     'Br+K': {name:'Potassium Bromide',formula:'KBr',atoms:[{z:19,c:1},{z:35,c:1}],type:'Ionic Crystal',bonds:'K⁺ Br⁻ ionic lattice',state:'Solid (25°C)',geom:'Rock-salt lattice',evidenceLevel:'CATALOGUED'},
     'F+Li': {name:'Lithium Fluoride',formula:'LiF',atoms:[{z:3,c:1},{z:9,c:1}],type:'Ionic Crystal',bonds:'Li⁺ F⁻ ionic lattice',state:'Solid (25°C)',geom:'Rock-salt lattice',evidenceLevel:'CATALOGUED'},
     'Ca+F': {name:'Calcium Fluoride',formula:'CaF₂',atoms:[{z:20,c:1},{z:9,c:2}],type:'Ionic Crystal',bonds:'Ca²⁺ F⁻ ionic lattice',state:'Solid (25°C)',geom:'Fluorite lattice',evidenceLevel:'CATALOGUED'},

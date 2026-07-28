@@ -1,5 +1,8 @@
-// NULLA-LABS COMPLETE IUPAC 3D MOLECULAR SYNTHESIS PLATFORM v60.0
+// NULLA-LABS COMPLETE IUPAC 3D MOLECULAR SYNTHESIS PLATFORM v100.0
 // 118 elements + catalogued chemistry + explicit educational motion models
+window.NULLA_RUNTIME_HEALTH = { errors:0, unhandledRejections:0 };
+window.addEventListener('error', () => { window.NULLA_RUNTIME_HEALTH.errors++; });
+window.addEventListener('unhandledrejection', () => { window.NULLA_RUNTIME_HEALTH.unhandledRejections++; });
 window.addEventListener('DOMContentLoaded', function() {
   'use strict';
 
@@ -26,6 +29,7 @@ window.addEventListener('DOMContentLoaded', function() {
   const fpsVal = document.getElementById('fps-val');
   const runtimeDiagnostics = document.getElementById('runtime-diagnostics');
   const tr = (key, variables) => window.NULLA_I18N?.t(key, variables) ?? key;
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
 
   const topBanner = document.getElementById('active-synthesis-banner');
   const hudPanel = document.getElementById('molecular-hud');
@@ -44,6 +48,15 @@ window.addEventListener('DOMContentLoaded', function() {
   const hudConditions = document.getElementById('hud-conditions');
   const tempSlider = document.getElementById('temp-slider');
   const tempVal = document.getElementById('temp-val');
+  function setThermalControlEnabled(enabled, reason = 'unavailable') {
+    if (tempSlider) tempSlider.disabled = !enabled;
+    if (tempSlider) tempSlider.style.opacity = enabled ? '1' : '0.45';
+    if (tempVal) tempVal.textContent = enabled
+      ? `${temperatureK} K (${Math.round(temperatureK - 273.15)}°C)`
+      : reason === 'nuclear'
+        ? 'N/A · E_cm / PLASMA OUTSIDE 0–5000 K MODEL'
+        : tr('phaseUnavailable');
+  }
   const btnReassemble = document.getElementById('btn-reassemble');
   const btnOrbitals = document.getElementById('btn-orbitals');
   const btnMeasure = document.getElementById('btn-measure');
@@ -54,6 +67,39 @@ window.addEventListener('DOMContentLoaded', function() {
   const btnSuggest = document.getElementById('btn-suggest');
 
   const ptHudPanel = document.getElementById('pt-hud-panel');
+  let activeDialog = null;
+  let lastDialogFocus = null;
+
+  function openDialog(dialog, trigger = null) {
+    if (!dialog) return;
+    if (activeDialog !== dialog) lastDialogFocus = trigger || document.activeElement;
+    activeDialog = dialog;
+    dialog.style.display = 'block';
+    const focusTarget = dialog.querySelector('button, [href], select, input, [tabindex]:not([tabindex="-1"])');
+    if (focusTarget) focusTarget.focus({preventScroll:true});
+  }
+
+  function closeDialog(dialog) {
+    if (!dialog) return;
+    dialog.style.display = 'none';
+    if (activeDialog === dialog) activeDialog = null;
+    if (lastDialogFocus && typeof lastDialogFocus.focus === 'function') lastDialogFocus.focus({preventScroll:true});
+  }
+
+  document.addEventListener('keydown', event => {
+    if (!activeDialog) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeDialog(activeDialog);
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const focusable = [...activeDialog.querySelectorAll('button:not([disabled]), [href], select, input, [tabindex]:not([tabindex="-1"])')];
+    if (!focusable.length) return;
+    const current = focusable.indexOf(document.activeElement);
+    if (event.shiftKey && current <= 0) { event.preventDefault(); focusable[focusable.length - 1].focus(); }
+    else if (!event.shiftKey && current === focusable.length - 1) { event.preventDefault(); focusable[0].focus(); }
+  });
 
   const slots = [
     document.getElementById('slot-0'),
@@ -196,6 +242,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (window.PERIODIC_DATA && window.PERIODIC_DATA.elements) {
     window.PERIODIC_DATA.elements.forEach(el => {
       const z = el.number;
+      if (!Number.isInteger(z) || z < 1 || z > 118) return;
       const visual = EL_VISUALS[z] || { col: 0x888888, r: 1.0 };
       EL[z] = {
         z,
@@ -241,10 +288,10 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // REAL CHEMICAL REACTIONS DATABASE (EXPANDED TO >30 FUSIONS)
-  // Each reaction: key = sorted symbol pair, result = compound info
+  // CURATED CHEMICAL STRUCTURE LIBRARY (separate from nuclear reactions)
+  // Each entry is normalized by its selected element symbols.
   // ═══════════════════════════════════════════════════════════════
-  const REACTIONS = {
+  const REACTION_LIBRARY = {
     'H+O':   { name:'Water',                formula:'H₂O',   atoms:[{z:8,c:1},{z:1,c:2}],     type:'Polar Covalent', bonds:'O-H Polar Covalent (×2)', state:'Liquid (25°C)', geom:'Bent 104.5°' },
     'H+N':   { name:'Ammonia',              formula:'NH₃',   atoms:[{z:7,c:1},{z:1,c:3}],     type:'Polar Covalent', bonds:'N-H Polar Covalent (×3)', state:'Gas (25°C)', geom:'Trigonal Pyramidal' },
     'H+C':   { name:'Methane',              formula:'CH₄',   atoms:[{z:6,c:1},{z:1,c:4}],     type:'Covalent', bonds:'C-H Covalent (×4)', state:'Gas (25°C)', geom:'Tetrahedral' },
@@ -266,12 +313,12 @@ window.addEventListener('DOMContentLoaded', function() {
     'Al+O':  { name:'Aluminium Oxide',      formula:'Al₂O₃', atoms:[{z:13,c:2},{z:8,c:3}],   type:'Ionic', bonds:'Al³⁺ O²⁻ Ionic Bond', state:'Solid (Corundum/Sapphire)', geom:'Corundum' },
     'H+Br':  { name:'Hydrogen Bromide',     formula:'HBr',   atoms:[{z:35,c:1},{z:1,c:1}],    type:'Polar Covalent', bonds:'H-Br Polar Covalent', state:'Gas/Acid Solution', geom:'Linear' },
     'Na+F':  { name:'Sodium Fluoride',      formula:'NaF',   atoms:[{z:11,c:1},{z:9,c:1}],    type:'Ionic Crystal', bonds:'Na⁺ F⁻ Ionic Bond', state:'Solid Crystal (25°C)', geom:'Cubic FCC Lattice' },
-    'C+N':   { name:'Hydrogen Cyanide',     formula:'HCN',   atoms:[{z:1,c:1},{z:6,c:1},{z:7,c:1}], type:'Covalent', bonds:'C≡N Triple + C-H', state:'Gas/Liquid', geom:'Linear' },
+    'C+H+N': { name:'Hydrogen Cyanide',     formula:'HCN',   atoms:[{z:1,c:1},{z:6,c:1},{z:7,c:1}], type:'Covalent', bonds:'C≡N Triple + C-H', state:'Gas/Liquid', geom:'Linear', note:'Composition model; not a one-step synthesis claim.' },
     'C+Cl':  { name:'Carbon Tetrachloride', formula:'CCl₄',  atoms:[{z:6,c:1},{z:17,c:4}],    type:'Covalent', bonds:'C-Cl Covalent (×4)', state:'Liquid (25°C)', geom:'Tetrahedral' },
     'P+O':   { name:'Phosphorus Pentoxide', formula:'P₂O₅',  atoms:[{z:15,c:2},{z:8,c:5}],    type:'Covalent', bonds:'P-O & P=O Bonds', state:'Solid (25°C)', geom:'Cage Structure' },
     'N+H':   { name:'Ammonia',              formula:'NH₃',   atoms:[{z:7,c:1},{z:1,c:3}],     type:'Polar Covalent', bonds:'N-H Polar Covalent (×3)', state:'Gas (25°C)', geom:'Trigonal Pyramidal' },
     
-    // NEW BINARY FUSION REACTIONS (EXTENDED DATABASE)
+    // CURATED BINARY COMPOSITION MODELS
     'Li+O':  { name:'Lithium Oxide',        formula:'Li₂O',  atoms:[{z:3,c:2},{z:8,c:1}],     type:'Ionic Solid', bonds:'Li⁺ O²⁻ Ionic Bond', state:'Solid (25°C)', geom:'Antifluorite Structure' },
     'C+S':   { name:'Carbon Disulfide',     formula:'CS₂',   atoms:[{z:6,c:1},{z:16,c:2}],    type:'Covalent Liquid', bonds:'C=S Double Bond (×2)', state:'Liquid (25°C)', geom:'Linear 180°' },
     'C+F':   { name:'Carbon Tetrafluoride', formula:'CF₄',   atoms:[{z:6,c:1},{z:9,c:4}],     type:'Covalent Gas', bonds:'C-F Polar Covalent (×4)', state:'Gas (25°C)', geom:'Tetrahedral' },
@@ -300,7 +347,14 @@ window.addEventListener('DOMContentLoaded', function() {
     'P+P':   { name:'White Phosphorus',     formula:'P₄',    atoms:[{z:15,c:4}],              type:'Covalent Molecule', bonds:'P-P Covalent Bonds (×6)', state:'Solid (25°C)', geom:'Tetrahedral' },
     'C+C':   { name:'Graphite',             formula:'C_n',   atoms:[{z:6,c:14}],              type:'Covalent Network', bonds:'C-C Hexagonal Sheet Bonds', state:'Solid (25°C)', geom:'Hexagonal Sheets' },
   };
-  Object.assign(REACTIONS, window.NULLA_VERIFIED_REACTIONS || {});
+  const canonicalReactionKey = symbols => [...symbols].map(String).sort().join('+');
+  const REACTIONS = {};
+  Object.entries({...REACTION_LIBRARY, ...(window.NULLA_VERIFIED_REACTIONS || {})}).forEach(([key, reaction]) => {
+    REACTIONS[canonicalReactionKey(key.split('+'))] = {
+      evidenceLevel:'LEGACY_CURATED_ILLUSTRATION',
+      ...reaction
+    };
+  });
 
 
   // ═══════════════════════════════════════════════════════════════
@@ -313,7 +367,7 @@ window.addEventListener('DOMContentLoaded', function() {
     console.warn('High-performance WebGL context failed, falling back to basic WebGL:', e);
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, preserveDrawingBuffer: true });
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
@@ -374,13 +428,15 @@ window.addEventListener('DOMContentLoaded', function() {
   let shockwaveRing = null;
   let shockwaveRing2 = null;
   let fusionFlashSphere = null;
+  let fusionFlashLight = null;
   let shockwaveScale = 0.1;
   let shockwaveOpacity = 1.0;
   let activeCollisionMode = 'chemical';
+  let activePhysicalNucleonCount = 0;
   let nuclearChargeField = null;
-  const nuclearRouteCursor = {};
   let activeStructureId = 'dna';
   let angstromPerWorldUnit = 0.42;
+  let measurementScaleVerified = true;
   let activeThermalProfile = {
     label: 'B-DNA in aqueous environment',
     melt: 363,
@@ -533,11 +589,11 @@ window.addEventListener('DOMContentLoaded', function() {
     moleculeGroup.add(orbitalParticleSystem);
 
     updateTelemetry(
-      `Quantum Orbital Cloud: ${el.n} (${el.s})`,
-      `Probability Cloud Density Map (N=${count})`,
-      `Orbital Shell: ${el.sh}`,
-      `Quantum Wavefunction |Ψ|²`,
-      `State: [ORBITAL PROBABILITY DENSITY VISUALIZED]`
+      `${el.s} · ORBITAL MOTIF · ${tr('referenceModel')}`,
+      `Nvisual=${count}`,
+      `CONFIG: ${el.sh}`,
+      `|ψ|²: N/D`,
+      tr('referenceModel')
     );
   }
 
@@ -617,10 +673,18 @@ window.addEventListener('DOMContentLoaded', function() {
     if (sprite.material) sprite.material.dispose();
   }
 
+  function formatParticleCount(count) {
+    return activeCollisionMode === 'fusion' || activeCollisionMode === 'fission'
+      ? `A=${activePhysicalNucleonCount || count} · ${count} N`
+      : tr('atoms', {count});
+  }
+
   // Smoothly spawn atoms at positions with scale-up animation
-  function spawnAtoms(atomList) {
+  function spawnAtoms(atomList, explicitBondPairs = null) {
     // atomList: [{z, pos: Vector3, col: hex, scale: float, startPos: Vector3, isElectron: bool, noLabel: bool, parent, orbitR, ...}]
-    atomList = (atomList || []).filter(item => item && item.pos && typeof item.pos.clone === 'function');
+    atomList = (atomList || [])
+      .filter(item => item && item.pos && typeof item.pos.clone === 'function')
+      .map((item, sourceIndex) => ({...item, sourceIndex}));
     const generation = ++spawnGeneration;
     const isInitial = activeAtoms.length === 0;
     const spawnDelay = isInitial ? 0 : 300;
@@ -745,6 +809,9 @@ window.addEventListener('DOMContentLoaded', function() {
             isElectron: item.isElectron || false,
             noLabel: item.noLabel || false,
             noBond: item.noBond || false,
+            sourceIndex: item.sourceIndex,
+            nuclearCenter: item.nuclearCenter ? item.nuclearCenter.clone() : null,
+            nuclearLocal: item.nuclearLocal ? item.nuclearLocal.clone() : null,
             labelSprite,
             instancedMesh: instMesh,
             instIdx: idx,
@@ -799,7 +866,14 @@ window.addEventListener('DOMContentLoaded', function() {
 
       if (!isDnaMode) {
         const newBonds = [];
-        for (let i = 0; i < activeAtoms.length; i++) {
+        if (Array.isArray(explicitBondPairs)) {
+          const sourceToActive = new Map(activeAtoms.map((atom, index) => [atom.sourceIndex, index]));
+          explicitBondPairs.forEach(pair => {
+            const a = sourceToActive.get(pair.a);
+            const b = sourceToActive.get(pair.b);
+            if (Number.isInteger(a) && Number.isInteger(b) && a !== b) newBonds.push({a,b,order:pair.order || 1});
+          });
+        } else for (let i = 0; i < activeAtoms.length; i++) {
           for (let j = i + 1; j < activeAtoms.length; j++) {
             if (activeAtoms[i].isElectron || activeAtoms[j].isElectron || activeAtoms[i].noBond || activeAtoms[j].noBond) continue;
             const start = activeAtoms[i].targetPos;
@@ -829,7 +903,7 @@ window.addEventListener('DOMContentLoaded', function() {
         spawnBonds(newBonds);
       }
 
-      if (atomCountEl) atomCountEl.textContent = tr('atoms', {count:activeAtoms.length});
+      if (atomCountEl) atomCountEl.textContent = formatParticleCount(activeAtoms.length);
     };
 
     if (spawnDelay === 0) {
@@ -843,8 +917,8 @@ window.addEventListener('DOMContentLoaded', function() {
   function spawnBonds(bondPairs) {
     let totalCylinders = 0;
     bondPairs.forEach(bp => {
-      let order = 1;
-      if (!isDnaMode && activeAtoms[bp.a] && activeAtoms[bp.b]) {
+      let order = bp.order || 1;
+      if (!bp.order && !isDnaMode && activeAtoms[bp.a] && activeAtoms[bp.b]) {
         const zA = activeAtoms[bp.a].z;
         const zB = activeAtoms[bp.b].z;
         const symA = EL[zA].s;
@@ -868,8 +942,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     let instIdx = 0;
     bondPairs.forEach(bp => {
-      let order = 1;
-      if (!isDnaMode && activeAtoms[bp.a] && activeAtoms[bp.b]) {
+      let order = bp.order || 1;
+      if (!bp.order && !isDnaMode && activeAtoms[bp.a] && activeAtoms[bp.b]) {
         const zA = activeAtoms[bp.a].z;
         const zB = activeAtoms[bp.b].z;
         const symA = EL[zA].s;
@@ -895,11 +969,14 @@ window.addEventListener('DOMContentLoaded', function() {
   // BUILD DEFAULT B-DNA EXAMPLE (Matches high-fidelity glossy reference image)
   // ═══════════════════════════════════════════════════════════════
   function buildDNA() {
+    clearMaterialSelection();
     isDnaMode = true;
     activeCollisionMode = 'chemical';
     activeStructureId = 'dna';
     activeThermalProfile = { label:'B-DNA in aqueous environment', melt:363, boil:373.15, pressure:'1 atm', model:'educational' };
     angstromPerWorldUnit = 0.42;
+    measurementScaleVerified = true;
+    setThermalControlEnabled(true);
     activeBondCutoffWorld = null;
     const atoms = [];
     const BP = 130; // High density
@@ -963,46 +1040,52 @@ window.addEventListener('DOMContentLoaded', function() {
 
     spawnAtoms(atoms);
     updateTelemetry(
-      'B-DNA Double Helix (TP53 Gene Locus)',
-      'A-T (2 H-Bonds) // G-C (3 H-Bonds) Pairs',
-      'Genomic Macromolecule (Watson-Crick B-Form)',
-      'Hydrogen Bonds (Nucleobase Rungs)',
-      'State: [BIOMACROMOLECULE: CANONICAL B-DNA]'
+      'B-DNA · TP53',
+      'A··T (2×H) · G···C (3×H)',
+      `B-DNA · WATSON–CRICK · ${tr('referenceModel')}`,
+      'BASE PAIRS · H-BONDS',
+      `B-DNA · ${tr('referenceModel')}`
     );
   }
 
   // Shared material activation preserves one rendering path for all structures.
-  function activateMaterial(id, atoms, profile, telemetry, scale, bondCutoff) {
+  function activateMaterial(id, atoms, profile, telemetry, scale, bondCutoff, explicitBonds = null) {
     isDnaMode = false;
     activeCollisionMode = 'chemical';
     activeStructureId = id;
     activeThermalProfile = profile;
     angstromPerWorldUnit = scale;
+    measurementScaleVerified = Number.isFinite(scale) && scale > 0;
+    setThermalControlEnabled(true);
     activeBondCutoffWorld = bondCutoff || null;
     selectedMeasureAtoms = [];
-    spawnAtoms(atoms);
+    spawnAtoms(atoms, explicitBonds);
+    const reportedEnthalpy = telemetry.enthalpy == null || typeof telemetry.enthalpy === 'number' ? tr('dataUnavailable') : telemetry.enthalpy;
+    const reportedDipole = telemetry.dipole == null || typeof telemetry.dipole === 'number' || /\b\d+(?:\.\d+)?\s*D\b/.test(String(telemetry.dipole || ''))
+      ? tr('dataUnavailable') : telemetry.dipole;
+    const reportedStability = telemetry.stability == null || typeof telemetry.stability === 'number' ? tr('dataUnavailable') : telemetry.stability;
     updateTelemetry(
       telemetry.name,
       telemetry.formula,
-      `${telemetry.cls} · MODELO EDUCATIVO`,
+      `${telemetry.cls} · ${tr('referenceModel')}`,
       telemetry.bonds,
-      `Fase calculada a ${activeThermalProfile.pressure || '1 atm'}`,
-      telemetry.enthalpy,
-      telemetry.dipole,
-      telemetry.stability,
-      `${telemetry.note} Escala geométrica calibrada; dinámica visual aproximada, no ab initio.`
+      `T/P PROFILE · ${activeThermalProfile.pressure || '1 atm'}`,
+      reportedEnthalpy,
+      reportedDipole,
+      reportedStability,
+      `${telemetry.note} · GEOMETRY: CALIBRATED · DYNAMICS: ILLUSTRATION ≠ ab initio`
     );
   }
 
   function buildNaclCrystal() {
     const atoms = [];
     const spacing = 4.0;
-    for (let x = -2; x <= 2; x++) {
-      for (let y = -2; y <= 2; y++) {
-        for (let z = -2; z <= 2; z++) {
+    for (let x = 0; x < 6; x++) {
+      for (let y = 0; y < 6; y++) {
+        for (let z = 0; z < 6; z++) {
           atoms.push({
             z: ((x + y + z) & 1) === 0 ? 11 : 17,
-            pos: new THREE.Vector3(x * spacing, y * spacing, z * spacing),
+            pos: new THREE.Vector3((x - 2.5) * spacing, (y - 2.5) * spacing, (z - 2.5) * spacing),
             scale: 1.25,
             noLabel: true
           });
@@ -1011,7 +1094,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     activateMaterial('nacl', atoms,
       { label:'NaCl', melt:1074, boil:1738, pressure:'1 atm', model:'educational' },
-      { name:'NaCl Rock-Salt Crystal', formula:'Na⁺Cl⁻', cls:'Ionic rock-salt lattice (interpenetrating FCC)', bonds:'6-fold Na–Cl coordination', enthalpy:-411, dipole:0, stability:98, note:'Nearest-neighbour distance referenced to 2.82 Å at 298 K.' },
+      { name:'NaCl · ROCK-SALT', formula:'Na⁺Cl⁻', cls:'FCC/FCC · CN=6', bonds:'Na–Cl · CN=6', enthalpy:-411, dipole:0, stability:98, note:'d(Na–Cl)≈2.82 Å @ 298 K' },
       2.82 / spacing, spacing * 1.08);
   }
 
@@ -1031,7 +1114,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const nn = a * Math.sqrt(3) / 4;
     activateMaterial('diamond', atoms,
       { label:'Diamond', melt:null, boil:3915, transition:'sublimation', pressure:'1 atm', model:'educational' },
-      { name:'Diamond Covalent Lattice', formula:'Cₙ', cls:'sp³ tetrahedral network', bonds:'C–C covalent · 109.47°', enthalpy:1.9, dipole:0, stability:99, note:'Diamond sublimes near 3915 K at 1 atm; a conventional melting point is not used.' },
+      { name:'C · DIAMOND', formula:'Cₙ', cls:'sp³ · T_d', bonds:'C–C · 109.47°', enthalpy:1.9, dipole:0, stability:99, note:'SUBLIMATION≈3915 K @ 1 atm' },
       1.544 / nn, nn * 1.08);
   }
 
@@ -1059,56 +1142,88 @@ window.addEventListener('DOMContentLoaded', function() {
     const nn = atoms[0].pos.distanceTo(atoms.find((a,idx)=>idx>0 && atoms[0].pos.distanceTo(a.pos)>0.1 && atoms[0].pos.distanceTo(a.pos)<8).pos);
     activateMaterial('c60', atoms,
       { label:'C₆₀', melt:null, boil:800, transition:'sublimation', pressure:'vacuum/1 atm', model:'educational' },
-      { name:'Buckminsterfullerene C₆₀', formula:'C₆₀', cls:'Truncated icosahedral fullerene', bonds:'60 vertices · 90 sp² C–C edges', enthalpy:null, dipole:0, stability:96, note:'Constructed by truncating every directed edge of an icosahedron.' },
+      { name:'C₆₀', formula:'C₆₀', cls:'I_h · V=60 · E=90 · deg=3', bonds:'sp² C–C · E=90', enthalpy:null, dipole:0, stability:96, note:'TRUNCATED ICOSAHEDRON' },
       1.43 / nn, nn * 1.13);
   }
 
   function buildGrapheneSheet() {
-    const atoms=[]; const dx=3.4; const dy=Math.sqrt(3)*dx;
-    for(let row=-4;row<=4;row++) for(let col=-5;col<=5;col++) {
-      const x=col*3*dx+(row&1)*1.5*dx;
-      const y=row*dy;
-      atoms.push({z:6,pos:new THREE.Vector3(x,y,0),scale:1.0,noLabel:true});
-      atoms.push({z:6,pos:new THREE.Vector3(x+dx,y,0),scale:1.0,noLabel:true});
+    const atoms=[]; const bonds=[]; const bond=3.4; const index=new Map();
+    const add=(site,row,col,pos)=>{const id=atoms.length;atoms.push({z:6,pos,scale:1.0,noLabel:true});index.set(`${site}:${row}:${col}`,id);};
+    for(let row=-5;row<=5;row++) for(let col=-5;col<=5;col++) {
+      const x=Math.sqrt(3)*bond*(col+row/2), y=1.5*bond*row;
+      if (row > -5 && !(row === 5 && col === 5)) add('A',row,col,new THREE.Vector3(x,y,0));
+      if (row < 5 && !(row === -5 && col === -5)) add('B',row,col,new THREE.Vector3(x,y+bond,0));
+    }
+    for(let row=-5;row<=5;row++) for(let col=-5;col<=5;col++) {
+      const a=index.get(`A:${row}:${col}`);
+      if (!Number.isInteger(a)) continue;
+      [`B:${row}:${col}`,`B:${row-1}:${col}`,`B:${row-1}:${col+1}`].forEach(key=>{
+        const b=index.get(key); if(Number.isInteger(b)) bonds.push({a,b});
+      });
     }
     activateMaterial('graphene', atoms,
       { label:'Graphene', melt:null, boil:4510, transition:'sublimation', pressure:'1 atm', model:'educational' },
-      { name:'Graphene Monolayer', formula:'Cₙ', cls:'2D hexagonal sp² sheet', bonds:'C–C network · 120°', enthalpy:0, dipole:0, stability:99, note:'Finite monolayer patch with open boundary.' },
-      1.42/dx, dx*1.12);
+      { name:'Cₙ · GRAPHENE', formula:'Cₙ', cls:'2D · HEX · sp²', bonds:'C–C · 120°', enthalpy:0, dipole:0, stability:99, note:'FINITE · OPEN BOUNDARY' },
+      1.42/bond, bond*1.12, bonds);
   }
 
   function buildCarbonNanotube() {
-    const atoms=[]; const n=12, rings=16, radius=10, dz=2.95;
-    for(let r=0;r<rings;r++) for(let i=0;i<n;i++) {
-      const angle=(i/n)*Math.PI*2+(r&1)*Math.PI/n;
-      atoms.push({z:6,pos:new THREE.Vector3(Math.cos(angle)*radius,(r-(rings-1)/2)*dz,Math.sin(angle)*radius),scale:1.0,noLabel:true});
+    const atoms=[]; const bonds=[]; const index=new Map();
+    const n=12, rows=16, bond=3.4;
+    const circumference=n*Math.sqrt(3)*bond;
+    const radius=circumference/(2*Math.PI);
+    const add=(site,row,col,x,y)=>{
+      const angle=x/radius;
+      const id=atoms.length;
+      atoms.push({z:6,pos:new THREE.Vector3(Math.cos(angle)*radius,y,Math.sin(angle)*radius),scale:1.0,noLabel:true});
+      index.set(`${site}:${row}:${col}`,id);
+    };
+    for(let row=0;row<=rows;row++) for(let col=0;col<n;col++) {
+      const x=Math.sqrt(3)*bond*(col+row/2);
+      const y=1.5*bond*(row-rows/2);
+      if(row>0) add('A',row,col,x,y);
+      if(row<rows) add('B',row,col,x,y+bond);
     }
-    const circumferenceStep=2*radius*Math.sin(Math.PI/n);
+    for(let row=1;row<=rows;row++) for(let col=0;col<n;col++) {
+      const a=index.get(`A:${row}:${col}`);
+      [`B:${row}:${col}`,`B:${row-1}:${col}`,`B:${row-1}:${(col+1)%n}`].forEach(key=>{
+        const b=index.get(key); if(Number.isInteger(b)) bonds.push({a,b});
+      });
+    }
     activateMaterial('nanotube', atoms,
       { label:'SWCNT (12,0)', melt:null, boil:4510, transition:'sublimation', pressure:'1 atm', model:'educational' },
-      { name:'Single-Wall Carbon Nanotube', formula:'Cₙ · SWCNT (12,0)', cls:'Zig-zag rolled graphene cylinder', bonds:'sp² carbon network', enthalpy:null, dipole:0, stability:97, note:'Finite open-ended educational (12,0) nanotube.' },
-      1.42/circumferenceStep, Math.max(circumferenceStep,dz)*1.13);
+      { name:'Cₙ · SWCNT (12,0)', formula:'Cₙ · SWCNT (12,0)', cls:'sp² · (12,0)', bonds:'C–C · deg=2/3', enthalpy:null, dipole:0, stability:97, note:'FINITE · OPEN ENDS' },
+      1.42/bond, bond*1.13, bonds);
   }
 
   function buildSolvationShell() {
-    const atoms=[{z:11,pos:new THREE.Vector3(0,0,0),scale:1.5}];
+    const atoms=[{z:11,pos:new THREE.Vector3(0,0,0),scale:1.5,noBond:true}];
+    const bonds=[];
     const count=12, r=10, golden=Math.PI*(3-Math.sqrt(5));
     for(let i=0;i<count;i++) {
       const y=1-(i/(count-1))*2, rr=Math.sqrt(1-y*y), theta=golden*i;
       const dir=new THREE.Vector3(Math.cos(theta)*rr,y,Math.sin(theta)*rr);
       const oxygen=dir.clone().multiplyScalar(r);
+      const oxygenIndex=atoms.length;
       atoms.push({z:8,pos:oxygen,scale:1.1,noLabel:true});
-      const tangent=new THREE.Vector3(-dir.z,0,dir.x).normalize();
-      atoms.push({z:1,pos:oxygen.clone().add(dir.clone().multiplyScalar(2.1)).add(tangent.clone().multiplyScalar(1.35)),scale:.72,noLabel:true});
-      atoms.push({z:1,pos:oxygen.clone().add(dir.clone().multiplyScalar(2.1)).add(tangent.clone().multiplyScalar(-1.35)),scale:.72,noLabel:true});
+      let tangent=new THREE.Vector3(-dir.z,0,dir.x);
+      if(tangent.lengthSq()<1e-6)tangent=new THREE.Vector3(1,0,0); else tangent.normalize();
+      const bisector=dir.clone();
+      const halfAngle=52.25*Math.PI/180, ohWorld=4.0;
+      const h1=oxygen.clone().add(bisector.clone().multiplyScalar(Math.cos(halfAngle)*ohWorld)).add(tangent.clone().multiplyScalar(Math.sin(halfAngle)*ohWorld));
+      const h2=oxygen.clone().add(bisector.clone().multiplyScalar(Math.cos(halfAngle)*ohWorld)).add(tangent.clone().multiplyScalar(-Math.sin(halfAngle)*ohWorld));
+      const h1Index=atoms.length; atoms.push({z:1,pos:h1,scale:.72,noLabel:true});
+      const h2Index=atoms.length; atoms.push({z:1,pos:h2,scale:.72,noLabel:true});
+      bonds.push({a:oxygenIndex,b:h1Index},{a:oxygenIndex,b:h2Index});
     }
     activateMaterial('solvation', atoms,
       { label:'Na⁺(aq)', melt:273.15, boil:373.15, pressure:'1 atm', model:'illustrative' },
-      { name:'Na⁺ Solvation Shell', formula:'[Na(H₂O)₁₂]⁺', cls:'Illustrative hydration environment', bonds:'Ion–dipole · O atoms oriented toward Na⁺', enthalpy:null, dipole:'H₂O 1.85 D', stability:'ILLUSTRATION', note:'Twelve waters show orientation, not a claim of fixed first-shell coordination; real coordination is dynamic and commonly lower.' },
-      2.40/r, 3.2);
+      { name:'Na⁺ · SOLVATION', formula:'[Na(H₂O)₁₂]⁺', cls:'ION–DIPOLE', bonds:'Na⁺···O · 12×H₂O · ∠HOH=104.5°', enthalpy:null, dipole:'H₂O 1.85 D', stability:'ILLUSTRATION', note:'N(H₂O)=12 · MODEL ≠ FIXED COORDINATION' },
+      0.958/4.0, 4.2, bonds);
   }
 
   function formElement(z, fromCenter) {
+    clearMaterialSelection();
     isDnaMode = false;
     activeCollisionMode = 'chemical';
     const el = EL[z] || EL[1];
@@ -1120,6 +1235,9 @@ window.addEventListener('DOMContentLoaded', function() {
       pressure: '1 atm',
       model: 'educational'
     };
+    measurementScaleVerified = false;
+    const hasPhaseData = Number.isFinite(activeThermalProfile.melt) || Number.isFinite(activeThermalProfile.boil);
+    setThermalControlEnabled(hasPhaseData);
     activeBondCutoffWorld = null;
     const atoms = getElementAtoms(z, new THREE.Vector3(0, 0, 0), fromCenter);
     
@@ -1131,26 +1249,21 @@ window.addEventListener('DOMContentLoaded', function() {
       generateAtomicOrbitalCloud(z);
     }
     updateTelemetry(
-      `${el.n} (${el.s}) [Z = ${z}]`,
-      `Mass: ${typeof el.m === 'number' ? el.m.toFixed(3) : el.m} u | Electronegativity: ${el.electronegativity ? el.electronegativity : (el.cat && el.cat.includes('noble') ? '0.0 (Inert Noble Gas)' : 'Est. (Superheavy Transactinide)')}`,
-      `Phase: ${el.phase || 'Solid/Gas'} | Density: ${el.density ? el.density + ' g/cm³' : 'Synthetic High-Density Target'}`,
-      `Melt: ${el.melt ? el.melt + ' K' : 'Est. High Temp'} | Boil: ${el.boil ? el.boil + ' K' : 'Est. High Temp'}`,
-      `Config: ${el.sh} // ` + (
-        symbol === 'He' || symbol === 'Ne' || symbol === 'Ar' || symbol === 'Kr' || symbol === 'Xe' || symbol === 'Rn' ? 'Monatomic Gas (Orbital Cloud)' :
-        symbol === 'B' ? 'Boron B₁₂ Icosahedral Cluster' :
-        ['Hg', 'Ga', 'Cs', 'Rb', 'Fr'].includes(symbol) ? 'Amorphous Liquid Droplet' :
-        symbol === 'Br' ? 'Diatomic Liquid Droplet' :
-        symbol === 'I' ? 'Solid Diatomic Molecular Lattice (I₂ Network)' :
-        symbol === 'Se' || symbol === 'Te' ? 'Infinite Helical Spirals' :
-        symbol === 'As' || symbol === 'Sb' || symbol === 'Bi' ? 'Puckered Hexagonal Double-Layers' :
-        symbol === 'Po' ? 'Simple Cubic Lattice (SC)' :
-        symbol === 'P' ? 'P₄ Molecular Tetrahedron' :
-        symbol === 'S' ? 'S₈ Crown Ring' :
-        symbol === 'C' ? 'Graphite Hexagonal Sheets' :
-        symbol === 'Si' || symbol === 'Ge' || symbol === 'Sn' ? 'Covalent Diamond Lattice Unit Cell' :
-        ['Li', 'Na', 'K', 'V', 'Cr', 'Fe', 'Rb', 'Nb', 'Mo', 'Cs', 'Ba', 'Ta', 'W', 'Eu'].includes(symbol) ? 'Body-Centered Cubic Lattice (BCC)' :
-        ['Be', 'Mg', 'Ti', 'Co', 'Zn', 'Y', 'Zr', 'Ru', 'Cd', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Lu', 'Hf', 'Re', 'Os', 'Tl'].includes(symbol) ? 'Hexagonal Close-Packed Lattice (HCP)' :
-        'Face-Centered Cubic Lattice (FCC)'
+      `${el.s} · Z=${z}`,
+      `m=${typeof el.m === 'number' ? el.m.toFixed(3) : el.m} u · χ=${Number.isFinite(el.electronegativity) ? el.electronegativity : tr('dataUnavailable')}`,
+      `${tr('stateLabel')}: ${phaseAtTemperature(activeThermalProfile,temperatureK).label} · ρ=${Number.isFinite(el.density) ? el.density + ' g/cm³' : tr('dataUnavailable')}`,
+      `Tm=${Number.isFinite(el.melt) ? el.melt + ' K' : 'N/D'} · Tb=${Number.isFinite(el.boil) ? el.boil + ' K' : 'N/D'}`,
+      `CONFIG: ${el.sh} · STRUCTURE: ` + (
+        ['He','Ne','Ar','Kr','Xe','Rn'].includes(symbol) ? 'MONATOMIC' :
+        symbol === 'B' ? 'B₁₂ · I_h' :
+        ['Hg','Ga','Cs','Rb','Fr'].includes(symbol) ? 'LIQUID MODEL' :
+        ['Br','I'].includes(symbol) ? `${symbol}₂` :
+        ['Se','Te'].includes(symbol) ? 'HELICAL' :
+        ['As','Sb','Bi'].includes(symbol) ? 'LAYERED' :
+        symbol === 'Po' ? 'SC' : symbol === 'P' ? 'P₄ · T_d' : symbol === 'S' ? 'S₈' :
+        symbol === 'C' ? 'GRAPHITE · HEX' : ['Si','Ge','Sn'].includes(symbol) ? 'DIAMOND · sp³' :
+        ['Li','Na','K','V','Cr','Fe','Rb','Nb','Mo','Cs','Ba','Ta','W','Eu'].includes(symbol) ? 'BCC' :
+        ['Be','Mg','Ti','Co','Zn','Y','Zr','Ru','Cd','Gd','Tb','Dy','Ho','Er','Tm','Lu','Hf','Re','Os','Tl'].includes(symbol) ? 'HCP' : 'FCC'
       )
     );
   }
@@ -1158,8 +1271,38 @@ window.addEventListener('DOMContentLoaded', function() {
   // ═══════════════════════════════════════════════════════════════
   // FORM COMPOUND FROM REACTION
   // ═══════════════════════════════════════════════════════════════
+  function getExplicitCompoundBonds(name, atomCount) {
+    const star = (outerCount, order = 1) => Array.from({length:outerCount}, (_, index) => ({a:0,b:index+1,order}));
+    if (['Water','Hydrogen Sulfide'].includes(name)) return star(2,1);
+    if (name === 'Sulfur Dioxide') return star(2,2);
+    if (['Carbon Dioxide','Carbon Disulfide'].includes(name)) return star(2,2);
+    if (name === 'Hydrogen Cyanide') return [{a:0,b:1,order:1},{a:1,b:2,order:3}];
+    if (name === 'Nitric Oxide') return [{a:0,b:1,order:2}];
+    if (['Hydrochloric Acid','Hydrogen Fluoride','Hydrogen Bromide','Hydrogen Iodide'].includes(name)) return [{a:0,b:1,order:1}];
+    if (name === 'Ammonia') return star(3,1);
+    if (['Methane','Carbon Tetrachloride','Carbon Tetrafluoride','Titanium Tetrachloride'].includes(name)) return star(4,1);
+    if (['Magnesium Chloride','Calcium Chloride','Zinc Chloride'].includes(name)) return star(2,1);
+    if (['Aluminium Chloride','Iron Chloride'].includes(name)) return star(3,1);
+    if (name === 'Silicon Dioxide') return star(2,1);
+    if (name === 'Silicon Carbide') return [{a:0,b:1,order:1}];
+    if (name === 'Octasulfur Ring' && atomCount === 8) return Array.from({length:8},(_,i)=>({a:i,b:(i+1)%8,order:1}));
+    if (name === 'White Phosphorus' && atomCount === 4) {
+      const bonds=[]; for(let i=0;i<4;i++) for(let j=i+1;j<4;j++) bonds.push({a:i,b:j,order:1}); return bonds;
+    }
+    const diatomicOrder = {'Hydrogen Gas':1,'Oxygen Gas':2,'Nitrogen Gas':3,'Fluorine Gas':1,'Chlorine Gas':1,'Bromine Gas':1,'Iodine Gas':1};
+    if (diatomicOrder[name]) return [{a:0,b:1,order:diatomicOrder[name]}];
+    return null;
+  }
+
   function formCompound(reaction) {
+    clearMaterialSelection();
     isDnaMode = false;
+    const hasNaclReference = reaction.formula === 'NaCl';
+    activeThermalProfile = hasNaclReference
+      ? { label:'NaCl', melt:1074, boil:1738, pressure:'1 atm', model:'catalogued reference' }
+      : { label:reaction.formula, melt:null, boil:null, pressure:reaction.pressure || '1 atm', model:'data unavailable' };
+    measurementScaleVerified = false;
+    setThermalControlEnabled(hasNaclReference);
     const atoms = [];
     const name = reaction.name;
 
@@ -1213,14 +1356,16 @@ window.addEventListener('DOMContentLoaded', function() {
     ) {
       const zA = reaction.atoms[0].z;
       const zB = reaction.atoms[1].z;
-      const d = 6.0;
-      for (let ix = -1; ix <= 1; ix++) {
-        for (let iy = -1; iy <= 1; iy++) {
-          for (let iz = -1; iz <= 1; iz++) {
+      const d = 4.0;
+      // 6³ finite rock-salt specimen: dense enough to expose the octahedral
+      // coordination while remaining below the default 650-atom DNA budget.
+      for (let ix = 0; ix < 6; ix++) {
+        for (let iy = 0; iy < 6; iy++) {
+          for (let iz = 0; iz < 6; iz++) {
             const isA = (ix + iy + iz) % 2 === 0;
             atoms.push({
               z: isA ? zA : zB,
-              pos: new THREE.Vector3(ix * d, iy * d, iz * d),
+              pos: new THREE.Vector3((ix - 2.5) * d, (iy - 2.5) * d, (iz - 2.5) * d),
               scale: isA ? 1.8 : 1.5
             });
           }
@@ -1250,16 +1395,12 @@ window.addEventListener('DOMContentLoaded', function() {
       const zOther = name === 'Silicon Carbide' ? 6 : 8; 
       const d = 5.0;
       atoms.push({ z: zSi, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
-      const vertices = [
-        new THREE.Vector3(d, d, d),
-        new THREE.Vector3(-d, -d, d),
-        new THREE.Vector3(-d, d, -d),
-        new THREE.Vector3(d, -d, -d)
-      ];
-      vertices.forEach(v => {
-        atoms.push({ z: zOther, pos: v.clone().multiplyScalar(0.5), scale: 1.4 });
-        atoms.push({ z: zSi, pos: v, scale: 1.8 });
-      });
+      if (name === 'Silicon Dioxide') {
+        atoms.push({ z:zOther, pos:new THREE.Vector3(-d,0,0), scale:1.4 });
+        atoms.push({ z:zOther, pos:new THREE.Vector3(d,0,0), scale:1.4 });
+      } else {
+        atoms.push({ z:zOther, pos:new THREE.Vector3(d,0,0), scale:1.4 });
+      }
     }
     else if (name === 'Iron Oxide (Rust)' || name === 'Aluminium Oxide') {
       const zMetal = reaction.atoms[0].z; 
@@ -1279,12 +1420,12 @@ window.addEventListener('DOMContentLoaded', function() {
       const zMetal = reaction.atoms[0].z; 
       const zO = reaction.atoms[1].z;     
       const d = 5.5;
-      for (let ix = -1; ix <= 1; ix++) {
-        for (let iy = -1; iy <= 1; iy++) {
+      for (let ix = 0; ix < 4; ix++) {
+        for (let iy = 0; iy < 4; iy++) {
           const isMetal = (ix + iy) % 2 === 0;
           atoms.push({
             z: isMetal ? zMetal : zO,
-            pos: new THREE.Vector3(ix * d, iy * d, (isMetal ? 0.8 : -0.8)),
+            pos: new THREE.Vector3((ix - 1.5) * d, (iy - 1.5) * d, (isMetal ? 0.8 : -0.8)),
             scale: isMetal ? 1.7 : 1.5
           });
         }
@@ -1300,9 +1441,10 @@ window.addEventListener('DOMContentLoaded', function() {
         }
       }
       const cDumbbells = [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, d, d*0.5),
-        new THREE.Vector3(0, -d, -d*0.5)
+        new THREE.Vector3(0, -d, 0),
+        new THREE.Vector3(d, 0, 0),
+        new THREE.Vector3(0, d, 0),
+        new THREE.Vector3(-d, 0, 0)
       ];
       cDumbbells.forEach(center => {
         atoms.push({ z: zC, pos: center.clone().add(new THREE.Vector3(0, 0, -1.5)), scale: 1.5 });
@@ -1336,11 +1478,10 @@ window.addEventListener('DOMContentLoaded', function() {
       const zCl = 17;
       atoms.push({ z: zMetal, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
       const d = 5.8;
-      const clPos = [
-        new THREE.Vector3(d, 0, 0), new THREE.Vector3(-d, 0, 0),
-        new THREE.Vector3(0, d, 0), new THREE.Vector3(0, -d, 0),
-        new THREE.Vector3(0, 0, d), new THREE.Vector3(0, 0, -d)
-      ];
+      const clPos = [0,1,2].map(i => {
+        const angle = i * Math.PI * 2 / 3;
+        return new THREE.Vector3(Math.cos(angle) * d, Math.sin(angle) * d, 0);
+      });
       clPos.forEach(p => atoms.push({ z: zCl, pos: p, scale: 1.5 }));
     }
     else if (name === 'Magnesium Chloride' || name === 'Calcium Chloride') {
@@ -1348,10 +1489,7 @@ window.addEventListener('DOMContentLoaded', function() {
       const zCl = 17;
       atoms.push({ z: zMetal, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
       const d = 6.0;
-      const clPos = [
-        new THREE.Vector3(d, d, 0), new THREE.Vector3(-d, -d, 0),
-        new THREE.Vector3(-d, d, d), new THREE.Vector3(d, -d, -d)
-      ];
+      const clPos = [new THREE.Vector3(-d,0,0), new THREE.Vector3(d,0,0)];
       clPos.forEach(p => atoms.push({ z: zCl, pos: p, scale: 1.5 }));
     }
     else if (name === 'Copper Chloride') {
@@ -1370,10 +1508,7 @@ window.addEventListener('DOMContentLoaded', function() {
       const zCl = 17;
       const d = 5.0;
       atoms.push({ z: zZn, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
-      const clPos = [
-        new THREE.Vector3(d, d, d), new THREE.Vector3(-d, -d, d),
-        new THREE.Vector3(-d, d, -d), new THREE.Vector3(d, -d, -d)
-      ];
+      const clPos = [new THREE.Vector3(-d,0,0), new THREE.Vector3(d,0,0)];
       clPos.forEach(p => atoms.push({ z: zCl, pos: p, scale: 1.5 }));
     }
     else if (name === 'Zinc Oxide') {
@@ -1398,13 +1533,11 @@ window.addEventListener('DOMContentLoaded', function() {
       const zAu = 79;
       const zO = 8;
       const d = 5.2;
-      atoms.push({ z: zAu, pos: new THREE.Vector3(0, 0, 0), scale: 1.8 });
-      atoms.push({ z: zO, pos: new THREE.Vector3(d, 0, 0), scale: 1.4 });
-      atoms.push({ z: zO, pos: new THREE.Vector3(-d, 0, 0), scale: 1.4 });
-      atoms.push({ z: zO, pos: new THREE.Vector3(0, d, 0), scale: 1.4 });
-      atoms.push({ z: zO, pos: new THREE.Vector3(0, -d, 0), scale: 1.4 });
-      atoms.push({ z: zAu, pos: new THREE.Vector3(2*d, d, 0), scale: 1.8 });
-      atoms.push({ z: zAu, pos: new THREE.Vector3(-2*d, -d, 0), scale: 1.8 });
+      atoms.push({ z:zAu, pos:new THREE.Vector3(-d,0,0), scale:1.8 });
+      atoms.push({ z:zAu, pos:new THREE.Vector3(d,0,0), scale:1.8 });
+      atoms.push({ z:zO, pos:new THREE.Vector3(0,d,0), scale:1.4 });
+      atoms.push({ z:zO, pos:new THREE.Vector3(0,-d,0), scale:1.4 });
+      atoms.push({ z:zO, pos:new THREE.Vector3(0,0,d), scale:1.4 });
     }
     else if (['Hydrogen Gas', 'Oxygen Gas', 'Nitrogen Gas', 'Fluorine Gas', 'Chlorine Gas', 'Bromine Gas', 'Iodine Gas'].includes(name)) {
       const zGas = reaction.atoms[0].z;
@@ -1469,18 +1602,34 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
     activeBondCutoffWorld = Number.isFinite(nearestDistance) ? nearestDistance * 1.18 : null;
-    spawnAtoms(atoms);
+    if (hasNaclReference) {
+      angstromPerWorldUnit = 2.82 / 4.0;
+      measurementScaleVerified = true;
+    }
+    const explicitCompoundBonds = getExplicitCompoundBonds(name, atoms.length);
+    spawnAtoms(atoms, explicitCompoundBonds);
     activeStructureId = `compound-${reaction.formula}`;
+    const evidenceLabel = reaction.evidenceLevel === 'CATALOGUED'
+      ? `${tr('cataloguedCompound')} · ${tr('referenceModel')}`
+      : tr('referenceModel');
+    const bondOrderCounts = (explicitCompoundBonds || []).reduce((counts,bond) => {
+      const order = bond.order || 1;
+      counts[order] = (counts[order] || 0) + 1;
+      return counts;
+    },{});
+    const topologyLabel = explicitCompoundBonds
+      ? `GRAPH V=${atoms.length} · E=${explicitCompoundBonds.length} · ${Object.entries(bondOrderCounts).map(([order,count]) => `BO${order}×${count}`).join(' · ')}`
+      : `GRAPH V=${atoms.length} · rcut=${activeBondCutoffWorld?.toFixed(2) || 'N/D'} world`;
     updateTelemetry(
-      `${reaction.formula} · ${tr('cataloguedCompound')}`,
-      'Formula: ' + reaction.formula + ' | ' + reaction.atoms.map(g => EL[g.z].s + '×' + g.c).join(' + '),
-      'Type: ' + reaction.type + ' | Geometry: ' + reaction.geom,
-      'Bonding: ' + reaction.bonds,
-      'State: ' + reaction.state,
+      `${reaction.formula} · ${evidenceLabel}`,
+      `${tr('formulaLabel')}: ${reaction.formula} | ${reaction.atoms.map(g => EL[g.z].s + '×' + g.c).join(' + ')}`,
+      `${reaction.evidenceLevel} · COMPOSITION MODEL`,
+      topologyLabel,
+      hasNaclReference ? 'Tm=1074 K · Tb=1738 K · p≈1 atm' : 'T/P: N/D',
       reaction.enthalpy ? (reaction.enthalpy < 0 ? `${reaction.enthalpy} kJ/mol (EXOTHERMIC)` : `${reaction.enthalpy} kJ/mol (ENDOTHERMIC)`) : '—',
-      reaction.dipole !== undefined ? `${reaction.dipole} Debye (${reaction.dipole > 0 ? 'POLAR' : 'NON-POLAR'})` : '0.00 Debye (NON-POLAR)',
-      reaction.stabilityScore ? `${reaction.stabilityScore}% (HIGH STABILITY)` : '95.0%',
-      reaction.note || tr('cataloguedCompound')
+      reaction.dipole !== undefined ? `${reaction.dipole} Debye (${reaction.dipole > 0 ? 'POLAR' : 'NON-POLAR'})` : tr('dataUnavailable'),
+      reaction.stabilityScore ? `${reaction.stabilityScore}%` : tr('dataUnavailable'),
+      evidenceLabel
     );
   }
 
@@ -1849,11 +1998,12 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // UNSTABLE SUPERHEAVY FISSION DECAY EVENT (Z > 118)
+  // CHEMICAL / NUCLEAR COLLISION VISUAL EFFECTS
   // ═══════════════════════════════════════════════════════════════
   function createExplosion(pos, color1, color2) {
     playCollisionSound();
-    const particleCount = activeCollisionMode === 'chemical' ? 600 : activeCollisionMode === 'fusion' ? 1500 : 1800;
+    const standardParticleCount = activeCollisionMode === 'chemical' ? 600 : activeCollisionMode === 'fusion' ? 1500 : 1800;
+    const particleCount = prefersReducedMotion?.matches ? Math.max(120, Math.round(standardParticleCount * 0.2)) : standardParticleCount;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -1871,7 +2021,7 @@ window.addEventListener('DOMContentLoaded', function() {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       const nuclearBoost = activeCollisionMode === 'chemical' ? 1 : activeCollisionMode === 'fusion' ? 1.7 : 2.2;
-      const speed = (0.8 + Math.random() * 2.5) * nuclearBoost;
+      const speed = (12 + Math.random() * 25) * nuclearBoost;
       
       // Kinetic particle velocity with subtle tangential swirl (vortex)
       const vx = Math.sin(phi) * Math.cos(theta) * speed;
@@ -1915,6 +2065,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (shockwaveRing) { scene.remove(shockwaveRing); shockwaveRing.geometry.dispose(); shockwaveRing.material.dispose(); }
     if (shockwaveRing2) { scene.remove(shockwaveRing2); shockwaveRing2.geometry.dispose(); shockwaveRing2.material.dispose(); }
     if (fusionFlashSphere) { scene.remove(fusionFlashSphere); fusionFlashSphere.geometry.dispose(); fusionFlashSphere.material.dispose(); }
+    if (fusionFlashLight) { scene.remove(fusionFlashLight); fusionFlashLight.dispose?.(); }
 
     // 1. Primary Equatorial Ring
     const ringGeo1 = new THREE.RingGeometry(0.5, 3.5, 64);
@@ -1959,6 +2110,10 @@ window.addEventListener('DOMContentLoaded', function() {
     fusionFlashSphere.position.copy(pos);
     scene.add(fusionFlashSphere);
 
+    fusionFlashLight = new THREE.PointLight(color1 || 0x00FFFF, activeCollisionMode === 'chemical' ? 5 : 12, 130, 2);
+    fusionFlashLight.position.copy(pos);
+    scene.add(fusionFlashLight);
+
     shockwaveScale = 0.1;
     shockwaveOpacity = 1.0;
   }
@@ -1998,6 +2153,9 @@ window.addEventListener('DOMContentLoaded', function() {
     const atomsA = getElementAtoms(zA, posA);
     const atomsB = getElementAtoms(zB, posB);
     const combinedList = [...atomsA, ...atomsB];
+    targetCamZ = window.innerWidth < 700 ? 118 : 82;
+    targetRotX = 0;
+    targetRotY = 0;
     
     spawnAtoms(combinedList);
 
@@ -2009,18 +2167,22 @@ window.addEventListener('DOMContentLoaded', function() {
 
     fusionTargetReaction = reaction;
 
+    const isCatalogued = reaction.evidenceLevel === 'CATALOGUED';
     updateTelemetry(
       `${tr('chemicalCombination')}: ${EL[zA].s} + ${EL[zB].s}`,
       tr('bringingReactants'),
       tr('chemicalVisualization'),
-      tr('cataloguedBonding'),
-      tr('cataloguedPath')
+      isCatalogued ? tr('cataloguedBonding') : tr('referenceModel'),
+      isCatalogued ? tr('cataloguedPath') : tr('referenceModel')
     );
   }
 
   function buildNucleusVisual(isotope, center, startCenter) {
     const atoms = [];
-    const visualCount = Math.min(isotope.A, 96);
+    // One instanced sphere per physical nucleon.  The renderer already sustains
+    // 650 atoms in the default DNA scene, so the heaviest catalogue entry
+    // (Cf-252) does not require scientifically misleading decimation.
+    const visualCount = isotope.A;
     const protonCount = Math.round(visualCount * isotope.Z / isotope.A);
     const radius = Math.max(1.8, Math.cbrt(isotope.A) * 1.25);
     const golden = Math.PI * (3 - Math.sqrt(5));
@@ -2034,7 +2196,8 @@ window.addEventListener('DOMContentLoaded', function() {
         z:1, col:i < protonCount ? 0xFF315F : 0xB9D2E8,
         pos:center.clone().add(local),
         startPos:(startCenter || center).clone().add(local.clone().multiplyScalar(0.3)),
-        scale:0.78, noLabel:true, noBond:true
+        scale:isotope.A <= 12 ? 1.35 : 0.78, noLabel:true, noBond:true,
+        nuclearCenter:center.clone(), nuclearLocal:local.clone()
       });
     }
     return atoms;
@@ -2064,13 +2227,20 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function startNuclearCollision(reaction, mode) {
+    clearMaterialSelection();
     const nuclear = window.NULLA_NUCLEAR;
-    if (!nuclear || !reaction || !nuclear.validateReaction(reaction).valid) {
+    const validation = nuclear && reaction ? nuclear.validateReaction(reaction) : null;
+    if (!nuclear || !reaction || !validation?.valid) {
       updateTelemetry(tr('datasetError'), tr('reactionRejected'), 'A/Z', tr('noAnimation'), 'BLOCKED');
       return;
     }
     activeCollisionMode = mode;
+    activePhysicalNucleonCount = validation.left.A;
     isDnaMode = false;
+    activeStructureId = `nuclear-${reaction.id}-reactants`;
+    activeThermalProfile = null;
+    measurementScaleVerified = false;
+    setThermalControlEnabled(false, 'nuclear');
     activeBondCutoffWorld = 1.9;
     const centers = mode === 'fusion'
       ? [new THREE.Vector3(-28,0,0), new THREE.Vector3(28,0,0)]
@@ -2080,6 +2250,9 @@ window.addEventListener('DOMContentLoaded', function() {
       const isotope = nuclear.isotopes[id];
       if (isotope) atoms.push(...buildNucleusVisual(isotope, centers[index] || centers[0], centers[index] || centers[0]));
     });
+    targetCamZ = window.innerWidth < 700 ? 118 : 82;
+    targetRotX = 0;
+    targetRotY = 0;
     spawnAtoms(atoms);
     fusionState = 'charging';
     fusionTimer = mode === 'fusion' ? 1.6 : 1.25;
@@ -2088,20 +2261,34 @@ window.addEventListener('DOMContentLoaded', function() {
     fusionReactantB = nuclear.isotopes[reaction.reactants[1]]?.Z || 1;
     fusionTargetReaction = { isNuclear:true, nuclearMode:mode, nuclearReaction:reaction };
     createNuclearChargeField(mode);
-    const validation = nuclear.validateReaction(reaction);
     showCompatibility(window.NULLA_COMPATIBILITY?.nuclear({ reaction, isotopes:nuclear.isotopes }));
+    const representedNucleons = reaction.reactants.reduce((sum,id) => sum + (nuclear.isotopes[id]?.A || 0),0);
+    const physicalNucleons = validation.left.A;
     updateTelemetry(
-      `${tr(mode === 'fusion' ? 'fusion' : 'fission')} · ${reaction.label}`,
+      `${tr(mode === 'fusion' ? 'fusion' : 'fission')} · ${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')}`,
       `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
       `${tr('nuclearReaction')} · A ${validation.left.A}→${validation.right.A} · Z ${validation.left.Z}→${validation.right.Z}`,
-      `Q ≈ ${reaction.qMeV} MeV · ${reaction.branch || reaction.note || ''}`,
-      mode === 'fusion' ? 'Coulomb barrier approach · plasma confinement visualization' : 'Nuclear deformation · scission visualization',
-      `${reaction.qMeV} MeV`, 0, tr('conservationVerified'),
+      `Q ≈ ${reaction.qMeV} MeV · Avisual/Aphysical ${representedNucleons}/${physicalNucleons}`,
+      mode === 'fusion' ? 'V_C(r) · CONFINEMENT MODEL · ILLUSTRATION' : 'β₂ DEFORMATION · SCISSION MODEL · ILLUSTRATION',
+      `${reaction.qMeV} MeV`, tr('dataUnavailable'), tr('conservationVerified'),
       tr('visualDisclaimer')
     );
   }
 
   function attemptNuclearFusion() {
+    const selectedChannel = document.getElementById('nuclear-route-selector')?.value || 'auto';
+    if (selectedChannel !== 'auto') {
+      const explicitRoute = Object.values(window.NULLA_NUCLEAR?.fusion || {}).flat().find(route => route.id === selectedChannel);
+      if (explicitRoute) {
+        startNuclearCollision(explicitRoute, 'fusion');
+        return;
+      }
+    }
+    if (selectedReactants.length === 0) {
+      const defaultRoute = window.NULLA_NUCLEAR?.fusion['H+H']?.[0];
+      if (defaultRoute) startNuclearCollision(defaultRoute, 'fusion');
+      return;
+    }
     if (selectedReactants.length !== 2) {
       updateTelemetry('FUSIÓN NUCLEAR', tr('selectFusion'), 'Rutas: H+H, H+B, He+He, C+C', 'Los isótopos se muestran antes de iniciar', tr('waiting'));
       return;
@@ -2112,13 +2299,28 @@ window.addEventListener('DOMContentLoaded', function() {
       updateTelemetry('FUSIÓN NUCLEAR NO CATALOGADA', key, 'No se inventará un producto nuclear', 'Prueba H+H, H+B, He+He o C+C', 'BLOCKED · NO EVALUATED CHANNEL');
       return;
     }
-    const cursor = nuclearRouteCursor[key] || 0;
-    nuclearRouteCursor[key] = (cursor + 1) % routes.length;
-    startNuclearCollision(routes[cursor], 'fusion');
+    startNuclearCollision(routes[0], 'fusion');
   }
 
   function attemptNuclearFission() {
+    const selectedChannel = document.getElementById('nuclear-route-selector')?.value || 'auto';
+    if (selectedChannel !== 'auto') {
+      const explicitRoute = Object.values(window.NULLA_NUCLEAR?.fission || {}).find(route => route.id === selectedChannel);
+      if (explicitRoute) {
+        startNuclearCollision(explicitRoute, 'fission');
+        return;
+      }
+    }
+    if (selectedReactants.length === 0) {
+      const defaultRoute = window.NULLA_NUCLEAR?.fission.U;
+      if (defaultRoute) startNuclearCollision(defaultRoute, 'fission');
+      return;
+    }
     const heavy = selectedReactants.find(r => ['U','Pu','Cf'].includes(r.sym));
+    if (selectedReactants.length > 1) {
+      updateTelemetry('FISIÓN NUCLEAR', tr('selectFission'), 'Una selección isotópica por canal', 'No se ignorarán reactivos adicionales', tr('reactionRejected'));
+      return;
+    }
     if (!heavy) {
       updateTelemetry('FISIÓN NUCLEAR', tr('selectFission'), 'Canales representativos con balance A/Z', 'U-235+n · Pu-239+n · Cf-252 espontánea', tr('waiting'));
       return;
@@ -2156,14 +2358,15 @@ window.addEventListener('DOMContentLoaded', function() {
     spawnAtoms(atoms);
     activeStructureId = `nuclear-${reaction.id}`;
     const validation = nuclear.validateReaction(reaction);
+    activePhysicalNucleonCount = validation.right.A;
     updateTelemetry(
       `${tr(target.nuclearMode === 'fusion' ? 'fusion' : 'fission')} · ${tr('completed')}`,
       `${reaction.reactants.map(id => nuclear.isotopes[id].symbol).join(' + ')} → ${reaction.products.map(([id,count]) => `${count > 1 ? count : ''}${nuclear.isotopes[id].symbol}`).join(' + ')}`,
-      `${reaction.label} · ${tr('evaluatedChannel')}`,
-      `Conservación: A ${validation.left.A}=${validation.right.A} · Z ${validation.left.Z}=${validation.right.Z}`,
+      `${tr('evaluatedChannel')} · A ${validation.left.A}→${validation.right.A} · Z ${validation.left.Z}→${validation.right.Z}`,
+      `A ${validation.left.A}=${validation.right.A} · Z ${validation.left.Z}=${validation.right.Z}`,
       `${tr('energyRelease')} Q ≈ ${reaction.qMeV} MeV`,
-      `${reaction.qMeV} MeV`, 0, tr('conservationVerified'),
-      reaction.note || reaction.branch || tr('visualDisclaimer')
+      `${reaction.qMeV} MeV`, tr('dataUnavailable'), tr('conservationVerified'),
+      tr('visualDisclaimer')
     );
   }
 
@@ -2177,29 +2380,22 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function calculateSpectroscopyData(formula, bondType) {
-    let lambdaMax = 220;
-    let colorHex = '#00F0FF';
-    let irStretch = '3000 cm⁻¹';
-    let region = 'Far-UV Absorption';
-
     const str = String(formula || '');
-    if (str.includes('O₂') || str.includes('H₂O') || str.includes('Water')) {
-      lambdaMax = 185; colorHex = '#00F0FF'; irStretch = '3650 cm⁻¹ (O-H Stretch)'; region = 'Vacuum UV';
-    } else if (str.includes('NaCl') || str.includes('CaO') || str.includes('Sodium Chloride')) {
-      lambdaMax = 310; colorHex = '#FFD700'; irStretch = '550 cm⁻¹ (Ionic Lattice Stretch)'; region = 'Near UV';
-    } else if (str.includes('CO₂') || str.includes('Carbon Dioxide')) {
-      lambdaMax = 230; colorHex = '#00FF9D'; irStretch = '2349 cm⁻¹ (C=O Asymmetric Stretch)'; region = 'Mid-IR Active';
-    } else if (str.includes('Fe₂O₃') || str.includes('CuO')) {
-      lambdaMax = 480; colorHex = '#FF7700'; irStretch = '570 cm⁻¹ (Fe-O Metal-Oxide Stretch)'; region = 'Visible Range';
-    } else if (str.includes('KMnO₄')) {
-      lambdaMax = 525; colorHex = '#BF00FF'; irStretch = '905 cm⁻¹ (Mn=O Charge Transfer)'; region = 'Visible Range';
-    } else if (bondType && String(bondType).includes('Ionic')) {
-      lambdaMax = 290; colorHex = '#FFD700'; irStretch = '600 cm⁻¹ (Ionic Lattice)'; region = 'UV-Vis Transition';
-    } else if (bondType && String(bondType).includes('Polar')) {
-      lambdaMax = 245; colorHex = '#00FF9D'; irStretch = '2950 cm⁻¹ (Polar Covalent)'; region = 'Mid-UV Range';
+    if (str.includes('B-DNA') || str.includes('TP53')) {
+      return { lambdaMax:'≈260 nm', colorHex:'#00F0FF', irStretch:'MULTIBAND · CONTEXT DEPENDENT', region:'UV reference', model:true };
     }
-
-    return { lambdaMax: `${lambdaMax} nm`, colorHex, irStretch, region };
+    if (str.includes('H₂O') || str.includes('Water')) {
+      return { lambdaMax:'≈185 nm', colorHex:'#00F0FF', irStretch:'≈3650 cm⁻¹ (O–H, gas reference)', region:'Vacuum-UV reference', model:true };
+    } else if (str.includes('NaCl') || str.includes('CaO') || str.includes('Sodium Chloride')) {
+      return { lambdaMax:null, colorHex:'#FFD700', irStretch:'≈550 cm⁻¹ (lattice reference)', region:null, model:true };
+    } else if (str.includes('CO₂') || str.includes('Carbon Dioxide')) {
+      return { lambdaMax:null, colorHex:'#00FF9D', irStretch:'≈2349 cm⁻¹ (asymmetric stretch)', region:null, model:true };
+    } else if (str.includes('Fe₂O₃') || str.includes('CuO')) {
+      return { lambdaMax:null, colorHex:'#FF7700', irStretch:'≈570 cm⁻¹ (metal–oxygen reference)', region:null, model:true };
+    } else if (str.includes('KMnO₄')) {
+      return { lambdaMax:'≈525 nm', colorHex:'#BF00FF', irStretch:'≈905 cm⁻¹ (Mn–O reference)', region:'visible reference', model:true };
+    }
+    return { lambdaMax:null, colorHex:'#8AA0B8', irStretch:null, region:null, model:false };
   }
 
   function generateTopCompoundSuggestions(reactantsArray) {
@@ -2208,6 +2404,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const seenFormulas = new Set();
     const suggestions = [];
     for (const [path, reaction] of Object.entries(REACTIONS)) {
+      if (reaction.evidenceLevel !== 'CATALOGUED') continue;
       const reactantSymbols = new Set(path.split('+'));
       if (![...selected].every(symbol => reactantSymbols.has(symbol))) continue;
       if (!reaction?.formula || seenFormulas.has(reaction.formula)) continue;
@@ -2226,19 +2423,6 @@ window.addEventListener('DOMContentLoaded', function() {
     return suggestions.slice(0,5);
   }
 
-  function calculateGibbsFreeEnergy(deltaH, deltaS, tempK) {
-    const dH = typeof deltaH === 'number' ? deltaH : -240.0;
-    const dS = typeof deltaS === 'number' ? deltaS : -110.0;
-    const tK = tempK || temperatureK || 298;
-
-    const deltaG = dH - (tK * (dS / 1000.0));
-    const isSpontaneous = deltaG < 0;
-    const statusLabel = isSpontaneous ? 'SPONTANEOUS (FAVORABLE)' : 'ENDERGONIC (HIGH ENERGY INPUT)';
-    const colorHex = isSpontaneous ? '#00FF9D' : '#FF0055';
-
-    return { deltaG: parseFloat(deltaG.toFixed(1)), isSpontaneous, statusLabel, colorHex };
-  }
-
   function updateTelemetry(name, formula, cls, bonds, epi, enthalpy, dipole, stability, note) {
     if (hudName) hudName.textContent = name || '—';
     if (hudFormula) hudFormula.textContent = formula || '—';
@@ -2249,30 +2433,27 @@ window.addEventListener('DOMContentLoaded', function() {
     if (hudEnthalpy) hudEnthalpy.textContent = enthalpy !== undefined ? (typeof enthalpy === 'number' ? `${enthalpy} kJ/mol` : enthalpy) : '—';
     if (hudDipole) hudDipole.textContent = dipole !== undefined ? (typeof dipole === 'number' ? `${dipole} Debye` : dipole) : '—';
     
-    // Calculate Gibbs Free Energy Spontaneity (ΔG = ΔH - TΔS)
-    const gibbs = calculateGibbsFreeEnergy(enthalpy, -110.0, temperatureK);
     if (hudStability) {
       const isNuclearTelemetry = typeof enthalpy === 'string' && enthalpy.includes('MeV');
       if (isNuclearTelemetry) {
         hudStability.textContent = String(stability || 'A/Z CONSERVED');
         hudStability.style.color = '#00FF9D';
       } else {
-      const isNum = typeof stability === 'number';
-      const stabVal = isNum ? `${stability}%` : (stability || '95.0%');
-      hudStability.textContent = `${stabVal} | ΔG: ${gibbs.deltaG} kJ/mol [${tr(gibbs.isSpontaneous ? 'favorable' : 'unfavorable')}]`;
-      hudStability.style.color = gibbs.colorHex;
+        const isNum = typeof stability === 'number';
+        hudStability.textContent = isNum ? `${stability}%` : (stability || tr('dataUnavailable'));
+        hudStability.style.color = stability === undefined || stability === null ? '#8AA0B8' : '#FFD166';
       }
     }
 
-    if (hudNote) hudNote.textContent = note || `Thermodynamic State: ${gibbs.statusLabel}`;
+    if (hudNote) hudNote.textContent = note || tr('dataUnavailable');
 
-    // Calculate spectroscopy photon data
-    const spec = calculateSpectroscopyData(formula || name || '', cls || '');
+    // Only catalogued reference bands are displayed; no generic values are fabricated.
+    const spec = calculateSpectroscopyData(`${formula || ''} ${name || ''}`, cls || '');
     if (hudSpectrum) {
-      hudSpectrum.textContent = `${spec.lambdaMax} (${spec.region})`;
+      hudSpectrum.textContent = spec.lambdaMax ? `${spec.lambdaMax} · ${spec.region} · ${tr('referenceModel')}` : tr('dataUnavailable');
       hudSpectrum.style.color = spec.colorHex;
     }
-    if (hudIr) hudIr.textContent = spec.irStretch;
+    if (hudIr) hudIr.textContent = spec.irStretch ? `${spec.irStretch} · ${tr('referenceModel')}` : tr('dataUnavailable');
 
     if (topBanner && name) {
       topBanner.textContent = String(name).toUpperCase();
@@ -2370,7 +2551,7 @@ window.addEventListener('DOMContentLoaded', function() {
           <button style="padding:4px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.4); background:rgba(255,255,255,0.15); color:#FFFFFF; font-size:8px; font-weight:700; cursor:pointer;">${tr('combine')}</button>
         `;
         itemDiv.addEventListener('click', () => {
-          suggestionModal.style.display = 'none';
+          closeDialog(suggestionModal);
           const suggestedReactants = s.path.split('+').map(symbol => {
             const element = Object.values(EL).find(candidate => candidate.s === symbol);
             return element ? {z:element.z,sym:element.s} : null;
@@ -2386,25 +2567,37 @@ window.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    suggestionModal.style.display = 'block';
+    openDialog(suggestionModal, btnSuggest);
   }
 
   // ═══════════════════════════════════════════════════════════════
   // MULTI-ELEMENT REACTANT TRAY MANAGER (2 to 5 Elements)
   // ═══════════════════════════════════════════════════════════════
   let selectedReactants = [];
+  let lastCompatibilityResult = null;
   const MAX_REACTANTS = 5;
 
   function showCompatibility(result) {
     if (!result) return;
+    lastCompatibilityResult = result;
+    const statusKeys = {
+      NO_CATALOGUED_PATH:'statusNoCataloguedPath',
+      CATALOGUED_FAVORABLE:'statusCataloguedFavorable',
+      CATALOGUED_CONDITION_DEPENDENT:'statusConditionDependent',
+      CATALOGUED_INCOMPLETE_DATA:'statusIncompleteData',
+      REFERENCE_MODEL_INCOMPLETE_DATA:'statusReferenceModel',
+      NO_EVALUATED_CHANNEL:'statusNoEvaluatedChannel',
+      EXOENERGETIC_EVALUATED_CHANNEL:'statusExoenergetic',
+      ENERGY_INPUT_REQUIRED:'statusEnergyInput'
+    };
     if (hudCompatibility) {
-      const score = typeof result.score === 'number' ? ` · ${Math.round(result.score * 100)}% model confidence` : '';
-      hudCompatibility.textContent = `${result.status}${score}`;
+      const score = typeof result.score === 'number' ? ` · ${tr('dataCoverage')} ${Math.round(result.score * 100)}%` : '';
+      hudCompatibility.textContent = `${tr(statusKeys[result.status] || result.status)}${score}`;
       hudCompatibility.style.color = result.status.includes('NO_') ? '#FF6B4A' : result.status.includes('FAVORABLE') || result.status.includes('EXOENERGETIC') ? '#00FF9D' : '#FFD166';
     }
     if (hudConditions) {
-      const requirements = result.requirements?.length ? result.requirements.join(' · ') : 'No additional model conditions';
-      const risks = result.instability?.length ? ` | Instability: ${result.instability.join(' · ')}` : '';
+      const requirements = result.requirements?.length ? result.requirements.join(' · ') : tr('noAdditionalConditions');
+      const risks = result.instability?.length ? ` | ${tr('instability')}: ${result.instability.join(' · ')}` : '';
       hudConditions.textContent = `${requirements}${risks}`;
     }
   }
@@ -2436,6 +2629,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function renderSideBySidePreviewAtoms() {
     if (selectedReactants.length === 0) return;
+    clearMaterialSelection();
     
     isDnaMode = false;
     const atoms = [];
@@ -2479,9 +2673,8 @@ window.addEventListener('DOMContentLoaded', function() {
       `Ready for Collision (Click ⚡ FUSE ALL)`,
       `Wide Horizontal 3D Quantum Separation`
     );
-    const sortedKey = selectedReactants.map(r => r.sym).sort().join('+');
-    const directKey = selectedReactants.map(r => r.sym).join('+');
-    evaluateChemicalCompatibility(REACTIONS[sortedKey] || REACTIONS[directKey]);
+    const reactionKey = canonicalReactionKey(selectedReactants.map(r => r.sym));
+    evaluateChemicalCompatibility(REACTIONS[reactionKey]);
   }
 
   function selectElementForTray(z) {
@@ -2531,13 +2724,20 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function attemptMultiFusion() {
-    if (selectedReactants.length < 2) return;
+    if (selectedReactants.length < 2) {
+      updateTelemetry(
+        tr('chemicalCombination'),
+        selectedReactants.length === 1 ? `${selectedReactants[0].sym} + ?` : tr('selectFusion'),
+        tr('waiting'),
+        tr('noAdditionalConditions'),
+        tr('statusNoCataloguedPath')
+      );
+      return;
+    }
 
     playTone(600, 'triangle', 0.2);
-    const sortedSymbols = selectedReactants.map(r => r.sym).sort().join('+');
-    const directSymbols = selectedReactants.map(r => r.sym).join('+');
-
-    const reaction = REACTIONS[sortedSymbols] || REACTIONS[directSymbols];
+    const reactionKey = canonicalReactionKey(selectedReactants.map(r => r.sym));
+    const reaction = REACTIONS[reactionKey];
     evaluateChemicalCompatibility(reaction);
     if (!reaction) {
       updateTelemetry(
@@ -2605,11 +2805,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
   const ptTooltip = document.getElementById('pt-tooltip');
 
-  document.querySelectorAll('.pt-el').forEach(cell => {
+  const periodicCells = [...document.querySelectorAll('.pt-el')];
+  periodicCells.forEach((cell, cellIndex) => {
     const cellZ = parseInt(cell.dataset.z);
     const cellElement = EL[cellZ];
     cell.setAttribute('role', 'button');
-    cell.setAttribute('tabindex', '0');
+    cell.setAttribute('tabindex', cellIndex === 0 ? '0' : '-1');
     if (cellElement) cell.setAttribute('aria-label', `${cellElement.n}, ${cellElement.s}, atomic number ${cellZ}`);
 
     const activateCell = () => {
@@ -2632,10 +2833,10 @@ window.addEventListener('DOMContentLoaded', function() {
         const massStr = typeof el.m === 'number' ? el.m.toFixed(3) : el.m;
         ptTooltip.innerHTML = `
           <div class="tt-header">${el.n} (${el.s}) — Z=${z}</div>
-          <div class="tt-row"><span class="tt-label">Mass:</span> <span>${massStr} u</span></div>
-          <div class="tt-row"><span class="tt-label">Phase:</span> <span>${el.phase || 'Solid'}</span></div>
-          <div class="tt-row"><span class="tt-label">Category:</span> <span>${el.cat}</span></div>
-          <div class="tt-row"><span class="tt-label">Shells:</span> <span>${el.sh}</span></div>
+          <div class="tt-row"><span class="tt-label">m:</span> <span>${massStr} u</span></div>
+          <div class="tt-row"><span class="tt-label">${tr('stateLabel')}:</span> <span>${el.phase || tr('dataUnavailable')}</span></div>
+          <div class="tt-row"><span class="tt-label">${tr('classLabel')}:</span> <span>${el.cat}</span></div>
+          <div class="tt-row"><span class="tt-label">e⁻:</span> <span>${el.sh}</span></div>
         `;
       }
     });
@@ -2646,9 +2847,19 @@ window.addEventListener('DOMContentLoaded', function() {
 
     cell.addEventListener('click', activateCell);
     cell.addEventListener('keydown', event => {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        activateCell();
+        return;
+      }
+      const movement = {ArrowRight:1,ArrowDown:18,ArrowLeft:-1,ArrowUp:-18};
+      if (!(event.key in movement) && event.key !== 'Home' && event.key !== 'End') return;
       event.preventDefault();
-      activateCell();
+      const nextIndex = event.key === 'Home' ? 0 : event.key === 'End'
+        ? periodicCells.length - 1
+        : Math.max(0, Math.min(periodicCells.length - 1, cellIndex + movement[event.key]));
+      periodicCells.forEach((candidate,index) => candidate.tabIndex = index === nextIndex ? 0 : -1);
+      periodicCells[nextIndex].focus();
     });
   });
 
@@ -2670,7 +2881,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnCloseSuggest) {
     btnCloseSuggest.addEventListener('click', () => {
       const suggestionModal = document.getElementById('suggestion-modal');
-      if (suggestionModal) suggestionModal.style.display = 'none';
+      closeDialog(suggestionModal);
     });
   }
 
@@ -2682,13 +2893,13 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnDocs) {
     btnDocs.addEventListener('click', () => {
       playTone(600, 'sine', 0.15);
-      if (docsModal) docsModal.style.display = 'block';
+      openDialog(docsModal, btnDocs);
     });
   }
 
   if (btnCloseDocs) {
     btnCloseDocs.addEventListener('click', () => {
-      if (docsModal) docsModal.style.display = 'none';
+      closeDialog(docsModal);
     });
   }
 
@@ -2727,6 +2938,9 @@ window.addEventListener('DOMContentLoaded', function() {
     'btn-graphene': buildGrapheneSheet,
     'btn-solvation': buildSolvationShell
   };
+  function clearMaterialSelection() {
+    document.querySelectorAll('.material-grid .shader-btn').forEach(button => button.setAttribute('aria-pressed','false'));
+  }
   Object.entries(materialBuilders).forEach(([id, builder]) => {
     const button = document.getElementById(id);
     if (!button) return;
@@ -2738,16 +2952,22 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // RANDOM SYNTHESIS Button (2 to 4 Elements)
+  // RANDOM SYNTHESIS chooses a real catalogue path instead of manufacturing a
+  // mostly impossible random multi-element tray.
   if (btnRandom) {
     btnRandom.addEventListener('click', () => {
       playTone(440, 'triangle', 0.1);
       clearReactantTray();
-      const count = Math.floor(Math.random() * 3) + 2;
-      for (let i = 0; i < count; i++) {
-        const randZ = Math.floor(Math.random() * 118) + 1;
-        selectElementForTray(randZ);
-      }
+      const candidates = Object.entries(REACTIONS).filter(([key,reaction]) =>
+        reaction.evidenceLevel === 'CATALOGUED' && key.split('+').length >= 2 && key.split('+').length <= MAX_REACTANTS
+      );
+      const [path] = candidates[Math.floor(Math.random() * candidates.length)] || [];
+      selectedReactants = String(path || 'Cl+Na').split('+').map(symbol => {
+        const element = Object.values(EL).find(candidate => candidate.s === symbol);
+        return {z:element.z,sym:element.s};
+      });
+      updateReactantsTrayHUD();
+      renderSideBySidePreviewAtoms();
       setTimeout(() => {
         attemptMultiFusion();
       }, 500);
@@ -2807,15 +3027,27 @@ window.addEventListener('DOMContentLoaded', function() {
   const quizQuestion = document.getElementById('quiz-question');
   const quizOptions = document.getElementById('quiz-options');
   const quizExplanation = document.getElementById('quiz-explanation');
+  const quizProgress = document.getElementById('quiz-progress');
+  const btnNextQuiz = document.getElementById('btn-next-quiz');
 
   let currentQuizIdx = 0;
+  let quizScore = 0;
+  let quizAnswered = false;
 
   function loadQuizQuestion(idx) {
     const questions = window.NULLA_QUIZ?.get(window.NULLA_I18N?.locale);
     if (!questions?.length) return;
     const q = questions[idx % questions.length];
+    quizAnswered = false;
     if (quizQuestion) quizQuestion.textContent = q.question;
     if (quizExplanation) quizExplanation.style.display = 'none';
+    if (quizProgress) quizProgress.textContent = `${idx + 1} / ${questions.length} · ✓ ${quizScore}`;
+    if (btnNextQuiz) {
+      btnNextQuiz.style.display = 'none';
+      btnNextQuiz.textContent = idx === questions.length - 1
+        ? (getEducationContent()?.ui.done || '✓')
+        : (getEducationContent()?.ui.next || 'NEXT');
+    }
 
     if (quizOptions) {
       quizOptions.innerHTML = '';
@@ -2829,10 +3061,21 @@ window.addEventListener('DOMContentLoaded', function() {
         `;
         btn.textContent = `${optIdx + 1}. ${opt}`;
         btn.addEventListener('click', () => {
+          if (quizAnswered) return;
+          quizAnswered = true;
+          const optionButtons = [...quizOptions.querySelectorAll('button')];
+          optionButtons.forEach((optionButton, index) => {
+            optionButton.disabled = true;
+            optionButton.style.cursor = 'default';
+            optionButton.style.opacity = index === q.correct || index === optIdx ? '1' : '0.62';
+            if (index === q.correct) {
+              optionButton.style.borderColor = '#00FF9D';
+              optionButton.style.background = 'rgba(0,255,157,0.25)';
+            }
+          });
           if (optIdx === q.correct) {
+            quizScore++;
             playTone(880, 'sine', 0.2);
-            btn.style.borderColor = '#00FF9D';
-            btn.style.background = 'rgba(0,255,157,0.25)';
           } else {
             playTone(220, 'sawtooth', 0.2);
             btn.style.borderColor = '#FF0055';
@@ -2842,6 +3085,8 @@ window.addEventListener('DOMContentLoaded', function() {
             quizExplanation.textContent = q.explanation;
             quizExplanation.style.display = 'block';
           }
+          if (quizProgress) quizProgress.textContent = `${idx + 1} / ${questions.length} · ✓ ${quizScore}`;
+          if (btnNextQuiz) btnNextQuiz.style.display = 'block';
         });
         quizOptions.appendChild(btn);
       });
@@ -2851,14 +3096,16 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnQuiz) {
     btnQuiz.addEventListener('click', () => {
       playTone(650, 'triangle', 0.15);
+      currentQuizIdx = 0;
+      quizScore = 0;
       loadQuizQuestion(currentQuizIdx);
-      if (quizModal) quizModal.style.display = 'block';
+      openDialog(quizModal, btnQuiz);
     });
   }
 
   if (btnCloseQuiz) {
     btnCloseQuiz.addEventListener('click', () => {
-      if (quizModal) quizModal.style.display = 'none';
+      closeDialog(quizModal);
     });
   }
 
@@ -2886,6 +3133,19 @@ window.addEventListener('DOMContentLoaded', function() {
       } catch (error) {
         if (error?.name !== 'AbortError') window.prompt('Copy this share URL:', shareUrl);
       }
+    });
+  }
+
+  if (btnNextQuiz) {
+    btnNextQuiz.addEventListener('click', () => {
+      const questions = window.NULLA_QUIZ?.get(window.NULLA_I18N?.locale) || [];
+      if (!quizAnswered || !questions.length) return;
+      if (currentQuizIdx >= questions.length - 1) {
+        closeDialog(quizModal);
+        return;
+      }
+      currentQuizIdx++;
+      loadQuizQuestion(currentQuizIdx);
     });
   }
 
@@ -2956,7 +3216,9 @@ window.addEventListener('DOMContentLoaded', function() {
   // INTERACTIVE GUIDED ONBOARDING TUTORIAL ENGINE
   // ═══════════════════════════════════════════════════════════════
   let currentTutorialStep = 0;
+  const onboardingStorageKey = 'nulla-onboarding-complete-v1';
   let onboardingDismissed = false;
+  try { onboardingDismissed = localStorage.getItem(onboardingStorageKey) === 'yes'; } catch (_) {}
   let onboardingTimer = null;
   const btnTutorial = document.getElementById('btn-tutorial');
   const onboardingOverlay = document.getElementById('onboarding-overlay');
@@ -3006,11 +3268,9 @@ window.addEventListener('DOMContentLoaded', function() {
     if (onboardingInstruction) onboardingInstruction.textContent = s.instruction;
     if (onboardingStepIndicator) onboardingStepIndicator.textContent = education.ui.step.replace('{n}', s.step);
 
-    if (btnNextOnboarding) {
-      btnNextOnboarding.textContent = s.step === 3 ? education.ui.done : education.ui.next;
-    }
+    if (btnNextOnboarding) btnNextOnboarding.textContent = s.step === steps.length ? education.ui.done : education.ui.next;
 
-    onboardingOverlay.style.display = 'block';
+    openDialog(onboardingOverlay, btnTutorial);
 
     const targetEl = document.getElementById(s.targetId);
     if (targetEl) {
@@ -3032,9 +3292,11 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnNextOnboarding) {
     btnNextOnboarding.addEventListener('click', () => {
       playTone(600, 'sine', 0.1);
-      if (currentTutorialStep >= 2) {
+      const stepCount = getEducationContent()?.tutorial?.length || 0;
+      if (currentTutorialStep >= stepCount - 1) {
         onboardingDismissed = true;
-        if (onboardingOverlay) onboardingOverlay.style.display = 'none';
+        try { localStorage.setItem(onboardingStorageKey, 'yes'); } catch (_) {}
+        closeDialog(onboardingOverlay);
       } else {
         showTutorialStep(currentTutorialStep + 1);
       }
@@ -3044,16 +3306,14 @@ window.addEventListener('DOMContentLoaded', function() {
   if (btnCloseOnboarding) {
     btnCloseOnboarding.addEventListener('click', () => {
       onboardingDismissed = true;
+      try { localStorage.setItem(onboardingStorageKey, 'yes'); } catch (_) {}
       if (onboardingTimer) clearTimeout(onboardingTimer);
-      if (onboardingOverlay) onboardingOverlay.style.display = 'none';
+      closeDialog(onboardingOverlay);
     });
   }
 
-  if (!location.hash && !paramZ && !paramFuse) {
-    onboardingTimer = setTimeout(() => {
-      showTutorialStep(0);
-    }, 1200);
-  }
+  // The tutorial is deliberately opt-in.  A modal that opens on first load can
+  // cover the synthesis controls and make working buttons appear broken.
 
   // WEBXR / VR VIRTUAL REALITY SESSION BUTTON
   const btnWebxr = document.getElementById('btn-webxr');
@@ -3118,8 +3378,35 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   renderEducationContent();
+
+  function translateVisibleRuntimeValues() {
+    const i18n = window.NULLA_I18N;
+    const target = i18n?.messages?.[i18n.locale];
+    if (!target) return;
+    const replacements = [];
+    for (const [key, translated] of Object.entries(target)) {
+      if (typeof translated !== 'string' || translated.length < 4) continue;
+      for (const catalog of Object.values(i18n.messages)) {
+        const previous = catalog?.[key];
+        if (typeof previous === 'string' && previous.length >= 4 && previous !== translated) {
+          replacements.push([previous, translated]);
+        }
+      }
+    }
+    replacements.sort((a,b) => b[0].length - a[0].length);
+    [hudName,hudFormula,hudClass,hudBonds,hudEnthalpy,hudDipole,hudStability,hudSpectrum,hudIr,hudEpi,hudNote,tempVal,atomCountEl]
+      .filter(Boolean)
+      .forEach(node => {
+        let value = node.textContent || '';
+        replacements.forEach(([previous,translated]) => { value = value.split(previous).join(translated); });
+        node.textContent = value;
+      });
+  }
+
   window.addEventListener('nulla:locale', () => {
     renderEducationContent();
+    translateVisibleRuntimeValues();
+    if (lastCompatibilityResult) showCompatibility(lastCompatibilityResult);
     if (btnAudio) btnAudio.textContent = tr(audioEnabled ? 'audioOn' : 'audioOff');
     if (onboardingOverlay?.style.display === 'block') showTutorialStep(currentTutorialStep);
     if (quizModal?.style.display === 'block') loadQuizQuestion(currentQuizIdx);
@@ -3175,7 +3462,7 @@ window.addEventListener('DOMContentLoaded', function() {
   let targetRotX = 0, targetRotY = 0, curRotX = 0, curRotY = 0;
   let hoveredAtomObj = null, selectedAtomObj = null;
 
-  window.addEventListener('mousemove', e => {
+  canvas.addEventListener('pointermove', e => {
     mouseScreen.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouseScreen.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
@@ -3218,36 +3505,30 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  window.addEventListener('mousedown', e => { isDragging = true; prevMouse = {x:e.clientX, y:e.clientY}; });
-  window.addEventListener('mouseup', () => { isDragging = false; });
-
-  // Touch Drag Rotation for Touchscreens & Mobile Devices
-  window.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) {
-      isDragging = true;
-      prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    }
-  }, { passive: true });
-
-  window.addEventListener('touchmove', e => {
-    if (isDragging && e.touches.length === 1) {
-      targetRotY += (e.touches[0].clientX - prevMouse.x) * 0.008;
-      targetRotX += (e.touches[0].clientY - prevMouse.y) * 0.008;
-      prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    }
-  }, { passive: true });
-
-  window.addEventListener('touchend', () => { isDragging = false; });
+  canvas.addEventListener('pointerdown', e => {
+    isDragging = true;
+    prevMouse = {x:e.clientX, y:e.clientY};
+    mouseScreen.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseScreen.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    canvas.setPointerCapture?.(e.pointerId);
+  });
+  const stopCanvasDrag = e => {
+    isDragging = false;
+    if (e?.pointerId !== undefined && canvas.hasPointerCapture?.(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+  };
+  canvas.addEventListener('pointerup', stopCanvasDrag);
+  canvas.addEventListener('pointercancel', stopCanvasDrag);
+  canvas.addEventListener('pointerleave', e => { if (e.buttons === 0) stopCanvasDrag(e); });
 
   // Smooth Mouse Wheel Camera Zooming
   let targetCamZ = 75;
-  window.addEventListener('wheel', e => {
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
     targetCamZ += e.deltaY * 0.05;
     targetCamZ = Math.max(15, Math.min(220, targetCamZ));
-  }, { passive: true });
+  }, { passive:false });
 
-  window.addEventListener('click', e => {
-    if (e.target !== canvas) return;
+  canvas.addEventListener('click', e => {
 
     raycaster.setFromCamera(mouseScreen, camera);
     const hits = raycaster.intersectObjects(activeInstancedMeshes);
@@ -3273,10 +3554,10 @@ window.addEventListener('DOMContentLoaded', function() {
           if (selectedMeasureAtoms.length >= 2) {
             const posA = selectedMeasureAtoms[0].currentPos;
             const posB = selectedMeasureAtoms[1].currentPos;
-            const measurement = window.NULLA_MEASUREMENT?.distance(posA,posB,angstromPerWorldUnit);
+            const measurement = window.NULLA_MEASUREMENT?.distance(posA,posB,measurementScaleVerified ? angstromPerWorldUnit : 1);
             if (!measurement) return;
-            const distAngstrom = measurement.angstrom.toFixed(2);
-            const distPicometer = measurement.picometer.toFixed(0);
+            const distAngstrom = measurementScaleVerified ? measurement.angstrom.toFixed(2) : null;
+            const distPicometer = measurementScaleVerified ? measurement.picometer.toFixed(0) : null;
 
             const points = [posA, posB];
             let angleStr = '';
@@ -3293,9 +3574,12 @@ window.addEventListener('DOMContentLoaded', function() {
             laserLineMesh = new THREE.Line(lineGeo, lineMat);
             scene.add(laserLineMesh);
 
+            const distanceLabel = measurementScaleVerified
+              ? `Distance: ${distAngstrom} Å (${distPicometer} pm)`
+              : `Distance: ${measurement.world.toFixed(2)} MODEL UNITS · ${tr('dataUnavailable')}`;
             updateTelemetry(
               `Laser 3D Measurement Mode`,
-              `Distance: ${distAngstrom} Å (${distPicometer} pm)${angleStr}`,
+              `${distanceLabel}${angleStr}`,
               `3D Laser Distance & VSEPR Angle Gizmo`,
               `Selected: ${selectedMeasureAtoms.map(a => a.elData.s).join(' — ')}`,
               `Active Laser Vector`
@@ -3331,11 +3615,6 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  window.addEventListener('wheel', e => {
-    camera.position.z += e.deltaY * 0.04;
-    camera.position.z = THREE.MathUtils.clamp(camera.position.z, 25, 130);
-  });
-
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -3348,6 +3627,24 @@ window.addEventListener('DOMContentLoaded', function() {
   let frameCount = 0, lastTime = performance.now(), lastAnimationTime = performance.now();
 
   function getDiagnosticsSnapshot() {
+    const liveAtoms = activeAtoms.filter(atom => !atom.removing);
+    const liveBonds = activeBonds.filter(bond => !bond.removing);
+    const degree = new Array(liveAtoms.length).fill(0);
+    const elementCounts = {};
+    const bondOrderHistogram = {};
+    liveAtoms.forEach(atom => {
+      const symbol = EL[atom.z]?.s || (atom.z === 0 ? 'n' : `Z${atom.z}`);
+      elementCounts[symbol] = (elementCounts[symbol] || 0) + 1;
+    });
+    liveBonds.forEach(bond => {
+      if (Number.isInteger(bond.aIdx) && degree[bond.aIdx] !== undefined) degree[bond.aIdx]++;
+      if (Number.isInteger(bond.bIdx) && degree[bond.bIdx] !== undefined) degree[bond.bIdx]++;
+      bondOrderHistogram[bond.order] = (bondOrderHistogram[bond.order] || 0) + 1;
+    });
+    const degreeHistogram = degree.reduce((histogram,value) => {
+      histogram[value] = (histogram[value] || 0) + 1;
+      return histogram;
+    },{});
     return {
       structure:activeStructureId,
       collisionMode:activeCollisionMode,
@@ -3358,12 +3655,29 @@ window.addEventListener('DOMContentLoaded', function() {
       spawnGeneration,
       instancedMeshes:activeInstancedMeshes.length,
       orbitLines:activeOrbitLines.length,
+      measurementScaleVerified,
+      scientific:{
+        particleKind:activeCollisionMode === 'fusion' || activeCollisionMode === 'fission' ? 'nucleon' : 'atom',
+        physicalA:activeCollisionMode === 'fusion' || activeCollisionMode === 'fission' ? activePhysicalNucleonCount : null,
+        visualParticles:liveAtoms.length,
+        elementCounts,
+        degreeHistogram,
+        bondOrderHistogram,
+        finite:liveAtoms.every(atom => [atom.currentPos.x,atom.currentPos.y,atom.currentPos.z,atom.currentScale].every(Number.isFinite))
+      },
+      thermal:{
+        enabled:!tempSlider?.disabled,
+        temperatureK,
+        phase:phaseAtTemperature(activeThermalProfile,temperatureK).key,
+        profile:activeThermalProfile ? {...activeThermalProfile} : null
+      },
       renderer:{
         geometries:renderer.info.memory.geometries,
         textures:renderer.info.memory.textures,
         calls:renderer.info.render.calls,
         triangles:renderer.info.render.triangles
-      }
+      },
+      runtimeHealth:{...window.NULLA_RUNTIME_HEALTH}
     };
   }
 
@@ -3424,8 +3738,8 @@ window.addEventListener('DOMContentLoaded', function() {
     const dummy = new THREE.Object3D();
     const instUpdateList = new Set();
     const activePhase = phaseAtTemperature(activeThermalProfile, temperatureK);
-    if ((activePhase.key === 'liquid' || activePhase.key === 'gas') && frameCount % 2 === 0) {
-      applyLennardJonesStep(activeAtoms, 0.016);
+    if (activeCollisionMode === 'chemical' && fusionState === 'idle' && (activePhase.key === 'liquid' || activePhase.key === 'gas')) {
+      applyLennardJonesStep(activeAtoms, Math.min(0.033, elapsedSeconds));
     }
 
     // Real-time 3D laser measurement vector line update
@@ -3448,7 +3762,10 @@ window.addEventListener('DOMContentLoaded', function() {
       // Educational thermal motion using structure-specific transition data.
       if (activeCollisionMode === 'chemical' && fusionState === 'idle' && !a.removing && !a.isElectron) {
         const phase = phaseAtTemperature(activeThermalProfile, temperatureK);
-        if (phase.key === 'solid' || phase.key === 'unknown') {
+        if (phase.key === 'unknown') {
+          if (a.basePos) a.targetPos.copy(a.basePos);
+          if (hudEpi && i === 0) hudEpi.textContent = tr('phaseUnavailable');
+        } else if (phase.key === 'solid') {
           const referenceTm = Number(activeThermalProfile?.melt) || Number(activeThermalProfile?.boil) || 1000;
           const solidVibScale = Math.min(1.5, temperatureK / Math.max(1, referenceTm));
           const vibX = Math.sin(t * 12.0 + a.instIdx) * (0.35 * solidVibScale);
@@ -3599,9 +3916,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Camera shake effect
     if (camShakeTimer > 0) {
-      camera.position.x = (Math.random() - 0.5) * (camShakeTimer * 0.15);
-      camera.position.y = (Math.random() - 0.5) * (camShakeTimer * 0.15);
-      camShakeTimer--;
+      const shakeStrength = Math.min(1, camShakeTimer / 0.42);
+      camera.position.x = (Math.random() - 0.5) * shakeStrength * 3.5;
+      camera.position.y = (Math.random() - 0.5) * shakeStrength * 3.5;
+      camShakeTimer = Math.max(0, camShakeTimer - elapsedSeconds);
       if (camShakeTimer === 0) {
         camera.position.set(0, 0, 75);
       }
@@ -3628,11 +3946,34 @@ window.addEventListener('DOMContentLoaded', function() {
     // Fusion state machine
     if (fusionState === 'charging') {
       fusionTimer = Math.max(0, fusionTimer - elapsedSeconds);
+      const chargeProgress = 1 - fusionTimer / Math.max(0.001, fusionChargeDuration);
+      const easedCharge = chargeProgress * chargeProgress * (3 - 2 * chargeProgress);
+      activeAtoms.forEach(atom => {
+        if (atom.nuclearCenter && atom.nuclearLocal) {
+          atom.targetPos.copy(atom.nuclearLocal).addScaledVector(atom.nuclearCenter, 1 - easedCharge);
+        } else if (activeCollisionMode === 'chemical') {
+          if (!atom.collisionStartPos) atom.collisionStartPos = atom.targetPos.clone();
+          const start = atom.collisionStartPos;
+          const tangent = new THREE.Vector3(-start.y, start.x, start.z * 0.12);
+          if (tangent.lengthSq() > 0.001) tangent.normalize();
+          const handedness = (atom.z + Math.round(start.x)) % 2 === 0 ? 1 : -1;
+          const spiralEnvelope = Math.sin(Math.PI * chargeProgress) * 2.8 * handedness;
+          atom.targetPos.copy(start).multiplyScalar(1 - easedCharge).addScaledVector(tangent, spiralEnvelope);
+        }
+      });
       if (fusionTimer <= 0) {
         fusionState = 'colliding';
         fusionTimer = 0.36;
         activeAtoms.forEach(a => {
-          a.targetPos.set(0, 0, 0);
+          if (activeCollisionMode === 'fusion' && a.nuclearLocal) {
+            a.targetPos.copy(a.nuclearLocal).multiplyScalar(0.32);
+          } else if (activeCollisionMode === 'fission' && a.nuclearLocal) {
+            const isIncidentNeutron = Math.abs(a.nuclearCenter?.x || 0) > 10;
+            if (isIncidentNeutron) a.targetPos.set(0, 0, 0);
+            else a.targetPos.set(a.nuclearLocal.x * 1.8, a.nuclearLocal.y * 0.68, a.nuclearLocal.z * 0.68);
+          } else {
+            a.targetPos.set(0, 0, 0);
+          }
         });
       }
     } else if (fusionState === 'colliding') {
@@ -3646,7 +3987,7 @@ window.addEventListener('DOMContentLoaded', function() {
         const col2 = isFiss ? 0xFFCC00 : isNuclearFusion ? 0xBF00FF : EL[fusionReactantB].col;
         
         createExplosion(new THREE.Vector3(0,0,0), col1, col2);
-        camShakeTimer = 25;
+        camShakeTimer = prefersReducedMotion?.matches ? 0 : 0.42;
         
         if (fusionTargetReaction) {
           if (fusionTargetReaction.isNuclear) {
@@ -3672,9 +4013,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Animate shockwave expansion rings & core flash
     if (shockwaveOpacity > 0.01) {
-      const effectFrames = elapsedSeconds * 60;
-      shockwaveScale += 2.2 * effectFrames;
-      shockwaveOpacity *= Math.pow(0.86, effectFrames);
+      shockwaveScale += (activeCollisionMode === 'chemical' ? 5.5 : 9.0) * elapsedSeconds;
+      shockwaveOpacity *= Math.exp(-5.2 * elapsedSeconds);
 
       if (shockwaveRing) {
         shockwaveRing.scale.set(shockwaveScale, shockwaveScale, shockwaveScale);
@@ -3689,24 +4029,25 @@ window.addEventListener('DOMContentLoaded', function() {
         fusionFlashSphere.scale.set(flashScale, flashScale, flashScale);
         fusionFlashSphere.material.opacity = shockwaveOpacity * 0.9;
       }
+      if (fusionFlashLight) fusionFlashLight.intensity = shockwaveOpacity * (activeCollisionMode === 'chemical' ? 5 : 12);
 
       if (shockwaveOpacity <= 0.01) {
         if (shockwaveRing) { scene.remove(shockwaveRing); shockwaveRing.geometry.dispose(); shockwaveRing.material.dispose(); shockwaveRing = null; }
         if (shockwaveRing2) { scene.remove(shockwaveRing2); shockwaveRing2.geometry.dispose(); shockwaveRing2.material.dispose(); shockwaveRing2 = null; }
         if (fusionFlashSphere) { scene.remove(fusionFlashSphere); fusionFlashSphere.geometry.dispose(); fusionFlashSphere.material.dispose(); fusionFlashSphere = null; }
+        if (fusionFlashLight) { scene.remove(fusionFlashLight); fusionFlashLight.dispose?.(); fusionFlashLight = null; }
       }
     }
 
     // Animate explosion particles
     if (explosionParticles && explosionTimer > 0) {
       const positions = explosionParticles.geometry.attributes.position.array;
-      const particleFrames = elapsedSeconds * 60;
       for (let i = 0; i < explosionVelocities.length; i++) {
         const vel = explosionVelocities[i];
-        positions[i * 3] += vel.x * particleFrames;
-        positions[i * 3 + 1] += vel.y * particleFrames;
-        positions[i * 3 + 2] += vel.z * particleFrames;
-        vel.multiplyScalar(Math.pow(0.95, particleFrames));
+        positions[i * 3] += vel.x * elapsedSeconds;
+        positions[i * 3 + 1] += vel.y * elapsedSeconds;
+        positions[i * 3 + 2] += vel.z * elapsedSeconds;
+        vel.multiplyScalar(Math.exp(-3.1 * elapsedSeconds));
       }
       explosionParticles.geometry.attributes.position.needsUpdate = true;
       explosionParticles.material.opacity = Math.min(1, explosionTimer / 0.75);

@@ -1,0 +1,21 @@
+{
+  "release": "2026-07-28-v100",
+  "algorithm": "sha256",
+  "files": {
+    "demo/index.html": "d787aa81598c8f7aae59cb1b4fa9744b727579ec9f2340c4108523730c6d9a35",
+    "demo/app.js": "2fa16787957ab8d8830ac351084294bd050e0457e8e211196e9192595a17e5e8",
+    "demo/periodic-table-data.js": "67298df8b4c4fd41ba13ae9eea53819a5d0b459387a1c0e17822c7936704cd9d",
+    "demo/src/nuclear/nuclear-data.js": "1a574f93726592e51ef0afc981b206abe089fdaa5eac937bf73cd1820de9f347",
+    "demo/src/chemistry/verified-reactions.js": "5db327b89b0aed16fbac28c5e14d5b4a42a097f11859c08bb7307661318a3d4d",
+    "demo/src/analysis/compatibility-engine.js": "81b803051d70413f022da77032c20bfe21c3b8290b4764c2b3d1f7efeb2e0d8e",
+    "demo/src/physics/thermodynamics.js": "96888ae49e415edce52d17e0f6c593c49d054cd545bae3649434ee9f5c13ad05",
+    "demo/src/physics/measurement.js": "bbb8cde99f4cce30173ea9d253b3e38a2a4b189f83987bddf3621c7e95ea615d",
+    "demo/src/i18n/i18n.js": "6486ce27208ab89a1d5499c1f718bf5c38e931d4b1a70a434d96dc3e5d6d42c3",
+    "demo/src/i18n/runtime-i18n.js": "be6ea4b3530e74fcb4cf449154d59f7f1ed0e74ac58e3004c4590caa64985ab9",
+    "demo/src/i18n/ui-labels.js": "053a5ef3bced1ce891584b019158028a1c3abd6c0b8f999d06c0e931f7967086",
+    "demo/src/i18n/telemetry-i18n.js": "e9643a754d17c46c8032d870daeb6e52fc96177c88cf98fffaecb82927db8cc0",
+    "demo/src/i18n/scientific-i18n.js": "000ac3e555a2493d78a6996058ac38b5c1448737f1df7e632ad6a96b82a29c89",
+    "demo/src/education/quiz-data.js": "0a44a661ca3b6b9b746643b7b685b1a9691b0d1b1e999e541441f508a6c1caf0",
+    "demo/src/education/education-content.js": "973639a7979c02fbfd25d717e517c3f227f8ab4bae9dc403b961a861259ef0fb"
+  }
+}

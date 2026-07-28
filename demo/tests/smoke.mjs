@@ -4,11 +4,13 @@ import vm from 'node:vm';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
+const periodicSource = readFileSync(new URL('../periodic-table-data.js', import.meta.url), 'utf8');
 const nuclearSource = readFileSync(new URL('../src/nuclear/nuclear-data.js', import.meta.url), 'utf8');
 const i18nSource = readFileSync(new URL('../src/i18n/i18n.js', import.meta.url), 'utf8');
 const runtimeI18nSource = readFileSync(new URL('../src/i18n/runtime-i18n.js', import.meta.url), 'utf8');
 const uiLabelsSource = readFileSync(new URL('../src/i18n/ui-labels.js', import.meta.url), 'utf8');
 const telemetryI18nSource = readFileSync(new URL('../src/i18n/telemetry-i18n.js', import.meta.url), 'utf8');
+const scientificI18nSource = readFileSync(new URL('../src/i18n/scientific-i18n.js', import.meta.url), 'utf8');
 const quizSource = readFileSync(new URL('../src/education/quiz-data.js', import.meta.url), 'utf8');
 const educationSource = readFileSync(new URL('../src/education/education-content.js', import.meta.url), 'utf8');
 const chemistrySource = readFileSync(new URL('../src/chemistry/verified-reactions.js', import.meta.url), 'utf8');
@@ -64,6 +66,8 @@ assert.match(app, /if \(!reaction\)[\s\S]{0,500}COMBINACIÓN QUÍMICA NO CATALOG
 assert.match(app, /formNuclearProducts/, 'nuclear products are not rendered');
 assert.match(html, /id="runtime-diagnostics"/, 'runtime diagnostics output is absent');
 assert.match(app, /getDiagnosticsSnapshot/, 'runtime diagnostics are not connected');
+assert.match(app, /runtimeHealth:\{\.\.\.window\.NULLA_RUNTIME_HEALTH\}/, 'runtime error counters are not exposed to diagnostics');
+assert.match(app, /translateVisibleRuntimeValues\(\)/, 'dynamic telemetry is not refreshed when the locale changes');
 assert.match(app, /disposeLabelSprite/, 'label texture disposal is not centralized');
 assert.match(app, /generation !== spawnGeneration/, 'stale asynchronous structure spawns are not rejected');
 assert.match(app, /noBond: item\.noBond/, 'non-chemical particles cannot opt out of the bond graph');
@@ -72,13 +76,35 @@ assert.doesNotMatch(app, /fusionTimer--/, 'reaction timing must not depend on fr
 assert.match(app, /fusionTimer - elapsedSeconds/, 'reaction timing is not based on elapsed time');
 assert.doesNotMatch(app, /explosionTimer--/, 'explosion lifetime must not depend on frame rate');
 assert.match(app, /explosionTimer - elapsedSeconds/, 'explosion lifetime is not based on elapsed time');
+assert.doesNotMatch(app, /calculateGibbsFreeEnergy|95\.0%|0\.00 Debye \(NON-POLAR\)/, 'telemetry must not fabricate thermodynamic or stability data');
+assert.match(app, /canonicalReactionKey/, 'chemical reaction selection is not canonicalized');
+assert.match(app, /spawnAtoms\(atomList, explicitBondPairs = null\)/, 'explicit scientific bond topology is unavailable');
+assert.match(app, /getExplicitCompoundBonds/, 'molecular products do not declare explicit bond graphs');
+assert.match(app, /if \(phase\.key === 'unknown'\)[\s\S]{0,180}targetPos\.copy\(a\.basePos\)/, 'unknown phase data must not be animated as a solid');
+assert.match(app, /A=\$\{activePhysicalNucleonCount \|\| count\}/, 'nuclear counter must expose physical mass number A');
+assert.match(app, /z < 1 \|\| z > 118/, 'the runtime must reject speculative non-IUPAC elements');
+
+const periodicSandbox = {window:{}};
+vm.runInNewContext(periodicSource, periodicSandbox);
+const iupacElements = periodicSandbox.window.PERIODIC_DATA.elements.filter(element => element.number >= 1 && element.number <= 118);
+assert.equal(iupacElements.length,118,'the IUPAC runtime set must contain exactly 118 elements');
+assert.deepEqual(Array.from(iupacElements, element => element.number),Array.from({length:118},(_,index)=>index+1),'atomic numbers must be contiguous');
+for (const element of iupacElements) {
+  for (const field of ['melt','boil']) assert.ok(element[field] == null || Number.isFinite(element[field]),`${element.symbol} ${field} must be numeric or unavailable`);
+  if (Number.isFinite(element.melt) && Number.isFinite(element.boil)) assert.ok(element.boil >= element.melt,`${element.symbol} has contradictory phase thresholds`);
+}
 
 const nuclearSandbox = {};
 nuclearSandbox.globalThis = nuclearSandbox;
 vm.runInNewContext(nuclearSource, nuclearSandbox);
 const nuclear = nuclearSandbox.NULLA_NUCLEAR;
 for (const routes of Object.values(nuclear.fusion)) {
-  for (const reaction of routes) assert.equal(nuclear.validateReaction(reaction).valid, true, `${reaction.id} violates A/Z conservation`);
+  for (const reaction of routes) {
+    const validation = nuclear.validateReaction(reaction);
+    assert.equal(validation.valid, true, `${reaction.id} violates conservation or Q consistency`);
+    assert.ok(Number.isFinite(validation.qCalculatedMeV), `${reaction.id} must calculate Q from isotope masses`);
+    assert.ok(validation.qDeltaMeV <= 0.03, `${reaction.id} Q differs from the mass-derived value`);
+  }
 }
 for (const reaction of Object.values(nuclear.fission)) {
   assert.equal(nuclear.validateReaction(reaction).valid, true, `${reaction.id} violates A/Z conservation`);
@@ -95,6 +121,7 @@ vm.runInNewContext(i18nSource, i18nSandbox);
 vm.runInNewContext(runtimeI18nSource, i18nSandbox);
 vm.runInNewContext(uiLabelsSource, i18nSandbox);
 vm.runInNewContext(telemetryI18nSource, i18nSandbox);
+vm.runInNewContext(scientificI18nSource, i18nSandbox);
 const catalogs = i18nSandbox.NULLA_I18N.messages;
 assert.equal(Object.keys(catalogs).length, 11, 'exactly 11 Chronolith locales are required');
 const canonicalKeys = Object.keys(catalogs.es).sort();
@@ -103,6 +130,9 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
   assert.ok(Object.values(catalog).every(value => String(value).trim()), `${locale} contains an empty translation`);
   for (const key of ['atoms','waiting','selectFusion','selectFission','noSuggestion','phaseUnknown','phaseSolid','phaseLiquid','phaseGas']) {
     assert.ok(catalog[key], `${locale} is missing runtime key ${key}`);
+  }
+  for (const key of ['referenceModel','dataUnavailable','dataCoverage','instability','statusIncompleteData','statusExoenergetic']) {
+    assert.ok(catalog[key], `${locale} is missing scientific key ${key}`);
   }
 }
 assert.match(i18nSandbox.NULLA_I18N.t('atoms',{count:3}), /3/, 'runtime interpolation failed');
@@ -162,6 +192,11 @@ const knownCompatibility = compatibility.chemical({
 });
 assert.match(knownCompatibility.status, /^CATALOGUED_/);
 assert.ok(knownCompatibility.factors.some(item => item.includes('Δχ=')));
+const legacyCompatibility = compatibility.chemical({
+  reactants:[{electronegativity:2.2},{electronegativity:2.55},{electronegativity:3.04}],
+  reaction:{evidenceLevel:'LEGACY_CURATED_ILLUSTRATION'}, temperatureK:298
+});
+assert.equal(legacyCompatibility.status, 'REFERENCE_MODEL_INCOMPLETE_DATA');
 const dtCompatibility = compatibility.nuclear({reaction:nuclear.fusion['H+H'][0],isotopes:nuclear.isotopes});
 assert.equal(dtCompatibility.status, 'EXOENERGETIC_EVALUATED_CHANNEL');
 assert.ok(dtCompatibility.barrierMeV > 0);

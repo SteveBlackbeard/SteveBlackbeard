@@ -1,6 +1,6 @@
 (function initEducationContent(root) {
   'use strict';
-  const targets = ['pt-hud-panel','btn-fuse','molecular-hud'];
+  const targets = ['pt-hud-panel','nuclear-mode-bar','molecular-hud'];
   const content = {
     es:{ui:{docs:'📖 GUÍA TÉCNICA Y DOCUMENTACIÓN IUPAC 3D',quiz:'🎓 MODO EDUCATIVO // QUIZ QUÍMICO',suggest:'💡 SUGERENCIAS VERIFICADAS',skip:'✕ OMITIR',next:'SIGUIENTE ➔',done:'¡ENTENDIDO! ✓',step:'PASO {n} / 3'},tutorial:[
       ['🚀 PASO 1/3: SELECCIÓN EN LA TABLA PERIÓDICA','Selecciona dos elementos de la tabla y colócalos en la bandeja de síntesis.'],

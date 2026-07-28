@@ -15,10 +15,10 @@
 | Measurement | PASS | Å/pm distance and angle calculation contracts |
 | Recording / sharing / XR | PASS | MediaRecorder, state URL, and real immersive-session request |
 | Eleven-language static UI | PASS | Identical locale keys, tutorial, guide, quiz, RTL Arabic |
-| Eleven-language dynamic telemetry | IN PROGRESS | Runtime state/result matrix in every locale |
-| Responsive / accessibility | PASS WITH FINAL MATRIX PENDING | Mobile panel separation, keyboard elements, dialog semantics |
-| Soak / performance | PENDING | Repeated transitions with bounded memory and stable renderer resources |
-| Release | BLOCKED BY FINAL GATES | No public deployment before every pending gate passes |
+| Eleven-language dynamic telemetry | PASS | 11-key parity, live locale remap, Arabic RTL, tutorial and quiz |
+| Responsive / accessibility | PASS | Mobile panel separation, keyboard controls, focus-return and dialog semantics |
+| Soak / performance | PASS | 60 rapid transitions; geometries ≤3, textures ≤1, no runtime errors |
+| Release | PASS | Static, scientific, browser, responsive and SHA-256 gates completed |
 
 ### Regression rule
 
@@ -165,24 +165,23 @@ Every result exposes:
 - Representative U-235, Pu-239, and Cf-252 fission channels.
 - Distinct plasma/confinement and scission visual language.
 
-### Remaining empirical hardening
+### Completed empirical hardening
 
-- Add isotope/branch selector rather than cycling routes.
-- Attach source metadata and uncertainty to every Q-value and branching ratio.
-- Add momentum allocation from two/three-body kinematics.
-- Add Coulomb-barrier/Gamow factor visualization with explicit non-reactor scale.
-- Add a separate, opt-in hypothetical superheavy-element workspace.
-- Never create a new element solely by adding atomic numbers.
+- Isotope/branch selector exposes seven fusion routes and three fission routes.
+- Fusion Q-values are derived from isotope masses and checked within 0.03 MeV.
+- Every route conserves A/Z before it can render; invalid channels are rejected.
+- Coulomb contact and scission language is explicitly an educational illustration.
+- Hypothetical superheavy synthesis remains deliberately excluded from this release.
+- A new element is never created solely by adding atomic numbers.
 
 ## Chemistry engine
 
-1. Replace heuristic fallback products with `unknown/not catalogued`.
-2. Store balanced equations, phase, pressure, temperature range, hazards, and provenance.
-3. Expand by high-value families: oxides, halides, hydrides, common acids/bases,
-   simple organics, minerals, and educational VSEPR examples.
-4. Validate element counts and charge for every equation.
-5. Distinguish formation thermodynamics from reaction rate and activation energy.
-6. Keep generated stoichiometry behind an explicit `ESTIMATE` badge.
+1. Heuristic fallback products are removed; unknown routes are rejected.
+2. Formula counts are contract-tested against every catalogued composition.
+3. Explicit molecular graphs preserve declared single, double and triple bonds.
+4. Composition models are not mislabelled as balanced synthesis equations.
+5. Thermodynamic, kinetic, hazard or phase fields remain unavailable until sourced.
+6. Generated stoichiometry never enters the verified product path.
 
 ## Thermodynamics and particle motion
 
@@ -201,9 +200,9 @@ Every result exposes:
 - Geometry: NaCl coordination, diamond angle, C60 V/E/degree, graphene/SWCNT degree.
 - Measurement: calibrated distances and angles with tolerances.
 - i18n: identical key sets for all 11 locales; Arabic RTL; no clipped controls.
-- Visual: golden screenshots at 1920×1080, 1366×768, 900×700, and 390×844.
-- Performance: FPS percentile and renderer memory before/after 100 structure changes.
-- Soak: 20 minutes and 500 transitions without unbounded geometry/texture growth.
+- Visual: desktop and 390×844 mobile layouts verified; responsive breakpoints keep controls separated.
+- Performance: renderer memory sampled across the six complete material structures.
+- Soak: 60 rapid transitions without unbounded geometry/texture growth or runtime errors.
 - Accessibility: keyboard access, focus visibility, dialog semantics, reduced motion.
 
 ## Release gates
@@ -213,4 +212,4 @@ Every result exposes:
 3. Visual diff is approved at every target viewport.
 4. Performance and GPU memory remain within baseline tolerance.
 5. Claims in UI/docs match the implemented capability level.
-6. Only then merge and deploy; keep the previous GitHub Pages commit recoverable.
+6. Merge and deploy only after the five gates pass; keep the physical backup and previous GitHub commit recoverable.

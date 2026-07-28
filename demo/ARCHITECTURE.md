@@ -6,7 +6,7 @@ The deployed demo remains a static, dependency-free GitHub Pages application. Mo
 
 | Module | Contract | Side effects |
 |---|---|---|
-| `src/nuclear/nuclear-data.js` | Evaluated isotope/reaction catalogue and A/Z conservation validator | Exposes immutable `NULLA_NUCLEAR` |
+| `src/nuclear/nuclear-data.js` | Curated isotope channels, mass-derived fusion Q-values and A/Z validator | Exposes immutable `NULLA_NUCLEAR` |
 | `src/chemistry/verified-reactions.js` | Catalogued binary compounds with explicit evidence level | Exposes immutable `NULLA_VERIFIED_REACTIONS` |
 | `src/analysis/compatibility-engine.js` | Chemical compatibility, nuclear Q-value and Coulomb-barrier estimates | Exposes immutable `NULLA_COMPATIBILITY` |
 | `src/physics/thermodynamics.js` | Pure phase-boundary and Lennard-Jones functions | Exposes immutable `NULLA_THERMODYNAMICS` |
@@ -14,6 +14,7 @@ The deployed demo remains a static, dependency-free GitHub Pages application. Mo
 | `src/i18n/i18n.js` | Eleven-locale static UI catalogue and locale lifecycle | Updates translated DOM bindings |
 | `src/i18n/runtime-i18n.js` | Runtime status translations and interpolation | Extends the i18n façade |
 | `src/i18n/ui-labels.js` | HUD, export, material and media labels in every locale | Extends the i18n catalogue |
+| `src/i18n/scientific-i18n.js` | Evidence, coverage, instability and compatibility labels in every locale | Extends the i18n catalogue |
 | `src/education/quiz-data.js` | Three equivalent scientific questions in every supported locale | Exposes immutable `NULLA_QUIZ` |
 | `src/education/education-content.js` | Equivalent tutorial and technical documentation in every locale | Exposes immutable `NULLA_EDUCATION` |
 | `app.js` | Three.js rendering, interactions, media capture and compatibility façade | Owns the scene and DOM event wiring |
@@ -27,6 +28,7 @@ The deployed demo remains a static, dependency-free GitHub Pages application. Mo
 5. The cell renderer, cell control and organelle navigation are absent.
 6. Any extraction from `app.js` requires characterization tests before changing the call site.
 7. Renderer resources created per structure must be disposed or demonstrably stable across repeated cycles.
+8. `tests/release-baseline.json` freezes the verified runtime files by SHA-256; intentional changes require a new test cycle and baseline.
 
 ## Deliberately local-first
 

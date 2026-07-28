@@ -2,16 +2,16 @@
   'use strict';
 
   const isotopes = {
-    p: { id:'p', symbol:'¹H', name:'Proton', Z:1, A:1 },
-    D: { id:'D', symbol:'²H', name:'Deuterium', Z:1, A:2 },
-    T: { id:'T', symbol:'³H', name:'Tritium', Z:1, A:3 },
-    n: { id:'n', symbol:'n', name:'Neutron', Z:0, A:1 },
-    He3: { id:'He3', symbol:'³He', name:'Helium-3', Z:2, A:3 },
-    He4: { id:'He4', symbol:'⁴He', name:'Helium-4', Z:2, A:4 },
-    B11: { id:'B11', symbol:'¹¹B', name:'Boron-11', Z:5, A:11 },
-    C12: { id:'C12', symbol:'¹²C', name:'Carbon-12', Z:6, A:12 },
-    Ne20: { id:'Ne20', symbol:'²⁰Ne', name:'Neon-20', Z:10, A:20 },
-    Na23: { id:'Na23', symbol:'²³Na', name:'Sodium-23', Z:11, A:23 },
+    p: { id:'p', symbol:'¹H', name:'Proton', Z:1, A:1, massU:1.00782503223 },
+    D: { id:'D', symbol:'²H', name:'Deuterium', Z:1, A:2, massU:2.01410177812 },
+    T: { id:'T', symbol:'³H', name:'Tritium', Z:1, A:3, massU:3.0160492779 },
+    n: { id:'n', symbol:'n', name:'Neutron', Z:0, A:1, massU:1.00866491595 },
+    He3: { id:'He3', symbol:'³He', name:'Helium-3', Z:2, A:3, massU:3.0160293201 },
+    He4: { id:'He4', symbol:'⁴He', name:'Helium-4', Z:2, A:4, massU:4.00260325413 },
+    B11: { id:'B11', symbol:'¹¹B', name:'Boron-11', Z:5, A:11, massU:11.00930536 },
+    C12: { id:'C12', symbol:'¹²C', name:'Carbon-12', Z:6, A:12, massU:12 },
+    Ne20: { id:'Ne20', symbol:'²⁰Ne', name:'Neon-20', Z:10, A:20, massU:19.9924401762 },
+    Na23: { id:'Na23', symbol:'²³Na', name:'Sodium-23', Z:11, A:23, massU:22.9897692820 },
     Mg24: { id:'Mg24', symbol:'²⁴Mg', name:'Magnesium-24', Z:12, A:24 },
     U235: { id:'U235', symbol:'²³⁵U', name:'Uranium-235', Z:92, A:235 },
     U238: { id:'U238', symbol:'²³⁸U', name:'Uranium-238', Z:92, A:238 },
@@ -62,7 +62,14 @@
   function validateReaction(reaction) {
     const left = totals(reaction.reactants.map(id => [id, 1]));
     const right = totals(reaction.products);
-    return { valid:left.A === right.A && left.Z === right.Z, left, right };
+    const leftMass = reaction.reactants.reduce((sum,id) => sum + (isotopes[id]?.massU ?? NaN),0);
+    const rightMass = reaction.products.reduce((sum,[id,count=1]) => sum + (isotopes[id]?.massU ?? NaN) * count,0);
+    const qCalculatedMeV = Number.isFinite(leftMass) && Number.isFinite(rightMass)
+      ? (leftMass - rightMass) * 931.49410242 : null;
+    const qDeltaMeV = Number.isFinite(qCalculatedMeV) ? Math.abs(qCalculatedMeV - reaction.qMeV) : null;
+    const conservationValid = left.A === right.A && left.Z === right.Z;
+    const qValid = qDeltaMeV == null || qDeltaMeV <= 0.03;
+    return { valid:conservationValid && qValid, conservationValid, qValid, left, right, qCalculatedMeV, qDeltaMeV };
   }
 
   root.NULLA_NUCLEAR = Object.freeze({ isotopes, fusion, fission, totals, validateReaction });

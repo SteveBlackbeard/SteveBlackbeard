@@ -22,7 +22,7 @@
     <a href="#main-projects">
       <img src="badge-clearance.svg?v=504" alt="AI Tools" width="230" />
     </a>
-    <a href="#nemeth-corp--rd">
+    <a href="#nulla-labs--rd">
       <img src="badge-paradigm.svg?v=504" alt="Local-First" width="230" />
     </a>
     <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
