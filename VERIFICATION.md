@@ -28,7 +28,11 @@ git diff --check
 - XYZ, glTF coordinate and USDA exports are blocked for nuclear or uncalibrated
   structures. Calibrated glTF translations use metres; USDA declares `metersPerUnit`.
 - The local v101.1 candidate returned HTTP 200 for the page and all 18 runtime scripts.
-  Public HTTP and hash equality remain post-deployment gates.
+  GitHub Pages run `30344414867` and companion telemetry run `30344416491` passed
+  for commit `8e31545`; all 19 allowlisted public files match the portable hashes.
+- `/demo/tests/smoke.mjs`, `/demo/ARCHITECTURE.md` and
+  `/demo/SCIENTIFIC_METHOD.md` return 404, proving the Pages allowlist excludes
+  internal tests and documentation.
 
 ## Evidence matrix
 
@@ -64,5 +68,5 @@ release files are frozen by the portable SHA-256 manifest in
 
 The in-app browser automation transport failed before page attachment with an
 environment asset-path error. This is recorded as unavailable rather than reported
-as a v101.1 visual pass. Prior v100 visual evidence exists, but v101.1 public checks
-remain pending deployment and final visual comparison remains a manual release review.
+as a v101.1 visual pass. Public HTTP/hash verification passes; final desktop/mobile
+visual comparison and integrated WebGL interaction remain a manual release review.

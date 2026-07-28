@@ -19,7 +19,7 @@
 | Progressive disclosure | STATIC PASS / RUNTIME PENDING | Basic default, Laboratory and Scientific Data share one stateful engine; visual flow pending |
 | Responsive / accessibility | PARTIAL PASS | Keyboard modes, modal isolation, focus return and live tutorial status pass statically; zoom/reflow/screen-reader review pending |
 | Soak / performance | UNPROVEN FOR v101.1 | No current reproducible WebGL soak artifact; prior observations are not promoted to release evidence |
-| Release v101.1 | RELEASE CANDIDATE | Static/scientific/CI/SHA gates must pass; visual, responsive and runtime interaction gates remain explicitly pending |
+| Release v101.1 | PUBLIC CANDIDATE PASS / VISUAL PENDING | Static, pure-science, CI, public HTTP and 19 runtime SHA gates pass; visual, responsive and integrated interaction gates remain explicit |
 
 ### Regression rule
 
