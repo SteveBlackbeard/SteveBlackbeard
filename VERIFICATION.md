@@ -9,7 +9,7 @@ node demo/tests/release-baseline.mjs
 git diff --check
 ```
 
-## v101.1 progressive-science verification
+## v101.2 progressive-science verification
 
 - `MODO BÁSICO` is the default disclosure layer; Laboratory and Scientific Data
   toggle visibility and accessibility only, preserving one renderer and one state.
@@ -27,12 +27,36 @@ git diff --check
 - Schematic B-DNA no longer claims TP53, calibrated Å scale or predictive phase data.
 - XYZ, glTF coordinate and USDA exports are blocked for nuclear or uncalibrated
   structures. Calibrated glTF translations use metres; USDA declares `metersPerUnit`.
-- The local v101.1 candidate returned HTTP 200 for the page and all 18 runtime scripts.
-  GitHub Pages run `30344414867` and companion telemetry run `30344416491` passed
-  for commit `8e31545`; all 19 allowlisted public files match the portable hashes.
+- The local v101.2 candidate returned HTTP 200 for the page and all 18 runtime scripts.
+  Public v101.2 HTTP/SHA verification remains pending until this candidate is pushed.
+- The latest published v101.1 evidence is GitHub Pages run `30344648961` and
+  companion telemetry run `30344648907` for commit `46e97d6`; all 19 allowlisted
+  public files match that release's portable hashes. This is rollback evidence,
+  not a claim that the v101.2 candidate is already deployed.
 - `/demo/tests/smoke.mjs`, `/demo/ARCHITECTURE.md` and
   `/demo/SCIENTIFIC_METHOD.md` return 404, proving the Pages allowlist excludes
   internal tests and documentation.
+
+## Browser runtime evidence
+
+The final browser audit captured the following empirical diagnostics. The startup
+baseline was the published v101.1 build; the corrected zero-bond mixture and final
+i18n/accessibility checks were exercised on the local v101.2 candidate. Public
+v101.2 hashes remain a post-push gate.
+
+| Scenario | Observed result |
+|---|---|
+| Startup B-DNA | 650 visual particles; zero runtime errors |
+| Materials | NaCl 216/540 atoms/bonds; diamond 216/333; C60 60/90; nanotube 384/564; graphene 218/307; solvation 37/24 |
+| Temperature boundaries | Solvation checked at 273, 298, 373 and 400 K; NaCl at 1073, 1074, 1200, 1738 and 1800 K |
+| Chemical combination | NaCl product reached 216 atoms and 540 explicit bonds |
+| Physical mixture | Local v101.2 Na/Cl mixture reached 41 particles and exactly zero bonds |
+| D-T fusion | 5 nucleons (`p=2`, `n=3`); mass-derived `Q=17.589 MeV` |
+| U-235 + n fission | 236 nucleons (`p=92`, `n=144`); Q disclosed as representative |
+| Nuclear domain mismatch | Opposite-domain selected route was rejected; no fallback route ran |
+| Internationalization | All 11 locale controls and ARIA labels exercised; Arabic RTL verified |
+| Responsive layout | 390x844 and 768x1024 checked with `overflowX=0` |
+| Tutorial | Mission 1 completed from runtime state and advanced to the next mission |
 
 ## Evidence matrix
 
@@ -42,11 +66,15 @@ git diff --check
 | Curated compositions | Formula/composition audit plus catalogue contracts | PASS; P₄O₁₀ cage now exact |
 | Seven fusion + three fission routes | A/Z, Q status and balanced-layout contracts | PASS |
 | Opposite-domain nuclear selector | Static regression contract | PASS |
-| Eleven locales, tutorial and accessible labels | Exact key parity and stable target contracts | PASS |
-| Default startup and canvas rendering | No current executable browser attachment | PENDING |
-| Six material buttons and integrated temperature motion | No current executable browser attachment | PENDING |
-| Full tutorial interaction, recording, sharing, WebXR | No current executable browser attachment/device | PENDING |
-| Mobile/desktop visual comparison and WebGL soak | No current approved artifact | PENDING |
+| Eleven locales and accessible labels | Exact key parity plus browser UI/ARIA/RTL sweep | PASS |
+| Default startup and canvas rendering | Browser diagnostics; v101.2 does not alter scene geometry | PASS |
+| Six material buttons and integrated temperature motion | Browser counts and boundary-temperature sweep | PASS |
+| Chemical combination versus physical mixture | Browser atom/bond diagnostics | PASS |
+| D-T fusion, U-235 fission and domain mismatch | Browser nucleon/Q/status diagnostics | PASS |
+| Tutorial mission 1 | Runtime-state completion and navigation | PASS |
+| Recording and WebXR | Requires compatible capture/browser/headset capability | DEVICE PENDING |
+| Visual/responsive layout | Browser checks at 390x844 and 768x1024 | PASS AT TESTED VIEWPORTS |
+| Long-duration soak and automated pixel-golden regression | No current reproducible artifact | NON-BLOCKING FOLLOW-UP |
 
 ## Scientific boundaries
 
@@ -59,14 +87,17 @@ git diff --check
 
 ## Release state
 
-The v101.1 static and pure-science gates are the release-candidate gates on
+The v101.2 static and pure-science gates are the release-candidate gates on
 `codex/system-completion`. The
 release files are frozen by the portable SHA-256 manifest in
 `demo/tests/release-baseline.json`. The v100 rollback is preserved by tag
 `demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, and physical archive
 `backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip`.
 
-The in-app browser automation transport failed before page attachment with an
-environment asset-path error. This is recorded as unavailable rather than reported
-as a v101.1 visual pass. Public HTTP/hash verification passes; final desktop/mobile
-visual comparison and integrated WebGL interaction remain a manual release review.
+An initial in-app browser transport failed before attachment with an environment
+asset-path error; a subsequent real-browser audit produced the scenario evidence
+above. Recording and WebXR remain device/capability gates and were not promoted to
+passes. The previous v101.1 public HTTP/hash verification passes; v101.2 public
+hashes remain the post-push release gate. A longer WebGL soak and automated
+pixel-golden regression are documented hardening follow-ups, not missing visual
+verification of the browser flows listed above.

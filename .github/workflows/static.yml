@@ -5,7 +5,20 @@ on:
     branches: ["main"]
     paths:
       - "demo/**"
+      - "MASTER_PLAN.md"
+      - "VERIFICATION.md"
+      - ".gitattributes"
       - ".github/workflows/static.yml"
+      - ".github/workflows/companion-telemetry.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "demo/**"
+      - "MASTER_PLAN.md"
+      - "VERIFICATION.md"
+      - ".gitattributes"
+      - ".github/workflows/static.yml"
+      - ".github/workflows/companion-telemetry.yml"
   workflow_dispatch:
 
 permissions:
@@ -34,6 +47,7 @@ jobs:
           node demo/tests/release-baseline.mjs
 
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: verify
     environment:
       name: github-pages

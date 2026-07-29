@@ -5,21 +5,21 @@
 | Gate | Current state | Required evidence |
 |---|---|---|
 | Reversible baseline | PASS | Tag `demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, physical ZIP `backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip` |
-| Startup / white canvas | STATIC PASS / RUNTIME PENDING | Default B-DNA plus guarded URL parameters; current integrated-browser attachment unavailable |
-| Materials bar | STATIC PASS / RUNTIME PENDING | Six connected builders and smoke contracts; renderer clicks still require browser evidence |
+| Startup / white canvas | BROWSER PASS | Default B-DNA opened with 650 visual particles and zero runtime errors |
+| Materials bar | BROWSER PASS | All six builders exercised with expected atom/bond diagnostics |
 | Chemical catalogue | PASS | Unknown routes rejected; catalogued formulas validated |
-| Chemical geometry | PURE/STATIC PASS / INTEGRATION PENDING | Formula, topology and cutoff contracts pass; renderer confirmation remains a browser gate |
+| Chemical geometry | PURE/STATIC/BROWSER PASS | NaCl combination and corrected zero-bond Na/Cl mixture agree with their explicit graphs |
 | Nuclear separation | PASS | Independent fusion/fission controls and A/Z validation |
-| Nuclear runtime | PURE PASS / INTEGRATION PENDING | FPS-independent timing and A-weighted layout contracts pass; WebGL animation remains a browser gate |
-| Thermodynamics | PURE PASS / INTEGRATION PENDING | Entity profiles and exact phase-boundary contracts pass; motion is explicitly non-predictive |
-| Measurement | PURE PASS / INTEGRATION PENDING | Å/pm and geometric-angle contracts pass; pointer/keyboard renderer flow remains a browser gate |
-| Recording / sharing / XR | STATIC PASS / RUNTIME PENDING | APIs and handlers are present; device/browser execution is not yet automated |
+| Nuclear runtime | PURE + BROWSER PASS | D-T, U-235+n and opposite-domain rejection match nucleon/Q contracts |
+| Thermodynamics | PURE + BROWSER PASS | Solvation and NaCl were exercised around their exact phase boundaries; motion remains explicitly non-predictive |
+| Measurement | PURE PASS / POINTER FLOW PENDING | Å/pm, geometric-angle and keyboard contracts pass; full pointer measurement remains a focused follow-up |
+| Recording / sharing / XR | STATIC PASS / DEVICE GATED | APIs and handlers are present; recording and WebXR require compatible browser/device execution |
 | Eleven-language static UI | PASS | Identical locale keys, tutorial, guide, quiz, RTL Arabic |
-| Eleven-language dynamic telemetry | CATALOG PASS / RUNTIME PENDING | 11-key parity, accessible labels, live remap, Arabic RTL, tutorial and quiz; integrated screen audit pending |
-| Progressive disclosure | STATIC PASS / RUNTIME PENDING | Basic default, Laboratory and Scientific Data share one stateful engine; visual flow pending |
-| Responsive / accessibility | PARTIAL PASS | Keyboard modes, modal isolation, focus return and live tutorial status pass statically; zoom/reflow/screen-reader review pending |
-| Soak / performance | UNPROVEN FOR v101.1 | No current reproducible WebGL soak artifact; prior observations are not promoted to release evidence |
-| Release v101.1 | PUBLIC CANDIDATE PASS / VISUAL PENDING | Static, pure-science, CI, public HTTP and 19 runtime SHA gates pass; visual, responsive and integrated interaction gates remain explicit |
+| Eleven-language dynamic telemetry | CATALOG + BROWSER PASS | 11-key parity, runtime UI/ARIA sweep and Arabic RTL verified |
+| Progressive disclosure | BROWSER PASS FOR GUIDED ENTRY | Basic default and tutorial mission 1 were completed and advanced on the shared engine |
+| Responsive / accessibility | BROWSER PASS AT TESTED VIEWPORTS | 390x844 and 768x1024 have zero horizontal overflow; dedicated screen-reader review remains follow-up |
+| Soak / performance | UNPROVEN FOR v101.2 | No current reproducible WebGL soak artifact; prior observations are not promoted to release evidence |
+| Release v101.2 | LOCAL BROWSER CANDIDATE PASS / PUBLIC HASH PENDING | Static, pure-science, local HTTP and real-browser flows pass; the public SHA gate runs after push |
 
 ### Regression rule
 

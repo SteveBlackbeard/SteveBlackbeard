@@ -25,6 +25,7 @@
     .tutorial-objective[data-complete="true"] { border-color:rgba(0,255,157,.5); background:rgba(0,255,157,.1); color:#8CFFD4; }
     .tutorial-highlight { outline:2px solid #00FF9D !important; outline-offset:4px; animation:tutorialPulse 1.2s ease-in-out infinite alternate; }
     @keyframes tutorialPulse { from { filter:drop-shadow(0 0 4px rgba(0,255,157,.35)); } to { filter:drop-shadow(0 0 14px rgba(0,255,157,.85)); } }
+    .sr-only { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
 
     #webgl-canvas { position:fixed; top:0; left:0; width:100vw; height:100vh; display:block; z-index:0; touch-action:none; }
 
@@ -265,6 +266,9 @@
       .pt-legend { gap:4px; }
       .fusion-bar { padding:5px 6px; overflow-x:auto; justify-content:flex-start; }
       .fusion-btn, .fusion-btn-undo, .fusion-btn-clear { padding:5px 7px; font-size:7.5px; }
+      .nuclear-mode-bar { align-items:center; overflow-x:auto; scrollbar-width:thin; scrollbar-color:rgba(255,110,0,.5) transparent; }
+      #nuclear-route-selector { flex:0 0 168px; }
+      .nuclear-mode-bar .nuclear-btn { flex:0 0 auto; }
     }
     @media (prefers-reduced-motion: reduce) {
       *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; }
@@ -589,13 +593,14 @@
   </div>
 
   <!-- INTERACTIVE GUIDED ONBOARDING TUTORIAL OVERLAY -->
-  <div id="onboarding-overlay" role="dialog" aria-modal="false" aria-labelledby="onboarding-title" style="display:none; position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:200; width:460px; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:2px solid #00FF9D; border-radius:16px; padding:18px; box-shadow:0 0 35px rgba(0,255,157,0.4), 0 16px 50px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
+  <div id="onboarding-overlay" role="dialog" aria-modal="false" aria-labelledby="onboarding-title" aria-describedby="onboarding-instruction onboarding-objective" style="display:none; position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:200; width:460px; background:linear-gradient(145deg, rgba(14,18,26,0.98) 0%, rgba(4,6,12,0.99) 100%); border:2px solid #00FF9D; border-radius:16px; padding:18px; box-shadow:0 0 35px rgba(0,255,157,0.4), 0 16px 50px rgba(0,0,0,0.95); backdrop-filter:blur(25px); font-family:'Orbitron',sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:8px; margin-bottom:10px;">
       <span id="onboarding-title" tabindex="-1" style="font-size:11px; font-weight:900; color:#00FF9D; letter-spacing:1.5px;">🚀 TUTORIAL GUIADO INTERACTIVO</span>
       <button id="btn-close-onboarding" style="background:none; border:none; color:#FFFFFF; font-size:11px; font-weight:bold; cursor:pointer;">✕ OMITIR</button>
     </div>
-    <div id="onboarding-instruction" aria-live="polite" style="font-family:'Fira Code',monospace; font-size:10px; color:#FFFFFF; line-height:1.5; margin-bottom:12px;">Paso 1: Selecciona 2 elementos de la tabla periódica.</div>
-    <div id="onboarding-objective" class="tutorial-objective" role="status" aria-live="polite" data-complete="false">OBJETIVO: explora el control resaltado.</div>
+    <div id="onboarding-instruction" style="font-family:'Fira Code',monospace; font-size:10px; color:#FFFFFF; line-height:1.5; margin-bottom:12px;">Paso 1: Selecciona 2 elementos de la tabla periódica.</div>
+    <div id="onboarding-objective" class="tutorial-objective" data-complete="false">OBJETIVO: explora el control resaltado.</div>
+    <p id="onboarding-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <span id="onboarding-step-indicator" style="font-size:9px; color:#FFD700; font-weight:bold;">PASO 1 / 3</span>
       <div style="display:flex; gap:6px;">
@@ -661,23 +666,23 @@
   </div>
 
   <!-- THREE.JS -->
-  <script src="vendor/three.min.js?v=101.1"></script>
-  <script src="periodic-table-data.js?v=101.1"></script>
-  <script src="src/i18n/i18n.js?v=101.1"></script>
-  <script src="src/i18n/runtime-i18n.js?v=101.1"></script>
-  <script src="src/i18n/ui-labels.js?v=101.1"></script>
-  <script src="src/i18n/telemetry-i18n.js?v=101.1"></script>
-  <script src="src/i18n/scientific-i18n.js?v=101.1"></script>
-  <script src="src/i18n/experience-science-i18n.js?v=101.1"></script>
-  <script src="src/education/quiz-data.js?v=101.1"></script>
-  <script src="src/education/education-content.js?v=101.1"></script>
-  <script src="src/education/advanced-tutorial.js?v=101.1"></script>
-  <script src="src/experience/experience-mode.js?v=101.1"></script>
-  <script src="src/nuclear/nuclear-data.js?v=101.1"></script>
-  <script src="src/chemistry/verified-reactions.js?v=101.1"></script>
-  <script src="src/analysis/compatibility-engine.js?v=101.1"></script>
-  <script src="src/physics/thermodynamics.js?v=101.1"></script>
-  <script src="src/physics/measurement.js?v=101.1"></script>
-  <script src="app.js?v=101.1"></script>
+  <script src="vendor/three.min.js?v=101.2"></script>
+  <script src="periodic-table-data.js?v=101.2"></script>
+  <script src="src/i18n/i18n.js?v=101.2"></script>
+  <script src="src/i18n/runtime-i18n.js?v=101.2"></script>
+  <script src="src/i18n/ui-labels.js?v=101.2"></script>
+  <script src="src/i18n/telemetry-i18n.js?v=101.2"></script>
+  <script src="src/i18n/scientific-i18n.js?v=101.2"></script>
+  <script src="src/i18n/experience-science-i18n.js?v=101.2"></script>
+  <script src="src/education/quiz-data.js?v=101.2"></script>
+  <script src="src/education/education-content.js?v=101.2"></script>
+  <script src="src/education/advanced-tutorial.js?v=101.2"></script>
+  <script src="src/experience/experience-mode.js?v=101.2"></script>
+  <script src="src/nuclear/nuclear-data.js?v=101.2"></script>
+  <script src="src/chemistry/verified-reactions.js?v=101.2"></script>
+  <script src="src/analysis/compatibility-engine.js?v=101.2"></script>
+  <script src="src/physics/thermodynamics.js?v=101.2"></script>
+  <script src="src/physics/measurement.js?v=101.2"></script>
+  <script src="app.js?v=101.2"></script>
 </body>
 </html>

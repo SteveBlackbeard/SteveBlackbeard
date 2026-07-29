@@ -25,7 +25,7 @@ for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
   const sourcePath = match[1].split('?')[0];
   if (/^https?:/.test(sourcePath)) continue;
   assert.ok(existsSync(new URL(`../${sourcePath}`, import.meta.url)), `missing local script ${sourcePath}`);
-  assert.match(match[1],/\?v=101\.1$/,`runtime script ${sourcePath} lacks the unified v101.1 cache key`);
+  assert.match(match[1],/\?v=101\.2$/,`runtime script ${sourcePath} lacks the unified v101.2 cache key`);
 }
 const htmlIds = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
 assert.equal(new Set(htmlIds).size,htmlIds.length,'HTML IDs must be unique');
@@ -91,14 +91,20 @@ assert.doesNotMatch(app, /calculateGibbsFreeEnergy|95\.0%|0\.00 Debye \(NON-POLA
 assert.match(app, /canonicalReactionKey/, 'chemical reaction selection is not canonicalized');
 assert.match(app, /spawnAtoms\(atomList, explicitBondPairs = null\)/, 'explicit scientific bond topology is unavailable');
 assert.match(app, /getExplicitCompoundBonds/, 'molecular products do not declare explicit bond graphs');
+assert.match(app, /function formInertMixture[\s\S]{0,900}spawnAtoms\(combinedList, \[\]\)/, 'physical mixtures must use an explicit empty bond graph');
 assert.match(app, /if \(phase\.key === 'unknown'\)[\s\S]{0,180}targetPos\.copy\(a\.basePos\)/, 'unknown phase data must not be animated as a solid');
 assert.match(app, /A=\$\{activePhysicalNucleonCount \|\| count\}/, 'nuclear counter must expose physical mass number A');
+assert.match(app, /nucleonType:isProton \? 'p' : 'n'/, 'nucleus particles must preserve proton/neutron identity');
+assert.match(app, /nucleonType: item\.nucleonType \|\| null/, 'spawned particles must retain nucleon identity');
+assert.match(app, /particleCount:liveAtoms\.length/, 'diagnostics must expose a neutral particle count while retaining atomCount compatibility');
+assert.match(app, /if \(isNuclearMode\)[\s\S]{0,220}nucleonCounts\[atom\.nucleonType\]\+\+;[\s\S]{0,220}else[\s\S]{0,220}elementCounts\[symbol\]/, 'nuclear diagnostics must count nucleons without reporting them as chemical elements');
 assert.match(app, /z < 1 \|\| z > 118/, 'the runtime must reject speculative non-IUPAC elements');
 assert.doesNotMatch(app, /B-DNA · TP53/, 'schematic DNA must not claim a TP53 sequence');
 assert.match(app, /NO PREDICTIVE THERMAL PROFILE/, 'schematic DNA limitations are not explicit');
 assert.match(app, /tr\('xyzNuclearBlocked'\)[\s\S]{0,180}PROTON\/NEUTRON/, 'nuclear nucleons must not be exported as hydrogen XYZ records');
-assert.match(app, /fusionRouteMismatch[\s\S]{0,220}DOMAIN MISMATCH/, 'fusion must reject a selected fission route instead of substituting a default');
-assert.match(app, /fissionRouteMismatch[\s\S]{0,220}DOMAIN MISMATCH/, 'fission must reject a selected fusion route instead of substituting a default');
+assert.match(app, /fusionRouteMismatch[\s\S]{0,260}blockedDomainMismatch/, 'fusion must reject a selected fission route instead of substituting a default');
+assert.match(app, /fissionRouteMismatch[\s\S]{0,260}blockedDomainMismatch/, 'fission must reject a selected fusion route instead of substituting a default');
+assert.doesNotMatch(app, /FUSIÓN NUCLEAR NO CATALOGADA|Graphics Quality Applied|Share Sheet Opened|Copy this share URL:|WebXR unavailable/, 'runtime telemetry must not retain hardcoded Spanish/English UI prose');
 assert.match(app, /status\.atTransition \? tr\('phaseBoundary'\)/, 'phase thresholds must be presented as boundaries, not exact single phases');
 assert.match(app, /name:'Phosphorus\(V\) Oxide',[\s\S]{0,100}formula:'P₄O₁₀',[\s\S]{0,100}c:10/, 'P4O10 cage metadata must match rendered atom counts');
 assert.match(app, /name === 'Phosphorus\(V\) Oxide' && atomCount === 14[\s\S]{0,420}bridgeBonds[\s\S]{0,220}terminalBonds/, 'P4O10 cage must declare its 12 bridge and four terminal bonds');
@@ -106,6 +112,11 @@ assert.doesNotMatch(html, /id="hud-note"[^>]+data-i18n=/, 'dynamic telemetry not
 assert.doesNotMatch(app, /Hydrochloric Acid|Iron Oxide \(Rust\)|Phosphorus Pentoxide|Iodine Gas|LIQUID MODEL/, 'known legacy scientific naming contradictions must stay removed');
 assert.match(app, /tutorialReviewedScientificPanel/, 'tutorial verification must require an explicit scientific-panel review');
 assert.match(app, /canvas\.addEventListener\('keydown'[\s\S]{0,420}measurementHit/, '3D measurement must expose a keyboard selection path');
+assert.match(html, /id="onboarding-announcement"[^>]+aria-live="polite"[^>]+aria-atomic="true"/, 'tutorial steps need one atomic live announcer');
+assert.match(app, /const announcement = `\$\{step\.title\}\. \$\{step\.instruction\} \$\{objectiveText\}`/, 'tutorial announcements must include title, instruction, and objective state');
+assert.match(app, /aria-keyshortcuts','Enter Space'/, 'measurement mode must expose its keyboard shortcut');
+assert.match(app, /periodicCells\.forEach\(cell => \{[\s\S]{0,260}elementAria/, 'periodic-cell accessible names must refresh on locale changes');
+assert.match(html, /@media \(max-width: 600px\)[\s\S]{0,1800}\.nuclear-mode-bar \{[^}]*overflow-x:auto/, 'mobile nuclear controls must scroll instead of clipping');
 assert.match(app, /setDialogBackgroundInert\(dialog,true\)/, 'modal dialogs must isolate background semantics and focus');
 assert.match(app, /calibratedGeometryExportAllowed\(\)/, 'coordinate exporters must share the calibrated-geometry gate');
 
@@ -141,6 +152,14 @@ for (const reaction of Object.values(nuclear.fission)) {
   assert.equal(validation.fullyValidated, false, `${reaction.id} cannot be fully validated without channel masses`);
 }
 for (const reaction of [...Object.values(nuclear.fusion).flat(),...Object.values(nuclear.fission)]) {
+  for (const id of reaction.reactants) assert.ok(nuclear.isotopes[id], `${reaction.id} references unknown reactant ${id}`);
+  for (const [id,count] of reaction.products) {
+    assert.ok(nuclear.isotopes[id], `${reaction.id} references unknown product ${id}`);
+    assert.ok(Number.isInteger(count) && count > 0, `${reaction.id} has an invalid product multiplicity`);
+  }
+  const reactantNucleons = reaction.reactants.reduce((sum,id) => ({p:sum.p+nuclear.isotopes[id].Z,n:sum.n+nuclear.isotopes[id].A-nuclear.isotopes[id].Z}),{p:0,n:0});
+  const productNucleons = reaction.products.reduce((sum,[id,count]) => ({p:sum.p+nuclear.isotopes[id].Z*count,n:sum.n+(nuclear.isotopes[id].A-nuclear.isotopes[id].Z)*count}),{p:0,n:0});
+  assert.deepEqual(reactantNucleons,productNucleons,`${reaction.id} does not conserve proton/neutron counts`);
   const layout = nuclear.balancedProductLayout(reaction,20);
   const expandedCount = reaction.products.reduce((sum,[,count=1]) => sum+count,0);
   assert.equal(layout.length,expandedCount,`${reaction.id} product layout count diverges`);
@@ -171,13 +190,13 @@ const canonicalKeys = Object.keys(catalogs.es).sort();
 for (const [locale, catalog] of Object.entries(catalogs)) {
   assert.deepEqual(Object.keys(catalog).sort(), canonicalKeys, `${locale} translation keys diverge`);
   assert.ok(Object.values(catalog).every(value => String(value).trim()), `${locale} contains an empty translation`);
-  for (const key of ['atoms','waiting','selectFusion','selectFission','noSuggestion','phaseUnknown','phaseSolid','phaseLiquid','phaseGas']) {
+  for (const key of ['atoms','waiting','selectFusion','selectFission','noSuggestion','phaseUnknown','phaseSolid','phaseLiquid','phaseGas','blockedDomainMismatch','graphicsQualityApplied','shareSheetOpened','webxrUnavailable','thermochemistryUnavailable','distributedYields']) {
     assert.ok(catalog[key], `${locale} is missing runtime key ${key}`);
   }
   for (const key of ['referenceModel','dataUnavailable','dataCoverage','instability','statusIncompleteData','statusExoenergetic']) {
     assert.ok(catalog[key], `${locale} is missing scientific key ${key}`);
   }
-  for (const key of ['phaseBoundary','fusionRouteMismatch','fissionRouteMismatch','geometricAngle','sceneLabel','experienceLevelLabel']) {
+  for (const key of ['phaseBoundary','fusionRouteMismatch','fissionRouteMismatch','geometricAngle','sceneLabel','experienceLevelLabel','measurementSceneLabel']) {
     assert.ok(catalog[key], `${locale} is missing final science/UX key ${key}`);
   }
 }
