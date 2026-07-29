@@ -58,19 +58,19 @@
     ko:['핵반응','핵 동위원소 경로','경로: AUTO / 트레이','핵융합','핵분열','대화형 3차원 과학 장면','경험 수준','과학 텔레메트리'],
     ar:['التفاعلات النووية','مسار النظائر النووية','المسار: AUTO / الصينية','الاندماج','الانشطار','مشهد علمي تفاعلي ثلاثي الأبعاد','مستوى الخبرة','القياس العلمي']
   };
-  const controlKeys=['languageLabel','temperatureControlLabel','materialsBarLabel','closeSuggestionsLabel','closeDocsLabel','closeQuizLabel','elementAria'];
+  const controlKeys=['languageLabel','temperatureControlLabel','materialsBarLabel','closeSuggestionsLabel','closeDocsLabel','closeQuizLabel','elementAria','measurementSceneLabel'];
   const controlValues={
-    es:['Idioma','Temperatura de la estructura en kelvin','Barra de materiales','Cerrar sugerencias','Cerrar documentación','Cerrar cuestionario','{name}, {symbol}, número atómico {z}'],
-    en:['Language','Structure temperature in kelvin','Materials bar','Close suggestions','Close documentation','Close quiz','{name}, {symbol}, atomic number {z}'],
-    ja:['言語','構造温度（ケルビン）','材料バー','候補を閉じる','文書を閉じる','クイズを閉じる','{name}、{symbol}、原子番号 {z}'],
-    ru:['Язык','Температура структуры в кельвинах','Панель материалов','Закрыть предложения','Закрыть документацию','Закрыть тест','{name}, {symbol}, атомный номер {z}'],
-    zh:['语言','结构温度（开尔文）','材料栏','关闭建议','关闭文档','关闭测验','{name}，{symbol}，原子序数 {z}'],
-    fr:['Langue','Température de la structure en kelvins','Barre des matériaux','Fermer les suggestions','Fermer la documentation','Fermer le quiz','{name}, {symbol}, numéro atomique {z}'],
-    it:['Lingua','Temperatura della struttura in kelvin','Barra dei materiali','Chiudi suggerimenti','Chiudi documentazione','Chiudi quiz','{name}, {symbol}, numero atomico {z}'],
-    de:['Sprache','Strukturtemperatur in Kelvin','Materialleiste','Vorschläge schließen','Dokumentation schließen','Quiz schließen','{name}, {symbol}, Ordnungszahl {z}'],
-    pt:['Idioma','Temperatura da estrutura em kelvin','Barra de materiais','Fechar sugestões','Fechar documentação','Fechar quiz','{name}, {symbol}, número atômico {z}'],
-    ko:['언어','구조 온도(켈빈)','재료 표시줄','제안 닫기','문서 닫기','퀴즈 닫기','{name}, {symbol}, 원자 번호 {z}'],
-    ar:['اللغة','درجة حرارة البنية بالكلفن','شريط المواد','إغلاق الاقتراحات','إغلاق التوثيق','إغلاق الاختبار','{name}، {symbol}، العدد الذري {z}']
+    es:['Idioma','Temperatura de la estructura en kelvin','Barra de materiales','Cerrar sugerencias','Cerrar documentación','Cerrar cuestionario','{name}, {symbol}, número atómico {z}','Modo de medición 3D. Pulsa Intro o Espacio para seleccionar el siguiente átomo.'],
+    en:['Language','Structure temperature in kelvin','Materials bar','Close suggestions','Close documentation','Close quiz','{name}, {symbol}, atomic number {z}','3D measurement mode. Press Enter or Space to select the next atom.'],
+    ja:['言語','構造温度（ケルビン）','材料バー','候補を閉じる','文書を閉じる','クイズを閉じる','{name}、{symbol}、原子番号 {z}','3D測定モード。EnterまたはSpaceで次の原子を選択します。'],
+    ru:['Язык','Температура структуры в кельвинах','Панель материалов','Закрыть предложения','Закрыть документацию','Закрыть тест','{name}, {symbol}, атомный номер {z}','Режим измерения 3D. Нажмите Enter или пробел, чтобы выбрать следующий атом.'],
+    zh:['语言','结构温度（开尔文）','材料栏','关闭建议','关闭文档','关闭测验','{name}，{symbol}，原子序数 {z}','三维测量模式。按回车键或空格键选择下一个原子。'],
+    fr:['Langue','Température de la structure en kelvins','Barre des matériaux','Fermer les suggestions','Fermer la documentation','Fermer le quiz','{name}, {symbol}, numéro atomique {z}','Mode de mesure 3D. Appuyez sur Entrée ou Espace pour sélectionner l’atome suivant.'],
+    it:['Lingua','Temperatura della struttura in kelvin','Barra dei materiali','Chiudi suggerimenti','Chiudi documentazione','Chiudi quiz','{name}, {symbol}, numero atomico {z}','Modalità di misura 3D. Premi Invio o Spazio per selezionare l’atomo successivo.'],
+    de:['Sprache','Strukturtemperatur in Kelvin','Materialleiste','Vorschläge schließen','Dokumentation schließen','Quiz schließen','{name}, {symbol}, Ordnungszahl {z}','3D-Messmodus. Drücken Sie Eingabe oder Leertaste, um das nächste Atom auszuwählen.'],
+    pt:['Idioma','Temperatura da estrutura em kelvin','Barra de materiais','Fechar sugestões','Fechar documentação','Fechar quiz','{name}, {symbol}, número atômico {z}','Modo de medição 3D. Pressione Enter ou Espaço para selecionar o próximo átomo.'],
+    ko:['언어','구조 온도(켈빈)','재료 표시줄','제안 닫기','문서 닫기','퀴즈 닫기','{name}, {symbol}, 원자 번호 {z}','3D 측정 모드입니다. Enter 또는 Space를 눌러 다음 원자를 선택하세요.'],
+    ar:['اللغة','درجة حرارة البنية بالكلفن','شريط المواد','إغلاق الاقتراحات','إغلاق التوثيق','إغلاق الاختبار','{name}، {symbol}، العدد الذري {z}','وضع القياس ثلاثي الأبعاد. اضغط Enter أو Space لاختيار الذرة التالية.']
   };
   for(const [locale,row] of Object.entries(values)){
     if(row.length!==keys.length)throw new Error(`Experience science label mismatch for ${locale}`);
