@@ -28,11 +28,8 @@ git diff --check
 - XYZ, glTF coordinate and USDA exports are blocked for nuclear or uncalibrated
   structures. Calibrated glTF translations use metres; USDA declares `metersPerUnit`.
 - The local v101.2 candidate returned HTTP 200 for the page and all 18 runtime scripts.
-  Public v101.2 HTTP/SHA verification remains pending until this candidate is pushed.
-- The latest published v101.1 evidence is GitHub Pages run `30344648961` and
-  companion telemetry run `30344648907` for commit `46e97d6`; all 19 allowlisted
-  public files match that release's portable hashes. This is rollback evidence,
-  not a claim that the v101.2 candidate is already deployed.
+- GitHub Pages run `30436638903` passed for merge commit `38515d0`; all 19
+  allowlisted public files match the portable v101.2 hashes.
 - `/demo/tests/smoke.mjs`, `/demo/ARCHITECTURE.md` and
   `/demo/SCIENTIFIC_METHOD.md` return 404, proving the Pages allowlist excludes
   internal tests and documentation.
@@ -41,8 +38,8 @@ git diff --check
 
 The final browser audit captured the following empirical diagnostics. The startup
 baseline was the published v101.1 build; the corrected zero-bond mixture and final
-i18n/accessibility checks were exercised on the local v101.2 candidate. Public
-v101.2 hashes remain a post-push gate.
+i18n/accessibility checks were exercised on the local v101.2 candidate. The final
+startup and hash checks were then repeated against the published v101.2 build.
 
 | Scenario | Observed result |
 |---|---|
@@ -87,17 +84,19 @@ v101.2 hashes remain a post-push gate.
 
 ## Release state
 
-The v101.2 static and pure-science gates are the release-candidate gates on
-`codex/system-completion`. The
+The v101.2 static and pure-science gates are the release gates on `main`. The
 release files are frozen by the portable SHA-256 manifest in
 `demo/tests/release-baseline.json`. The v100 rollback is preserved by tag
 `demo-v100.0.0`, branch `backup/pre-basic-mode-20260728`, and physical archive
-`backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip`.
+`backups/SteveBlackbeard-demo-v100.0.0-20abb92.zip`. The published v101.2 snapshot
+is preserved by tag `demo-v101.2.0` and archive
+`backups/SteveBlackbeard-demo-v101.2.0-38515d0.zip` with SHA-256
+`F0662370F52B376F2D5B2E6A72F554411CD6324EF830535DEC9EEB526C6776C4`.
 
 An initial in-app browser transport failed before attachment with an environment
 asset-path error; a subsequent real-browser audit produced the scenario evidence
 above. Recording and WebXR remain device/capability gates and were not promoted to
-passes. The previous v101.1 public HTTP/hash verification passes; v101.2 public
-hashes remain the post-push release gate. A longer WebGL soak and automated
+passes. The v101.2 public HTTP/hash verification passes 19/19 and internal
+tests/documentation remain excluded with HTTP 404. A longer WebGL soak and automated
 pixel-golden regression are documented hardening follow-ups, not missing visual
 verification of the browser flows listed above.
