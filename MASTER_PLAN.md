@@ -19,7 +19,7 @@
 | Progressive disclosure | BROWSER PASS FOR GUIDED ENTRY | Basic default and tutorial mission 1 were completed and advanced on the shared engine |
 | Responsive / accessibility | BROWSER PASS AT TESTED VIEWPORTS | 390x844 and 768x1024 have zero horizontal overflow; dedicated screen-reader review remains follow-up |
 | Soak / performance | UNPROVEN FOR v101.2 | No current reproducible WebGL soak artifact; prior observations are not promoted to release evidence |
-| Release v101.2 | LOCAL BROWSER CANDIDATE PASS / PUBLIC HASH PENDING | Static, pure-science, local HTTP and real-browser flows pass; the public SHA gate runs after push |
+| Release v101.2 | PUBLISHED / VERIFIED | Pages run `30436638903` passed; 19/19 public hashes match commit `38515d0` and internal tests/docs remain excluded |
 
 ### Regression rule
 
