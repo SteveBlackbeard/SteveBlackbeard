@@ -10,16 +10,25 @@
     <code>[EDUCATION · SOFTWARE · AI]</code>
   </p>
 
-  <p align="center">
-    <a href="https://SteveBlackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-      <img src="badge-launch.svg?v=504" alt="Launch Live 120K GPU Telemetry HUD" width="480" />
-    </a>
+  <!-- AAA HERO BADGE -->
+  <a href="https://steveblackbeard.github.io/">
+    <img src="badges/badge-ethernium-launch.svg" alt="Launch Live 120K GPU Telemetry HUD" width="520" />
+  </a>
+  <br/><br/>
+
+  <!-- AAA SECTION BADGES -->
+  <p>
+    <img src="badges/badge-ethernium-clearance.svg" width="280" />
+    <img src="badges/badge-ethernium-paradigm.svg" width="280" />
+    <img src="badges/badge-ethernium-telemetry.svg" width="280" />
   </p>
 
-  <p align="center">
-    <a href="#️-ethernium--plataforma-transmedia"><img src="badge-clearance.svg?v=504" alt="Clearance Level 05" width="230" /></a>
-    <a href="#️-nulla-corp--id-corporativo"><img src="badge-paradigm.svg?v=504" alt="Paradigm Disruptive" width="230" /></a>
-    <a href="#real-b-dna-human-genome-double-helix--tp53-gene-sequence"><img src="badge-telemetry.svg?v=504" alt="GPU Telemetry 60 FPS" width="230" /></a>
+  <!-- AAA TECH BADGES -->
+  <p>
+    <img src="badges/badge-ethernium-python.svg" width="140" />
+    <img src="badges/badge-ethernium-threejs.svg" width="140" />
+    <img src="badges/badge-ethernium-glsl.svg" width="140" />
+    <img src="badges/badge-ethernium-webgl.svg" width="140" />
   </p>
 
   ---
