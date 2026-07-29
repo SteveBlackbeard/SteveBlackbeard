@@ -13,7 +13,7 @@
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html, body { width:100%; height:100%; overflow:hidden; background:#020306; font-family:'Fira Code', monospace; color:#d0e0ff; user-select:none; }
 
-    #webgl-canvas { position:fixed; top:0; left:0; width:100vw; height:100vh; display:block; z-index:0; }
+    #webgl-canvas { position:fixed; top:0; left:0; width:100vw; height:100vh; display:block; z-index:0; touch-action:none; }
 
     /* ─── GLASSMORPHIC HUD CARD ─── */
     .glass-card {
@@ -223,6 +223,27 @@
       <button id="btn-fuse" class="btn-3d" disabled>💥 FUSIONAR</button>
       <button id="btn-undo" class="btn-3d">↩ DESHACER</button>
       <button id="btn-clear" class="btn-3d">🗑 LIMPIAR</button>
+    </div>
+    <div class="nuclear-mode-bar" id="nuclear-mode-bar" data-i18n-aria-label="nuclearReactionsLabel" aria-label="Reacciones nucleares">
+      <select class="experience-lab" id="nuclear-route-selector" data-i18n-aria-label="nuclearRouteLabel" aria-label="Canal isotópico nuclear">
+        <option value="auto" data-i18n="nuclearAutoRoute">CANAL: AUTO / BANDEJA</option>
+        <optgroup data-i18n-label="fusionGroup" label="FUSIÓN">
+          <option value="dt">²H + ³H → ⁴He + n</option>
+          <option value="ddn">²H + ²H → ³He + n</option>
+          <option value="ddp">²H + ²H → ³H + ¹H</option>
+          <option value="pb11">¹H + ¹¹B → 3·⁴He</option>
+          <option value="he3he3">³He + ³He → ⁴He + 2·¹H</option>
+          <option value="c12c12a">¹²C + ¹²C → ²⁰Ne + ⁴He</option>
+          <option value="c12c12p">¹²C + ¹²C → ²³Na + ¹H</option>
+        </optgroup>
+        <optgroup data-i18n-label="fissionGroup" label="FISIÓN">
+          <option value="u235-thermal">²³⁵U + nₜₕ</option>
+          <option value="pu239-thermal">²³⁹Pu + nₜₕ</option>
+          <option value="cf252-spontaneous">²⁵²Cf → ¹¹⁰Ru + ¹⁴⁰Xe + 2n</option>
+        </optgroup>
+      </select>
+      <button class="fusion-btn nuclear-btn" id="btn-nuclear-fusion">☀ FUSIÓN NUCLEAR</button>
+      <button class="fusion-btn nuclear-btn" id="btn-nuclear-fission">☢ FISIÓN NUCLEAR</button>
     </div>
   </div>
 
