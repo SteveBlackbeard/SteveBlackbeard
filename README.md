@@ -73,6 +73,40 @@ R&D by **Nulla-Labs// Nemeth Corp.**.
 
 ### ***Main Projects***
 
+
+#### Kaptura Ω
+
+<table>
+<tr>
+<td width="58%" valign="middle">
+
+**Sovereign Motion Capture & 120 FPS Vectorial Presentation Engine**
+
+High-frequency telemetry recording, WebGL GPU rendering, and zero-loss vector export.
+
+- **Tool 2: 60 FPS HD Cinematic Loop Banner** (`kaptura-cinema-loop.gif`)  
+- **Tool 3: 120 FPS Native SVG Vectorial HUD** (`kaptura-video-hud.svg`)  
+- **Editions: Core · Pro · Sovereign (Ω)**  
+
+[Repo](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
+
+</td>
+<td width="42%" valign="middle">
+  <img src="kaptura-video-hud.svg?v=507" alt="Kaptura Vector HUD Presentation Engine" width="100%" />
+</td>
+</tr>
+</table>
+
+<div align="center">
+  <br/>
+  <img src="kaptura-cinema-loop.gif?v=507" alt="Kaptura 60 FPS HD Cinematic Loop Banner" width="100%" />
+  <p align="center">
+    <sub><i>Kaptura Tool 2 — Live 60 FPS HD Cinematic Banner playing continuously in native loop</i></sub>
+  </p>
+</div>
+
+---
+
 #### Chronolith
 
 <table>
