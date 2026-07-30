@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 44" width="520" height="44">
+  <defs>
+    <linearGradient id="conekta-btn-bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#020408"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#020408"/>
+    </linearGradient>
+    <linearGradient id="conekta-border" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#00FF9D"/>
+    </linearGradient>
+  </defs>
+  <rect width="520" height="44" rx="10" fill="url(#conekta-btn-bg)" stroke="url(#conekta-border)" stroke-width="2"/>
+  <text x="260" y="27" text-anchor="middle" font-family="'Fira Code', monospace" font-weight="700" font-size="13" fill="#FFFFFF" letter-spacing="3">
+    ⚡ CONEKTA Ω ETHERNIUM // LAUNCH PAYMENT GATEWAY
+  </text>
+</svg>

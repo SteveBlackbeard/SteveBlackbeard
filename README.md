@@ -99,6 +99,32 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 
 ---
 
+
+#### Conekta Ω
+
+<table>
+<tr>
+<td width="42%" valign="middle">
+  <img src="card-conekta.svg?v=505" alt="Conekta by Ethernium" width="100%" />
+</td>
+<td width="58%" valign="middle">
+
+**Payment and Transaction Protocol Layer for AI & Autonomous Workflows**
+
+High-throughput, cryptographically verified payment rail integrating fiat & decentralized networks.
+
+- **Automated settlement & transaction verification**  
+- **Signed payment grants & autonomous execution**  
+- **Editions: Core · Pro · Omega (Ω)**  
+
+[Repo](https://github.com/SteveBlackbeard/CONEKTA-by-Ethernium)
+
+</td>
+</tr>
+</table>
+
+---
+
 #### Seneschal
 
 <table>
