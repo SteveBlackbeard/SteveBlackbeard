@@ -1,7 +1,7 @@
 <!-- ETHERNIUM PROFILE README -->
 <div align="center">
 
-  <img src="header-ethernium-v10.svg?v=506" alt="Ethernium Banner" width="90%" />
+  <img src="header-ethernium-v10.svg?v=510" alt="Ethernium Banner" width="90%" />
   <br/><br/>
   <p align="center">
   <code>[ECOSYSTEM]</code> &nbsp;  &nbsp;
@@ -54,7 +54,7 @@ R&D by **Nulla-Labs// Nemeth Corp.**.
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=506" alt="Public Projects Portfolio" width="100%" />
+    <img src="particle-public-projects.gif?v=510" alt="Public Projects Portfolio" width="100%" />
   </a>
   <p align="center">
     <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
@@ -73,41 +73,7 @@ R&D by **Nulla-Labs// Nemeth Corp.**.
 
 ### ***Main Projects***
 
-
-#### Kaptura Ω
-
-<table>
-<tr>
-<td width="58%" valign="middle">
-
-**Sovereign Motion Capture & 120 FPS Vectorial Presentation Engine**
-
-High-frequency telemetry recording, WebGL GPU rendering, and zero-loss vector export.
-
-- **Tool 2: 60 FPS HD Cinematic Loop Banner** (`kaptura-cinema-loop.gif`)  
-- **Tool 3: 120 FPS Native SVG Vectorial HUD** (`kaptura-video-hud.svg`)  
-- **Editions: Core · Pro · Sovereign (Ω)**  
-
-[Repo](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
-
-</td>
-<td width="42%" valign="middle">
-  <img src="kaptura-video-hud.svg?v=507" alt="Kaptura Vector HUD Presentation Engine" width="100%" />
-</td>
-</tr>
-</table>
-
-<div align="center">
-  <br/>
-  <img src="kaptura-cinema-loop.gif?v=507" alt="Kaptura 60 FPS HD Cinematic Loop Banner" width="100%" />
-  <p align="center">
-    <sub><i>Kaptura Tool 2 — Live 60 FPS HD Cinematic Banner playing continuously in native loop</i></sub>
-  </p>
-</div>
-
----
-
-#### Chronolith
+#### 01. Chronolith
 
 <table>
 <tr>
@@ -133,12 +99,12 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 
 ---
 
-#### Conekta Ω
+#### 02. Conekta Ω
 
 <table>
 <tr>
 <td width="42%" valign="middle">
-  <img src="logo-conekta.png?v=506" alt="Conekta by Ethernium" width="100%" />
+  <img src="logo-conekta.png?v=510" alt="Conekta by Ethernium" width="100%" />
 </td>
 <td width="58%" valign="middle">
 
@@ -158,7 +124,7 @@ High-throughput, cryptographically verified payment rail integrating fiat & dece
 
 ---
 
-#### Seneschal
+#### 03. Seneschal
 
 <table>
 <tr>
@@ -183,12 +149,12 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 
 ---
 
-#### Fonts Forge
+#### 04. Fonts Forge
 
 <table>
 <tr>
 <td width="42%" valign="middle">
-  <img src="logo-fontforge.png?v=506" alt="Fonts Forge by Ethernium" width="100%" />
+  <img src="logo-fontforge.png?v=510" alt="Fonts Forge by Ethernium" width="100%" />
 </td>
 <td width="58%" valign="middle">
 
@@ -207,13 +173,46 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 ---
 
+#### 05. Kaptura Ω
+
+<table>
+<tr>
+<td width="58%" valign="middle">
+
+**Sovereign Motion Capture, Presentation Suite & 120 FPS Vector Engine**
+
+High-frequency telemetry recording, WebGL GPU rendering, WebCodecs encoding, and zero-loss vector export.
+
+- **Recorder Studio**: 3D DNA Helix & Screen recording  
+- **V-Converter & Upskaletor AI**: Format conversion & AI upscaling  
+- **Editions: Core · Pro · Sovereign (Ω)**  
+
+[Repo](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
+
+</td>
+<td width="42%" valign="middle">
+  <img src="logo-kaptura.png?v=510" alt="Kaptura by Ethernium" width="100%" />
+</td>
+</tr>
+</table>
+
+<div align="center">
+  <br/>
+  <img src="kaptura-video-hud.svg?v=510" alt="Kaptura 120 FPS Native SVG Vectorial Presentation HUD" width="100%" />
+  <p align="center">
+    <sub><i>Kaptura Tool 3 — Live 120 FPS Native SVG Vectorial Presentation HUD playing directly inside GitHub</i></sub>
+  </p>
+</div>
+
+---
+
 ### Interactive Lab
 
 Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-dna-console-v16-helix.gif?v=506" alt="Educational B-DNA helix schema" width="100%" />
+    <img src="particle-dna-console-v16-helix.gif?v=510" alt="Educational B-DNA helix schema" width="100%" />
   </a>
   <p align="center">
     <sub><i>Educational B-DNA visualization with a repeating base-pair motif; not a genomic or TP53 sequence — Click to launch the interactive 3D engine</i></sub>
@@ -224,7 +223,7 @@ Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-periodic-table-au.gif?v=506" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
+    <img src="particle-periodic-table-au.gif?v=510" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
   </a>
   <p align="center">
     <sub><i>Complete 118-element IUPAC periodic table with Gold (Au) electron shell orbital view — Click to explore</i></sub>
@@ -236,7 +235,7 @@ Visual engines and experimental interfaces:
 ### Autonomous Terminal
 
 <div align="center">
-  <img src="ethernium-sentinel.svg?v=506" alt="Ethernium Autonomous Companion" width="100%" />
+  <img src="ethernium-sentinel.svg?v=510" alt="Ethernium Autonomous Companion" width="100%" />
 </div>
 
 ---
@@ -247,7 +246,7 @@ Visual engines and experimental interfaces:
 It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
 
 <div align="center">
-  <img src="seneschal-chronolith.svg?v=506" alt="Nemeth Corp Architecture" width="100%" />
+  <img src="seneschal-chronolith.svg?v=510" alt="Nemeth Corp Architecture" width="100%" />
 </div>
 
 ---
