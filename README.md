@@ -91,7 +91,7 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 
 ---
 
-#### 02. Conekta Ω
+#### 02. Conekta 
 
 <table>
 <tr>
@@ -165,7 +165,7 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 
 ---
 
-#### 05. Kaptura Ω
+#### 05. Kaptura 
 
 <table>
 <tr>
@@ -179,7 +179,7 @@ High-frequency telemetry recording, WebGL GPU rendering, WebCodecs encoding, and
 - **V-Converter & Upskaletor AI**: Format conversion & AI upscaling  
 - **Editions: Core · Pro · Sovereign (Ω)**  
 
-[Repo](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
+[Repo (Official Releasing soon)](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
 
 </td>
 <td width="42%" valign="middle">
