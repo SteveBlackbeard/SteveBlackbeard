@@ -25,14 +25,6 @@
     <img src="badges/badge-ethernium-telemetry.svg" width="280" />
   </p>
 
-  <!-- AAA TECH BADGES -->
-  <p>
-    <img src="badges/badge-ethernium-python.svg" width="140" />
-    <img src="badges/badge-ethernium-threejs.svg" width="140" />
-    <img src="badges/badge-ethernium-glsl.svg" width="140" />
-    <img src="badges/badge-ethernium-webgl.svg" width="140" />
-  </p>
-
 </div>
 
 ---
