@@ -1,7 +1,7 @@
 <!-- ETHERNIUM PROFILE README -->
 <div align="center">
 
-  <img src="header-ethernium-v10.svg?v=504" alt="Ethernium Banner" width="90%" />
+  <img src="header-ethernium-v10.svg?v=506" alt="Ethernium Banner" width="90%" />
   <br/><br/>
   <p align="center">
   <code>[ECOSYSTEM]</code> &nbsp;  &nbsp;
@@ -25,7 +25,14 @@
     <img src="badges/badge-ethernium-telemetry.svg" width="280" />
   </p>
 
- 
+  <!-- AAA TECH BADGES -->
+  <p>
+    <img src="badges/badge-ethernium-python.svg" width="140" />
+    <img src="badges/badge-ethernium-threejs.svg" width="140" />
+    <img src="badges/badge-ethernium-glsl.svg" width="140" />
+    <img src="badges/badge-ethernium-webgl.svg" width="140" />
+  </p>
+
 </div>
 
 ---
@@ -47,10 +54,10 @@ R&D by **Nulla-Labs// Nemeth Corp.**.
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
+    <img src="particle-public-projects.gif?v=506" alt="Public Projects Portfolio" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith</i></sub>
+    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
   </p>
 </div>
 
@@ -70,9 +77,6 @@ R&D by **Nulla-Labs// Nemeth Corp.**.
 
 <table>
 <tr>
-<td width="42%" valign="middle">
-  <img src="logo-chronolith.png" alt="Chronolith by Ethernium" width="100%" />
-</td>
 <td width="58%" valign="middle">
 
 **Cryptographic integrity for long-running AI projects**
@@ -87,18 +91,20 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 [Repo](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
 
 </td>
+<td width="42%" valign="middle">
+  <img src="logo-chronolith.png" alt="Chronolith by Ethernium" width="100%" />
+</td>
 </tr>
 </table>
 
 ---
-
 
 #### Conekta Ω
 
 <table>
 <tr>
 <td width="42%" valign="middle">
-  <img src="card-conekta.svg?v=505" alt="Conekta by Ethernium" width="100%" />
+  <img src="logo-conekta.png?v=506" alt="Conekta by Ethernium" width="100%" />
 </td>
 <td width="58%" valign="middle">
 
@@ -106,9 +112,9 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 
 High-throughput, cryptographically verified payment rail integrating fiat & decentralized networks.
 
-- **Automated settlement & transaction verification**  
-- **Signed payment grants & autonomous execution**  
-- **Editions: Core · Pro · Omega (Ω)**  
+- Automated settlement & transaction verification  
+- Signed payment grants & autonomous execution  
+- Editions: Core · Pro · Omega (Ω)  
 
 [Repo](https://github.com/SteveBlackbeard/CONEKTA-by-Ethernium)
 
@@ -148,7 +154,7 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 <table>
 <tr>
 <td width="42%" valign="middle">
-  <img src="logo-fontforge.png" alt="Fonts Forge by Ethernium" width="100%" />
+  <img src="logo-fontforge.png?v=506" alt="Fonts Forge by Ethernium" width="100%" />
 </td>
 <td width="58%" valign="middle">
 
@@ -173,7 +179,7 @@ Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-dna-console-v16-helix.gif?v=504" alt="Educational B-DNA helix schema" width="100%" />
+    <img src="particle-dna-console-v16-helix.gif?v=506" alt="Educational B-DNA helix schema" width="100%" />
   </a>
   <p align="center">
     <sub><i>Educational B-DNA visualization with a repeating base-pair motif; not a genomic or TP53 sequence — Click to launch the interactive 3D engine</i></sub>
@@ -184,7 +190,7 @@ Visual engines and experimental interfaces:
 
 <div align="center">
   <a href="https://steveblackbeard.github.io/SteveBlackbeard/demo/" target="_blank">
-    <img src="particle-periodic-table-au.gif?v=504" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
+    <img src="particle-periodic-table-au.gif?v=506" alt="IUPAC Periodic Table — Gold Atom Orbital View" width="100%" />
   </a>
   <p align="center">
     <sub><i>Complete 118-element IUPAC periodic table with Gold (Au) electron shell orbital view — Click to explore</i></sub>
@@ -196,7 +202,7 @@ Visual engines and experimental interfaces:
 ### Autonomous Terminal
 
 <div align="center">
-  <img src="ethernium-sentinel.svg?v=504" alt="Ethernium Autonomous Companion" width="100%" />
+  <img src="ethernium-sentinel.svg?v=506" alt="Ethernium Autonomous Companion" width="100%" />
 </div>
 
 ---
@@ -207,7 +213,7 @@ Visual engines and experimental interfaces:
 It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
 
 <div align="center">
-  <img src="seneschal-chronolith.svg?v=504" alt="Nemeth Corp Architecture" width="100%" />
+  <img src="seneschal-chronolith.svg?v=506" alt="Nemeth Corp Architecture" width="100%" />
 </div>
 
 ---
