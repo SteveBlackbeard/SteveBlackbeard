@@ -50,7 +50,7 @@ R&D by **Nulla-Labs// Nemeth Corp.**.
     <img src="particle-public-projects.gif?v=504" alt="Public Projects Portfolio" width="100%" />
   </a>
   <p align="center">
-    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith — Click to launch the interactive 3D engine</i></sub>
+    <sub><i>Portfolio dashboard featuring Fonts Forge, Seneschal, and Chronolith</i></sub>
   </p>
 </div>
 
