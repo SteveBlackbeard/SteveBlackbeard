@@ -84,7 +84,7 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 - Continuity across human–AI sessions  
 - Editions: Lite · Pro · Omega  
 
-[Repo (Releasing soon)
+[Repo (Official Releasing soon)
 ](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium)
 
 </td>
@@ -107,7 +107,7 @@ Local-first context selection, token reduction, and prompt/secret scanning.
 - Security scanning + intelligent model routing  
 - Signed capability grants  
 
-[Repo (Releasing soon)](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
+[Repo (Official Releasing soon)](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium)
 
 </td>
 <td width="42%" valign="middle">
