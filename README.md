@@ -196,14 +196,6 @@ High-frequency telemetry recording, WebGL GPU rendering, WebCodecs encoding, and
 </tr>
 </table>
 
-<div align="center">
-  <br/>
-  <img src="kaptura-video-hud.svg?v=510" alt="Kaptura 120 FPS Native SVG Vectorial Presentation HUD" width="100%" />
-  <p align="center">
-    <sub><i>Kaptura Tool 3 — Live 120 FPS Native SVG Vectorial Presentation HUD playing directly inside GitHub</i></sub>
-  </p>
-</div>
-
 ---
 
 ### Interactive Lab
