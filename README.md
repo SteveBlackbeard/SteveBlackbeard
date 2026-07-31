@@ -293,7 +293,7 @@ It develops the software architectures, GPU rendering engines, autonomous system
 ### Official Launch · 2026
 
 <div align="center">
-  <img src="ethernium-roots-brand.png" alt="Ethernium — Official Launch 2026" width="72%" />
+  <video src="https://github.com/SteveBlackbeard/SteveBlackbeard/raw/main/crrrr.mp4" controls muted loop playsinline width="82%"></video>
 </div>
 
 <div align="center">
