@@ -100,13 +100,14 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 </td>
 <td width="58%" valign="middle">
 
-**Payment and Transaction Protocol Layer for AI & Autonomous Workflows**
+**Visual Command Surface for CONTINUITY LEGACY**
 
-High-throughput, cryptographically verified payment rail integrating fiat & decentralized networks.
+Standalone Next.js dashboard that renders the sovereign core, live telemetry, forensic rails, document reading, and the linked-system ecosystem around the central runtime.
 
-- Automated settlement & transaction verification  
-- Signed payment grants & autonomous execution  
-- Editions: Core · Pro · Omega (Ω)  
+- Live telemetry, systems graph & forensic rails  
+- Sandboxed document reads (path-traversal rejected)  
+- Honest APIs (`501 SCRIPT_NOT_AVAILABLE` instead of faking runs)  
+- Adapters to Seneschal & Chronolith  
 
 [Repo](https://github.com/SteveBlackbeard/CONEKTA-by-Ethernium)
 
@@ -171,13 +172,13 @@ Converts raster specimens into TTF / WOFF / WOFF2 with Bézier curve fitting, sy
 <tr>
 <td width="58%" valign="middle">
 
-**Sovereign Motion Capture, Presentation Suite & 120 FPS Vector Engine**
+**Local-first Screen/Tab Capture & Real In-Browser Transcoding Studio**
 
-High-frequency telemetry recording, WebGL GPU rendering, WebCodecs encoding, and zero-loss vector export.
+Browser-native capture (getDisplayMedia) plus REAL processing: Lanczos-3 rescaling (CPU + WebGL GPU), a native GIF89a encoder, and MediaRecorder re-encode — modular, no fakes.
 
-- **Recorder Studio**: 3D DNA Helix & Screen recording  
-- **V-Converter & Upskaletor AI**: Format conversion & AI upscaling  
-- **Editions: Core · Pro · Sovereign (Ω)**  
+- **Recorder Studio**: screen/tab capture + Canvas engines  
+- **V-Converter**: real MP4/WebM re-encode · **Cinema GIF** (native encoder) · **SVG Vector** export  
+- **UPSKALETOR**: real in-browser Lanczos upscale + honest handoff to the independent AI engine  
 
 [Repo](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
 
