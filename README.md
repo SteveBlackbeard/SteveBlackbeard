@@ -290,6 +290,24 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 ---
 
+### Official Launch · 2026
+
+<div align="center">
+  <img src="ethernium-roots-brand.png" alt="Ethernium — Official Launch 2026" width="72%" />
+</div>
+
+<div align="center">
+
+**Utility · Engines** — [Kaptura `v1.0.0`](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium/releases/tag/v1.0.0) · [Fonts-Forge `v4.0.0`](https://github.com/SteveBlackbeard/FONTS-FORGE-by-Ethernium/releases/tag/v4.0.0) · [Chronolith `v3.2.2`](https://github.com/SteveBlackbeard/CHRONOLITH-by-Ethernium/releases/tag/v3.2.2) · [Seneschal `v0.2.3`](https://github.com/SteveBlackbeard/SENESCHAL-by-Ethernium/releases/tag/v0.2.3)
+
+**Visual · Surfaces** — [Conekta `v0.1.0`](https://github.com/SteveBlackbeard/CONEKTA-by-Ethernium/releases/tag/v0.1.0) · [Ichiro `v2.0.0`](https://github.com/SteveBlackbeard/ICHIRO-LegacyOfRebirth-by-Ethernium/releases/tag/v2.0.0)
+
+<sub>The thread across everything — <b>no fakes.</b> A guardian that says green means the checks actually passed.</sub>
+
+</div>
+
+---
+
 ### Vision
 
 Build practical, local-first systems whose claims can be inspected, reproduced, and improved over time.
