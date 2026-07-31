@@ -290,6 +290,14 @@ It develops the software architectures, GPU rendering engines, autonomous system
 
 ---
 
+## Official Launch · 2026
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/ethernium-launch.svg" alt="Ethernium — Official Launch 2026" width="100%" />
+</div>
+
+---
+
 ### Vision
 
 Build practical, local-first systems whose claims can be inspected, reproduced, and improved over time.
