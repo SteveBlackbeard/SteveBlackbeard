@@ -100,13 +100,14 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 </td>
 <td width="58%" valign="middle">
 
-**Payment and Transaction Protocol Layer for AI & Autonomous Workflows**
+**Visual Command Surface for CONTINUITY LEGACY**
 
-High-throughput, cryptographically verified payment rail integrating fiat & decentralized networks.
+Standalone Next.js dashboard that renders the sovereign core, live telemetry, forensic rails, document reading, and the linked-system ecosystem around the central runtime.
 
-- Automated settlement & transaction verification  
-- Signed payment grants & autonomous execution  
-- Editions: Core · Pro · Omega (Ω)  
+- Live telemetry, systems graph & forensic rails  
+- Sandboxed document reads (path-traversal rejected)  
+- Honest APIs (`501 SCRIPT_NOT_AVAILABLE` instead of faking runs)  
+- Adapters to Seneschal & Chronolith  
 
 [Repo](https://github.com/SteveBlackbeard/CONEKTA-by-Ethernium)
 
