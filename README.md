@@ -324,5 +324,5 @@ Build practical, local-first systems whose claims can be inspected, reproduced, 
     <strong>Nemeth Corp.</strong>
   </sub>
   <br/><br/>
-  <img src="ethernium-emblem-circle.png" alt="Ethernium" width="48" />
+  <img src="Nemeth-mark.png" alt="Nemeth Corp." width="48" />
 </div>
