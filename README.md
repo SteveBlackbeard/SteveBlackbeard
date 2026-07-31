@@ -179,7 +179,7 @@ High-frequency telemetry recording, WebGL GPU rendering, WebCodecs encoding, and
 - **V-Converter & Upskaletor AI**: Format conversion & AI upscaling  
 - **Editions: Core · Pro · Sovereign (Ω)**  
 
-[Repo (Official Releasing soon)](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
+[Repo](https://github.com/SteveBlackbeard/KAPTURA-by-Ethernium)
 
 </td>
 <td width="42%" valign="middle">
