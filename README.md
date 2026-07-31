@@ -100,7 +100,7 @@ Detects semantic drift and provides verifiable evidence of project state over ti
 </td>
 <td width="58%" valign="middle">
 
-**Visual Command Surface for CONTINUITY LEGACY**
+**Visual Command Surface for CHRONOLITH**
 
 Standalone Next.js dashboard that renders the sovereign core, live telemetry, forensic rails, document reading, and the linked-system ecosystem around the central runtime.
 
