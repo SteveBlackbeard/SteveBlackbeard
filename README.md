@@ -1,9 +1,3 @@
-
-
-https://github.com/user-attachments/assets/22b93b0a-defd-402b-aa44-22a210f47346
-
-
-
 <!-- ETHERNIUM PROFILE README -->
 <div align="center">
 
@@ -311,6 +305,10 @@ It develops the software architectures, GPU rendering engines, autonomous system
 <sub>The thread across everything — <b>no fakes.</b> A guardian that says green means the checks actually passed.</sub>
 
 </div>
+
+---
+
+https://github.com/user-attachments/assets/22b93b0a-defd-402b-aa44-22a210f47346
 
 ---
 
