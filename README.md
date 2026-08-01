@@ -293,7 +293,7 @@ It develops the software architectures, GPU rendering engines, autonomous system
 ### Official Launch · 2026
 
 <div align="center">
-  <img src="ethernium-roots-brand.png" alt="Ethernium — Official Launch 2026" width="72%" />
+  <video src="https://github.com/SteveBlackbeard/SteveBlackbeard/raw/main/crrrr.mp4" controls muted loop playsinline width="82%"></video>
 </div>
 
 <div align="center">
@@ -328,5 +328,5 @@ Build practical, local-first systems whose claims can be inspected, reproduced, 
     <strong>Nemeth Corp.</strong>
   </sub>
   <br/><br/>
-  <img src="ethernium-emblem-circle.png" alt="Ethernium" width="48" />
+  <img src="Nemeth-mark.png" alt="Nemeth Corp." width="48" />
 </div>
