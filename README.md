@@ -191,6 +191,31 @@ Browser-native capture (getDisplayMedia) plus REAL processing: Lanczos-3 rescali
 
 ---
 
+### Official Launch · 2026
+
+https://github.com/user-attachments/assets/22b93b0a-defd-402b-aa44-22a210f47346
+
+---
+
+### Autonomous Terminal
+
+<div align="center">
+  <img src="ethernium-sentinel.svg?v=510" alt="Ethernium Autonomous Companion" width="100%" />
+</div>
+
+---
+
+### Nulla-Labs — R&D
+
+**Nulla-Labs** is the R&D brand behind Ethernium, within Nemeth Corp.
+It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
+
+<div align="center">
+  <img src="seneschal-chronolith.svg?v=510" alt="Nemeth Corp Architecture" width="100%" />
+</div>
+
+---
+
 ### Interactive Lab
 
 Visual engines and experimental interfaces:
@@ -215,24 +240,6 @@ Visual engines and experimental interfaces:
   </p>
 </div>
 
----
-
-### Autonomous Terminal
-
-<div align="center">
-  <img src="ethernium-sentinel.svg?v=510" alt="Ethernium Autonomous Companion" width="100%" />
-</div>
-
----
-
-### Nulla-Labs — R&D
-
-**Nulla-Labs** is the R&D brand behind Ethernium, within Nemeth Corp.
-It develops the software architectures, GPU rendering engines, autonomous systems, and AI pipelines that power the ecosystem.
-
-<div align="center">
-  <img src="seneschal-chronolith.svg?v=510" alt="Nemeth Corp Architecture" width="100%" />
-</div>
 
 ---
 
@@ -287,12 +294,6 @@ It develops the software architectures, GPU rendering engines, autonomous system
   <img src="https://raw.githubusercontent.com/SteveBlackbeard/SteveBlackbeard/main/badges/badge-quest3.svg" />
 
 </div>
-
----
-
-### Official Launch · 2026
-
-https://github.com/user-attachments/assets/22b93b0a-defd-402b-aa44-22a210f47346
 
 ---
 
